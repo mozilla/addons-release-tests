@@ -5,7 +5,6 @@ from pages.desktop.base import Base
 
 
 class Detail(Base):
-
     _root_locator = (By.CLASS_NAME, 'Addon-extension')
     _addon_name_locator = (By.CLASS_NAME, 'AddonTitle')
     _compatible_locator = (By.CSS_SELECTOR, '.AddonCompatibilityError')
@@ -27,3 +26,11 @@ class Detail(Base):
 
     def install(self):
         self.find_element(*self._install_button_locator).click()
+
+    @property
+    def button_text(self):
+        return self.find_element(*self._install_button_locator).text
+
+    @property
+    def button_enabled(self):
+        return self.find_element(*self._install_button_locator).is_enabled()
