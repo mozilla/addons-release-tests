@@ -29,6 +29,6 @@ class Search(Region):
 
         def link(self):
             self.find_element(*self._search_item_link_locator).click()
-            from pages.desktop.detail import Detail
+            from pages.desktop.details import Detail
             return Detail(
                 self.selenium, self.page.base_url).wait_for_page_to_load()

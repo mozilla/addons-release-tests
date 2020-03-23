@@ -1,11 +1,15 @@
+import time
+
 from pypom import Page, Region
+from pytest_selenium import driver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 
 class Base(Page):
-
     _url = '{base_url}/{locale}'
     _amo_header = (By.CLASS_NAME, 'Header')
 
@@ -16,6 +20,10 @@ class Base(Page):
     def wait_for_page_to_load(self):
         self.wait.until(
             lambda _: self.find_element(*self._amo_header).is_displayed())
+        return self
+
+    def wait_for_title_update(self, term):
+        self.wait.until(EC.title_contains(term))
         return self
 
     @property
@@ -35,9 +43,10 @@ class Base(Page):
     def search(self):
         return self.header.SearchBox(self)
 
-    def login(self, email, password):
+    def login(self, fxa_account):
         login_page = self.header.click_login()
-        login_page.login(email, password)
+        time.sleep(2)
+        login_page.fxa_login(fxa_account)
         self.selenium.get(self.base_url)
         self.wait.until(lambda _: self.logged_in)
 
@@ -46,7 +55,6 @@ class Base(Page):
 
 
 class Header(Region):
-
     _root_locator = (By.CLASS_NAME, 'Header')
     _header_title_locator = (By.CLASS_NAME, 'Header-title')
     _explore_locator = (By.CSS_SELECTOR, '.SectionLinks > li:nth-child(1) \
@@ -122,7 +130,6 @@ class Header(Region):
         action.perform()
 
     class SearchBox(Region):
-
         _root_locator = (By.CLASS_NAME, 'AutoSearchInput')
         _search_suggestions_list_locator = (
             By.CLASS_NAME, 'AutoSearchInput-suggestions-list')
@@ -134,6 +141,7 @@ class Header(Region):
             textbox = self.find_element(*self._search_textbox_locator)
             textbox.click()
             textbox.send_keys(term)
+            self.wait_for_region_to_load()
             # Send 'enter' since the mobile page does not have a submit button
             if execute:
                 textbox.send_keys(Keys.ENTER)
@@ -153,12 +161,19 @@ class Header(Region):
             return [self.SearchSuggestionItem(self.page, el) for el in items]
 
         class SearchSuggestionItem(Region):
-
             _item_name = (By.CLASS_NAME, 'SearchSuggestion-name')
+            _item_icon = (By.CLASS_NAME, 'SearchSuggestion-icon')
+            _recommended_icon = (By.CSS_SELECTOR, '.SearchSuggestion-icon-recommended')
 
             @property
             def name(self):
                 return self.find_element(*self._item_name).text
+
+            def addon_icon(self):
+                self.find_element(*self._item_icon).is_displayed()
+
+            def recommended_badge(self):
+                self.find_element(*self._recommended_icon).is_displayed()
 
             @property
             def select(self):
@@ -168,7 +183,6 @@ class Header(Region):
 
 
 class Footer(Region):
-
     _root_locator = (By.CSS_SELECTOR, '.Footer-wrapper')
     _footer_amo_links = (By.CSS_SELECTOR, '.Footer-amo-links')
     _footer_firefox_links = (By.CSS_SELECTOR, '.Footer-firefox-links')
@@ -183,4 +197,3 @@ class Footer(Region):
     def firefox_links(self):
         header = self.find_element(*self._footer_firefox_links)
         return header.find_elements(*self._footer_links)
-

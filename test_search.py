@@ -42,7 +42,7 @@ def test_legacy_extensions_do_not_load(base_url, selenium):
 @pytest.mark.parametrize('category, sort_attr', [
     ['Most Users', 'users'],
     ['Top Rated', 'rating']])
-def test_sorting_by(base_url, selenium, category, sort_attr):
+def test_filter_sorting_by(base_url, selenium, category, sort_attr):
     """Test searching for an addon and sorting."""
     Home(selenium, base_url).open()
     addon_name = 'devhub'
@@ -55,12 +55,14 @@ def test_sorting_by(base_url, selenium, category, sort_attr):
     assert sorted(results, reverse=True) == results
 
 
-# How is this test passing? Incompatible add-ons are not returned in search results (on stage at least)
+# This test will be moved to a different suite since here the test is inconclusive
+@pytest.mark.skip
 @pytest.mark.nondestructive
 def test_incompative_extensions_show_as_incompatible(base_url, selenium):
     page = Home(selenium, base_url).open()
     term = 'Incompatible platform'
     results = page.search.search_for(term)
+    time.sleep(2)
     for item in results.result_list.extensions:
         if term == item.name:
             detail_page = item.click()
@@ -109,17 +111,19 @@ def test_esc_key_closes_suggestion_list(base_url, selenium):
             'AutoSearchInput-suggestions-list')
 
 
-@pytest.mark.skip  # skipping for now because we need to test the actual layout of autocomplete suggestions
+@pytest.mark.xfail
 @pytest.mark.nondestructive
 def test_long_terms_dont_break_suggestions(base_url, selenium):
     page = Home(selenium, base_url).open()
-    term = 'Ui-Addon'
-    additional_term = ' 123456789'
-    page.search.search_for(term, execute=False)
-    suggestions = page.search.search_for(additional_term, execute=False)
+    term = 'videodo'
+    suggestions = page.search.search_for(term, execute=False)
     # Sleep to let autocomplete update.
-    time.sleep(2)
-    assert term in suggestions[0].name
+    # time.sleep(2)
+    term_max_len = 33
+    suggestion_names = [item.name for item in suggestions]
+    # print(suggestion_names)
+    for suggestion_name in suggestion_names:
+        assert len(suggestion_name) <= term_max_len
 
 
 @pytest.mark.nondestructive
@@ -127,3 +131,57 @@ def test_blank_search_loads_results_page(base_url, selenium):
     page = Home(selenium, base_url).open()
     results = page.search.search_for('', execute=True)
     assert 'zoomFox' in results.result_list.extensions[0].name
+
+
+@pytest.mark.nondestructive
+def test_suggestions_change_by_query(base_url, selenium):
+    page = Home(selenium, base_url).open()
+    term = 'pass'
+    suggestions = page.search.search_for(term, execute=False)
+    first_suggestions_list = [item.name for item in suggestions]
+    new_term = 'word'
+    suggestions = page.search.search_for(new_term, execute=False)
+    # allows for search suggestions to update
+    time.sleep(2)
+    second_suggestions_list = [item.name for item in suggestions]
+    assert first_suggestions_list != second_suggestions_list
+
+
+@pytest.mark.nondestructive
+def test_select_result_with_enter_key(base_url, selenium):
+    page = Home(selenium, base_url).open()
+    term = 'Flagfox'
+    page.search.search_for(term, execute=False)
+    action = ActionChains(selenium)
+    action.send_keys(Keys.ARROW_DOWN).send_keys(Keys.ENTER).perform()
+    # give time to the detail page to load
+    page.wait_for_title_update(term)
+
+
+@pytest.mark.nondestructive
+def test_select_result_with_click(base_url, selenium):
+    page = Home(selenium, base_url).open()
+    term = 'Flagfox'
+    suggestions = page.search.search_for(term, execute=False)
+    result = suggestions[0].root
+    print(result)
+    action = ActionChains(selenium)
+    action.move_to_element(result).click().perform()
+    # give time to the detail page to load
+    page.wait_for_title_update(term)
+
+
+@pytest.mark.nondestructive
+def test_suggestion_icon_is_displayed(base_url, selenium):
+    page = Home(selenium, base_url).open()
+    term = 'Flagfox'
+    suggestions = page.search.search_for(term, execute=False)
+    suggestions[0].addon_icon()
+
+
+@pytest.mark.nondestructive
+def test_recommended_badge_is_displayed(base_url, selenium):
+    page = Home(selenium, base_url).open()
+    term = 'Flagfox'
+    suggestions = page.search.search_for(term, execute=False)
+    suggestions[0].recommended_badge()

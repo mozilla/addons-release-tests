@@ -10,7 +10,7 @@ MOBILE = (414, 738)
 
 @pytest.fixture(scope="session")
 def base_url(base_url):
-    return "http://addons.allizom.org"
+    return "https://addons.allizom.org"
 
 
 @pytest.fixture(scope="session")
@@ -78,7 +78,7 @@ def selenium(selenium, request):
 
 
 @pytest.fixture
-def fxa_account(request):
+def local_fxa_account(request):
     """Fxa account to use during tests that need to login.
 
     Returns the email and password of the fxa account set in Makefile-docker.
