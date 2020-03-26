@@ -5,6 +5,7 @@ import pytest
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.select import Select
 
 from pages.desktop.home import Home
 from pages.desktop.search import Search
@@ -42,10 +43,10 @@ def test_legacy_extensions_do_not_load(base_url, selenium):
 @pytest.mark.parametrize('category, sort_attr', [
     ['Most Users', 'users'],
     ['Top Rated', 'rating']])
-def test_filter_sorting_by(base_url, selenium, category, sort_attr):
+def test_filter_sort_by(base_url, selenium, category, sort_attr):
     """Test searching for an addon and sorting."""
     Home(selenium, base_url).open()
-    addon_name = 'devhub'
+    addon_name = 'fox'
     selenium.get('{}/search/?&q={}&sort={}'.format(
         base_url, addon_name, sort_attr)
     )
@@ -185,3 +186,50 @@ def test_recommended_badge_is_displayed(base_url, selenium):
     term = 'Flagfox'
     suggestions = page.search.search_for(term, execute=False)
     suggestions[0].recommended_badge()
+
+
+@pytest.mark.desktop_only
+@pytest.mark.nondestructive
+def test_filter_default(base_url, selenium):
+    page = Home(selenium, base_url).open()
+    term = 'Flagfox'
+    page.search.search_for(term)
+    search_page = Search(selenium, base_url)
+    """Validates the default sort filters present on search results page"""
+    search_page.default_sort_filter()
+
+
+@pytest.mark.desktop_only
+@pytest.mark.nondestructive
+def test_filter_recommended(base_url, selenium):
+    page = Home(selenium, base_url).open()
+    term = 's'
+    results = page.search.search_for(term)
+    search_page = Search(selenium, base_url)
+    search_page.recommended_filter()
+    for result in results.result_list.extensions:
+        assert result.has_recommended_badge
+
+
+@pytest.mark.desktop_only
+@pytest.mark.nondestructive
+def test_filter_extensions(base_url, selenium):
+    page = Home(selenium, base_url).open()
+    term = 'fox'
+    page.search.search_for(term)
+    search_page = Search(selenium, base_url)
+    search_page.filter_by_type("Extension")
+    search_page.wait_for_contextcard_update("extensions")
+    assert len(search_page.result_list.themes) == 0
+
+
+@pytest.mark.desktop_only
+@pytest.mark.nondestructive
+def test_filter_themes(base_url, selenium):
+    page = Home(selenium, base_url).open()
+    term = 'fox'
+    page.search.search_for(term)
+    search_page = Search(selenium, base_url)
+    search_page.filter_by_type("Theme")
+    search_page.wait_for_contextcard_update("themes")
+    assert len(search_page.result_list.themes) == 25
