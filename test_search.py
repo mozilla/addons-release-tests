@@ -10,81 +10,7 @@ from selenium.webdriver.support.select import Select
 from pages.desktop.home import Home
 from pages.desktop.search import Search
 
-
-@pytest.mark.nondestructive
-def test_search_loads_and_navigates_to_correct_page(base_url, selenium):
-    page = Home(selenium, base_url).open()
-    addon_name = page.featured_extensions.list[0].name
-    search = page.search.search_for(addon_name)
-    search_name = search.result_list.extensions[0].name
-    assert addon_name in search_name
-    assert search_name in search.result_list.extensions[0].name
-
-
-@pytest.mark.nondestructive
-def test_search_loads_correct_results(base_url, selenium):
-    page = Home(selenium, base_url).open()
-    addon_name = page.featured_extensions.list[0].name
-    items = page.search.search_for(addon_name)
-    assert addon_name in items.result_list.extensions[0].name
-
-
-@pytest.mark.skip
-@pytest.mark.nondestructive
-def test_legacy_extensions_do_not_load(base_url, selenium):
-    page = Home(selenium, base_url).open()
-    term = 'Video Download Manager'
-    items = page.search.search_for(term)
-    for item in items.result_list.extensions:
-        assert term not in item.name
-
-
-@pytest.mark.parametrize('category, sort_attr', [
-    ['Top Rated', 'rating'],
-    ['Trending', 'hotness']])
-def test_filter_sort_by(base_url, selenium, category, sort_attr):
-    """Test searching for an addon and sorting."""
-    Home(selenium, base_url).open()
-    addon_name = 'fox'
-    selenium.get('{}/search/?&q={}&sort={}'.format(
-        base_url, addon_name, sort_attr)
-    )
-    search_page = Search(selenium, base_url)
-    results = search_page.result_list.extensions
-    if sort_attr == 'rating':
-        for result in search_page.result_list.extensions:
-            assert result.rating > 4
-    else:
-        assert len(results) == 25
-
-
-@pytest.mark.nondestructive
-def test_filter_by_users(base_url, selenium):
-    Home(selenium, base_url).open()
-    addon_name = 'fox'
-    sort = 'users'
-    selenium.get('{}/search/?&q={}&sort={}'.format(
-        base_url, addon_name, sort)
-    )
-    search_page = Search(selenium, base_url)
-    results = [getattr(result, sort)
-               for result in search_page.result_list.extensions]
-    assert sorted(results, reverse=True) == results
-
-
-# This test will be moved to a different suite since here the test is inconclusive
-@pytest.mark.skip
-@pytest.mark.nondestructive
-def test_incompative_extensions_show_as_incompatible(base_url, selenium):
-    page = Home(selenium, base_url).open()
-    term = 'Incompatible platform'
-    results = page.search.search_for(term)
-    time.sleep(2)
-    for item in results.result_list.extensions:
-        if term == item.name:
-            detail_page = item.click()
-            assert detail_page.is_compatible is False
-            # assert detail_page.button_state is False
+"""Tests covering search suggestions (autocomplete)"""
 
 
 @pytest.mark.nondestructive
@@ -147,23 +73,6 @@ def test_long_terms_dont_break_suggestions(base_url, selenium):
         assert len(suggestion_name) <= term_max_len
 
 
-@pytest.mark.desktop_only
-@pytest.mark.nondestructive
-def test_blank_search_loads_results_page(base_url, selenium):
-    page = Home(selenium, base_url).open()
-    search_page = page.search.search_for('', execute=True)
-    results = search_page.result_list.extensions
-    assert len(results) == 25
-    for result in results:
-        assert result.has_recommended_badge
-    sort = 'users'
-    results = [getattr(result, sort)
-               for result in search_page.result_list.extensions]
-    assert sorted(results, reverse=True) == results
-    search_page.next_page()
-    assert '2' in search_page.page_number
-
-
 @pytest.mark.nondestructive
 def test_suggestions_change_by_query(base_url, selenium):
     page = Home(selenium, base_url).open()
@@ -219,6 +128,59 @@ def test_recommended_badge_is_displayed(base_url, selenium):
 
 @pytest.mark.desktop_only
 @pytest.mark.nondestructive
+def test_selected_result_is_highlighted(base_url, selenium):
+    page = Home(selenium, base_url).open()
+    term = 'Flagfox'
+    suggestions = page.search.search_for(term, execute=False)
+    result = suggestions[0].root
+    action = ActionChains(selenium)
+    action.move_to_element(result).click_and_hold().perform()
+    assert page.search.highlighted_suggestion
+
+
+"""Tests covering search results page"""
+
+
+@pytest.mark.nondestructive
+def test_search_loads_and_navigates_to_correct_page(base_url, selenium):
+    page = Home(selenium, base_url).open()
+    addon_name = page.featured_extensions.list[0].name
+    search = page.search.search_for(addon_name)
+    search_name = search.result_list.extensions[0].name
+    assert addon_name in search_name
+    assert search_name in search.result_list.extensions[0].name
+
+
+@pytest.mark.nondestructive
+def test_search_loads_correct_results(base_url, selenium):
+    page = Home(selenium, base_url).open()
+    addon_name = page.featured_extensions.list[0].name
+    items = page.search.search_for(addon_name)
+    assert addon_name in items.result_list.extensions[0].name
+
+
+@pytest.mark.desktop_only
+@pytest.mark.nondestructive
+def test_blank_search_loads_results_page(base_url, selenium):
+    page = Home(selenium, base_url).open()
+    search_page = page.search.search_for('', execute=True)
+    results = search_page.result_list.extensions
+    assert len(results) == 25
+    for result in results:
+        assert result.has_recommended_badge
+    sort = 'users'
+    results = [getattr(result, sort)
+               for result in search_page.result_list.extensions]
+    assert sorted(results, reverse=True) == results
+    search_page.next_page()
+    assert '2' in search_page.page_number
+
+
+"""Tests covering search filtering"""
+
+
+@pytest.mark.desktop_only
+@pytest.mark.nondestructive
 def test_filter_default(base_url, selenium):
     page = Home(selenium, base_url).open()
     term = 'Flagfox'
@@ -228,16 +190,37 @@ def test_filter_default(base_url, selenium):
     search_page.default_sort_filter()
 
 
-@pytest.mark.desktop_only
 @pytest.mark.nondestructive
-def test_filter_recommended(base_url, selenium):
-    page = Home(selenium, base_url).open()
-    term = 's'
-    results = page.search.search_for(term)
+def test_filter_by_users(base_url, selenium):
+    Home(selenium, base_url).open()
+    addon_name = 'fox'
+    sort = 'users'
+    selenium.get('{}/search/?&q={}&sort={}'.format(
+        base_url, addon_name, sort)
+    )
     search_page = Search(selenium, base_url)
-    search_page.recommended_filter()
-    for result in results.result_list.extensions:
-        assert result.has_recommended_badge
+    results = [getattr(result, sort)
+               for result in search_page.result_list.extensions]
+    assert sorted(results, reverse=True) == results
+
+
+@pytest.mark.parametrize('category, sort_attr', [
+    ['Top Rated', 'rating'],
+    ['Trending', 'hotness']])
+def test_filter_by_rating_and_hotness(base_url, selenium, category, sort_attr):
+    """Test searching for an addon and sorting."""
+    Home(selenium, base_url).open()
+    addon_name = 'fox'
+    selenium.get('{}/search/?&q={}&sort={}'.format(
+        base_url, addon_name, sort_attr)
+    )
+    search_page = Search(selenium, base_url)
+    results = search_page.result_list.extensions
+    if sort_attr == 'rating':
+        for result in search_page.result_list.extensions:
+            assert result.rating > 4
+    else:
+        assert len(results) == 25
 
 
 @pytest.mark.desktop_only
@@ -266,11 +249,39 @@ def test_filter_themes(base_url, selenium):
 
 @pytest.mark.desktop_only
 @pytest.mark.nondestructive
-def test_selected_result_is_highlighted(base_url, selenium):
+def test_filter_recommended(base_url, selenium):
     page = Home(selenium, base_url).open()
-    term = 'Flagfox'
-    suggestions = page.search.search_for(term, execute=False)
-    result = suggestions[0].root
-    action = ActionChains(selenium)
-    action.move_to_element(result).click_and_hold().perform()
-    assert page.search.highlighted_suggestion
+    term = 's'
+    results = page.search.search_for(term)
+    search_page = Search(selenium, base_url)
+    search_page.recommended_filter()
+    for result in results.result_list.extensions:
+        assert result.has_recommended_badge
+
+
+"""Tests to be (re)moved"""
+
+
+@pytest.mark.skip
+@pytest.mark.nondestructive
+def test_legacy_extensions_do_not_load(base_url, selenium):
+    page = Home(selenium, base_url).open()
+    term = 'Video Download Manager'
+    items = page.search.search_for(term)
+    for item in items.result_list.extensions:
+        assert term not in item.name
+
+
+# This test will be moved to a different suite since here the test is inconclusive
+@pytest.mark.skip
+@pytest.mark.nondestructive
+def test_incompative_extensions_show_as_incompatible(base_url, selenium):
+    page = Home(selenium, base_url).open()
+    term = 'Incompatible platform'
+    results = page.search.search_for(term)
+    time.sleep(2)
+    for item in results.result_list.extensions:
+        if term == item.name:
+            detail_page = item.click()
+            assert detail_page.is_compatible is False
+            # assert detail_page.button_state is False
