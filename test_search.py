@@ -39,10 +39,9 @@ def test_legacy_extensions_do_not_load(base_url, selenium):
         assert term not in item.name
 
 
-@pytest.mark.xfail(strict=False)
 @pytest.mark.parametrize('category, sort_attr', [
-    ['Most Users', 'users'],
-    ['Top Rated', 'rating']])
+    ['Top Rated', 'rating'],
+    ['Trending', 'hotness']])
 def test_filter_sort_by(base_url, selenium, category, sort_attr):
     """Test searching for an addon and sorting."""
     Home(selenium, base_url).open()
@@ -51,8 +50,25 @@ def test_filter_sort_by(base_url, selenium, category, sort_attr):
         base_url, addon_name, sort_attr)
     )
     search_page = Search(selenium, base_url)
-    results = [getattr(i, sort_attr)
-               for i in search_page.result_list.extensions]
+    results = search_page.result_list.extensions
+    if sort_attr == 'rating':
+        for result in search_page.result_list.extensions:
+            assert result.rating > 4
+    else:
+        assert len(results) == 25
+
+
+@pytest.mark.nondestructive
+def test_filter_by_users(base_url, selenium):
+    Home(selenium, base_url).open()
+    addon_name = 'fox'
+    sort = 'users'
+    selenium.get('{}/search/?&q={}&sort={}'.format(
+        base_url, addon_name, sort)
+    )
+    search_page = Search(selenium, base_url)
+    results = [getattr(result, sort)
+               for result in search_page.result_list.extensions]
     assert sorted(results, reverse=True) == results
 
 
@@ -90,13 +106,17 @@ def test_special_chars_dont_break_suggestions(base_url, selenium):
 
 
 @pytest.mark.nondestructive
-def test_capitalization_has_same_suggestions(base_url, selenium):
+def test_uppercase_has_same_suggestions(base_url, selenium):
     page = Home(selenium, base_url).open()
-    term = 'Flagfox'
-    suggestions = page.search.search_for(term.capitalize(), execute=False)
+    term = 'fox'
+    first_suggestions_list = page.search.search_for(term, execute=False)
+    first_results = [item.name for item in first_suggestions_list]
+    page.search.clear_search_field()
+    second_suggestions_list = page.search.search_for(term.upper(), execute=False)
     # Sleep to let autocomplete update.
-    time.sleep(2)
-    assert term == suggestions[0].name
+    time.sleep(1)
+    second_results = [item.name for item in second_suggestions_list]
+    assert first_results == second_results
 
 
 @pytest.mark.nondestructive
@@ -127,11 +147,21 @@ def test_long_terms_dont_break_suggestions(base_url, selenium):
         assert len(suggestion_name) <= term_max_len
 
 
+@pytest.mark.desktop_only
 @pytest.mark.nondestructive
 def test_blank_search_loads_results_page(base_url, selenium):
     page = Home(selenium, base_url).open()
-    results = page.search.search_for('', execute=True)
-    assert 'zoomFox' in results.result_list.extensions[0].name
+    search_page = page.search.search_for('', execute=True)
+    results = search_page.result_list.extensions
+    assert len(results) == 25
+    for result in results:
+        assert result.has_recommended_badge
+    sort = 'users'
+    results = [getattr(result, sort)
+               for result in search_page.result_list.extensions]
+    assert sorted(results, reverse=True) == results
+    search_page.next_page()
+    assert '2' in search_page.page_number
 
 
 @pytest.mark.nondestructive
@@ -165,7 +195,6 @@ def test_select_result_with_click(base_url, selenium):
     term = 'Flagfox'
     suggestions = page.search.search_for(term, execute=False)
     result = suggestions[0].root
-    print(result)
     action = ActionChains(selenium)
     action.move_to_element(result).click().perform()
     # give time to the detail page to load
@@ -233,3 +262,15 @@ def test_filter_themes(base_url, selenium):
     search_page.filter_by_type("Theme")
     search_page.wait_for_contextcard_update("themes")
     assert len(search_page.result_list.themes) == 25
+
+
+@pytest.mark.desktop_only
+@pytest.mark.nondestructive
+def test_selected_result_is_highlighted(base_url, selenium):
+    page = Home(selenium, base_url).open()
+    term = 'Flagfox'
+    suggestions = page.search.search_for(term, execute=False)
+    result = suggestions[0].root
+    action = ActionChains(selenium)
+    action.move_to_element(result).click_and_hold().perform()
+    assert page.search.highlighted_suggestion

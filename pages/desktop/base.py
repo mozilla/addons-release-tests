@@ -131,11 +131,16 @@ class Header(Region):
 
     class SearchBox(Region):
         _root_locator = (By.CLASS_NAME, 'AutoSearchInput')
+        _query_field = (By.ID, 'AutoSearchInput-q')
         _search_suggestions_list_locator = (
             By.CLASS_NAME, 'AutoSearchInput-suggestions-list')
         _search_suggestions_item_locator = (
             By.CLASS_NAME, 'AutoSearchInput-suggestions-item')
         _search_textbox_locator = (By.CLASS_NAME, 'AutoSearchInput-query')
+        _highlighted_selected = (By.CSS_SELECTOR, '.AutoSearchInput-suggestions-item--highlighted')
+
+        def clear_search_field(self):
+            self.find_element(*self._query_field).clear()
 
         def search_for(self, term, execute=True):
             textbox = self.find_element(*self._search_textbox_locator)
@@ -159,6 +164,10 @@ class Header(Region):
             items = el_list.find_elements(
                 *self._search_suggestions_item_locator)
             return [self.SearchSuggestionItem(self.page, el) for el in items]
+
+        @property
+        def highlighted_suggestion(self):
+            return self.find_element(*self._highlighted_selected)
 
         class SearchSuggestionItem(Region):
             _item_name = (By.CLASS_NAME, 'SearchSuggestion-name')

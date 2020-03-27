@@ -1,5 +1,6 @@
 import time
 
+from numpy.core import double
 from pypom import Page, Region
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as expected
@@ -14,6 +15,8 @@ class Search(Page):
     _search_filters_type_locator = (By.ID, 'SearchFilters-AddonType')
     _search_filters_os_locator = (By.ID, 'SearchFilters-OperatingSystem')
     _recommended_checkbox = (By.ID, 'SearchFilters-Recommended')
+    _pagination_next = (By.CSS_SELECTOR, '.Paginate-item--next')
+    _selected_page = (By.CLASS_NAME, 'Paginate-page-number')
 
     def wait_for_page_to_load(self):
         self.wait.until(
@@ -51,6 +54,13 @@ class Search(Page):
 
     def recommended_filter(self):
         self.find_element(*self._recommended_checkbox).click()
+
+    def next_page(self):
+        self.find_element(*self._pagination_next).click()
+
+    @property
+    def page_number(self):
+        return self.find_element(*self._selected_page).text
 
     class SearchResultList(Region):
         _result_locator = (By.CLASS_NAME, 'SearchResult')
@@ -101,7 +111,7 @@ class Search(Page):
                 """Returns the rating"""
                 rating = self.find_element(
                     *self._rating_locator).get_property('title')
-                return int(rating.split()[1])
+                return double(rating.split()[1])
 
             @property
             def has_recommended_badge(self):
