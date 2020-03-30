@@ -5,6 +5,7 @@ from pytest_selenium import driver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -84,6 +85,10 @@ class Header(Region):
         return Extensions(
             self.selenium, self.page.base_url).wait_for_page_to_load()
 
+    @property
+    def extensions_text(self):
+        return self.find_element(*self._extensions_locator).text
+
     def click_themes(self):
         self.find_element(*self._themes_locator).click()
         from pages.desktop.themes import Themes
@@ -122,7 +127,7 @@ class Header(Region):
         # menu. It pauses between each action to account for lag.
         action = ActionChains(self.selenium)
         action.move_to_element(menu)
-        action.click()
+        action.click_and_hold()
         action.pause(2)
         action.move_to_element(links[item])
         action.click()
@@ -194,8 +199,15 @@ class Header(Region):
 class Footer(Region):
     _root_locator = (By.CSS_SELECTOR, '.Footer-wrapper')
     _footer_amo_links = (By.CSS_SELECTOR, '.Footer-amo-links')
-    _footer_firefox_links = (By.CSS_SELECTOR, '.Footer-firefox-links')
+    _footer_browsers_links = (By.CSS_SELECTOR, '.Footer-browsers-links')
+    _footer_products_links = (By.CSS_SELECTOR, '.Footer-product-links')
+    _footer_mozilla_link = (By.CSS_SELECTOR, '.Footer-mozilla-link')
+    _footer_social_links = (By.CSS_SELECTOR, '.Footer-links-social')
+    _footer_social = (By.CSS_SELECTOR, '.Footer-links-social li a')
     _footer_links = (By.CSS_SELECTOR, '.Footer-links li a')
+    _footer_legal = (By.CSS_SELECTOR, '.Footer-legal-links ')
+    _footer_legal_links = (By.CSS_SELECTOR, '.Footer-legal-links li a')
+    _language_picker = (By.ID, 'lang-picker')
 
     @property
     def addon_links(self):
@@ -203,6 +215,29 @@ class Footer(Region):
         return header.find_elements(*self._footer_links)
 
     @property
-    def firefox_links(self):
-        header = self.find_element(*self._footer_firefox_links)
+    def browsers_links(self):
+        header = self.find_element(*self._footer_browsers_links)
         return header.find_elements(*self._footer_links)
+
+    @property
+    def products_links(self):
+        header = self.find_element(*self._footer_products_links)
+        return header.find_elements(*self._footer_links)
+
+    @property
+    def mozilla_link(self):
+        return self.find_element(*self._footer_mozilla_link)
+
+    @property
+    def social_links(self):
+        social = self.find_element(*self._footer_social_links)
+        return social.find_elements(*self._footer_social)
+
+    @property
+    def legal_links(self):
+        legal = self.find_element(*self._footer_legal)
+        return legal.find_elements(*self._footer_legal_links)
+
+    def language_picker(self):
+        select = Select(self.find_element(*self._language_picker))
+        select.select_by_visible_text('Deutsch')
