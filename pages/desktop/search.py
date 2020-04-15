@@ -8,15 +8,15 @@ from selenium.webdriver.support.select import Select
 
 
 class Search(Page):
-    _context_card = (By.CLASS_NAME, 'SearchContextCard-header')
+    _context_card_locator = (By.CLASS_NAME, 'SearchContextCard-header')
     _search_box_locator = (By.CLASS_NAME, 'AutoSearchInput-query')
     _submit_button_locator = (By.CLASS_NAME, 'AutoSearchInput-submit-button')
     _search_filters_sort_locator = (By.ID, 'SearchFilters-Sort')
     _search_filters_type_locator = (By.ID, 'SearchFilters-AddonType')
     _search_filters_os_locator = (By.ID, 'SearchFilters-OperatingSystem')
-    _recommended_checkbox = (By.ID, 'SearchFilters-Recommended')
-    _pagination_next = (By.CSS_SELECTOR, '.Paginate-item--next')
-    _selected_page = (By.CLASS_NAME, 'Paginate-page-number')
+    _recommended_checkbox_locator = (By.ID, 'SearchFilters-Recommended')
+    _pagination_next_locator = (By.CSS_SELECTOR, '.Paginate-item--next')
+    _selected_page_locator = (By.CLASS_NAME, 'Paginate-page-number')
 
     def wait_for_page_to_load(self):
         self.wait.until(
@@ -33,34 +33,28 @@ class Search(Page):
     def result_list(self):
         return self.SearchResultList(self)
 
-    def filter_by_sort(self, value):
-        self.find_element(*self._search_filters_sort_locator).click()
-        self.find_element(*self._search_filters_sort_locator).send_keys(value)
+    @property
+    def filter_by_sort(self):
+        return self.find_element(*self._search_filters_sort_locator)
 
-    def filter_by_type(self, value):
-        self.find_element(*self._search_filters_type_locator).click()
-        self.find_element(*self._search_filters_type_locator).send_keys(value)
+    @property
+    def filter_by_type(self):
+        return self.find_element(*self._search_filters_type_locator)
 
-    def filter_by_os(self, value):
-        self.find_element(*self._search_filters_os_locator).click()
-        self.find_element(*self._search_filters_os_locator).send_keys(value)
+    @property
+    def filter_by_os(self):
+        return self.find_element(*self._search_filters_os_locator)
 
-    def default_sort_filter(self):
-        select = Select(self.find_element(*self._search_filters_sort_locator))
-        assert select.first_selected_option.text == 'Relevance'
-        select = Select(self.find_element(*self._search_filters_type_locator))
-        assert select.first_selected_option.text == 'All'
-        assert not self.find_element(*self._recommended_checkbox).is_selected()
-
+    @property
     def recommended_filter(self):
-        self.find_element(*self._recommended_checkbox).click()
+        return self.find_element(*self._recommended_checkbox_locator)
 
     def next_page(self):
-        self.find_element(*self._pagination_next).click()
+        self.find_element(*self._pagination_next_locator).click()
 
     @property
     def page_number(self):
-        return self.find_element(*self._selected_page).text
+        return self.find_element(*self._selected_page_locator).text
 
     class SearchResultList(Region):
         _result_locator = (By.CLASS_NAME, 'SearchResult')
@@ -86,7 +80,7 @@ class Search(Page):
             _rating_locator = (By.CSS_SELECTOR, '.Rating--small')
             _search_item_name_locator = (By.CSS_SELECTOR,
                                          '.SearchResult-contents > h2')
-            _recommended_badge = (By.CSS_SELECTOR, '.RecommendedBadge')
+            _recommended_badge_locator = (By.CSS_SELECTOR, '.RecommendedBadge')
             _users_locator = (By.CLASS_NAME, 'SearchResult-users-text')
 
             @property
@@ -111,8 +105,8 @@ class Search(Page):
                 """Returns the rating"""
                 rating = self.find_element(
                     *self._rating_locator).get_property('title')
-                return double(rating.split()[1])
+                return float(rating.split()[1])
 
             @property
             def has_recommended_badge(self):
-                return self.find_element(*self._recommended_badge).is_displayed()
+                return self.find_element(*self._recommended_badge_locator).is_displayed()

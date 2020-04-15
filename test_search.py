@@ -37,7 +37,7 @@ def test_uppercase_has_same_suggestions(base_url, selenium):
     term = 'fox'
     first_suggestions_list = page.search.search_for(term, execute=False)
     first_results = [item.name for item in first_suggestions_list]
-    page.search.clear_search_field()
+    page.search.search_field.clear()
     second_suggestions_list = page.search.search_for(term.upper(), execute=False)
     # Sleep to let autocomplete update.
     time.sleep(1)
@@ -115,18 +115,18 @@ def test_suggestion_icon_is_displayed(base_url, selenium):
     page = Home(selenium, base_url).open()
     term = 'Flagfox'
     suggestions = page.search.search_for(term, execute=False)
-    suggestions[0].addon_icon()
+    assert suggestions[0].addon_icon.is_displayed()
 
 
+@pytest.mark.desktop_only
 @pytest.mark.nondestructive
 def test_recommended_badge_is_displayed(base_url, selenium):
     page = Home(selenium, base_url).open()
     term = 'Flagfox'
     suggestions = page.search.search_for(term, execute=False)
-    suggestions[0].recommended_badge()
+    assert suggestions[0].recommended_badge.is_displayed()
 
 
-@pytest.mark.desktop_only
 @pytest.mark.nondestructive
 def test_selected_result_is_highlighted(base_url, selenium):
     page = Home(selenium, base_url).open()
@@ -144,7 +144,7 @@ def test_selected_result_is_highlighted(base_url, selenium):
 @pytest.mark.nondestructive
 def test_search_loads_and_navigates_to_correct_page(base_url, selenium):
     page = Home(selenium, base_url).open()
-    addon_name = page.featured_extensions.list[0].name
+    addon_name = page.recommended_extensions.list[0].name
     search = page.search.search_for(addon_name)
     search_name = search.result_list.extensions[0].name
     assert addon_name in search_name
@@ -154,7 +154,7 @@ def test_search_loads_and_navigates_to_correct_page(base_url, selenium):
 @pytest.mark.nondestructive
 def test_search_loads_correct_results(base_url, selenium):
     page = Home(selenium, base_url).open()
-    addon_name = page.featured_extensions.list[0].name
+    addon_name = page.recommended_extensions.list[0].name
     items = page.search.search_for(addon_name)
     assert addon_name in items.result_list.extensions[0].name
 
@@ -186,8 +186,11 @@ def test_filter_default(base_url, selenium):
     term = 'Flagfox'
     page.search.search_for(term)
     search_page = Search(selenium, base_url)
-    """Validates the default sort filters present on search results page"""
-    search_page.default_sort_filter()
+    select = Select(search_page.filter_by_sort)
+    assert select.first_selected_option.text == 'Relevance'
+    select = Select(search_page.filter_by_type)
+    assert select.first_selected_option.text == 'All'
+    assert not search_page.recommended_filter.is_selected()
 
 
 @pytest.mark.nondestructive
@@ -230,7 +233,8 @@ def test_filter_extensions(base_url, selenium):
     term = 'fox'
     page.search.search_for(term)
     search_page = Search(selenium, base_url)
-    search_page.filter_by_type("Extension")
+    select = Select(search_page.filter_by_type)
+    select.select_by_value('extension')
     search_page.wait_for_contextcard_update("extensions")
     assert len(search_page.result_list.themes) == 0
 
@@ -242,7 +246,8 @@ def test_filter_themes(base_url, selenium):
     term = 'fox'
     page.search.search_for(term)
     search_page = Search(selenium, base_url)
-    search_page.filter_by_type("Theme")
+    select = Select(search_page.filter_by_type)
+    select.select_by_value('statictheme')
     search_page.wait_for_contextcard_update("themes")
     assert len(search_page.result_list.themes) == 25
 
@@ -254,7 +259,7 @@ def test_filter_recommended(base_url, selenium):
     term = 's'
     results = page.search.search_for(term)
     search_page = Search(selenium, base_url)
-    search_page.recommended_filter()
+    search_page.recommended_filter.click()
     for result in results.result_list.extensions:
         assert result.has_recommended_badge
 

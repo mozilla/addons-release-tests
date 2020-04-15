@@ -44,10 +44,10 @@ class Base(Page):
     def search(self):
         return self.header.SearchBox(self)
 
-    def login(self, fxa_account):
+    def login(self, variables):
         login_page = self.header.click_login()
-        time.sleep(2)
-        login_page.fxa_login(fxa_account)
+        time.sleep(1)
+        login_page.login_regular_user(variables)
         self.selenium.get(self.base_url)
         self.wait.until(lambda _: self.logged_in)
 
@@ -75,6 +75,9 @@ class Header(Region):
     _user_locator = (
         By.CSS_SELECTOR,
         '.Header-user-and-external-links .DropdownMenu-button-text')
+    _devhub_locator = (By.CLASS_NAME, 'Header-developer-hub-link')
+    _extension_workshop_locator = (By.CLASS_NAME, 'Header-extension-workshop-link')
+    _active_link_locator = (By.CLASS_NAME, 'SectionLinks-link--active')
 
     def click_explore(self):
         self.find_element(*self._firefox_logo_locator).click()
@@ -125,27 +128,48 @@ class Header(Region):
         links = menu.find_elements(*self._more_dropdown_link_locator)
         # Create an action chain clicking on the elements of the dropdown more
         # menu. It pauses between each action to account for lag.
+        menu.click()
         action = ActionChains(self.selenium)
         action.move_to_element(menu)
         action.click_and_hold()
         action.pause(2)
         action.move_to_element(links[item])
-        action.click()
+        action.pause(2)
+        action.click(links[item])
         action.pause(2)
         action.perform()
 
+    def click_developer_hub(self):
+        self.find_element(*self._devhub_locator).click()
+        self.wait.until(EC.number_of_windows_to_be(2))
+        new_tab = self.selenium.window_handles[1]
+        self.selenium.switch_to_window(new_tab)
+
+    def click_extension_workshop(self):
+        self.find_element(*self._extension_workshop_locator).click()
+        self.wait.until(EC.number_of_windows_to_be(2))
+        new_tab = self.selenium.window_handles[1]
+        self.selenium.switch_to_window(new_tab)
+        self.wait.until(EC.visibility_of_element_located((
+            By.CLASS_NAME, 'logo')))
+
+    @property
+    def is_active_link(self):
+        return self.find_element(*self._active_link_locator).text
+
     class SearchBox(Region):
         _root_locator = (By.CLASS_NAME, 'AutoSearchInput')
-        _query_field = (By.ID, 'AutoSearchInput-q')
+        _query_field_locator = (By.ID, 'AutoSearchInput-q')
         _search_suggestions_list_locator = (
             By.CLASS_NAME, 'AutoSearchInput-suggestions-list')
         _search_suggestions_item_locator = (
             By.CLASS_NAME, 'AutoSearchInput-suggestions-item')
         _search_textbox_locator = (By.CLASS_NAME, 'AutoSearchInput-query')
-        _highlighted_selected = (By.CSS_SELECTOR, '.AutoSearchInput-suggestions-item--highlighted')
+        _highlighted_selected_locator = (By.CSS_SELECTOR, '.AutoSearchInput-suggestions-item--highlighted')
 
-        def clear_search_field(self):
-            self.find_element(*self._query_field).clear()
+        @property
+        def search_field(self):
+            return self.find_element(*self._query_field_locator)
 
         def search_for(self, term, execute=True):
             textbox = self.find_element(*self._search_textbox_locator)
@@ -172,22 +196,24 @@ class Header(Region):
 
         @property
         def highlighted_suggestion(self):
-            return self.find_element(*self._highlighted_selected)
+            return self.find_element(*self._highlighted_selected_locator)
 
         class SearchSuggestionItem(Region):
-            _item_name = (By.CLASS_NAME, 'SearchSuggestion-name')
-            _item_icon = (By.CLASS_NAME, 'SearchSuggestion-icon')
-            _recommended_icon = (By.CSS_SELECTOR, '.SearchSuggestion-icon-recommended')
+            _item_name_locator = (By.CLASS_NAME, 'SearchSuggestion-name')
+            _item_icon_locator = (By.CLASS_NAME, 'SearchSuggestion-icon')
+            _recommended_icon_locator = (By.CSS_SELECTOR, '.SearchSuggestion-icon-recommended')
 
             @property
             def name(self):
-                return self.find_element(*self._item_name).text
+                return self.find_element(*self._item_name_locator).text
 
+            @property
             def addon_icon(self):
-                self.find_element(*self._item_icon).is_displayed()
+                return self.find_element(*self._item_icon_locator)
 
+            @property
             def recommended_badge(self):
-                self.find_element(*self._recommended_icon).is_displayed()
+                return self.find_element(*self._recommended_icon_locator)
 
             @property
             def select(self):
@@ -198,46 +224,46 @@ class Header(Region):
 
 class Footer(Region):
     _root_locator = (By.CSS_SELECTOR, '.Footer-wrapper')
-    _footer_amo_links = (By.CSS_SELECTOR, '.Footer-amo-links')
-    _footer_browsers_links = (By.CSS_SELECTOR, '.Footer-browsers-links')
-    _footer_products_links = (By.CSS_SELECTOR, '.Footer-product-links')
-    _footer_mozilla_link = (By.CSS_SELECTOR, '.Footer-mozilla-link')
-    _footer_social_links = (By.CSS_SELECTOR, '.Footer-links-social')
-    _footer_social = (By.CSS_SELECTOR, '.Footer-links-social li a')
-    _footer_links = (By.CSS_SELECTOR, '.Footer-links li a')
-    _footer_legal = (By.CSS_SELECTOR, '.Footer-legal-links ')
-    _footer_legal_links = (By.CSS_SELECTOR, '.Footer-legal-links li a')
-    _language_picker = (By.ID, 'lang-picker')
+    _footer_amo_links_locator = (By.CSS_SELECTOR, '.Footer-amo-links')
+    _footer_browsers_links_locator = (By.CSS_SELECTOR, '.Footer-browsers-links')
+    _footer_products_links_locator = (By.CSS_SELECTOR, '.Footer-product-links')
+    _footer_mozilla_link_locator = (By.CSS_SELECTOR, '.Footer-mozilla-link')
+    _footer_social_locator = (By.CSS_SELECTOR, '.Footer-links-social')
+    # _footer_social_links_locator = (By.CSS_SELECTOR, '.Footer-links-social li a')
+    _footer_links_locator = (By.CSS_SELECTOR, '.Footer-links li a')
+    _footer_legal_locator = (By.CSS_SELECTOR, '.Footer-legal-links ')
+    _footer_legal_links_locator = (By.CSS_SELECTOR, '.Footer-legal-links li a')
+    _language_picker_locator = (By.ID, 'lang-picker')
 
     @property
     def addon_links(self):
-        header = self.find_element(*self._footer_amo_links)
-        return header.find_elements(*self._footer_links)
+        header = self.find_element(*self._footer_amo_links_locator)
+        return header.find_elements(*self._footer_links_locator)
 
     @property
     def browsers_links(self):
-        header = self.find_element(*self._footer_browsers_links)
-        return header.find_elements(*self._footer_links)
+        header = self.find_element(*self._footer_browsers_links_locator)
+        return header.find_elements(*self._footer_links_locator)
 
     @property
     def products_links(self):
-        header = self.find_element(*self._footer_products_links)
-        return header.find_elements(*self._footer_links)
+        header = self.find_element(*self._footer_products_links_locator)
+        return header.find_elements(*self._footer_links_locator)
 
     @property
     def mozilla_link(self):
-        return self.find_element(*self._footer_mozilla_link)
+        return self.find_element(*self._footer_mozilla_link_locator)
 
     @property
     def social_links(self):
-        social = self.find_element(*self._footer_social_links)
-        return social.find_elements(*self._footer_social)
+        element = self.find_element(*self._footer_social_locator)
+        return element.find_elements(By.CSS_SELECTOR, 'li a')
 
     @property
     def legal_links(self):
-        legal = self.find_element(*self._footer_legal)
-        return legal.find_elements(*self._footer_legal_links)
+        legal = self.find_element(*self._footer_legal_locator)
+        return legal.find_elements(*self._footer_legal_links_locator)
 
     def language_picker(self):
-        select = Select(self.find_element(*self._language_picker))
+        select = Select(self.find_element(*self._language_picker_locator))
         select.select_by_visible_text('Deutsch')
