@@ -14,17 +14,17 @@ from pages.desktop.search import Search
 
 
 @pytest.mark.nondestructive
-def test_search_suggestion_term_is_higher(base_url, selenium):
+def test_search_suggestion_term_is_higher(base_url, selenium, variables):
     page = Home(selenium, base_url).open()
-    term = 'Flagfox'
+    term = variables['search_term']
     suggestions = page.search.search_for(term, execute=False)
     assert suggestions[0].name == term
 
 
 @pytest.mark.nondestructive
-def test_special_chars_dont_break_suggestions(base_url, selenium):
+def test_special_chars_dont_break_suggestions(base_url, selenium, variables):
     page = Home(selenium, base_url).open()
-    term = 'Flagfox'
+    term = variables['search_term']
     special_chars_term = f'{term}%ç√®å'
     suggestions = page.search.search_for(special_chars_term, execute=False)
     results = [item.name for item in suggestions]
@@ -46,9 +46,9 @@ def test_uppercase_has_same_suggestions(base_url, selenium):
 
 
 @pytest.mark.nondestructive
-def test_esc_key_closes_suggestion_list(base_url, selenium):
+def test_esc_key_closes_suggestion_list(base_url, selenium, variables):
     page = Home(selenium, base_url).open()
-    term = 'Flagfox'
+    term = variables['search_term']
     page.search.search_for(term, execute=False)
     action = ActionChains(selenium)
     # Send ESC key to browser
@@ -88,9 +88,9 @@ def test_suggestions_change_by_query(base_url, selenium):
 
 
 @pytest.mark.nondestructive
-def test_select_result_with_enter_key(base_url, selenium):
+def test_select_result_with_enter_key(base_url, selenium, variables):
     page = Home(selenium, base_url).open()
-    term = 'Flagfox'
+    term = variables['search_term']
     page.search.search_for(term, execute=False)
     action = ActionChains(selenium)
     action.send_keys(Keys.ARROW_DOWN).send_keys(Keys.ENTER).perform()
@@ -99,9 +99,9 @@ def test_select_result_with_enter_key(base_url, selenium):
 
 
 @pytest.mark.nondestructive
-def test_select_result_with_click(base_url, selenium):
+def test_select_result_with_click(base_url, selenium, variables):
     page = Home(selenium, base_url).open()
-    term = 'Flagfox'
+    term = variables['search_term']
     suggestions = page.search.search_for(term, execute=False)
     result = suggestions[0].root
     action = ActionChains(selenium)
@@ -111,26 +111,26 @@ def test_select_result_with_click(base_url, selenium):
 
 
 @pytest.mark.nondestructive
-def test_suggestion_icon_is_displayed(base_url, selenium):
+def test_suggestion_icon_is_displayed(base_url, selenium, variables):
     page = Home(selenium, base_url).open()
-    term = 'Flagfox'
+    term = variables['search_term']
     suggestions = page.search.search_for(term, execute=False)
     assert suggestions[0].addon_icon.is_displayed()
 
 
 @pytest.mark.desktop_only
 @pytest.mark.nondestructive
-def test_recommended_badge_is_displayed(base_url, selenium):
+def test_recommended_badge_is_displayed(base_url, selenium, variables):
     page = Home(selenium, base_url).open()
-    term = 'Flagfox'
+    term = variables['search_term']
     suggestions = page.search.search_for(term, execute=False)
     assert suggestions[0].recommended_badge.is_displayed()
 
 
 @pytest.mark.nondestructive
-def test_selected_result_is_highlighted(base_url, selenium):
+def test_selected_result_is_highlighted(base_url, selenium, variables):
     page = Home(selenium, base_url).open()
-    term = 'Flagfox'
+    term = variables['search_term']
     suggestions = page.search.search_for(term, execute=False)
     result = suggestions[0].root
     action = ActionChains(selenium)
@@ -172,8 +172,16 @@ def test_blank_search_loads_results_page(base_url, selenium):
     results = [getattr(result, sort)
                for result in search_page.result_list.extensions]
     assert sorted(results, reverse=True) == results
+
+
+@pytest.mark.nondestructive
+def test_search_pagination(base_url, selenium):
+    page = Home(selenium, base_url).open()
+    search_page = page.search.search_for('', execute=True)
     search_page.next_page()
     assert '2' in search_page.page_number
+    search_page.previous_page()
+    assert '1' in search_page.page_number
 
 
 """Tests covering search filtering"""
@@ -181,9 +189,9 @@ def test_blank_search_loads_results_page(base_url, selenium):
 
 @pytest.mark.desktop_only
 @pytest.mark.nondestructive
-def test_filter_default(base_url, selenium):
+def test_filter_default(base_url, selenium, variables):
     page = Home(selenium, base_url).open()
-    term = 'Flagfox'
+    term = variables['search_term']
     page.search.search_for(term)
     search_page = Search(selenium, base_url)
     select = Select(search_page.filter_by_sort)

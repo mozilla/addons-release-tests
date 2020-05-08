@@ -4,13 +4,13 @@ import pytest
 
 
 # Window resolutions
-DESKTOP = (1080, 1920)
+DESKTOP = (1920, 1080)
 MOBILE = (414, 738)
 
 
 @pytest.fixture(scope="session")
-def base_url(base_url):
-    return "https://addons.allizom.org"
+def base_url(base_url, variables):
+    return variables['base_url']
 
 
 @pytest.fixture(scope="session")
@@ -57,7 +57,7 @@ def firefox_notifications(notifications):
 @pytest.fixture(
     scope='function',
     params=[DESKTOP, MOBILE],
-    ids=['Resolution: 1080x1920', 'Resolution: 414x738'],
+    ids=['Resolution: 1920x1080', 'Resolution: 414x738'],
 )
 def selenium(selenium, request):
     """Fixture to set custom selenium parameters.
@@ -78,7 +78,7 @@ def selenium(selenium, request):
 
 
 @pytest.fixture
-def local_fxa_account(request):
+def fxa_account(request):
     """Fxa account to use during tests that need to login.
 
     Returns the email and password of the fxa account set in Makefile-docker.

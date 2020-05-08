@@ -1,10 +1,7 @@
-import time
-
-from numpy.core import double
 from pypom import Page, Region
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as expected
-from selenium.webdriver.support.select import Select
 
 
 class Search(Page):
@@ -16,6 +13,7 @@ class Search(Page):
     _search_filters_os_locator = (By.ID, 'SearchFilters-OperatingSystem')
     _recommended_checkbox_locator = (By.ID, 'SearchFilters-Recommended')
     _pagination_next_locator = (By.CSS_SELECTOR, '.Paginate-item--next')
+    _pagination_previous_locator = (By.CLASS_NAME, 'Paginate-item--previous')
     _selected_page_locator = (By.CLASS_NAME, 'Paginate-page-number')
 
     def wait_for_page_to_load(self):
@@ -25,9 +23,12 @@ class Search(Page):
         return self
 
     def wait_for_contextcard_update(self, value):
-        self.wait.until(
-            expected.text_to_be_present_in_element(
-                (By.CLASS_NAME, 'SearchContextCard-header'), value))
+        try:
+            self.wait.until(
+                expected.text_to_be_present_in_element(
+                    (By.CLASS_NAME, 'SearchContextCard-header'), value))
+        except NoSuchElementException:
+            print('Search context card header was not loaded')
 
     @property
     def result_list(self):
@@ -51,6 +52,9 @@ class Search(Page):
 
     def next_page(self):
         self.find_element(*self._pagination_next_locator).click()
+
+    def previous_page(self):
+        self.find_element(*self._pagination_previous_locator).click()
 
     @property
     def page_number(self):
