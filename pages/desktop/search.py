@@ -1,15 +1,20 @@
 from pypom import Page, Region
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as expected
 
 
 class Search(Page):
-
+    _context_card_locator = (By.CLASS_NAME, 'SearchContextCard-header')
     _search_box_locator = (By.CLASS_NAME, 'AutoSearchInput-query')
     _submit_button_locator = (By.CLASS_NAME, 'AutoSearchInput-submit-button')
     _search_filters_sort_locator = (By.ID, 'SearchFilters-Sort')
     _search_filters_type_locator = (By.ID, 'SearchFilters-AddonType')
     _search_filters_os_locator = (By.ID, 'SearchFilters-OperatingSystem')
+    _recommended_checkbox_locator = (By.ID, 'SearchFilters-Recommended')
+    _pagination_next_locator = (By.CSS_SELECTOR, '.Paginate-item--next')
+    _pagination_previous_locator = (By.CLASS_NAME, 'Paginate-item--previous')
+    _selected_page_locator = (By.CLASS_NAME, 'Paginate-page-number')
 
     def wait_for_page_to_load(self):
         self.wait.until(
@@ -17,24 +22,45 @@ class Search(Page):
                 (By.CLASS_NAME, 'LoadingText')))
         return self
 
+    def wait_for_contextcard_update(self, value):
+        try:
+            self.wait.until(
+                expected.text_to_be_present_in_element(
+                    (By.CLASS_NAME, 'SearchContextCard-header'), value))
+        except NoSuchElementException:
+            print('Search context card header was not loaded')
+
     @property
     def result_list(self):
         return self.SearchResultList(self)
 
-    def filter_by_sort(self, value):
-        self.find_element(*self._search_filters_sort_locator).click()
-        self.find_element(*self._search_filters_sort_locator).send_keys(value)
+    @property
+    def filter_by_sort(self):
+        return self.find_element(*self._search_filters_sort_locator)
 
-    def filter_by_type(self, value):
-        self.find_element(*self._search_filters_type_locator).click()
-        self.find_element(*self._search_filters_type_locator).send_keys(value)
+    @property
+    def filter_by_type(self):
+        return self.find_element(*self._search_filters_type_locator)
 
-    def filter_by_os(self, value):
-        self.find_element(*self._search_filters_os_locator).click()
-        self.find_element(*self._search_filters_os_locator).send_keys(value)
+    @property
+    def filter_by_os(self):
+        return self.find_element(*self._search_filters_os_locator)
+
+    @property
+    def recommended_filter(self):
+        return self.find_element(*self._recommended_checkbox_locator)
+
+    def next_page(self):
+        self.find_element(*self._pagination_next_locator).click()
+
+    def previous_page(self):
+        self.find_element(*self._pagination_previous_locator).click()
+
+    @property
+    def page_number(self):
+        return self.find_element(*self._selected_page_locator).text
 
     class SearchResultList(Region):
-
         _result_locator = (By.CLASS_NAME, 'SearchResult')
         _theme_locator = (By.CLASS_NAME, 'SearchResult--theme')
         _extension_locator = (By.CLASS_NAME, 'SearchResult-name')
@@ -49,11 +75,16 @@ class Search(Page):
             items = self.find_elements(*self._theme_locator)
             return [self.ResultListItems(self, el) for el in items]
 
-        class ResultListItems(Region):
+        @property
+        def extension(self):
+            items = self.find_elements(*self._extension_locator)
+            return [self.ResultListItems(self, el) for el in items]
 
+        class ResultListItems(Region):
             _rating_locator = (By.CSS_SELECTOR, '.Rating--small')
             _search_item_name_locator = (By.CSS_SELECTOR,
                                          '.SearchResult-contents > h2')
+            _recommended_badge_locator = (By.CSS_SELECTOR, '.RecommendedBadge')
             _users_locator = (By.CLASS_NAME, 'SearchResult-users-text')
 
             @property
@@ -78,4 +109,8 @@ class Search(Page):
                 """Returns the rating"""
                 rating = self.find_element(
                     *self._rating_locator).get_property('title')
-                return int(rating.split()[1])
+                return float(rating.split()[1])
+
+            @property
+            def has_recommended_badge(self):
+                return self.find_element(*self._recommended_badge_locator).is_displayed()

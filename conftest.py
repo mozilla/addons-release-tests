@@ -4,13 +4,13 @@ import pytest
 
 
 # Window resolutions
-DESKTOP = (1080, 1920)
+DESKTOP = (1920, 1080)
 MOBILE = (414, 738)
 
 
 @pytest.fixture(scope="session")
-def base_url(base_url):
-    return "http://olympia.test"
+def base_url(base_url, variables):
+    return variables['base_url']
 
 
 @pytest.fixture(scope="session")
@@ -40,6 +40,7 @@ def firefox_options(firefox_options):
         'extensions.install.requireBuiltInCerts', False
     )
     firefox_options.set_preference('xpinstall.signatures.required', False)
+    firefox_options.set_preference('xpinstall.signatures.dev-root', True)
     firefox_options.set_preference('extensions.webapi.testing', True)
     firefox_options.set_preference('ui.popup.disable_autohide', True)
     firefox_options.set_preference('devtools.console.stdout.content', True)
@@ -56,7 +57,7 @@ def firefox_notifications(notifications):
 @pytest.fixture(
     scope='function',
     params=[DESKTOP, MOBILE],
-    ids=['Resolution: 1080x1920', 'Resolution: 414x738'],
+    ids=['Resolution: 1920x1080', 'Resolution: 414x738'],
 )
 def selenium(selenium, request):
     """Fixture to set custom selenium parameters.
