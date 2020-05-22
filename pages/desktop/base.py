@@ -1,8 +1,12 @@
+import time
+
 from pypom import Page, Region
+from pytest_selenium import driver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.select import Select
+from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 
@@ -42,9 +46,7 @@ class Base(Page):
 
     def login(self, variables):
         login_page = self.header.click_login()
-        self.wait.until(EC.visibility_of_element_located((
-                        By.NAME, 'email')))
-        # time.sleep(1)
+        time.sleep(1)
         login_page.login_regular_user(variables)
         self.selenium.get(self.base_url)
         self.wait.until(lambda _: self.logged_in)
@@ -129,7 +131,7 @@ class Header(Region):
         menu.click()
         action = ActionChains(self.selenium)
         action.move_to_element(menu)
-        action.click()
+        action.click_and_hold()
         action.pause(2)
         action.move_to_element(links[item])
         action.pause(2)
@@ -227,24 +229,26 @@ class Footer(Region):
     _footer_products_links_locator = (By.CSS_SELECTOR, '.Footer-product-links')
     _footer_mozilla_link_locator = (By.CSS_SELECTOR, '.Footer-mozilla-link')
     _footer_social_locator = (By.CSS_SELECTOR, '.Footer-links-social')
+    # _footer_social_links_locator = (By.CSS_SELECTOR, '.Footer-links-social li a')
     _footer_links_locator = (By.CSS_SELECTOR, '.Footer-links li a')
     _footer_legal_locator = (By.CSS_SELECTOR, '.Footer-legal-links ')
+    _footer_legal_links_locator = (By.CSS_SELECTOR, '.Footer-legal-links li a')
     _language_picker_locator = (By.ID, 'lang-picker')
 
     @property
     def addon_links(self):
-        element = self.find_element(*self._footer_amo_links_locator)
-        return element.find_elements(*self._footer_links_locator)
+        header = self.find_element(*self._footer_amo_links_locator)
+        return header.find_elements(*self._footer_links_locator)
 
     @property
     def browsers_links(self):
-        element = self.find_element(*self._footer_browsers_links_locator)
-        return element.find_elements(*self._footer_links_locator)
+        header = self.find_element(*self._footer_browsers_links_locator)
+        return header.find_elements(*self._footer_links_locator)
 
     @property
     def products_links(self):
-        element = self.find_element(*self._footer_products_links_locator)
-        return element.find_elements(*self._footer_links_locator)
+        header = self.find_element(*self._footer_products_links_locator)
+        return header.find_elements(*self._footer_links_locator)
 
     @property
     def mozilla_link(self):
@@ -257,9 +261,9 @@ class Footer(Region):
 
     @property
     def legal_links(self):
-        element = self.find_element(*self._footer_legal_locator)
-        return element.find_elements(By.CSS_SELECTOR, 'li a')
+        legal = self.find_element(*self._footer_legal_locator)
+        return legal.find_elements(*self._footer_legal_links_locator)
 
-    def language_picker(self, value):
+    def language_picker(self):
         select = Select(self.find_element(*self._language_picker_locator))
-        select.select_by_visible_text(value)
+        select.select_by_visible_text('Deutsch')
