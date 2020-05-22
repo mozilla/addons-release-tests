@@ -44,7 +44,7 @@ def firefox_options(firefox_options):
     firefox_options.set_preference('extensions.webapi.testing', True)
     firefox_options.set_preference('ui.popup.disable_autohide', True)
     firefox_options.set_preference('devtools.console.stdout.content', True)
-    firefox_options.add_argument('-foreground')
+    firefox_options.add_argument('-headless')
     firefox_options.log.level = 'trace'
     return firefox_options
 
