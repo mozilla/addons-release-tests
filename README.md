@@ -3,8 +3,6 @@
 ## Prerequisites
 You'll need to have the following programs installed in your system:
 - [Python 3][python]
-- dependencies listed in the `requirements.txt` file
-  - navigate to the project root directory and run `pip install -r requirements.txt`
 - [geckodriver][geckodriver]
   - if you extract the geckodriver in your main Python directory you can call the driver at runtime from the command line
   - on a Windows machine, python is usually installed in `C:\Users\AppData\Local\Programs\Python`
@@ -21,6 +19,9 @@ If you think you would like to contribute to the tests by writing or maintaining
 them in the future, it would be a good idea to create a fork of this repository
 first, and then clone that. GitHub also has great instructions for
 [forking a repository][git-fork].
+
+Install the dependencies listed in `requirements.txt`:
+  - navigate to the project root directory and run `pip install -r requirements.txt`
 
 ### Running tests in the foreground
 These tests are meant to be run against the [AMO staging][stage] environment. We use [pytest][pytest] as our test runner.
