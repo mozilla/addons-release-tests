@@ -66,7 +66,7 @@ docker run -p 4444:4444 --shm-size 2g --rm firefox-standalone:latest
 
 3. To run the tests inside the selenium-standalone container, you need to point `pytest` to `port 4444`:
 ```
-pytest test_name.py --driver Remote --port 4444 --capability browserName firefox
+pytest test_name.py --driver Remote --port 4444 --capability browserName firefox --variables stage.json
 ```
 - _we use `--driver Remote` and `--port 4444` because we want to tell our tests to run against the Selenium-standalone server inside our container_
 - _the tests will run headless (the browser should not open). If the browser opens, your set-up might not be correct_
