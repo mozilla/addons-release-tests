@@ -6,9 +6,8 @@ from pages.desktop.extensions import Extensions
 from pages.desktop.home import Home
 from pages.desktop.search import Search
 
-"""Test covering the homepage header"""
 
-
+# Tests covering the homepage header
 @pytest.mark.nondestructive
 def test_click_header_explore(base_url, selenium):
     page = Home(selenium, base_url).open()
@@ -34,22 +33,21 @@ def test_click_header_themes(base_url, selenium):
 def test_logo_routes_to_home(base_url, selenium):
     page = Home(selenium, base_url).open()
     home = page.header.click_title()
-    assert home.hero_banner.is_displayed()
+    assert home.primary_hero.is_displayed()
 
 
-"""Tests covering promo shelves"""
-
-
+# Tests covering promo shelves
 @pytest.mark.nondestructive
 def test_browse_all_button_loads_correct_page(base_url, selenium):
     page = Home(selenium, base_url).open()
-    page.featured_extensions.browse_all
+    page.recommended_extensions.browse_all
     assert 'type=extension' in selenium.current_url
     search_page = Search(selenium, base_url)
     for result in search_page.result_list.extensions:
-        assert result.has_recommended_badge
+        assert result.promoted_badge.is_displayed()
 
 
+@pytest.mark.skip
 @pytest.mark.parametrize(
     'i, page_url',
     enumerate(['language-tools', 'android']))
@@ -60,109 +58,105 @@ def test_more_dropdown_navigates_correctly(base_url, selenium, i, page_url):
     assert page_url in selenium.current_url
 
 
-"""Tests covering the homepage footer"""
-
-
+# Tests covering the homepage footer
 @pytest.mark.desktop_only
 @pytest.mark.nondestructive
 def test_mozilla_footer_link(base_url, selenium):
     page = Home(selenium, base_url).open()
     page.footer.mozilla_link.click()
-    assert 'mozilla.org' in selenium.current_url
+    assert "mozilla.org" in selenium.current_url
 
 
 @pytest.mark.desktop_only
 @pytest.mark.parametrize(
-    'i, links',
-    enumerate([
-        'about',
-        'blog.mozilla.org',
-        'extensionworkshop',
-        'developers',
-        'AMO/Policy',
-        'discourse',
-        '#Contact_us',
-        'review_guide',
-        'status',
-    ])
+    "count, links",
+    enumerate(
+        [
+            "about",
+            "blog.mozilla.org",
+            "extensionworkshop",
+            "developers",
+            "AMO/Policy",
+            "discourse",
+            "#Contact_us",
+            "review_guide",
+            "status",
+        ]
+    ),
 )
 @pytest.mark.nondestructive
-def test_addons_footer_links(base_url, selenium, i, links):
+def test_addons_footer_links(base_url, selenium, count, links):
     page = Home(selenium, base_url).open()
-    page.footer.addon_links[i].click()
+    page.footer.addon_links[count].click()
     assert links in selenium.current_url
 
 
 @pytest.mark.desktop_only
 @pytest.mark.parametrize(
-    'i, links',
-    enumerate([
-        'firefox/new',
-        'firefox/mobile',
-        'mixedreality.mozilla.org',
-        'firefox',
-    ])
+    "count, links",
+    enumerate(
+        [
+            "firefox/new",
+            "firefox/mobile",
+            "mixedreality.mozilla.org",
+            "firefox",
+        ]
+    ),
 )
 @pytest.mark.nondestructive
-def test_browsers_footer_links(base_url, selenium, i, links):
+def test_browsers_footer_links(base_url, selenium, count, links):
     page = Home(selenium, base_url).open()
-    page.footer.browsers_links[i].click()
+    page.footer.browsers_links[count].click()
     assert links in selenium.current_url
 
 
 @pytest.mark.desktop_only
 @pytest.mark.parametrize(
-    'i, links',
-    enumerate([
-        'firefox/lockwise/',
-        'monitor.firefox',
-        'send.firefox',
-        'firefox/browsers/',
-        'getpocket.com',
-    ])
+    "count, links",
+    enumerate(
+        [
+            "firefox/lockwise/",
+            "monitor.firefox",
+            "firefox/browsers/",
+            "getpocket.com",
+        ]
+    ),
 )
 @pytest.mark.nondestructive
-def test_products_footer_links(base_url, selenium, i, links):
+def test_products_footer_links(base_url, selenium, count, links):
     page = Home(selenium, base_url).open()
-    page.footer.products_links[i].click()
+    page.footer.products_links[count].click()
     assert links in selenium.current_url
 
 
 @pytest.mark.desktop_only
 @pytest.mark.parametrize(
-    'i, links',
-    enumerate([
-        'twitter.com',
-        'facebook.com',
-        'youtube.com/user/firefoxchannel',
-    ])
+    "count, links",
+    enumerate(["twitter.com", "facebook.com", "youtube.com/c/firefox", ]),
 )
 @pytest.mark.nondestructive
-def test_social_footer_links(base_url, selenium, i, links):
+def test_social_footer_links(base_url, selenium, count, links):
     page = Home(selenium, base_url).open()
-    page.footer.social_links[i].click()
+    page.footer.social_links[count].click()
     assert links in selenium.current_url
 
 
 @pytest.mark.desktop_only
 @pytest.mark.parametrize(
-    'i, links',
-    enumerate([
-        'privacy/websites/',
-        'privacy/websites/',
-        'legal/terms/mozilla',
-    ])
+    "count, links",
+    enumerate(["privacy/websites/", "privacy/websites/", "legal/terms/mozilla", ]),
 )
 @pytest.mark.nondestructive
-def test_legal_footer_links(base_url, selenium, i, links):
+def test_legal_footer_links(base_url, selenium, count, links):
     page = Home(selenium, base_url).open()
-    page.footer.legal_links[i].click()
+    page.footer.legal_links[count].click()
     assert links in selenium.current_url
 
 
 @pytest.mark.nondestructive
 def test_change_language(base_url, selenium):
     page = Home(selenium, base_url).open()
-    page.footer.language_picker()
-    assert 'de/firefox' in selenium.current_url
-    assert 'Erweiterungen' in page.header.extensions_text
+    value = 'Deutsch'
+    page.footer.language_picker(value)
+    assert "de/firefox" in selenium.current_url
+    assert "Erweiterungen" in page.header.extensions_text

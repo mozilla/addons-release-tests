@@ -2,6 +2,8 @@ from pypom import Page, Region
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as expected
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 
 class Search(Page):
@@ -11,6 +13,7 @@ class Search(Page):
     _search_filters_sort_locator = (By.ID, 'SearchFilters-Sort')
     _search_filters_type_locator = (By.ID, 'SearchFilters-AddonType')
     _search_filters_os_locator = (By.ID, 'SearchFilters-OperatingSystem')
+    _search_filters_badging_locator = (By.ID, 'SearchFilters-Badging')
     _recommended_checkbox_locator = (By.ID, 'SearchFilters-Recommended')
     _pagination_next_locator = (By.CSS_SELECTOR, '.Paginate-item--next')
     _pagination_previous_locator = (By.CLASS_NAME, 'Paginate-item--previous')
@@ -47,7 +50,11 @@ class Search(Page):
         return self.find_element(*self._search_filters_os_locator)
 
     @property
-    def recommended_filter(self):
+    def filter_by_badging(self):
+        return self.find_element(*self._search_filters_badging_locator)
+
+    @property
+    def recommended_filter(self) -> object:
         return self.find_element(*self._recommended_checkbox_locator)
 
     def next_page(self):
@@ -58,6 +65,10 @@ class Search(Page):
 
     @property
     def page_number(self):
+        self.wait.until(
+            lambda _: self.is_element_displayed(*self._selected_page_locator)
+        )
+        # return self
         return self.find_element(*self._selected_page_locator).text
 
     class SearchResultList(Region):
@@ -84,7 +95,8 @@ class Search(Page):
             _rating_locator = (By.CSS_SELECTOR, '.Rating--small')
             _search_item_name_locator = (By.CSS_SELECTOR,
                                          '.SearchResult-contents > h2')
-            _recommended_badge_locator = (By.CSS_SELECTOR, '.RecommendedBadge')
+            _promoted_badge_locator = (By.CSS_SELECTOR, '.PromotedBadge')
+            _promoted_badge_label_locator = (By.CSS_SELECTOR, '.PromotedBadge-label')
             _users_locator = (By.CLASS_NAME, 'SearchResult-users-text')
 
             @property
@@ -94,7 +106,6 @@ class Search(Page):
             def link(self):
                 self.find_element(*self._search_item_name_locator).click()
                 from pages.desktop.details import Detail
-
                 detail_page = Detail(self.selenium, self.page.base_url)
                 return detail_page.wait_for_page_to_load()
 
@@ -112,5 +123,11 @@ class Search(Page):
                 return float(rating.split()[1])
 
             @property
-            def has_recommended_badge(self):
-                return self.find_element(*self._recommended_badge_locator).is_displayed()
+            def promoted_badge(self):
+                return self.find_element(*self._promoted_badge_locator)
+
+            @property
+            def promoted_badge_label(self):
+                return self.find_element(*self._promoted_badge_label_locator).text
+
+

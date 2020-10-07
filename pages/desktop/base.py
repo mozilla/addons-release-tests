@@ -165,6 +165,7 @@ class Header(Region):
         _search_suggestions_item_locator = (
             By.CLASS_NAME, 'AutoSearchInput-suggestions-item')
         _search_textbox_locator = (By.CLASS_NAME, 'AutoSearchInput-query')
+        _search_item_name = (By.CSS_SELECTOR, '.SearchSuggestion-name')
         _highlighted_selected_locator = (By.CSS_SELECTOR, '.AutoSearchInput-suggestions-item--highlighted')
 
         @property
@@ -175,12 +176,17 @@ class Header(Region):
             textbox = self.find_element(*self._search_textbox_locator)
             textbox.click()
             textbox.send_keys(term)
-            self.wait_for_region_to_load()
+            # self.wait_for_region_to_load()
             # Send 'enter' since the mobile page does not have a submit button
             if execute:
                 textbox.send_keys(Keys.ENTER)
                 from pages.desktop.search import Search
                 return Search(self.selenium, self.page).wait_for_page_to_load()
+            WebDriverWait(self.selenium, 30).until(
+                EC.visibility_of_element_located(
+                    self._search_suggestions_item_locator
+                )
+            )
             return self.search_suggestions
 
         @property
@@ -189,6 +195,11 @@ class Header(Region):
                 lambda _: self.is_element_displayed(
                     *self._search_suggestions_list_locator)
             )
+            """WebDriverWait(self.selenium, 30).until(
+                EC.invisibility_of_element_located(
+                    self._search_item_name
+                )
+            )"""
             el_list = self.find_element(*self._search_suggestions_list_locator)
             items = el_list.find_elements(
                 *self._search_suggestions_item_locator)
@@ -201,7 +212,7 @@ class Header(Region):
         class SearchSuggestionItem(Region):
             _item_name_locator = (By.CLASS_NAME, 'SearchSuggestion-name')
             _item_icon_locator = (By.CLASS_NAME, 'SearchSuggestion-icon')
-            _recommended_icon_locator = (By.CSS_SELECTOR, '.SearchSuggestion-icon-recommended')
+            _promoted_icon_locator = (By.CSS_SELECTOR, '.IconPromotedBadge > span')
 
             @property
             def name(self):
@@ -212,8 +223,8 @@ class Header(Region):
                 return self.find_element(*self._item_icon_locator)
 
             @property
-            def recommended_badge(self):
-                return self.find_element(*self._recommended_icon_locator)
+            def promoted_icon(self):
+                return self.find_element(*self._promoted_icon_locator).text
 
             @property
             def select(self):
@@ -229,26 +240,24 @@ class Footer(Region):
     _footer_products_links_locator = (By.CSS_SELECTOR, '.Footer-product-links')
     _footer_mozilla_link_locator = (By.CSS_SELECTOR, '.Footer-mozilla-link')
     _footer_social_locator = (By.CSS_SELECTOR, '.Footer-links-social')
-    # _footer_social_links_locator = (By.CSS_SELECTOR, '.Footer-links-social li a')
     _footer_links_locator = (By.CSS_SELECTOR, '.Footer-links li a')
     _footer_legal_locator = (By.CSS_SELECTOR, '.Footer-legal-links ')
-    _footer_legal_links_locator = (By.CSS_SELECTOR, '.Footer-legal-links li a')
     _language_picker_locator = (By.ID, 'lang-picker')
 
     @property
     def addon_links(self):
-        header = self.find_element(*self._footer_amo_links_locator)
-        return header.find_elements(*self._footer_links_locator)
+        element = self.find_element(*self._footer_amo_links_locator)
+        return element.find_elements(*self._footer_links_locator)
 
     @property
     def browsers_links(self):
-        header = self.find_element(*self._footer_browsers_links_locator)
-        return header.find_elements(*self._footer_links_locator)
+        element = self.find_element(*self._footer_browsers_links_locator)
+        return element.find_elements(*self._footer_links_locator)
 
     @property
     def products_links(self):
-        header = self.find_element(*self._footer_products_links_locator)
-        return header.find_elements(*self._footer_links_locator)
+        element = self.find_element(*self._footer_products_links_locator)
+        return element.find_elements(*self._footer_links_locator)
 
     @property
     def mozilla_link(self):
@@ -261,9 +270,9 @@ class Footer(Region):
 
     @property
     def legal_links(self):
-        legal = self.find_element(*self._footer_legal_locator)
-        return legal.find_elements(*self._footer_legal_links_locator)
+        element = self.find_element(*self._footer_legal_locator)
+        return element.find_elements(By.CSS_SELECTOR, 'li a')
 
-    def language_picker(self):
+    def language_picker(self, value):
         select = Select(self.find_element(*self._language_picker_locator))
-        select.select_by_visible_text('Deutsch')
+        select.select_by_visible_text(value)
