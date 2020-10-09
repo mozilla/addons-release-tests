@@ -44,7 +44,7 @@ def test_browse_all_button_loads_correct_page(base_url, selenium):
     assert 'type=extension' in selenium.current_url
     search_page = Search(selenium, base_url)
     for result in search_page.result_list.extensions:
-        assert result.promoted_badge.is_displayed()
+        assert result.promoted_badge
 
 
 @pytest.mark.skip

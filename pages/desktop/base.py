@@ -176,17 +176,20 @@ class Header(Region):
             textbox = self.find_element(*self._search_textbox_locator)
             textbox.click()
             textbox.send_keys(term)
+            self.wait.until(EC.invisibility_of_element_located(
+                (By.CLASS_NAME, 'LoadingText')))
             # self.wait_for_region_to_load()
             # Send 'enter' since the mobile page does not have a submit button
             if execute:
                 textbox.send_keys(Keys.ENTER)
                 from pages.desktop.search import Search
                 return Search(self.selenium, self.page).wait_for_page_to_load()
-            WebDriverWait(self.selenium, 30).until(
+            """WebDriverWait(self.selenium, 30).until(
                 EC.visibility_of_element_located(
-                    self._search_suggestions_item_locator
+                    self._search_item_name
                 )
-            )
+            )"""
+
             return self.search_suggestions
 
         @property
@@ -203,6 +206,11 @@ class Header(Region):
             el_list = self.find_element(*self._search_suggestions_list_locator)
             items = el_list.find_elements(
                 *self._search_suggestions_item_locator)
+            WebDriverWait(self.selenium, 30).until(
+                EC.visibility_of_element_located(
+                    self._search_item_name
+                )
+            )
             return [self.SearchSuggestionItem(self.page, el) for el in items]
 
         @property

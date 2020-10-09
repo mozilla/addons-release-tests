@@ -1,9 +1,12 @@
 import time
 import pytest
+
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.select import Select
+
+from pages.desktop.details import Detail
 from pages.desktop.home import Home
 from pages.desktop.search import Search
 
@@ -28,15 +31,15 @@ def test_special_chars_dont_break_suggestions(base_url, selenium, variables):
 
 
 @pytest.mark.nondestructive
-def test_uppercase_has_same_suggestions(base_url, selenium):
+def test_uppercase_has_same_suggestions(base_url, selenium, variables):
     page = Home(selenium, base_url).open()
-    term = 'fox'
+    term = variables['search_term']
     first_suggestions_list = page.search.search_for(term, execute=False)
     first_results = [item.name for item in first_suggestions_list]
     page.search.search_field.clear()
     second_suggestions_list = page.search.search_for(term.upper(), execute=False)
     # Sleep to let autocomplete update.
-    time.sleep(1)
+    time.sleep(2)
     second_results = [item.name for item in second_suggestions_list]
     assert first_results == second_results
 
@@ -92,6 +95,9 @@ def test_select_result_with_enter_key(base_url, selenium, variables):
     action.send_keys(Keys.ARROW_DOWN).send_keys(Keys.ENTER).perform()
     # give time to the detail page to load
     page.wait_for_title_update(term)
+    detail = Detail(selenium, base_url)
+    detail.wait_for_page_to_load()
+    assert term in detail.name
 
 
 @pytest.mark.nondestructive
@@ -104,6 +110,9 @@ def test_select_result_with_click(base_url, selenium, variables):
     action.move_to_element(result).click().perform()
     # give time to the detail page to load
     page.wait_for_title_update(term)
+    detail = Detail(selenium, base_url)
+    detail.wait_for_page_to_load()
+    assert term in detail.name
 
 
 @pytest.mark.nondestructive
@@ -161,7 +170,7 @@ def test_blank_search_loads_results(base_url, selenium):
     results = search_page.result_list.extensions
     assert len(results) == 25
     for result in results:
-        assert result.promoted_badge.is_displayed()
+        assert result.promoted_badge
     sort = 'users'
     results = [getattr(result, sort)
                for result in search_page.result_list.extensions]
@@ -268,10 +277,10 @@ def test_filter_promoted(base_url, selenium, sort_attr, title):
     search_page = Search(selenium, base_url)
     select = Select(search_page.filter_by_badging)
     select.select_by_value(sort_attr)
-    page.wait_for_title_update(title)
+    search_page.wait_for_contextcard_update('results found')
     results = search_page.result_list.extensions
     for result in results:
-        assert result.promoted_badge.is_displayed()
+        assert result.promoted_badge
         if title != 'Reviewed':
             assert title.title() in result.promoted_badge_label
 

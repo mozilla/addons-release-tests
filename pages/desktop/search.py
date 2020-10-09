@@ -1,5 +1,5 @@
 from pypom import Page, Region
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as expected
 from selenium.webdriver.support.wait import WebDriverWait
@@ -124,7 +124,12 @@ class Search(Page):
 
             @property
             def promoted_badge(self):
-                return self.find_element(*self._promoted_badge_locator)
+                WebDriverWait(self.selenium, 10).until(
+                    EC.visibility_of_element_located(
+                        self._promoted_badge_locator),
+                    message='Promoted badge was not found for these search results'
+                    )
+                return self
 
             @property
             def promoted_badge_label(self):
