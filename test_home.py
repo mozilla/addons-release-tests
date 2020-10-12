@@ -88,7 +88,7 @@ def test_mozilla_footer_link(base_url, selenium):
 def test_addons_footer_links(base_url, selenium, count, links):
     page = Home(selenium, base_url).open()
     page.footer.addon_links[count].click()
-    assert links in selenium.current_url
+    page.wait_for_current_url(links)
 
 
 @pytest.mark.desktop_only
@@ -107,7 +107,7 @@ def test_addons_footer_links(base_url, selenium, count, links):
 def test_browsers_footer_links(base_url, selenium, count, links):
     page = Home(selenium, base_url).open()
     page.footer.browsers_links[count].click()
-    assert links in selenium.current_url
+    page.wait_for_current_url(links)
 
 
 @pytest.mark.desktop_only
@@ -126,7 +126,7 @@ def test_browsers_footer_links(base_url, selenium, count, links):
 def test_products_footer_links(base_url, selenium, count, links):
     page = Home(selenium, base_url).open()
     page.footer.products_links[count].click()
-    assert links in selenium.current_url
+    page.wait_for_current_url(links)
 
 
 @pytest.mark.desktop_only
@@ -138,7 +138,7 @@ def test_products_footer_links(base_url, selenium, count, links):
 def test_social_footer_links(base_url, selenium, count, links):
     page = Home(selenium, base_url).open()
     page.footer.social_links[count].click()
-    assert links in selenium.current_url
+    page.wait_for_current_url(links)
 
 
 @pytest.mark.desktop_only
@@ -150,7 +150,7 @@ def test_social_footer_links(base_url, selenium, count, links):
 def test_legal_footer_links(base_url, selenium, count, links):
     page = Home(selenium, base_url).open()
     page.footer.legal_links[count].click()
-    assert links in selenium.current_url
+    page.wait_for_current_url(links)
 
 
 @pytest.mark.nondestructive

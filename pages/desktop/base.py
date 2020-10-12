@@ -27,6 +27,10 @@ class Base(Page):
         self.wait.until(EC.title_contains(term))
         return self
 
+    def wait_for_current_url(self, term):
+        self.wait.until(EC.url_contains(term))
+        return self
+
     @property
     def header(self):
         return Header(self)
