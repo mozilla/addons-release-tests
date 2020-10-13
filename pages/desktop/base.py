@@ -180,20 +180,17 @@ class Header(Region):
             textbox = self.find_element(*self._search_textbox_locator)
             textbox.click()
             textbox.send_keys(term)
-            self.wait.until(EC.invisibility_of_element_located(
-                (By.CLASS_NAME, 'LoadingText')))
+            """self.wait.until(EC.invisibility_of_element_located(
+                (By.CLASS_NAME, 'LoadingText')))"""
             # self.wait_for_region_to_load()
             # Send 'enter' since the mobile page does not have a submit button
             if execute:
                 textbox.send_keys(Keys.ENTER)
                 from pages.desktop.search import Search
                 return Search(self.selenium, self.page).wait_for_page_to_load()
-            """WebDriverWait(self.selenium, 30).until(
-                EC.visibility_of_element_located(
-                    self._search_item_name
-                )
-            )"""
-
+            WebDriverWait(self.selenium, 30).until(
+                EC.invisibility_of_element_located(
+                    (By.CLASS_NAME, 'LoadingText')))
             return self.search_suggestions
 
         @property
@@ -202,19 +199,12 @@ class Header(Region):
                 lambda _: self.is_element_displayed(
                     *self._search_suggestions_list_locator)
             )
-            """WebDriverWait(self.selenium, 30).until(
+            WebDriverWait(self.selenium, 30).until(
                 EC.invisibility_of_element_located(
-                    self._search_item_name
-                )
-            )"""
+                    (By.CLASS_NAME, 'LoadingText')))
             el_list = self.find_element(*self._search_suggestions_list_locator)
             items = el_list.find_elements(
                 *self._search_suggestions_item_locator)
-            WebDriverWait(self.selenium, 30).until(
-                EC.visibility_of_element_located(
-                    self._search_item_name
-                )
-            )
             return [self.SearchSuggestionItem(self.page, el) for el in items]
 
         @property
@@ -236,6 +226,11 @@ class Header(Region):
 
             @property
             def promoted_icon(self):
+                WebDriverWait(self.selenium, 10).until(
+                    EC.visibility_of_element_located(
+                        self._promoted_icon_locator),
+                    message='Promoted icon was not found for these search suggestions'
+                )
                 return self.find_element(*self._promoted_icon_locator).text
 
             @property
