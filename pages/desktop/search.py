@@ -68,7 +68,6 @@ class Search(Page):
         self.wait.until(
             lambda _: self.is_element_displayed(*self._selected_page_locator)
         )
-        # return self
         return self.find_element(*self._selected_page_locator).text
 
     class SearchResultList(Region):

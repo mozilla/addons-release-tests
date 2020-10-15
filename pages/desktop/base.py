@@ -1,7 +1,5 @@
 import time
-
 from pypom import Page, Region
-from pytest_selenium import driver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
@@ -48,6 +46,7 @@ class Base(Page):
     def search(self):
         return self.header.SearchBox(self)
 
+    # this is WIP
     def login(self, variables):
         login_page = self.header.click_login()
         time.sleep(1)
@@ -180,9 +179,6 @@ class Header(Region):
             textbox = self.find_element(*self._search_textbox_locator)
             textbox.click()
             textbox.send_keys(term)
-            """self.wait.until(EC.invisibility_of_element_located(
-                (By.CLASS_NAME, 'LoadingText')))"""
-            # self.wait_for_region_to_load()
             # Send 'enter' since the mobile page does not have a submit button
             if execute:
                 textbox.send_keys(Keys.ENTER)

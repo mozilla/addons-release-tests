@@ -65,10 +65,8 @@ def test_long_terms_dont_break_suggestions(base_url, selenium):
     term = 'videodo'
     suggestions = page.search.search_for(term, execute=False)
     # Sleep to let autocomplete update.
-    # time.sleep(2)
     term_max_len = 33
     suggestion_names = [item.name for item in suggestions]
-    # print(suggestion_names)
     for suggestion_name in suggestion_names:
         assert len(suggestion_name) <= term_max_len
 

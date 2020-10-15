@@ -153,7 +153,6 @@ class Home(Base):
             return self.find_element(*self._promo_card_header_locator).text
 
     class PromoShelvesAddons(Region):
-
         _addon_link_locator = (By.CLASS_NAME, 'SearchResult-link')
         _addon_name_locator = (By.CLASS_NAME, 'SearchResult-name')
         _addon_icon_locator = (By.CLASS_NAME, 'SearchResult-icon')
