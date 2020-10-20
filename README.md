@@ -43,6 +43,7 @@ pytest test_search.py::test_name_of_choice --driver Firefox --variables stage.js
 
 - _note that you need to have all the requirements installed for this to work_
 - _we are using pytest `--variables` as a tool to store reusable test data_
+- _make sure that you have a [Nightly][nightly] version installed on your machine if you want the tests to launch in the foreground_
 
 
 
@@ -110,3 +111,4 @@ We use a pytest plugin called [pytest-html][pytest-html] to create this report. 
 [ReadTheDocs]: https://addons-server.readthedocs.io/en/latest/topics/development/testing.html#selenium-integration-tests
 [Selenium]: http://selenium-python.readthedocs.io/index.html
 [selenium-api]: http://selenium-python.readthedocs.io/locating-elements.html
+[nightly]: https://www.mozilla.org/en-US/firefox/channel/desktop/
