@@ -1,0 +1,33 @@
+version: 2.1
+orbs:
+  win: circleci/windows@2.2.0
+jobs:
+  build:
+    executor:
+      name: win/default
+    working_directory:  ~/test-changes/
+
+    steps:
+      - checkout
+      - run:
+          name: Install requirements
+          command: pip install --no-deps -r ./requirements.txt
+      - run:
+          name: Install geckodriver
+          command: choco install selenium-gecko-driver
+      - run:
+          name: Install Firefox
+          command: choco install firefox-nightly --pre
+      - run:
+          name: Run tests
+          environment:
+          MOZ_HEADLESS: 1
+          command: pytest test_search.py::test_search_suggestion_term_is_higher --driver Firefox --variables stage.json --ui-test-serial.html
+          no_output_timeout: 30m
+      - store_artifacts:
+          path: ui-test-release.html
+workflows:
+  # version: 2.1
+  build_and_test:
+    jobs:
+        - build
