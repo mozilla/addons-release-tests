@@ -5,7 +5,8 @@ jobs:
   build:
     executor:
       name: win/default
-    working_directory:  ~/test-changes/
+      size: "medium"
+    working_directory:  ~/addons-release-tests/
 
     steps:
       - checkout
@@ -21,9 +22,10 @@ jobs:
       - run:
           name: Run tests
           environment:
-          MOZ_HEADLESS: 1
-          command: pytest test_search.py::test_search_suggestion_term_is_higher --driver Firefox --variables stage.json --ui-test-serial.html
-          no_output_timeout: 30m
+            MOZ_HEADLESS: 1
+            PYTEST_ADDOPTS: -n 4
+          command: pytest test_search.py::test_search_suggestion_term_is_higher --driver Firefox --variables stage.json
+          no_output_timeout: 20m
       - store_artifacts:
           path: ui-test-release.html
 workflows:
