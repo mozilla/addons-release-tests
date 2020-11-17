@@ -131,6 +131,7 @@ def test_recommended_icon_is_displayed(base_url, selenium, variables):
     assert 'Recommended' in suggestions[0].promoted_icon
 
 
+@pytest.mark.desktop_only
 @pytest.mark.nondestructive
 def test_selected_result_is_highlighted(base_url, selenium, variables):
     page = Home(selenium, base_url).open()
