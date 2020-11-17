@@ -1,6 +1,5 @@
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as expected
-
 from pages.desktop.base import Base
 
 
@@ -29,6 +28,8 @@ class Detail(Base):
 
     @property
     def button_text(self):
+        self.wait.until(expected.invisibility_of_element_located(
+            (By.CLASS_NAME, 'AMInstallButton-loading-button')))
         return self.find_element(*self._install_button_locator).text
 
     @property
