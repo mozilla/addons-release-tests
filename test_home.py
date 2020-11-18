@@ -43,7 +43,7 @@ def test_browse_all_button_loads_correct_page(base_url, selenium):
         assert result.promoted_badge
 
 
-@pytest.mark.skip
+@pytest.mark.skip(reason="this test requires more optimization")
 @pytest.mark.parametrize(
     'i, page_url',
     enumerate(['language-tools', 'android']))

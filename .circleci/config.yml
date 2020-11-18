@@ -2,10 +2,11 @@ version: 2.1
 orbs:
   win: circleci/windows@2.2.0
 jobs:
-  build:
+  test:
     executor:
       name: win/default
-    working_directory:  ~/test-changes/
+      size: "medium"
+    working_directory:  ~/addons-release-tests/
 
     steps:
       - checkout
@@ -21,8 +22,9 @@ jobs:
       - run:
           name: Run tests
           environment:
-          MOZ_HEADLESS: 1
-          command: pytest test_search.py::test_search_suggestion_term_is_higher --driver Firefox --variables stage.json --ui-test-serial.html
+            MOZ_HEADLESS: 1
+            PYTEST_ADDOPTS: -n 2
+          command: pytest --driver Firefox --variables stage.json --html=ui-test-release.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: ui-test-release.html
@@ -30,4 +32,4 @@ workflows:
   # version: 2.1
   build_and_test:
     jobs:
-        - build
+        - test

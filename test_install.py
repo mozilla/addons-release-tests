@@ -1,5 +1,4 @@
 import pytest
-
 from pages.desktop.details import Detail
 
 
@@ -8,8 +7,8 @@ from pages.desktop.details import Detail
 @pytest.mark.parametrize('addon_type, name_type', [
     ['flagfox', 'Flagfox'],
     ['green-floral', 'Green Floral'],
-    ['langpack-test', 'Acholi (UG) Language Pack'],
-    ['dictionary-release-test', 'Dictionary webextension']
+    ['release-langpack', 'Release Langpack'],
+    ['rel-ease-dictionary', 'Release Dictionary']
 ])
 def test_addon_install(base_url, selenium, firefox, firefox_notifications, addon_type, name_type):
     """Test that navigates to an addon and installs it."""
