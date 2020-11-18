@@ -1,7 +1,7 @@
 ﻿apipkg==1.5
 appdirs==1.4.3
 astroid==2.3.3
-atomicwrites==1.3.0
+atomicwrites==1.4.0
 attrs==19.3.0
 cffi==1.13.2
 chardet==3.0.4
