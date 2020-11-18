@@ -58,7 +58,7 @@ def test_esc_key_closes_suggestion_list(base_url, selenium, variables):
             'AutoSearchInput-suggestions-list')
 
 
-@pytest.mark.skip
+@pytest.mark.skip(reason="this test requires more optimization")
 @pytest.mark.nondestructive
 def test_long_terms_dont_break_suggestions(base_url, selenium):
     page = Home(selenium, base_url).open()
@@ -286,7 +286,7 @@ def test_filter_promoted(base_url, selenium, sort_attr, title):
 
 
 # This test will be moved to a different suite since here the test is inconclusive
-@pytest.mark.skip
+@pytest.mark.skip(reason="This test will be moved to a different suite")
 @pytest.mark.nondestructive
 def test_incompative_extensions_show_as_incompatible(base_url, selenium):
     page = Home(selenium, base_url).open()
