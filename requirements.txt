@@ -46,7 +46,7 @@ pytest-fxa==1.4.0
 pytest-html==2.0.1
 pytest-instafail==0.4.2
 pytest-metadata==1.11.0
-pytest-selenium==1.17.0
+pytest-selenium==2.0.1
 pytest-variables==1.9.0
 pytest-xdist==1.31.0
 regex==2020.4.4
