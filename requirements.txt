@@ -46,13 +46,14 @@ pytest-fxa==1.4.0
 pytest-html==2.0.1
 pytest-instafail==0.4.2
 pytest-metadata==1.11.0
-pytest-selenium==1.17.0
+pytest-selenium==2.0.1
 pytest-variables==1.9.0
 pytest-xdist==1.31.0
 regex==2020.4.4
 requests==2.22.0
 selenium==3.141.0
 six==1.14.0
+tenacity==6.2.0
 toml==0.10.2
 typed-ast==1.4.1
 urllib3==1.26.2
