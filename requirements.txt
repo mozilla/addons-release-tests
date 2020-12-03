@@ -41,7 +41,7 @@ pytest-base-url==1.4.2
 pytest-dependency==0.5.1
 pytest-depends==1.0.1
 pytest-firefox==0.1.1
-pytest-forked==1.1.3
+pytest-forked==1.3.0
 pytest-fxa==1.4.0
 pytest-html==2.0.1
 pytest-instafail==0.4.2
