@@ -6,7 +6,7 @@ from pages.desktop.details import Detail
 @pytest.mark.nondestructive
 @pytest.mark.parametrize('addon_type, name_type', [
     ['flagfox', 'Flagfox'],
-    ['green-floral', 'Green Floral'],
+    ['japanese-tattoo', 'Japanese Tattoo'],
     ['release-langpack', 'Release Langpack'],
     ['rel-ease-dictionary', 'Release Dictionary']
 ])
