@@ -74,7 +74,7 @@ def test_mozilla_footer_link(base_url, selenium):
             "developers",
             "AMO/Policy",
             "discourse",
-            "#Contact_us",
+            "#Contact",
             "review_guide",
             "status",
         ]
