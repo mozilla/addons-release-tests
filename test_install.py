@@ -1,7 +1,7 @@
 import pytest
 from pages.desktop.details import Detail
 
-
+@pytest.mark.skip(reason="Skipping installs until nightly can be used again")
 @pytest.mark.desktop_only
 @pytest.mark.nondestructive
 @pytest.mark.parametrize('addon_type, name_type', [
