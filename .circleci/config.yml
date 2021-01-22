@@ -18,7 +18,7 @@ jobs:
           command: choco install selenium-gecko-driver
       - run:
           name: Install Firefox
-          command: choco install firefox-nightly --pre
+          command: choco install firefox
       - run:
           name: Run tests
           environment:
