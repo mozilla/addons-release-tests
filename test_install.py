@@ -1,14 +1,13 @@
 import pytest
 from pages.desktop.details import Detail
 
-@pytest.mark.skip(reason="Skipping installs until nightly can be used again")
 @pytest.mark.desktop_only
 @pytest.mark.nondestructive
 @pytest.mark.parametrize('addon_type, name_type', [
     ['flagfox', 'Flagfox'],
     ['japanese-tattoo', 'Japanese Tattoo'],
     ['release-langpack', 'Release Langpack'],
-    ['rel-ease-dictionary', 'Release Dictionary']
+    ['release_dictionary', 'Release Dictionary']
 ])
 def test_addon_install(base_url, selenium, firefox, firefox_notifications, addon_type, name_type):
     """Test that navigates to an addon and installs it."""
