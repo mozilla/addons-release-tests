@@ -54,6 +54,32 @@ def test_more_dropdown_navigates_correctly(base_url, selenium, i, page_url):
     assert page_url in selenium.current_url
 
 
+@pytest.mark.parametrize(
+    'count, category',
+    enumerate([
+        'Abstract',
+        'Nature',
+        'Film',
+        'Scenery',
+        'Music',
+        'Seasonal',
+    ])
+)
+@pytest.mark.nondestructive
+@pytest.mark.desktop_only
+def test_theme_categories_shelf(base_url, selenium, count, category):
+    page = Home(selenium, base_url).open()
+    # verifying the elements present in the homepage Theme Category shelf
+    assert 'Change the way Firefox looks' in page.theme_category.shelf_summary
+    categories = page.theme_category.list
+    categories[count].category_icon.is_displayed()
+    assert category in categories[count].name
+    # checking that search results within that category are loaded
+    categories[count].click()
+    category_results = Search(selenium, base_url)
+    category_results.wait_for_contextcard_update(category)
+
+
 # Tests covering the homepage footer
 @pytest.mark.desktop_only
 @pytest.mark.nondestructive
