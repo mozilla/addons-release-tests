@@ -8,7 +8,7 @@ from pages.desktop.details import Detail
     ['flagfox', 'Flagfox'],
     ['japanese-tattoo', 'Japanese Tattoo'],
     ['release-langpack', 'Release Langpack'],
-    ['rel-ease-dictionary', 'Release Dictionary']
+    ['release_dictionary', 'Release Dictionary']
 ])
 def test_addon_install(base_url, selenium, firefox, firefox_notifications, addon_type, name_type):
     """Test that navigates to an addon and installs it."""
