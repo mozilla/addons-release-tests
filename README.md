@@ -1,5 +1,12 @@
 # Release Tests for the [Mozilla Addons Website][amo].
 
+## Scope
+This is an Automation project handled mostly by the AMO QA team. Its goal is to reduce the size of our manual test suites that need to be executed weekly on the [AMO staging][stage] environment
+before a new AMO prod release. The current tests are focused mostly on the frontend site, covering areas such as search, homepage UI, add-on installations and 
+other UI elements. The test suites are grouped in individual test files to match the site area they are focused on. 
+
+As the project will continue to grow, test areas will be extended to also cover the [developer hub pages][devhub].
+
 ## Prerequisites
 You'll need to have the following programs installed in your system:
 - [Python 3][python]
@@ -112,3 +119,4 @@ We use a pytest plugin called [pytest-html][pytest-html] to create this report. 
 [Selenium]: http://selenium-python.readthedocs.io/index.html
 [selenium-api]: http://selenium-python.readthedocs.io/locating-elements.html
 [nightly]: https://www.mozilla.org/en-US/firefox/channel/desktop/
+[devhub]: https://addons.allizom.org/developers/
