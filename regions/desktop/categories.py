@@ -7,6 +7,11 @@ class Categories(Region):
     _root_locator = (By.CLASS_NAME, 'Categories')
     _categories_locator = (By.CLASS_NAME, 'Categories-item')
 
+    def wait_for_categories_to_load(self):
+        self.wait.until(
+            lambda _: self.is_element_displayed(*self._categories_locator))
+        return self
+
     @property
     def category_list(self):
         items = self.find_elements(*self._categories_locator)
@@ -21,5 +26,5 @@ class Categories(Region):
 
         def click(self):
             self.root.click()
-            from pages.desktop.category import Category
-            return Category(self.selenium, self.page)
+            from pages.desktop.search import Search
+            return Search(self.selenium, self.page)
