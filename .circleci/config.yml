@@ -14,6 +14,9 @@ jobs:
           name: Install requirements
           command: pip install --no-deps -r ./requirements.txt
       - run:
+          name: Install openssl
+          command: choco install openssl
+      - run:
           name: Install geckodriver
           command: choco install selenium-gecko-driver
       - run:
