@@ -11,9 +11,6 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install requirements
-          command: pip install --no-deps -r ./requirements.txt
-      - run:
           name: Install openssl
           command: choco install openssl
       - run:
@@ -22,6 +19,9 @@ jobs:
       - run:
           name: Install Firefox
           command: choco install firefox-nightly --pre
+      - run:
+          name: Install requirements
+          command: pip install --no-deps -r ./requirements.txt
       - run:
           name: Run tests
           environment:
