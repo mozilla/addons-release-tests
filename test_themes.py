@@ -4,7 +4,6 @@ from pages.desktop.themes import Themes
 from selenium.webdriver.support.select import Select
 
 
-@pytest.mark.desktop_only
 @pytest.mark.parametrize(
     'count, category',
     enumerate([

@@ -1,11 +1,9 @@
 import time
 import pytest
-
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.select import Select
-
 from pages.desktop.details import Detail
 from pages.desktop.home import Home
 from pages.desktop.search import Search
@@ -30,7 +28,6 @@ def test_special_chars_dont_break_suggestions(base_url, selenium, variables):
     assert term in results
 
 
-@pytest.mark.desktop_only
 @pytest.mark.nondestructive
 def test_uppercase_has_same_suggestions(base_url, selenium, variables):
     page = Home(selenium, base_url).open()
@@ -122,7 +119,6 @@ def test_suggestion_icon_is_displayed(base_url, selenium, variables):
     assert suggestions[0].addon_icon.is_displayed()
 
 
-@pytest.mark.desktop_only
 @pytest.mark.nondestructive
 def test_recommended_icon_is_displayed(base_url, selenium, variables):
     page = Home(selenium, base_url).open()
@@ -131,7 +127,6 @@ def test_recommended_icon_is_displayed(base_url, selenium, variables):
     assert 'Recommended' in suggestions[0].promoted_icon
 
 
-@pytest.mark.desktop_only
 @pytest.mark.nondestructive
 def test_selected_result_is_highlighted(base_url, selenium, variables):
     page = Home(selenium, base_url).open()
@@ -162,7 +157,6 @@ def test_search_loads_correct_results(base_url, selenium):
     assert addon_name in items.result_list.extensions[0].name
 
 
-@pytest.mark.desktop_only
 @pytest.mark.nondestructive
 def test_blank_search_loads_results(base_url, selenium):
     page = Home(selenium, base_url).open()
@@ -188,7 +182,6 @@ def test_search_pagination(base_url, selenium):
 
 
 # Tests covering search filtering
-@pytest.mark.desktop_only
 @pytest.mark.nondestructive
 def test_filter_default(base_url, selenium, variables):
     page = Home(selenium, base_url).open()
@@ -237,7 +230,6 @@ def test_filter_by_rating_and_hotness(base_url, selenium, category, sort_attr):
         assert len(results) == 25
 
 
-@pytest.mark.desktop_only
 @pytest.mark.nondestructive
 def test_filter_extensions(base_url, selenium):
     page = Home(selenium, base_url).open()
@@ -250,7 +242,6 @@ def test_filter_extensions(base_url, selenium):
     assert len(search_page.result_list.themes) == 0
 
 
-@pytest.mark.desktop_only
 @pytest.mark.nondestructive
 def test_filter_themes(base_url, selenium):
     page = Home(selenium, base_url).open()
@@ -268,7 +259,6 @@ def test_filter_themes(base_url, selenium):
     ['line', 'by Firefox'],
     ['sponsored,verified', 'Verified'],
     ['badged', 'Reviewed']])
-@pytest.mark.desktop_only
 @pytest.mark.nondestructive
 def test_filter_promoted(base_url, selenium, sort_attr, title):
     page = Home(selenium, base_url).open()

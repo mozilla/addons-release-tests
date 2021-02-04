@@ -1,11 +1,9 @@
 import os
-
 import pytest
 
 
 # Window resolutions
 DESKTOP = (1920, 1080)
-MOBILE = (414, 738)
 
 
 @pytest.fixture(scope="session")
@@ -44,7 +42,7 @@ def firefox_options(firefox_options):
     firefox_options.set_preference('extensions.webapi.testing', True)
     firefox_options.set_preference('ui.popup.disable_autohide', True)
     firefox_options.set_preference('devtools.console.stdout.content', True)
-    firefox_options.add_argument('-foreground')
+    firefox_options.add_argument('-headless')
     firefox_options.log.level = 'trace'
     return firefox_options
 
@@ -56,23 +54,11 @@ def firefox_notifications(notifications):
 
 @pytest.fixture(
     scope='function',
-    params=[DESKTOP, MOBILE],
-    ids=['Resolution: 1920x1080', 'Resolution: 414x738'],
+    params=[DESKTOP],
+    ids=['Resolution: 1920x1080'],
 )
 def selenium(selenium, request):
-    """Fixture to set custom selenium parameters.
-
-    This fixture will also parametrize all of the tests to run them on both a
-    Desktop resolution and a mobile resolution.
-
-    Desktop size: 1920x1080
-    Mobile size: 738x414 (iPhone 7+)
-
-    """
-    # Skip mobile test with marker 'desktop_only'
-    marker = request.node.get_closest_marker('desktop_only')
-    if marker and request.param == MOBILE:
-        pytest.skip('Skipping mobile test')
+    """Fixture to set a custom resolution for tests running on Desktop."""
     selenium.set_window_size(*request.param)
     return selenium
 
