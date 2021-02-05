@@ -1,5 +1,6 @@
 from pypom import Page, Region
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
+
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as expected
 from selenium.webdriver.support.wait import WebDriverWait

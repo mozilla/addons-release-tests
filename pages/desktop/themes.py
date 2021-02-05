@@ -1,4 +1,5 @@
 from selenium.webdriver.common.by import By
+
 from pages.desktop.base import Base
 from regions.desktop.categories import Categories
 from regions.desktop.shelves import Shelves

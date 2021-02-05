@@ -1,4 +1,5 @@
 import pytest
+
 from pages.desktop.home import Home
 from pages.desktop.search import Search
 
@@ -66,7 +67,6 @@ def test_more_dropdown_navigates_correctly(base_url, selenium, i, page_url):
     ])
 )
 @pytest.mark.nondestructive
-@pytest.mark.desktop_only
 def test_theme_categories_shelf(base_url, selenium, count, category):
     page = Home(selenium, base_url).open()
     # verifying the elements present in the homepage Theme Category shelf
@@ -81,7 +81,6 @@ def test_theme_categories_shelf(base_url, selenium, count, category):
 
 
 # Tests covering the homepage footer
-@pytest.mark.desktop_only
 @pytest.mark.nondestructive
 def test_mozilla_footer_link(base_url, selenium):
     page = Home(selenium, base_url).open()
@@ -89,7 +88,6 @@ def test_mozilla_footer_link(base_url, selenium):
     assert "mozilla.org" in selenium.current_url
 
 
-@pytest.mark.desktop_only
 @pytest.mark.parametrize(
     "count, links",
     enumerate(
@@ -113,7 +111,6 @@ def test_addons_footer_links(base_url, selenium, count, links):
     page.wait_for_current_url(links)
 
 
-@pytest.mark.desktop_only
 @pytest.mark.parametrize(
     "count, links",
     enumerate(
@@ -132,7 +129,6 @@ def test_browsers_footer_links(base_url, selenium, count, links):
     page.wait_for_current_url(links)
 
 
-@pytest.mark.desktop_only
 @pytest.mark.parametrize(
     "count, links",
     enumerate(
@@ -151,7 +147,6 @@ def test_products_footer_links(base_url, selenium, count, links):
     page.wait_for_current_url(links)
 
 
-@pytest.mark.desktop_only
 @pytest.mark.parametrize(
     "count, links",
     enumerate(["twitter.com", "facebook.com", "youtube.com/c/firefox", ]),
@@ -163,7 +158,6 @@ def test_social_footer_links(base_url, selenium, count, links):
     page.wait_for_current_url(links)
 
 
-@pytest.mark.desktop_only
 @pytest.mark.parametrize(
     "count, links",
     enumerate(["privacy/websites/", "privacy/websites/", "legal/terms/mozilla", ]),

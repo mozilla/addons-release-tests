@@ -1,7 +1,8 @@
 import pytest
+
 from pages.desktop.details import Detail
 
-@pytest.mark.desktop_only
+
 @pytest.mark.nondestructive
 @pytest.mark.parametrize('addon_type, name_type', [
     ['flagfox', 'Flagfox'],

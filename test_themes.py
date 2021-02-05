@@ -1,10 +1,11 @@
 import pytest
+
 from pages.desktop.search import Search
 from pages.desktop.themes import Themes
+
 from selenium.webdriver.support.select import Select
 
 
-@pytest.mark.desktop_only
 @pytest.mark.parametrize(
     'count, category',
     enumerate([

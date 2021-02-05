@@ -1,10 +1,11 @@
 import pytest
-from pages.desktop.extensions import Extensions
-from pages.desktop.search import Search
+
 from selenium.webdriver.support.select import Select
 
+from pages.desktop.extensions import Extensions
+from pages.desktop.search import Search
 
-@pytest.mark.desktop_only
+
 @pytest.mark.parametrize(
     'count, category',
     enumerate([
@@ -62,7 +63,6 @@ def test_recommended_extensions_shelf(base_url, selenium):
         assert item.addon_users_preview.is_displayed()
 
 
-@pytest.mark.desktop_only
 @pytest.mark.nondestructive
 def test_browse_more_recommended_extensions(base_url, selenium):
     extensions = Extensions(selenium, base_url).open()
@@ -89,7 +89,6 @@ def test_top_rated_extensions(base_url, selenium):
         assert item.addon_users_preview.is_displayed()
 
 
-@pytest.mark.desktop_only
 @pytest.mark.nondestructive
 def test_browse_more_top_rated_extensions(base_url, selenium):
     extensions = Extensions(selenium, base_url).open()
@@ -121,7 +120,6 @@ def test_trending_extensions(base_url, selenium):
         assert item.addon_users_preview.is_displayed()
 
 
-@pytest.mark.desktop_only
 @pytest.mark.nondestructive
 def test_browse_more_trending_extensions(base_url, selenium):
     extensions = Extensions(selenium, base_url).open()
