@@ -1,6 +1,8 @@
 import pytest
+
 from pages.desktop.search import Search
 from pages.desktop.themes import Themes
+
 from selenium.webdriver.support.select import Select
 
 

@@ -1,4 +1,5 @@
 import pytest
+
 from pages.desktop.home import Home
 from pages.desktop.search import Search
 

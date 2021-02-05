@@ -1,4 +1,5 @@
 import pytest
+
 from pages.desktop.details import Detail
 
 
