@@ -37,7 +37,7 @@ def test_logo_routes_to_home(base_url, selenium):
 @pytest.mark.nondestructive
 def test_browse_all_button_loads_correct_page(base_url, selenium):
     page = Home(selenium, base_url).open()
-    page.recommended_extensions.browse_all
+    page.recommended_extensions.browse_all()
     assert 'type=extension' in selenium.current_url
     search_page = Search(selenium, base_url)
     for result in search_page.result_list.extensions:

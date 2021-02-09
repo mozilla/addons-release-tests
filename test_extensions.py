@@ -66,7 +66,7 @@ def test_recommended_extensions_shelf(base_url, selenium):
 @pytest.mark.nondestructive
 def test_browse_more_recommended_extensions(base_url, selenium):
     extensions = Extensions(selenium, base_url).open()
-    extensions.shelves.recommended_addons.browse_all
+    extensions.shelves.recommended_addons.browse_all()
     assert 'type=extension' in selenium.current_url
     search_results = Search(selenium, base_url)
     select = Select(search_results.filter_by_badging)
@@ -92,7 +92,7 @@ def test_top_rated_extensions(base_url, selenium):
 @pytest.mark.nondestructive
 def test_browse_more_top_rated_extensions(base_url, selenium):
     extensions = Extensions(selenium, base_url).open()
-    extensions.shelves.top_rated_addons.browse_all
+    extensions.shelves.top_rated_addons.browse_all()
     assert 'sort=rating&type=extension' in selenium.current_url
     search_results = Search(selenium, base_url)
     select = Select(search_results.filter_by_badging)
@@ -123,7 +123,7 @@ def test_trending_extensions(base_url, selenium):
 @pytest.mark.nondestructive
 def test_browse_more_trending_extensions(base_url, selenium):
     extensions = Extensions(selenium, base_url).open()
-    extensions.shelves.trending_addons.browse_all
+    extensions.shelves.trending_addons.browse_all()
     assert 'sort=hotness&type=extension' in selenium.current_url
     search_results = Search(selenium, base_url)
     select = Select(search_results.filter_by_badging)
