@@ -38,7 +38,6 @@ class Shelves(Region):
         def card_header(self):
             return self.find_element(*self._promo_card_header_locator).text
 
-        @property
         def browse_all(self):
             self.find_element(*self._browse_all_locator).click()
             from pages.desktop.search import Search

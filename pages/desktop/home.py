@@ -118,7 +118,6 @@ class Home(Base):
             items = self.find_elements(*self._extensions_locator)
             return [Home.PromoShelvesAddons(self.page, el) for el in items]
 
-        @property
         def browse_all(self):
             self.find_element(*self._browse_all_locator).click()
             from pages.desktop.search import Search
@@ -143,7 +142,6 @@ class Home(Base):
             items = self.find_elements(*self._themes_locator)
             return [Home.PromoShelvesAddons(self.page, el) for el in items]
 
-        @property
         def browse_all(self):
             self.find_element(*self._browse_all_locator).click()
             from pages.desktop.search import Search
