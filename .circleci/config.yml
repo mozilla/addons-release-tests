@@ -29,6 +29,16 @@ jobs:
       - store_artifacts:
           path: ui-test-release.html
 workflows:
-  build_and_test:
+  commit_workflow:
     jobs:
-        - test
+      - test
+  stage_release_run:
+    triggers:
+      - schedule:
+          # the workflow runs each Wednesday at 05:00 UTC
+          cron: "0 5 * * 3"
+          filters:
+            branches:
+              only: master
+    jobs:
+      - test
