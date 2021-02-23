@@ -30,6 +30,7 @@ def test_special_chars_dont_break_suggestions(base_url, selenium, variables):
     assert term in results
 
 
+@pytest.mark.xfail(reason="There is an issue with search on stage - #16610")
 @pytest.mark.nondestructive
 def test_uppercase_has_same_suggestions(base_url, selenium, variables):
     page = Home(selenium, base_url).open()
