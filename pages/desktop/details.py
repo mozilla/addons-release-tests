@@ -9,6 +9,7 @@ class Detail(Base):
     _addon_name_locator = (By.CLASS_NAME, 'AddonTitle')
     _compatible_locator = (By.CSS_SELECTOR, '.AddonCompatibilityError')
     _install_button_locator = (By.CLASS_NAME, 'AMInstallButton-button')
+    _install_button_state_locator = (By.CSS_SELECTOR, '.AMInstallButton a')
 
     def wait_for_page_to_load(self):
         self.wait.until(
@@ -24,6 +25,10 @@ class Detail(Base):
     def is_compatible(self):
         return not self.is_element_displayed(*self._compatible_locator)
 
+    @property
+    def incompatibility_message(self):
+        return self.find_element(*self._compatible_locator).text
+
     def install(self):
         self.find_element(*self._install_button_locator).click()
 
@@ -34,5 +39,7 @@ class Detail(Base):
         return self.find_element(*self._install_button_locator).text
 
     @property
-    def button_enabled(self):
-        return self.find_element(*self._install_button_locator).is_enabled()
+    def button_state_disabled(self):
+        # checking that an inactive install button has a 'disabled' attribute
+        return self.find_element(*self._install_button_state_locator).\
+            get_attribute('disabled')

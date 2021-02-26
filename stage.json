@@ -1,4 +1,7 @@
 {
   "base_url": "https://addons.allizom.org",
-  "search_term": "Flagfox"
+  "search_term": "Flagfox",
+  "lower_firefox_version": "lower-firefox",
+  "higher_firefox_version": "wombarish-humminocon-elamster",
+  "incompatible_platform": "thursdayafternoon"
 }
