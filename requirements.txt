@@ -1,6 +1,6 @@
 ﻿apipkg==1.5
 appdirs==1.4.4
-astroid==2.5
+astroid==2.5.1
 atomicwrites==1.4.0
 attrs==20.3.0
 cffi==1.14.5
