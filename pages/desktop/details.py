@@ -43,7 +43,7 @@ class Detail(Base):
     @property
     def button_state_disabled(self):
         # checking that an inactive install button has a 'disabled' attribute
-        return self.find_element(*self._install_button_state_locator). \
+        return self.find_element(*self._install_button_state_locator).\
             get_attribute('disabled')
 
     @property

@@ -45,6 +45,6 @@ def test_contribute_button(selenium, base_url, variables):
     assert variables['contribute_card_summary'] in\
            addon.contribute.contribute_card_content
     addon.contribute.click_contribute_button()
-    # verifies that utm params are passed from AMO to the contribute site
+    # verifies that utm params are passed from AMO to the external contribute site
     wait = WebDriverWait(selenium, 10)
     wait.until(expected.url_contains(variables['contribute_utm_param']))
