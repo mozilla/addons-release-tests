@@ -1,3 +1,5 @@
+from pypom import Region
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as expected
 
@@ -43,3 +45,26 @@ class Detail(Base):
         # checking that an inactive install button has a 'disabled' attribute
         return self.find_element(*self._install_button_state_locator).\
             get_attribute('disabled')
+
+    @property
+    def contribute(self):
+        return self.Contribute(self)
+
+    class Contribute(Region):
+        _contribute_header_locator = (By.CSS_SELECTOR, '.ContributeCard header')
+        _contribute_content_locator = (By.CLASS_NAME, 'ContributeCard-content')
+        _contribute_button_locator = (By.CLASS_NAME, 'ContributeCard-button')
+
+        @property
+        def contribute_card_header(self):
+            return self.find_element(*self._contribute_header_locator).text
+
+        @property
+        def contribute_card_content(self):
+            return self.find_element(*self._contribute_content_locator).text
+
+        def click_contribute_button(self):
+            self.find_element(*self._contribute_button_locator).click()
+            self.wait.until(expected.number_of_windows_to_be(2))
+            new_tab = self.selenium.window_handles[1]
+            self.selenium.switch_to_window(new_tab)
