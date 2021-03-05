@@ -149,7 +149,7 @@ def test_products_footer_links(base_url, selenium, count, links):
 
 @pytest.mark.parametrize(
     "count, links",
-    enumerate(["twitter.com", "facebook.com", "youtube.com/c/firefox", ]),
+    enumerate(["twitter.com", "facebook.com", "youtube.com/channel/", ]),
 )
 @pytest.mark.nondestructive
 def test_social_footer_links(base_url, selenium, count, links):
