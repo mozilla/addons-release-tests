@@ -62,7 +62,7 @@ virtualenv==20.4.2
 wcwidth==0.2.5
 WebOb==1.8.7
 wrapt==1.12.1
-zipp==3.4.0
+zipp==3.4.1
 zope.component==4.6.2
 zope.deferredimport==4.3.1
 zope.deprecation==4.4.0
