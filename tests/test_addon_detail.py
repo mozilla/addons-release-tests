@@ -48,3 +48,18 @@ def test_contribute_button(selenium, base_url, variables):
     # verifies that utm params are passed from AMO to the external contribute site
     wait = WebDriverWait(selenium, 10)
     wait.until(expected.url_contains(variables['contribute_utm_param']))
+
+
+@pytest.mark.nondestructive
+def test_extension_permissions(selenium, base_url, variables):
+    extension = variables['detail_extension_slug']
+    selenium.get('{}/addon/{}'.format(base_url, extension))
+    addon = Detail(selenium, base_url)
+    assert 'Permissions' in addon.permissions.permissions_card_header
+    permissions = addon.permissions.permissions_list
+    # checks that each permission has a corresponding icon and description
+    for permission in permissions:
+        assert permission.permission_icon.is_displayed()
+        assert permission.permission_description.is_displayed()
+    addon.permissions.click_permissions_button()
+    addon.wait_for_current_url('permission-request')

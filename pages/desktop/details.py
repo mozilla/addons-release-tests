@@ -50,6 +50,10 @@ class Detail(Base):
     def contribute(self):
         return self.Contribute(self)
 
+    @property
+    def permissions(self):
+        return self.Permissions(self)
+
     class Contribute(Region):
         _contribute_header_locator = (By.CSS_SELECTOR, '.ContributeCard header')
         _contribute_content_locator = (By.CLASS_NAME, 'ContributeCard-content')
@@ -68,3 +72,35 @@ class Detail(Base):
             self.wait.until(expected.number_of_windows_to_be(2))
             new_tab = self.selenium.window_handles[1]
             self.selenium.switch_to_window(new_tab)
+
+    class Permissions(Region):
+        _permissions_header_locator = (By.CSS_SELECTOR, '.PermissionsCard header')
+        _permissions_list_locator = (By.CSS_SELECTOR, '.PermissionsCard-list--required li')
+        _permissions_learn_more_locator = (By.CLASS_NAME, 'PermissionCard-learn-more')
+
+        @property
+        def permissions_card_header(self):
+            return self.find_element(*self._permissions_header_locator).text
+
+        @property
+        def permissions_list(self):
+            items = self.find_elements(*self._permissions_list_locator)
+            return [self.PermissionDetails(self.page, el) for el in items]
+
+        def click_permissions_button(self):
+            self.find_element(*self._permissions_learn_more_locator).click()
+            self.wait.until(expected.number_of_windows_to_be(2))
+            new_tab = self.selenium.window_handles[1]
+            self.selenium.switch_to_window(new_tab)
+
+        class PermissionDetails(Region):
+            _permission_icon_locator = (By.CSS_SELECTOR, '.Permission .Icon')
+            _permission_description_locator = (By.CLASS_NAME, 'Permission-description')
+
+            @property
+            def permission_icon(self):
+                return self.find_element(*self._permission_icon_locator)
+
+            @property
+            def permission_description(self):
+                return self.find_element(*self._permission_description_locator)
