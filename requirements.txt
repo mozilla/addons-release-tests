@@ -9,7 +9,7 @@ click==7.1.2
 colorama==0.4.4
 cryptography==3.2.1
 decorator==4.4.2
-defusedxml==0.7.0
+defusedxml==0.7.1
 execnet==1.8.0
 FoxPuppet==1.0.3
 future-fstrings==1.2.0
