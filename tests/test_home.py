@@ -1,5 +1,6 @@
 import pytest
 
+from pages.desktop.base import Base
 from pages.desktop.home import Home
 from pages.desktop.search import Search
 
@@ -80,14 +81,17 @@ def test_theme_categories_shelf(base_url, selenium, count, category):
     category_results.wait_for_contextcard_update(category)
 
 
-# Tests covering the homepage footer
+# Tests covering the homepage footer (AMO and DevHub)
+@pytest.mark.parametrize('page', ['', '/developers'])
 @pytest.mark.nondestructive
-def test_mozilla_footer_link(base_url, selenium):
-    page = Home(selenium, base_url).open()
+def test_mozilla_footer_link(base_url, selenium, page):
+    selenium.get(f'{base_url}{page}')
+    page = Base(selenium, base_url)
     page.footer.mozilla_link.click()
     assert "mozilla.org" in selenium.current_url
 
 
+@pytest.mark.parametrize('page', ['', '/developers'])
 @pytest.mark.parametrize(
     "count, links",
     enumerate(
@@ -105,12 +109,14 @@ def test_mozilla_footer_link(base_url, selenium):
     ),
 )
 @pytest.mark.nondestructive
-def test_addons_footer_links(base_url, selenium, count, links):
-    page = Home(selenium, base_url).open()
+def test_addons_footer_links(base_url, selenium, page, count, links):
+    selenium.get(f'{base_url}{page}')
+    page = Base(selenium, base_url)
     page.footer.addon_links[count].click()
     page.wait_for_current_url(links)
 
 
+@pytest.mark.parametrize('page', ['', '/developers'])
 @pytest.mark.parametrize(
     "count, links",
     enumerate(
@@ -123,8 +129,9 @@ def test_addons_footer_links(base_url, selenium, count, links):
     ),
 )
 @pytest.mark.nondestructive
-def test_browsers_footer_links(base_url, selenium, count, links):
-    page = Home(selenium, base_url).open()
+def test_browsers_footer_links(base_url, selenium, page, count, links):
+    selenium.get(f'{base_url}{page}')
+    page = Home(selenium, base_url)
     page.footer.browsers_links[count].click()
     page.wait_for_current_url(links)
 
@@ -147,24 +154,28 @@ def test_products_footer_links(base_url, selenium, count, links):
     page.wait_for_current_url(links)
 
 
+@pytest.mark.parametrize('page', ['', '/developers'])
 @pytest.mark.parametrize(
     "count, links",
     enumerate(["twitter.com", "facebook.com", "youtube.com/channel/", ]),
 )
 @pytest.mark.nondestructive
-def test_social_footer_links(base_url, selenium, count, links):
-    page = Home(selenium, base_url).open()
+def test_social_footer_links(base_url, selenium, page, count, links):
+    selenium.get(f'{base_url}{page}')
+    page = Base(selenium, base_url)
     page.footer.social_links[count].click()
     page.wait_for_current_url(links)
 
 
+@pytest.mark.parametrize('page', ['', '/developers'])
 @pytest.mark.parametrize(
     "count, links",
     enumerate(["privacy/websites/", "privacy/websites/", "legal/terms/mozilla", ]),
 )
 @pytest.mark.nondestructive
-def test_legal_footer_links(base_url, selenium, count, links):
-    page = Home(selenium, base_url).open()
+def test_legal_footer_links(base_url, selenium, page, count, links):
+    selenium.get(f'{base_url}{page}')
+    page = Base(selenium, base_url)
     page.footer.legal_links[count].click()
     page.wait_for_current_url(links)
 
