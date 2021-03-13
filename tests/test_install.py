@@ -12,7 +12,7 @@ from pages.desktop.details import Detail
 ])
 def test_addon_install(base_url, selenium, firefox, firefox_notifications, addon_type, name_type):
     """Test that navigates to an addon and installs it."""
-    selenium.get('{}/addon/{}'.format(base_url, addon_type))
+    selenium.get(f'{base_url}/addon/{addon_type}')
     addon = Detail(selenium, base_url)
     assert name_type in addon.name
     assert addon.is_compatible

@@ -11,7 +11,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 
 class Base(Page):
-    _url = '{base_url}/{locale}'
+    _url = f'{base_url}/{locale}'
     _amo_header = (By.CLASS_NAME, 'Header')
 
     def __init__(self, selenium, base_url, locale='en-US', **kwargs):
