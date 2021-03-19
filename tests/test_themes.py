@@ -34,7 +34,6 @@ def test_themes_categories(base_url, selenium, count, category):
     category_results = Search(selenium, base_url)
     # checking that search results within that category are sorted correctly
     category_results.wait_for_contextcard_update(category)
-    assert 'sort=recommended%2Cusers' in selenium.current_url
     select = Select(category_results.filter_by_sort)
     assert 'Most Users' in select.first_selected_option.text
 
