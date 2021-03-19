@@ -242,7 +242,7 @@ class Footer(Region):
     _root_locator = (By.CSS_SELECTOR, '.Footer-wrapper')
     _footer_amo_links_locator = (By.CSS_SELECTOR, '.Footer-amo-links')
     _footer_browsers_links_locator = (By.CSS_SELECTOR, '.Footer-browsers-links')
-    _footer_products_links_locator = (By.CSS_SELECTOR, '.Footer-product-links')
+    _footer_products_links_locator = (By.CSS_SELECTOR, '.Footer-wrapper section:nth-child(4)')
     _footer_mozilla_link_locator = (By.CSS_SELECTOR, '.Footer-mozilla-link')
     _footer_social_locator = (By.CSS_SELECTOR, '.Footer-links-social')
     _footer_links_locator = (By.CSS_SELECTOR, '.Footer-links li a')
