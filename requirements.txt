@@ -1,6 +1,6 @@
 ﻿apipkg==1.5
 appdirs==1.4.4
-astroid==2.5.1
+astroid==2.5.2
 atomicwrites==1.4.0
 attrs==20.3.0
 cffi==1.14.5
@@ -33,7 +33,7 @@ PyBrowserID==0.14.0
 pycparser==2.20
 PyFxA==0.7.7
 PyJWT==2.0.1
-pylint==2.7.2
+pylint==2.7.4
 pyparsing==2.4.7
 PyPOM==2.2.0
 pytest==6.2.2
