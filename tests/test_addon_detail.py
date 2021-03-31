@@ -55,7 +55,8 @@ def test_extension_permissions(selenium, base_url, variables):
     extension = variables['detail_extension_slug']
     selenium.get('{}/addon/{}'.format(base_url, extension))
     addon = Detail(selenium, base_url)
-    assert 'Permissions' in addon.permissions.permissions_card_header
+    # assert 'Permissions' in addon.permissions.permissions_card_header
+    assert 'Purposely fail test' in addon.permissions.permissions_card_header
     permissions = addon.permissions.permissions_list
     # checks that each permission has a corresponding icon and description
     for permission in permissions:
