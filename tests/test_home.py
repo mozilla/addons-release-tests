@@ -96,7 +96,7 @@ def test_mozilla_footer_link(base_url, selenium):
             "blog.mozilla.org",
             "extensionworkshop",
             "developers",
-            "AMO/Policy",
+            "add-on-policies",
             "discourse",
             "Contact_us",
             "review_guide",

@@ -1,6 +1,6 @@
 ﻿apipkg==1.5
 appdirs==1.4.4
-astroid==2.5.1
+astroid==2.5.2
 atomicwrites==1.4.0
 attrs==20.3.0
 cffi==1.14.5
@@ -17,14 +17,14 @@ fxapom==1.10.2
 hawkauthlib==2.0.0
 hjson==3.0.2
 idna==3.1
-importlib-metadata==3.7.3
+importlib-metadata==3.10.0
 iniconfig==1.1.1
 isort==5.8.0
 lazy-object-proxy==1.6.0
 mccabe==0.6.1
 more-itertools==8.7.0
 networkx==2.5
-numpy==1.20.1
+numpy==1.20.2
 packaging==20.9
 pathspec==0.8.1
 pluggy==0.13.1
@@ -33,7 +33,7 @@ PyBrowserID==0.14.0
 pycparser==2.20
 PyFxA==0.7.7
 PyJWT==2.0.1
-pylint==2.7.2
+pylint==2.7.4
 pyparsing==2.4.7
 PyPOM==2.2.0
 pytest==6.2.2
