@@ -11,14 +11,17 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install requirements
-          command: pip install --no-deps -r ./requirements.txt
+          name: Install openssl
+          command: choco install openssl
       - run:
           name: Install geckodriver
           command: choco install selenium-gecko-driver
       - run:
           name: Install Firefox
           command: choco install firefox-nightly --pre
+      - run:
+          name: Install requirements
+          command: pip install --no-deps -r ./requirements.txt
       - run:
           name: Run tests
           environment:
