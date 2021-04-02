@@ -204,9 +204,7 @@ def test_filter_by_users(base_url, selenium):
     Home(selenium, base_url).open()
     term = 'fox'
     sort = 'users'
-    selenium.get('{}/search/?&q={}&sort={}'.format(
-        base_url, term, sort)
-    )
+    selenium.get(f'{base_url}/search/?&q={term}&sort={sort}')
     search_page = Search(selenium, base_url)
     results = [getattr(result, sort)
                for result in search_page.result_list.extensions]
@@ -221,9 +219,7 @@ def test_filter_by_rating_and_hotness(base_url, selenium, category, sort_attr):
     """Test searching for an addon and sorting."""
     Home(selenium, base_url).open()
     addon_name = 'fox'
-    selenium.get('{}/search/?&q={}&sort={}'.format(
-        base_url, addon_name, sort_attr)
-    )
+    selenium.get(f'{base_url}/search/?&q={addon_name}&sort={sort_attr}')
     search_page = Search(selenium, base_url)
     results = search_page.result_list.extensions
     if sort_attr == 'rating':
