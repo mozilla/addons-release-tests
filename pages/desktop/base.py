@@ -1,5 +1,3 @@
-import time
-
 from pypom import Page, Region
 
 from selenium.webdriver.common.by import By
@@ -48,12 +46,14 @@ class Base(Page):
     def search(self):
         return self.header.SearchBox(self)
 
-    # this is WIP
-    def login(self, variables):
-        login_page = self.header.click_login()
-        time.sleep(1)
-        login_page.login_regular_user(variables)
-        self.selenium.get(self.base_url)
+    def login(self, user):
+        fxa = self.header.click_login()
+        # wait for the FxA login page to load
+        self.wait.until(EC.visibility_of_element_located((
+            By.NAME, 'email')))
+        fxa.account(user)
+        # wait for transition between FxA page and AMO
+        self.wait.until(EC.url_contains('addons'))
         self.wait.until(lambda _: self.logged_in)
 
     def logout(self):
@@ -69,8 +69,10 @@ class Header(Region):
     _extensions_locator = (By.CSS_SELECTOR, '.SectionLinks \
                            > li:nth-child(2) > a:nth-child(1)')
     _login_locator = (By.CLASS_NAME, 'Header-authenticate-button')
+    _account_dropdown_locator = (
+        By.CSS_SELECTOR, '.DropdownMenu.Header-authenticate-button .DropdownMenu-items')
     _logout_locator = (
-        By.CSS_SELECTOR, '.DropdownMenu-items .Header-logout-button')
+        By.CSS_SELECTOR, '.DropdownMenu-items .Header-logout-button button')
     _more_dropdown_locator = (
         By.CSS_SELECTOR,
         '.Header-SectionLinks .SectionLinks-dropdown')
@@ -116,14 +118,15 @@ class Header(Region):
 
     def click_logout(self):
         user = self.find_element(*self._user_locator)
+        dropdown = self.find_element(*self._account_dropdown_locator)
         logout = self.find_element(*self._logout_locator)
         action = ActionChains(self.selenium)
         action.move_to_element(user)
-        action.click()
         action.pause(2)
+        action.move_to_element(dropdown)
         action.move_to_element(logout)
-        action.pause(2)
         action.click(logout)
+        action.pause(2)
         action.perform()
         self.wait.until(lambda s: self.is_element_displayed(
             *self._login_locator))
@@ -161,6 +164,10 @@ class Header(Region):
     @property
     def is_active_link(self):
         return self.find_element(*self._active_link_locator).text
+
+    @property
+    def user_display_name(self):
+        return self.find_element(*self._user_locator)
 
     class SearchBox(Region):
         _root_locator = (By.CLASS_NAME, 'AutoSearchInput')
