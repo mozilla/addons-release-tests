@@ -55,7 +55,7 @@ selenium==3.141.0
 six==1.15.0
 tenacity==7.0.0
 toml==0.10.2
-typed-ast==1.4.2
+typed-ast==1.4.3
 typing-extensions==3.7.4.3
 urllib3==1.26.4
 virtualenv==20.4.3
