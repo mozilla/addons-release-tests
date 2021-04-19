@@ -10,7 +10,7 @@ class Home(Base):
     """Addons Home page"""
 
     _recommended_extensions_locator = (
-        By.CLASS_NAME, 'Home-RecommendedExtensions'
+        By.CLASS_NAME, 'Home-Recommended-extensions'
     )
     _recommended_themes_locator = (By.CLASS_NAME, 'Home-RecommendedThemes')
     _hero_locator = (By.CLASS_NAME, 'HeroRecommendation')
