@@ -1,7 +1,6 @@
-import time
-
 from pypom import Page, Region
 
+from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
@@ -41,19 +40,32 @@ class Base(Page):
 
     @property
     def logged_in(self):
-        """Returns True if a user is logged in"""
-        return self.is_element_displayed(*self.header._user_locator)
+        """Returns True if a user is logged in. Since the user element can become
+        stale sometimes and causes the login test to fail, a StaleElementReferenceException
+        was added to catch this error and wait for the element to be located again"""
+        try:
+            return self.is_element_displayed(*self.header._user_locator)
+        except StaleElementReferenceException:
+            self.wait.until(EC.element_to_be_clickable(
+                (By.CSS_SELECTOR, '.Header-user-and-external-links .DropdownMenu-button-text')))
+            return self.is_element_displayed(*self.header._user_locator)
 
     @property
     def search(self):
         return self.header.SearchBox(self)
 
-    # this is WIP
-    def login(self, variables):
-        login_page = self.header.click_login()
-        time.sleep(1)
-        login_page.login_regular_user(variables)
-        self.selenium.get(self.base_url)
+    def login(self, user):
+        fxa = self.header.click_login()
+        # wait for the FxA login page to load
+        self.wait.until(EC.visibility_of_element_located((
+            By.NAME, 'email')))
+        fxa.account(user)
+        # wait for transition between FxA page and AMO (URL and page)
+        self.wait.until(EC.url_contains('addons'))
+        WebDriverWait(self.selenium, 30).until(
+            EC.invisibility_of_element_located(
+                (By.CLASS_NAME, 'LoadingText')))
+        # assess that the user has been logged in
         self.wait.until(lambda _: self.logged_in)
 
     def logout(self):
@@ -69,8 +81,10 @@ class Header(Region):
     _extensions_locator = (By.CSS_SELECTOR, '.SectionLinks \
                            > li:nth-child(2) > a:nth-child(1)')
     _login_locator = (By.CLASS_NAME, 'Header-authenticate-button')
+    _account_dropdown_locator = (
+        By.CSS_SELECTOR, '.DropdownMenu.Header-authenticate-button .DropdownMenu-items')
     _logout_locator = (
-        By.CSS_SELECTOR, '.DropdownMenu-items .Header-logout-button')
+        By.CSS_SELECTOR, '.DropdownMenu-items .Header-logout-button button')
     _more_dropdown_locator = (
         By.CSS_SELECTOR,
         '.Header-SectionLinks .SectionLinks-dropdown')
@@ -105,7 +119,6 @@ class Header(Region):
 
     def click_title(self):
         self.find_element(*self._header_title_locator).click()
-
         from pages.desktop.home import Home
         return Home(self.selenium, self.page.base_url).wait_for_page_to_load()
 
@@ -114,16 +127,25 @@ class Header(Region):
         from pages.desktop.login import Login
         return Login(self.selenium, self.page.base_url)
 
+    @property
+    def user_display_name(self):
+        self.wait.until(EC.visibility_of_element_located(self._user_locator))
+        return self.find_element(*self._user_locator)
+
     def click_logout(self):
-        user = self.find_element(*self._user_locator)
+        user = WebDriverWait(self.selenium, 30, ignored_exceptions=StaleElementReferenceException) \
+            .until(EC.element_to_be_clickable((By.CSS_SELECTOR, '.Header-user-and-external-links \
+            .DropdownMenu-button-text')))
+        dropdown = self.find_element(*self._account_dropdown_locator)
         logout = self.find_element(*self._logout_locator)
         action = ActionChains(self.selenium)
         action.move_to_element(user)
-        action.click()
-        action.pause(2)
+        action.pause(3)
+        action.move_to_element(dropdown)
         action.move_to_element(logout)
-        action.pause(2)
-        action.click(logout)
+        action.pause(3)
+        action.click()
+        action.pause(3)
         action.perform()
         self.wait.until(lambda s: self.is_element_displayed(
             *self._login_locator))
