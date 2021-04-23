@@ -40,8 +40,15 @@ class Base(Page):
 
     @property
     def logged_in(self):
-        """Returns True if a user is logged in"""
-        return self.is_element_displayed(*self.header._user_locator)
+        """Returns True if a user is logged in. Since the user element can become
+        stale sometimes and causes the login test to fail, a StaleElementReferenceException
+        was added to catch this error and wait for the element to be located again"""
+        try:
+            return self.is_element_displayed(*self.header._user_locator)
+        except StaleElementReferenceException:
+            self.wait.until(EC.element_to_be_clickable(
+                (By.CSS_SELECTOR, '.Header-user-and-external-links .DropdownMenu-button-text')))
+            return self.is_element_displayed(*self.header._user_locator)
 
     @property
     def search(self):
@@ -126,16 +133,19 @@ class Header(Region):
         return self.find_element(*self._user_locator)
 
     def click_logout(self):
-        action = ActionChains(self.selenium)
         user = WebDriverWait(self.selenium, 30, ignored_exceptions=StaleElementReferenceException) \
-            .until(EC.visibility_of_element_located(self._user_locator))
+            .until(EC.element_to_be_clickable((By.CSS_SELECTOR, '.Header-user-and-external-links \
+            .DropdownMenu-button-text')))
         dropdown = self.find_element(*self._account_dropdown_locator)
         logout = self.find_element(*self._logout_locator)
+        action = ActionChains(self.selenium)
         action.move_to_element(user)
+        action.pause(3)
         action.move_to_element(dropdown)
         action.move_to_element(logout)
-        action.click(logout)
-        action.pause(2)
+        action.pause(3)
+        action.click()
+        action.pause(3)
         action.perform()
         self.wait.until(lambda s: self.is_element_displayed(
             *self._login_locator))
