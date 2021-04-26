@@ -12,6 +12,12 @@ class Detail(Base):
     _compatible_locator = (By.CSS_SELECTOR, '.AddonCompatibilityError')
     _install_button_locator = (By.CLASS_NAME, 'AMInstallButton-button')
     _install_button_state_locator = (By.CSS_SELECTOR, '.AMInstallButton a')
+    _promoted_badge_locator = (By.CLASS_NAME, 'PromotedBadge-large')
+    _promoted_badge_label_locator = (By.CSS_SELECTOR, '.PromotedBadge-large .PromotedBadge-label')
+    _experimental_badge_locator = (By.CLASS_NAME, 'Badge-experimental')
+    _addon_icon_locator = (By.CLASS_NAME, 'Addon-icon-image')
+    _author_locator = (By.CSS_SELECTOR, '.AddonTitle-author a')
+    _summary_locator = (By.CLASS_NAME, 'Addon-summary')
 
     def wait_for_page_to_load(self):
         self.wait.until(
@@ -45,6 +51,39 @@ class Detail(Base):
         # checking that an inactive install button has a 'disabled' attribute
         return self.find_element(*self._install_button_state_locator).\
             get_attribute('disabled')
+
+    @property
+    def promoted_badge(self):
+        return self.find_element(*self._promoted_badge_locator)
+
+    @property
+    def promoted_badge_category(self):
+        return self.find_element(*self._promoted_badge_label_locator).text
+
+    def click_promoted_badge(self):
+        # clicks on the promoted badge and waits for the sumo page to load
+        self.promoted_badge.click()
+        self.wait.until(expected.number_of_windows_to_be(2))
+        new_tab = self.selenium.window_handles[1]
+        self.selenium.switch_to_window(new_tab)
+        self.wait.until(expected.visibility_of_element_located(
+            (By.CLASS_NAME, 'sumo-page-heading')))
+
+    @property
+    def experimental_badge(self):
+        return self.find_element(*self._experimental_badge_locator)
+
+    @property
+    def addon_icon(self):
+        return self.find_element(*self._addon_icon_locator)
+
+    @property
+    def authors(self):
+        return self.find_element(*self._author_locator)
+
+    @property
+    def summary(self):
+        return self.find_element(*self._summary_locator)
 
     @property
     def contribute(self):
