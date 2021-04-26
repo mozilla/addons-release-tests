@@ -2,9 +2,12 @@
   "base_url": "https://addons.allizom.org",
   "search_term": "Flagfox",
   "detail_extension_slug": "ghostery",
+  "detail_extension_name": "Ghostery - Privacy Ad Blocker",
   "lower_firefox_version": "lower-firefox",
   "higher_firefox_version": "wombarish-humminocon-elamster",
   "incompatible_platform": "thursdayafternoon",
+  "by_firefox_addon": "by-firefox",
+  "experimental_addon": "experimental",
   "contribute_utm_param": "utm_content=product-page-contribute&utm_medium=referral&utm_source=addons.mozilla.org",
   "contribute_card_summary": "The developer of this extension asks that you help support its continued development by making a small contribution."
 }

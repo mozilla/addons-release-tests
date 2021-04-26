@@ -7,6 +7,50 @@ from pages.desktop.details import Detail
 
 
 @pytest.mark.nondestructive
+def test_extension_meta_card(selenium, base_url, variables):
+    # Checks addon essential data (name, icon, author name, summary)
+    extension = variables['detail_extension_slug']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url)
+    assert variables['detail_extension_name'] in addon.name
+    assert addon.addon_icon.is_displayed()
+    assert addon.authors.is_displayed()
+    assert addon.summary.is_displayed()
+
+
+@pytest.mark.nondestructive
+def test_addon_detail_recommended_badge(selenium, base_url, variables):
+    extension = variables['detail_extension_slug']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url)
+    assert addon.promoted_badge.is_displayed()
+    assert 'Recommended' in addon.promoted_badge_category
+    # checks that the badge redirects to the correct sumo article
+    addon.click_promoted_badge()
+    assert 'add-on-badges' in selenium.current_url
+
+
+@pytest.mark.nondestructive
+def test_addon_detail_by_firefox_badge(selenium, base_url, variables):
+    extension = variables['by_firefox_addon']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url)
+    assert addon.promoted_badge.is_displayed()
+    assert 'By Firefox' in addon.promoted_badge_category
+    # checks that the badge redirects to the correct sumo article
+    addon.click_promoted_badge()
+    assert 'add-on-badges' in selenium.current_url
+
+
+@pytest.mark.nondestructive
+def test_experimental_addon(selenium, base_url, variables):
+    extension = variables['experimental_addon']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url)
+    assert addon.experimental_badge.is_displayed()
+
+
+@pytest.mark.nondestructive
 def test_lower_firefox_incompatibility(selenium, base_url, variables):
     extension = variables['lower_firefox_version']
     selenium.get(f'{base_url}/addon/{extension}')
