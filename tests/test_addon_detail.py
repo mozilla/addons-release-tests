@@ -1,5 +1,7 @@
 import pytest
 
+from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.common import by
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as expected
 
@@ -39,6 +41,22 @@ def test_addon_detail_by_firefox_badge(selenium, base_url, variables):
     assert 'By Firefox' in addon.promoted_badge_category
     # checks that the badge redirects to the correct sumo article
     addon.click_promoted_badge()
+    assert 'add-on-badges' in selenium.current_url
+
+
+@pytest.mark.nondestructive
+def test_non_promoted_addon(selenium, base_url, variables):
+    extension = variables['experimental_addon']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url)
+    # check that the Promoted badge is not displayed
+    with pytest.raises(NoSuchElementException):
+        selenium.find_element_by_class_name('PromotedBadge-large')
+    # checks the presence of an install warning
+    assert addon.install_warning.is_displayed()
+    assert variables['install_warning_message'] in \
+        addon.install_warning_message
+    addon.click_install_warning_button()
     assert 'add-on-badges' in selenium.current_url
 
 
