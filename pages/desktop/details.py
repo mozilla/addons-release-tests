@@ -18,6 +18,9 @@ class Detail(Base):
     _addon_icon_locator = (By.CLASS_NAME, 'Addon-icon-image')
     _author_locator = (By.CSS_SELECTOR, '.AddonTitle-author a')
     _summary_locator = (By.CLASS_NAME, 'Addon-summary')
+    _install_warning_locator = (By.CLASS_NAME, 'InstallWarning')
+    _install_warning_text_locator = (By.CSS_SELECTOR, '.InstallWarning p')
+    _install_warning_button_locator = (By.CSS_SELECTOR, '.InstallWarning a')
 
     def wait_for_page_to_load(self):
         self.wait.until(
@@ -84,6 +87,23 @@ class Detail(Base):
     @property
     def summary(self):
         return self.find_element(*self._summary_locator)
+
+    @property
+    def install_warning(self):
+        return self.find_element(*self._install_warning_locator)
+
+    @property
+    def install_warning_message(self):
+        return self.find_element(*self._install_warning_text_locator).text
+
+    def click_install_warning_button(self):
+        # clicks on the install warning and waits for the sumo page to load
+        self.find_element(*self._install_warning_button_locator).click()
+        self.wait.until(expected.number_of_windows_to_be(2))
+        new_tab = self.selenium.window_handles[1]
+        self.selenium.switch_to_window(new_tab)
+        self.wait.until(expected.visibility_of_element_located(
+            (By.CLASS_NAME, 'sumo-page-heading')))
 
     @property
     def contribute(self):
