@@ -1,7 +1,6 @@
 import pytest
 
 from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.common import by
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as expected
 
