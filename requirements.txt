@@ -24,7 +24,7 @@ lazy-object-proxy==1.6.0
 mccabe==0.6.1
 more-itertools==8.7.0
 networkx==2.5.1
-numpy==1.20.2
+numpy==1.20.3
 packaging==20.9
 pathspec==0.8.1
 pluggy==0.13.1
