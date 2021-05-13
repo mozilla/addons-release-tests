@@ -135,7 +135,7 @@ class Detail(Base):
     class Permissions(Region):
         _permissions_header_locator = (By.CSS_SELECTOR, '.PermissionsCard header')
         _permissions_list_locator = (By.CSS_SELECTOR, '.PermissionsCard-list--required li')
-        _permissions_learn_more_locator = (By.CLASS_NAME, 'PermissionCard-learn-more')
+        _permissions_learn_more_locator = (By.CLASS_NAME, 'PermissionsCard-learn-more')
 
         @property
         def permissions_card_header(self):
