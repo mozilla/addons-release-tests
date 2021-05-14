@@ -5,6 +5,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as expected
 
 from pages.desktop.details import Detail
+from pages.desktop.users import User
 
 
 @pytest.mark.nondestructive
@@ -17,6 +18,19 @@ def test_extension_meta_card(selenium, base_url, variables):
     assert addon.addon_icon.is_displayed()
     assert addon.authors.is_displayed()
     assert addon.summary.is_displayed()
+
+
+@pytest.mark.nondestructive
+def test_detail_author_links(selenium, base_url, variables):
+    extension = variables['detail_extension_slug']
+    selenium.get(f'{base_url}/addon/{extension}')
+    # read the add-on author name and clicks on it
+    addon = Detail(selenium, base_url)
+    author = addon.authors.text
+    addon.authors.click()
+    # verify that the author profile page opens
+    user = User(selenium, base_url)
+    assert author in user.user_display_name
 
 
 @pytest.mark.nondestructive

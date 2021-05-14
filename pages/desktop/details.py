@@ -16,7 +16,7 @@ class Detail(Base):
     _promoted_badge_label_locator = (By.CSS_SELECTOR, '.PromotedBadge-large .PromotedBadge-label')
     _experimental_badge_locator = (By.CLASS_NAME, 'Badge-experimental')
     _addon_icon_locator = (By.CLASS_NAME, 'Addon-icon-image')
-    _author_locator = (By.CSS_SELECTOR, '.AddonTitle-author a')
+    _addon_author_locator = (By.CSS_SELECTOR, '.AddonTitle-author a')
     _summary_locator = (By.CLASS_NAME, 'Addon-summary')
     _install_warning_locator = (By.CLASS_NAME, 'InstallWarning')
     _install_warning_text_locator = (By.CSS_SELECTOR, '.InstallWarning p')
@@ -82,7 +82,7 @@ class Detail(Base):
 
     @property
     def authors(self):
-        return self.find_element(*self._author_locator)
+        return self.find_element(*self._addon_author_locator)
 
     @property
     def summary(self):
