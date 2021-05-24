@@ -3,9 +3,11 @@ import pytest
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as expected
+from selenium.webdriver.support.select import Select
 
 from pages.desktop.details import Detail
 from pages.desktop.users import User
+from pages.desktop.reviews import Reviews
 
 
 @pytest.mark.nondestructive
@@ -109,6 +111,106 @@ def test_platform_incompatibility(selenium, base_url, variables):
     assert 'This add-on is not available on your platform.' \
            in addon.incompatibility_message
     assert addon.button_state_disabled
+
+
+@pytest.mark.nondestructive
+def test_addon_with_stats_summary(selenium, base_url, variables):
+    extension = variables['addon_with_stats']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    # checks that a summary of users, reviews and star ratings are present
+    assert addon.stats.stats_users_count > 0
+    assert addon.stats.stats_reviews_count > 0
+    assert addon.stats.addon_star_rating_stats.is_displayed()
+
+
+@pytest.mark.nondestructive
+def test_addon_without_stats_summary(selenium, base_url, variables):
+    extension = variables['addon_without_stats']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    assert 'No Users' in addon.stats.no_user_stats
+    assert 'No Reviews' in addon.stats.no_reviews_stats
+    assert 'Not rated yet' in addon.stats.no_star_ratings
+
+
+@pytest.mark.nondestructive
+def test_stats_reviews_summary_click(selenium, base_url, variables):
+    extension = variables['addon_with_stats']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    stats_review_counts = addon.stats.stats_reviews_count
+    # clicks on reviews stats link to open all reviews page
+    addon.stats.stats_reviews_link.click()
+    reviews = Reviews(selenium, base_url).wait_for_page_to_load()
+    review_page_counts = reviews.reviews_title_count
+    # checks that stats review numbers and all reviews page count match
+    assert stats_review_counts == review_page_counts
+
+
+@pytest.mark.nondestructive
+def test_stats_rating_bars_summary(selenium, base_url, variables):
+    extension = variables['addon_with_stats']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    # checks that there are 5 rating bars displayed, grouped by
+    # ratings scores from 1 to 5 and tha rating counts are also
+    # present for each bar - i.e. 5 elements in each category
+    assert len(addon.stats.bar_grouped_ratings) == 5
+    assert len(addon.stats.rating_bars) == 5
+    assert len(addon.stats.bar_rating_counts) == 5
+
+
+@pytest.mark.nondestructive
+def test_click_stats_rating_bar(selenium, base_url, variables):
+    extension = variables['addon_with_stats']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    # clicks on the first rating bar, verifies that all reviews page opens and
+    # is filtered by the correct rating score, which is 5 stars for the first bar
+    addon.stats.rating_bars[0].click()
+    reviews = Reviews(selenium, base_url).wait_for_page_to_load()
+    select = Select(reviews.filter_by_score)
+    assert 'Show only five-star reviews' in select.first_selected_option.text
+
+
+@pytest.mark.nondestructive
+def test_click_stats_bar_rating_counts(selenium, base_url, variables):
+    extension = variables['addon_with_stats']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    # clicks on the second bar ratings count (number displayed on the right side of the bar)
+    # verifies that all reviews page opens and is filtered by the correct rating score
+    # which should be 4 stars in this case
+    addon.stats.bar_rating_counts[1].click()
+    reviews = Reviews(selenium, base_url).wait_for_page_to_load()
+    select = Select(reviews.filter_by_score)
+    assert 'Show only four-star reviews' in select.first_selected_option.text
+
+
+@pytest.mark.nondestructive
+def test_click_stats_grouped_ratings(selenium, base_url, variables):
+    extension = variables['addon_with_stats']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    # clicks on the grouped ratings number displayed left to a rating bar,
+    # verifies that all reviews page opens and is filtered by the correct rating score
+    addon.stats.bar_grouped_ratings[2].click()
+    reviews = Reviews(selenium, base_url).wait_for_page_to_load()
+    select = Select(reviews.filter_by_score)
+    assert 'Show only three-star reviews' in select.first_selected_option.text
+
+
+@pytest.mark.nondestructive
+def test_stats_rating_counts_compare(selenium, base_url, variables):
+    extension = variables['addon_with_stats']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    # sums up the rating counts displayed next to each stats rating bar
+    bar_count = sum([int(el.text) for el in addon.stats.bar_rating_counts])
+    # reads the total number of reviews displayed in stats summary
+    stats_count = addon.stats.stats_reviews_count
+    assert bar_count == stats_count
 
 
 @pytest.mark.nondestructive
