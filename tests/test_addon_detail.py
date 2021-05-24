@@ -25,11 +25,11 @@ def test_detail_author_links(selenium, base_url, variables):
     extension = variables['detail_extension_slug']
     selenium.get(f'{base_url}/addon/{extension}')
     # read the add-on author name and clicks on it
-    addon = Detail(selenium, base_url)
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
     author = addon.authors.text
     addon.authors.click()
     # verify that the author profile page opens
-    user = User(selenium, base_url)
+    user = User(selenium, base_url).wait_for_page_to_load()
     assert author in user.user_display_name
 
 

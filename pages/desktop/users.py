@@ -1,4 +1,5 @@
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as expected
 
 from pages.desktop.base import Base
 
@@ -6,9 +7,11 @@ from pages.desktop.base import Base
 class User(Base):
     _display_name_locator = (By.CLASS_NAME, 'UserProfile-name')
 
-    def wait_for_user_to_load(self):
+    def wait_for_page_to_load(self):
+        """Waits for various page components to be loaded"""
         self.wait.until(
-            lambda _: self.is_element_displayed(*self._display_name_locator))
+            expected.invisibility_of_element_located(
+                (By.CLASS_NAME, 'LoadingText')))
         return self
 
     @property
