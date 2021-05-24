@@ -16,13 +16,14 @@ class Detail(Base):
     _promoted_badge_label_locator = (By.CSS_SELECTOR, '.PromotedBadge-large .PromotedBadge-label')
     _experimental_badge_locator = (By.CLASS_NAME, 'Badge-experimental')
     _addon_icon_locator = (By.CLASS_NAME, 'Addon-icon-image')
-    _author_locator = (By.CSS_SELECTOR, '.AddonTitle-author a')
+    _addon_author_locator = (By.CSS_SELECTOR, '.AddonTitle-author a')
     _summary_locator = (By.CLASS_NAME, 'Addon-summary')
     _install_warning_locator = (By.CLASS_NAME, 'InstallWarning')
     _install_warning_text_locator = (By.CSS_SELECTOR, '.InstallWarning p')
     _install_warning_button_locator = (By.CSS_SELECTOR, '.InstallWarning a')
 
     def wait_for_page_to_load(self):
+        """Waits for various page components to be loaded"""
         self.wait.until(
             expected.invisibility_of_element_located(
                 (By.CLASS_NAME, 'LoadingText')))
@@ -82,7 +83,7 @@ class Detail(Base):
 
     @property
     def authors(self):
-        return self.find_element(*self._author_locator)
+        return self.find_element(*self._addon_author_locator)
 
     @property
     def summary(self):
