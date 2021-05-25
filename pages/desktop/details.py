@@ -4,6 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as expected
 
 from pages.desktop.base import Base
+from pages.desktop.reviews import Reviews
 
 
 class Detail(Base):
@@ -124,7 +125,7 @@ class Detail(Base):
         _stats_reviews_locator = (By.CSS_SELECTOR, '.AddonMeta dl:nth-child(2)')
         _stats_ratings_locator = (By.CSS_SELECTOR, '.AddonMeta dl:nth-child(3)')
         _grouped_ratings_locator = (By.CSS_SELECTOR, '.RatingsByStar-star a')
-        _rating_bar_locator = (By.CLASS_NAME, 'RatingsByStar-barContainer')
+        _rating_bar_locator = (By.CSS_SELECTOR, '.RatingsByStar-barContainer')
         _rating_bar_count_locator = (By.CSS_SELECTOR, '.RatingsByStar-count a')
 
         @property
@@ -151,7 +152,8 @@ class Detail(Base):
 
         @property
         def stats_reviews_link(self):
-            return self.addon_reviews_stats.find_element(By.CSS_SELECTOR, 'dt a')
+            self.addon_reviews_stats.find_element(By.CSS_SELECTOR, 'dt a').click()
+            return Reviews(self.selenium, self.page.base_url).wait_for_page_to_load()
 
         @property
         def no_reviews_stats(self):
