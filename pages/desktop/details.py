@@ -150,7 +150,6 @@ class Detail(Base):
             count = self.addon_reviews_stats
             return int(count.find_element(By.CSS_SELECTOR, 'dd').text)
 
-        @property
         def stats_reviews_link(self):
             self.addon_reviews_stats.find_element(By.CSS_SELECTOR, 'dt a').click()
             return Reviews(self.selenium, self.page.base_url).wait_for_page_to_load()
