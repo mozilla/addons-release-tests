@@ -3,6 +3,8 @@
   "search_term": "Flagfox",
   "detail_extension_slug": "ghostery",
   "detail_extension_name": "Ghostery - Privacy Ad Blocker",
+  "addon_with_stats": "facebook-container",
+  "addon_without_stats": "trustium",
   "lower_firefox_version": "lower-firefox",
   "higher_firefox_version": "wombarish-humminocon-elamster",
   "incompatible_platform": "thursdayafternoon",

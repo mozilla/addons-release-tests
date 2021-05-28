@@ -4,6 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as expected
 
 from pages.desktop.base import Base
+from pages.desktop.reviews import Reviews
 
 
 class Detail(Base):
@@ -107,12 +108,75 @@ class Detail(Base):
             (By.CLASS_NAME, 'sumo-page-heading')))
 
     @property
+    def stats(self):
+        return self.Stats(self)
+
+    @property
     def contribute(self):
         return self.Contribute(self)
 
     @property
     def permissions(self):
         return self.Permissions(self)
+
+    class Stats(Region):
+        _root_locator = (By.CLASS_NAME, 'AddonMeta')
+        _stats_users_locator = (By.CSS_SELECTOR, '.AddonMeta dl:nth-child(1)')
+        _stats_reviews_locator = (By.CSS_SELECTOR, '.AddonMeta dl:nth-child(2)')
+        _stats_ratings_locator = (By.CSS_SELECTOR, '.AddonMeta dl:nth-child(3)')
+        _grouped_ratings_locator = (By.CSS_SELECTOR, '.RatingsByStar-star a')
+        _rating_bar_locator = (By.CSS_SELECTOR, '.RatingsByStar-barContainer')
+        _rating_bar_count_locator = (By.CSS_SELECTOR, '.RatingsByStar-count a')
+
+        @property
+        def addon_user_stats(self):
+            return self.find_element(*self._stats_users_locator)
+
+        @property
+        def stats_users_count(self):
+            count = self.addon_user_stats.find_element(By.CSS_SELECTOR, 'dd').text
+            return int(count.split()[0].replace(',', ''))
+
+        @property
+        def no_user_stats(self):
+            return self.addon_user_stats.find_element(By.CSS_SELECTOR, 'dt').text
+
+        @property
+        def addon_reviews_stats(self):
+            return self.find_element(*self._stats_reviews_locator)
+
+        @property
+        def stats_reviews_count(self):
+            count = self.addon_reviews_stats
+            return int(count.find_element(By.CSS_SELECTOR, 'dd').text)
+
+        def stats_reviews_link(self):
+            self.addon_reviews_stats.find_element(By.CSS_SELECTOR, 'dt a').click()
+            return Reviews(self.selenium, self.page.base_url).wait_for_page_to_load()
+
+        @property
+        def no_reviews_stats(self):
+            return self.addon_reviews_stats.find_element(By.CSS_SELECTOR, 'dt').text
+
+        @property
+        def addon_star_rating_stats(self):
+            return self.find_element(*self._stats_ratings_locator)
+
+        @property
+        def no_star_ratings(self):
+            return self.addon_star_rating_stats.find_element(By.CSS_SELECTOR, 'dt').text
+
+        @property
+        def bar_grouped_ratings(self):
+            return self.find_elements(*self._grouped_ratings_locator)
+
+        @property
+        def rating_bars(self):
+            return self.find_elements(*self._rating_bar_locator)
+
+        @property
+        def bar_rating_counts(self):
+            return self.find_elements(*self._rating_bar_count_locator)
 
     class Contribute(Region):
         _contribute_header_locator = (By.CSS_SELECTOR, '.ContributeCard header')
