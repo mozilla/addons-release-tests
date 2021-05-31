@@ -272,18 +272,3 @@ def test_filter_promoted(base_url, selenium, sort_attr, title):
         assert result.promoted_badge
         if title != 'Reviewed':
             assert title.title() in result.promoted_badge_label
-
-
-# This test will be moved to a different suite since here the test is inconclusive
-@pytest.mark.skip(reason="This test will be moved to a different suite")
-@pytest.mark.nondestructive
-def test_incompative_extensions_show_as_incompatible(base_url, selenium):
-    page = Home(selenium, base_url).open()
-    term = 'Incompatible platform'
-    results = page.search.search_for(term)
-    time.sleep(2)
-    for item in results.result_list.extensions:
-        if term == item.name:
-            detail_page = item.click()
-            assert detail_page.is_compatible is False
-            # assert detail_page.button_state is False
