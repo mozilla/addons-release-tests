@@ -1,4 +1,5 @@
 import pytest
+import urllib.request
 
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.support.wait import WebDriverWait
@@ -281,6 +282,14 @@ def test_more_info_addon_size(selenium, base_url, variables):
     selenium.get(f'{base_url}/addon/{extension}')
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     assert addon.more_info.addon_size.is_displayed()
+    more_info_size = addon.more_info.addon_size.text.split()[0].replace(' MB', '')
+    # get the file URL and read its size - conversion from bytes to Mb is required
+    file = urllib.request.urlopen(
+        'https://addons.allizom.org/firefox/downloads/file/1097275/ghostery_privacy_ad_blocker-8.5.6-an+fx.xpi')
+    size = file.length/(1024*1024)
+    # transforming the file size in two decimal format and comparing
+    # with the size number displayed in the more info card
+    assert '%.2f' % size == more_info_size
 
 
 @pytest.mark.nondestructive
