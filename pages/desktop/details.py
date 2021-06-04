@@ -119,6 +119,10 @@ class Detail(Base):
     def permissions(self):
         return self.Permissions(self)
 
+    @property
+    def more_info(self):
+        return self.MoreInfo(self)
+
     class Stats(Region):
         _root_locator = (By.CLASS_NAME, 'AddonMeta')
         _stats_users_locator = (By.CSS_SELECTOR, '.AddonMeta dl:nth-child(1)')
@@ -228,3 +232,40 @@ class Detail(Base):
             @property
             def permission_description(self):
                 return self.find_element(*self._permission_description_locator)
+
+    class MoreInfo(Region):
+        _more_info_header_locator = (By.CSS_SELECTOR, '.AddonMoreInfo header')
+        _support_links_locator = (By.CSS_SELECTOR, '.AddonMoreInfo-links a')
+        _version_number_locator = (By.CLASS_NAME, 'AddonMoreInfo-version')
+        _addon_size_locator = (By.CLASS_NAME, 'AddonMoreInfo-filesize')
+        _last_updated_locator = (By.CLASS_NAME, 'AddonMoreInfo-last-updated')
+        _addon_license_locator = (By.CLASS_NAME, 'AddonMoreInfo-license-link')
+        _privacy_policy_locator = (By.CLASS_NAME, 'AddonMoreInfo-privacy-policy-link')
+        _eula_locator = (By.CLASS_NAME, 'AddonMoreInfo-eula')
+        _all_versions_locator = (By.CLASS_NAME, 'AddonMoreInfo-version-history-link')
+
+        @property
+        def more_info_card_header(self):
+            return self.find_element(*self._more_info_header_locator).text
+
+        @property
+        def addon_support_links(self):
+            return self.find_elements(*self._support_links_locator)
+
+        @property
+        def addon_version_number(self):
+            return self.find_element(*self._version_number_locator)
+
+        @property
+        def addon_size(self):
+            return self.find_element(*self._addon_size_locator)
+
+        @property
+        def addon_last_update_date(self):
+            return self.find_element(*self._last_updated_locator)
+
+        def addon_external_license(self):
+            self.find_element(*self._addon_license_locator).click()
+            # clicking on license should open a link outside of AMO
+            self.wait.until(expected.invisibility_of_element_located(
+                self._more_info_header_locator))

@@ -1,4 +1,5 @@
 import pytest
+import urllib.request
 
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.support.wait import WebDriverWait
@@ -239,3 +240,73 @@ def test_extension_permissions(selenium, base_url, variables):
         assert permission.permission_description.is_displayed()
     addon.permissions.click_permissions_button()
     addon.wait_for_current_url('permission-request')
+
+
+@pytest.mark.nondestructive
+def test_more_info_card_header(selenium, base_url, variables):
+    extension = variables['detail_extension_slug']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    assert 'More information' in addon.more_info.more_info_card_header
+
+
+@pytest.mark.parametrize(
+    'count, link',
+    enumerate(['Homepage', 'Support site', 'Support Email'])
+)
+@pytest.mark.nondestructive
+def test_more_info_support_links(selenium, base_url, variables, count, link):
+    extension = variables['detail_extension_slug']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    assert link in addon.more_info.addon_support_links[count].text
+    # excluding 'Support Email' since it doesn't open a new page when
+    # clicked; this is a mailto link which is not handled by the browser
+    if count != 2:
+        addon.more_info.addon_support_links[count].click()
+        # opens the homepage/support page provided by the developer
+        addon.wait_for_current_url('ghostery.com')
+
+
+@pytest.mark.nondestructive
+def test_more_info_version_number(selenium, base_url, variables):
+    extension = variables['detail_extension_slug']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    assert addon.more_info.addon_version_number.is_displayed()
+
+
+@pytest.mark.nondestructive
+def test_more_info_addon_size(selenium, base_url, variables):
+    extension = variables['detail_extension_slug']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    assert addon.more_info.addon_size.is_displayed()
+    more_info_size = addon.more_info.addon_size.text.split()[0].replace(' MB', '')
+    # get the file URL and read its size - conversion from bytes to Mb is required
+    file = urllib.request.urlopen(
+        'https://addons.allizom.org/firefox/downloads/file/1097275/ghostery_privacy_ad_blocker-8.5.6-an+fx.xpi')
+    size = file.length/(1024*1024)
+    # transforming the file size in two decimal format and comparing
+    # with the size number displayed in the more info card
+    assert '%.2f' % size == more_info_size
+
+
+@pytest.mark.nondestructive
+def test_more_info_addon_last_update(selenium, base_url, variables):
+    extension = variables['detail_extension_slug']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    assert addon.more_info.addon_last_update_date.is_displayed()
+
+
+@pytest.mark.nondestructive
+def test_more_info_external_license(selenium, base_url, variables):
+    extension = variables['addon_without_stats']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    addon.more_info.addon_external_license()
+    # checks that redirection to an external page happens
+    assert variables['base_url'] not in selenium.current_url
+
+
