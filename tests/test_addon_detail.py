@@ -71,7 +71,7 @@ def test_non_promoted_addon(selenium, base_url, variables):
     # checks the presence of an install warning
     assert addon.install_warning.is_displayed()
     assert variables['install_warning_message'] in \
-        addon.install_warning_message
+           addon.install_warning_message
     addon.click_install_warning_button()
     assert 'add-on-badges' in selenium.current_url
 
@@ -219,7 +219,7 @@ def test_contribute_button(selenium, base_url, variables):
     selenium.get(f'{base_url}/addon/{extension}')
     addon = Detail(selenium, base_url)
     assert 'Support this developer' in addon.contribute.contribute_card_header
-    assert variables['contribute_card_summary'] in\
+    assert variables['contribute_card_summary'] in \
            addon.contribute.contribute_card_content
     addon.contribute.click_contribute_button()
     # verifies that utm params are passed from AMO to the external contribute site
@@ -286,7 +286,7 @@ def test_more_info_addon_size(selenium, base_url, variables):
     # get the file URL and read its size - conversion from bytes to Mb is required
     file = urllib.request.urlopen(
         'https://addons.allizom.org/firefox/downloads/file/1097275/ghostery_privacy_ad_blocker-8.5.6-an+fx.xpi')
-    size = file.length/(1024*1024)
+    size = file.length / (1024 * 1024)
     # transforming the file size in two decimal format and comparing
     # with the size number displayed in the more info card
     assert '%.2f' % size == more_info_size
@@ -351,7 +351,7 @@ def test_more_info_eula(selenium, base_url, variables):
         eula = addon.more_info.addon_eula()
         # checks that the AMO eula page opens and has the correct content
         assert 'End-User License Agreement for Ghostery - Privacy Ad Blocker' in \
-            eula.custom_licence_and_privacy_header
+               eula.custom_licence_and_privacy_header
         assert eula.custom_licence_and_privacy_text.is_displayed()
         assert eula.custom_licence_and_privacy_summary_card.is_displayed()
     except NoSuchElementException:
@@ -371,8 +371,3 @@ def test_compare_more_info_latest_version(selenium, base_url, variables):
     # matches the latest version number present in all versions page
     latest_version = all_versions.latest_version_number
     assert more_info_version == latest_version
-
-
-
-
-
