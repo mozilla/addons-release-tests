@@ -7,15 +7,15 @@ from .base import Base
 
 class Categories(Base):
 
-    URL_TEMPLATE = 'extensions/categories/'
+    URL_TEMPLATE = "extensions/categories/"
 
-    _categories_locator = (By.CLASS_NAME, 'Categories-item')
-    _mobile_categories_locator = (By.CLASS_NAME, 'LandingPage-button')
+    _categories_locator = (By.CLASS_NAME, "Categories-item")
+    _mobile_categories_locator = (By.CLASS_NAME, "LandingPage-button")
 
     def wait_for_page_to_load(self):
         self.wait.until(
-            expected.invisibility_of_element_located(
-                (By.CLASS_NAME, 'LoadingText')))
+            expected.invisibility_of_element_located((By.CLASS_NAME, "LoadingText"))
+        )
 
     @property
     def category_list(self):
@@ -24,7 +24,7 @@ class Categories(Base):
 
     class CategoryItem(Region):
 
-        _link_locator = (By.CLASS_NAME, 'Categories-link')
+        _link_locator = (By.CLASS_NAME, "Categories-link")
 
         @property
         def name(self):
@@ -36,4 +36,5 @@ class Categories(Base):
             else:
                 self.find_element(*self._link_locator).click()
             from .category import Category
+
             return Category(self.selenium, self.page)

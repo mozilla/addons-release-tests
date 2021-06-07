@@ -9,21 +9,21 @@ from pages.desktop.search import Search
 def test_click_header_explore(base_url, selenium):
     page = Home(selenium, base_url).open()
     page.header.click_explore()
-    assert 'Add-ons for Firefox' in selenium.title
+    assert "Add-ons for Firefox" in selenium.title
 
 
 @pytest.mark.nondestructive
 def test_click_header_extensions(base_url, selenium):
     page = Home(selenium, base_url).open()
     ext_page = page.header.click_extensions()
-    assert 'Extensions' in ext_page.title
+    assert "Extensions" in ext_page.title
 
 
 @pytest.mark.nondestructive
 def test_click_header_themes(base_url, selenium):
     page = Home(selenium, base_url).open()
     themes_page = page.header.click_themes()
-    assert 'Themes' in themes_page.text
+    assert "Themes" in themes_page.text
 
 
 @pytest.mark.nondestructive
@@ -38,16 +38,14 @@ def test_logo_routes_to_home(base_url, selenium):
 def test_browse_all_button_loads_correct_page(base_url, selenium):
     page = Home(selenium, base_url).open()
     page.recommended_extensions.browse_all()
-    assert 'type=extension' in selenium.current_url
+    assert "type=extension" in selenium.current_url
     search_page = Search(selenium, base_url)
     for result in search_page.result_list.extensions:
         assert result.promoted_badge
 
 
 @pytest.mark.skip(reason="this test requires more optimization")
-@pytest.mark.parametrize(
-    'i, page_url',
-    enumerate(['language-tools', 'android']))
+@pytest.mark.parametrize("i, page_url", enumerate(["language-tools", "android"]))
 @pytest.mark.nondestructive
 def test_more_dropdown_navigates_correctly(base_url, selenium, i, page_url):
     page = Home(selenium, base_url).open()
@@ -56,21 +54,23 @@ def test_more_dropdown_navigates_correctly(base_url, selenium, i, page_url):
 
 
 @pytest.mark.parametrize(
-    'count, category',
-    enumerate([
-        'Abstract',
-        'Nature',
-        'Film',
-        'Scenery',
-        'Music',
-        'Seasonal',
-    ])
+    "count, category",
+    enumerate(
+        [
+            "Abstract",
+            "Nature",
+            "Film",
+            "Scenery",
+            "Music",
+            "Seasonal",
+        ]
+    ),
 )
 @pytest.mark.nondestructive
 def test_theme_categories_shelf(base_url, selenium, count, category):
     page = Home(selenium, base_url).open()
     # verifying the elements present in the homepage Theme Category shelf
-    assert 'Change the way Firefox looks' in page.theme_category.shelf_summary
+    assert "Change the way Firefox looks" in page.theme_category.shelf_summary
     categories = page.theme_category.list
     categories[count].category_icon.is_displayed()
     assert category in categories[count].name
@@ -149,7 +149,13 @@ def test_products_footer_links(base_url, selenium, count, links):
 
 @pytest.mark.parametrize(
     "count, links",
-    enumerate(["twitter.com", "instagram.com", "youtube.com", ]),
+    enumerate(
+        [
+            "twitter.com",
+            "instagram.com",
+            "youtube.com",
+        ]
+    ),
 )
 @pytest.mark.nondestructive
 def test_social_footer_links(base_url, selenium, count, links):
@@ -160,7 +166,13 @@ def test_social_footer_links(base_url, selenium, count, links):
 
 @pytest.mark.parametrize(
     "count, links",
-    enumerate(["privacy/websites/", "privacy/websites/", "legal/terms/mozilla", ]),
+    enumerate(
+        [
+            "privacy/websites/",
+            "privacy/websites/",
+            "legal/terms/mozilla",
+        ]
+    ),
 )
 @pytest.mark.nondestructive
 def test_legal_footer_links(base_url, selenium, count, links):
@@ -172,7 +184,7 @@ def test_legal_footer_links(base_url, selenium, count, links):
 @pytest.mark.nondestructive
 def test_change_language(base_url, selenium):
     page = Home(selenium, base_url).open()
-    value = 'Deutsch'
+    value = "Deutsch"
     page.footer.language_picker(value)
     assert "de/firefox" in selenium.current_url
     assert "Erweiterungen" in page.header.extensions_text

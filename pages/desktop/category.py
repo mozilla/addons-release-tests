@@ -7,13 +7,13 @@ from .base import Base
 
 class Category(Base):
 
-    _root_locator = (By.CLASS_NAME, 'Category')
-    _category_header_locator = (By.CLASS_NAME, 'CategoryHeader')
+    _root_locator = (By.CLASS_NAME, "Category")
+    _category_header_locator = (By.CLASS_NAME, "CategoryHeader")
 
     def wait_for_page_to_load(self):
         self.wait.until(
-            expected.invisibility_of_element_located(
-                (By.CLASS_NAME, 'LoadingText')))
+            expected.invisibility_of_element_located((By.CLASS_NAME, "LoadingText"))
+        )
         return self
 
     @property
@@ -22,7 +22,7 @@ class Category(Base):
 
     class Header(Region):
 
-        _category_name_locator = (By.CLASS_NAME, 'SearchContextCard-header')
+        _category_name_locator = (By.CLASS_NAME, "SearchContextCard-header")
 
         @property
         def name(self):

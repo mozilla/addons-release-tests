@@ -5,14 +5,14 @@ from pages.desktop.base import Base
 
 
 class Reviews(Base):
-    _review_count_title_locator = (By.CLASS_NAME, 'AddonReviewList-reviewCount')
-    _filter_by_score_locator = (By.CLASS_NAME, 'AddonReviewList-filterByScoreSelector')
+    _review_count_title_locator = (By.CLASS_NAME, "AddonReviewList-reviewCount")
+    _filter_by_score_locator = (By.CLASS_NAME, "AddonReviewList-filterByScoreSelector")
 
     def wait_for_page_to_load(self):
         """Waits for various page components to be loaded"""
         self.wait.until(
-            expected.invisibility_of_element_located(
-                (By.CLASS_NAME, 'LoadingText')))
+            expected.invisibility_of_element_located((By.CLASS_NAME, "LoadingText"))
+        )
         return self
 
     @property
@@ -22,7 +22,7 @@ class Reviews(Base):
     @property
     def reviews_title_count(self):
         count = self.reviews_page_title
-        return int(count.split()[0].replace(' reviews', ''))
+        return int(count.split()[0].replace(" reviews", ""))
 
     @property
     def filter_by_score(self):

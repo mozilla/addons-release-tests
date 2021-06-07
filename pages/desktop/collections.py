@@ -6,11 +6,13 @@ from .base import Base
 
 class Collections(Base):
     """Collections page."""
-    _item_locator = (By.CSS_SELECTOR, '.items > div')
+
+    _item_locator = (By.CSS_SELECTOR, ".items > div")
 
     def wait_for_page_to_load(self):
-        self.wait.until(lambda _: len(self.collections) > 0 and
-                        self.collections[0].name)
+        self.wait.until(
+            lambda _: len(self.collections) > 0 and self.collections[0].name
+        )
         return self
 
     @property
@@ -20,7 +22,8 @@ class Collections(Base):
 
     class Collection(Region):
         """Represents an individual collection."""
-        _name_locator = (By.CSS_SELECTOR, '.info > h3')
+
+        _name_locator = (By.CSS_SELECTOR, ".info > h3")
 
         @property
         def name(self):

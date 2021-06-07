@@ -10,16 +10,16 @@ from selenium.webdriver.support import expected_conditions as EC
 
 
 class Base(Page):
-    _url = '{base_url}/{locale}'
-    _amo_header = (By.CLASS_NAME, 'Header')
+    _url = "{base_url}/{locale}"
+    _amo_header = (By.CLASS_NAME, "Header")
 
-    def __init__(self, selenium, base_url, locale='en-US', **kwargs):
+    def __init__(self, selenium, base_url, locale="en-US", **kwargs):
         super(Base, self).__init__(
-            selenium, base_url, locale=locale, timeout=30, **kwargs)
+            selenium, base_url, locale=locale, timeout=30, **kwargs
+        )
 
     def wait_for_page_to_load(self):
-        self.wait.until(
-            lambda _: self.find_element(*self._amo_header).is_displayed())
+        self.wait.until(lambda _: self.find_element(*self._amo_header).is_displayed())
         return self
 
     def wait_for_title_update(self, term):
@@ -46,8 +46,14 @@ class Base(Page):
         try:
             return self.is_element_displayed(*self.header._user_locator)
         except StaleElementReferenceException:
-            self.wait.until(EC.element_to_be_clickable(
-                (By.CSS_SELECTOR, '.Header-user-and-external-links .DropdownMenu-button-text')))
+            self.wait.until(
+                EC.element_to_be_clickable(
+                    (
+                        By.CSS_SELECTOR,
+                        ".Header-user-and-external-links .DropdownMenu-button-text",
+                    )
+                )
+            )
             return self.is_element_displayed(*self.header._user_locator)
 
     @property
@@ -57,14 +63,13 @@ class Base(Page):
     def login(self, user):
         fxa = self.header.click_login()
         # wait for the FxA login page to load
-        self.wait.until(EC.visibility_of_element_located((
-            By.NAME, 'email')))
+        self.wait.until(EC.visibility_of_element_located((By.NAME, "email")))
         fxa.account(user)
         # wait for transition between FxA page and AMO (URL and page)
-        self.wait.until(EC.url_contains('addons'))
+        self.wait.until(EC.url_contains("addons"))
         WebDriverWait(self.selenium, 30).until(
-            EC.invisibility_of_element_located(
-                (By.CLASS_NAME, 'LoadingText')))
+            EC.invisibility_of_element_located((By.CLASS_NAME, "LoadingText"))
+        )
         # assess that the user has been logged in
         self.wait.until(lambda _: self.logged_in)
 
@@ -73,30 +78,45 @@ class Base(Page):
 
 
 class Header(Region):
-    _root_locator = (By.CLASS_NAME, 'Header')
-    _header_title_locator = (By.CLASS_NAME, 'Header-title')
-    _explore_locator = (By.CSS_SELECTOR, '.SectionLinks > li:nth-child(1) \
-                        > a:nth-child(1)')
-    _firefox_logo_locator = (By.CLASS_NAME, 'Header-title')
-    _extensions_locator = (By.CSS_SELECTOR, '.SectionLinks \
-                           > li:nth-child(2) > a:nth-child(1)')
-    _login_locator = (By.CLASS_NAME, 'Header-authenticate-button')
+    _root_locator = (By.CLASS_NAME, "Header")
+    _header_title_locator = (By.CLASS_NAME, "Header-title")
+    _explore_locator = (
+        By.CSS_SELECTOR,
+        ".SectionLinks > li:nth-child(1) \
+                        > a:nth-child(1)",
+    )
+    _firefox_logo_locator = (By.CLASS_NAME, "Header-title")
+    _extensions_locator = (
+        By.CSS_SELECTOR,
+        ".SectionLinks \
+                           > li:nth-child(2) > a:nth-child(1)",
+    )
+    _login_locator = (By.CLASS_NAME, "Header-authenticate-button")
     _account_dropdown_locator = (
-        By.CSS_SELECTOR, '.DropdownMenu.Header-authenticate-button .DropdownMenu-items')
+        By.CSS_SELECTOR,
+        ".DropdownMenu.Header-authenticate-button .DropdownMenu-items",
+    )
     _logout_locator = (
-        By.CSS_SELECTOR, '.DropdownMenu-items .Header-logout-button button')
+        By.CSS_SELECTOR,
+        ".DropdownMenu-items .Header-logout-button button",
+    )
     _more_dropdown_locator = (
         By.CSS_SELECTOR,
-        '.Header-SectionLinks .SectionLinks-dropdown')
-    _more_dropdown_link_locator = (By.CSS_SELECTOR, '.DropdownMenuItem a')
-    _themes_locator = (By.CSS_SELECTOR, '.SectionLinks > li:nth-child(3) > \
-                       a:nth-child(1)')
+        ".Header-SectionLinks .SectionLinks-dropdown",
+    )
+    _more_dropdown_link_locator = (By.CSS_SELECTOR, ".DropdownMenuItem a")
+    _themes_locator = (
+        By.CSS_SELECTOR,
+        ".SectionLinks > li:nth-child(3) > \
+                       a:nth-child(1)",
+    )
     _user_locator = (
         By.CSS_SELECTOR,
-        '.Header-user-and-external-links .DropdownMenu-button-text')
-    _devhub_locator = (By.CLASS_NAME, 'Header-developer-hub-link')
-    _extension_workshop_locator = (By.CLASS_NAME, 'Header-extension-workshop-link')
-    _active_link_locator = (By.CLASS_NAME, 'SectionLinks-link--active')
+        ".Header-user-and-external-links .DropdownMenu-button-text",
+    )
+    _devhub_locator = (By.CLASS_NAME, "Header-developer-hub-link")
+    _extension_workshop_locator = (By.CLASS_NAME, "Header-extension-workshop-link")
+    _active_link_locator = (By.CLASS_NAME, "SectionLinks-link--active")
 
     def click_explore(self):
         self.find_element(*self._firefox_logo_locator).click()
@@ -104,8 +124,8 @@ class Header(Region):
     def click_extensions(self):
         self.find_element(*self._extensions_locator).click()
         from pages.desktop.extensions import Extensions
-        return Extensions(
-            self.selenium, self.page.base_url).wait_for_page_to_load()
+
+        return Extensions(self.selenium, self.page.base_url).wait_for_page_to_load()
 
     @property
     def extensions_text(self):
@@ -114,17 +134,19 @@ class Header(Region):
     def click_themes(self):
         self.find_element(*self._themes_locator).click()
         from pages.desktop.themes import Themes
-        return Themes(
-            self.selenium, self.page.base_url).wait_for_page_to_load()
+
+        return Themes(self.selenium, self.page.base_url).wait_for_page_to_load()
 
     def click_title(self):
         self.find_element(*self._header_title_locator).click()
         from pages.desktop.home import Home
+
         return Home(self.selenium, self.page.base_url).wait_for_page_to_load()
 
     def click_login(self):
         self.find_element(*self._login_locator).click()
         from pages.desktop.login import Login
+
         return Login(self.selenium, self.page.base_url)
 
     @property
@@ -133,9 +155,17 @@ class Header(Region):
         return self.find_element(*self._user_locator)
 
     def click_logout(self):
-        user = WebDriverWait(self.selenium, 30, ignored_exceptions=StaleElementReferenceException) \
-            .until(EC.element_to_be_clickable((By.CSS_SELECTOR, '.Header-user-and-external-links \
-            .DropdownMenu-button-text')))
+        user = WebDriverWait(
+            self.selenium, 30, ignored_exceptions=StaleElementReferenceException
+        ).until(
+            EC.element_to_be_clickable(
+                (
+                    By.CSS_SELECTOR,
+                    ".Header-user-and-external-links \
+            .DropdownMenu-button-text",
+                )
+            )
+        )
         dropdown = self.find_element(*self._account_dropdown_locator)
         logout = self.find_element(*self._logout_locator)
         action = ActionChains(self.selenium)
@@ -147,8 +177,7 @@ class Header(Region):
         action.click()
         action.pause(3)
         action.perform()
-        self.wait.until(lambda s: self.is_element_displayed(
-            *self._login_locator))
+        self.wait.until(lambda s: self.is_element_displayed(*self._login_locator))
 
     def more_menu(self, item=None):
         menu = self.find_element(*self._more_dropdown_locator)
@@ -177,23 +206,29 @@ class Header(Region):
         self.wait.until(EC.number_of_windows_to_be(2))
         new_tab = self.selenium.window_handles[1]
         self.selenium.switch_to_window(new_tab)
-        self.wait.until(EC.visibility_of_element_located((
-            By.CLASS_NAME, 'logo')))
+        self.wait.until(EC.visibility_of_element_located((By.CLASS_NAME, "logo")))
 
     @property
     def is_active_link(self):
         return self.find_element(*self._active_link_locator).text
 
     class SearchBox(Region):
-        _root_locator = (By.CLASS_NAME, 'AutoSearchInput')
-        _query_field_locator = (By.ID, 'AutoSearchInput-q')
+        _root_locator = (By.CLASS_NAME, "AutoSearchInput")
+        _query_field_locator = (By.ID, "AutoSearchInput-q")
         _search_suggestions_list_locator = (
-            By.CLASS_NAME, 'AutoSearchInput-suggestions-list')
+            By.CLASS_NAME,
+            "AutoSearchInput-suggestions-list",
+        )
         _search_suggestions_item_locator = (
-            By.CLASS_NAME, 'AutoSearchInput-suggestions-item')
-        _search_textbox_locator = (By.CLASS_NAME, 'AutoSearchInput-query')
-        _search_item_name = (By.CSS_SELECTOR, '.SearchSuggestion-name')
-        _highlighted_selected_locator = (By.CSS_SELECTOR, '.AutoSearchInput-suggestions-item--highlighted')
+            By.CLASS_NAME,
+            "AutoSearchInput-suggestions-item",
+        )
+        _search_textbox_locator = (By.CLASS_NAME, "AutoSearchInput-query")
+        _search_item_name = (By.CSS_SELECTOR, ".SearchSuggestion-name")
+        _highlighted_selected_locator = (
+            By.CSS_SELECTOR,
+            ".AutoSearchInput-suggestions-item--highlighted",
+        )
 
         @property
         def search_field(self):
@@ -207,24 +242,25 @@ class Header(Region):
             if execute:
                 textbox.send_keys(Keys.ENTER)
                 from pages.desktop.search import Search
+
                 return Search(self.selenium, self.page).wait_for_page_to_load()
             WebDriverWait(self.selenium, 30).until(
-                EC.invisibility_of_element_located(
-                    (By.CLASS_NAME, 'LoadingText')))
+                EC.invisibility_of_element_located((By.CLASS_NAME, "LoadingText"))
+            )
             return self.search_suggestions
 
         @property
         def search_suggestions(self):
             self.wait.until(
                 lambda _: self.is_element_displayed(
-                    *self._search_suggestions_list_locator)
+                    *self._search_suggestions_list_locator
+                )
             )
             WebDriverWait(self.selenium, 30).until(
-                EC.invisibility_of_element_located(
-                    (By.CLASS_NAME, 'LoadingText')))
+                EC.invisibility_of_element_located((By.CLASS_NAME, "LoadingText"))
+            )
             el_list = self.find_element(*self._search_suggestions_list_locator)
-            items = el_list.find_elements(
-                *self._search_suggestions_item_locator)
+            items = el_list.find_elements(*self._search_suggestions_item_locator)
             return [self.SearchSuggestionItem(self.page, el) for el in items]
 
         @property
@@ -232,9 +268,9 @@ class Header(Region):
             return self.find_element(*self._highlighted_selected_locator)
 
         class SearchSuggestionItem(Region):
-            _item_name_locator = (By.CLASS_NAME, 'SearchSuggestion-name')
-            _item_icon_locator = (By.CLASS_NAME, 'SearchSuggestion-icon')
-            _promoted_icon_locator = (By.CSS_SELECTOR, '.IconPromotedBadge > span')
+            _item_name_locator = (By.CLASS_NAME, "SearchSuggestion-name")
+            _item_icon_locator = (By.CLASS_NAME, "SearchSuggestion-icon")
+            _promoted_icon_locator = (By.CSS_SELECTOR, ".IconPromotedBadge > span")
 
             @property
             def name(self):
@@ -247,9 +283,8 @@ class Header(Region):
             @property
             def promoted_icon(self):
                 WebDriverWait(self.selenium, 10).until(
-                    EC.visibility_of_element_located(
-                        self._promoted_icon_locator),
-                    message='Promoted icon was not found for these search suggestions'
+                    EC.visibility_of_element_located(self._promoted_icon_locator),
+                    message="Promoted icon was not found for these search suggestions",
                 )
                 return self.find_element(*self._promoted_icon_locator).text
 
@@ -257,19 +292,20 @@ class Header(Region):
             def select(self):
                 self.root.click()
                 from pages.desktop.details import Detail
+
                 return Detail(self.selenium, self.page).wait_for_page_to_load()
 
 
 class Footer(Region):
-    _root_locator = (By.CSS_SELECTOR, '.Footer-wrapper')
-    _footer_amo_links_locator = (By.CSS_SELECTOR, '.Footer-amo-links')
-    _footer_browsers_links_locator = (By.CSS_SELECTOR, '.Footer-browsers-links')
-    _footer_products_links_locator = (By.CSS_SELECTOR, '.Footer-product-links')
-    _footer_mozilla_link_locator = (By.CSS_SELECTOR, '.Footer-mozilla-link')
-    _footer_social_locator = (By.CSS_SELECTOR, '.Footer-links-social')
-    _footer_links_locator = (By.CSS_SELECTOR, '.Footer-links li a')
-    _footer_legal_locator = (By.CSS_SELECTOR, '.Footer-legal-links ')
-    _language_picker_locator = (By.ID, 'lang-picker')
+    _root_locator = (By.CSS_SELECTOR, ".Footer-wrapper")
+    _footer_amo_links_locator = (By.CSS_SELECTOR, ".Footer-amo-links")
+    _footer_browsers_links_locator = (By.CSS_SELECTOR, ".Footer-browsers-links")
+    _footer_products_links_locator = (By.CSS_SELECTOR, ".Footer-product-links")
+    _footer_mozilla_link_locator = (By.CSS_SELECTOR, ".Footer-mozilla-link")
+    _footer_social_locator = (By.CSS_SELECTOR, ".Footer-links-social")
+    _footer_links_locator = (By.CSS_SELECTOR, ".Footer-links li a")
+    _footer_legal_locator = (By.CSS_SELECTOR, ".Footer-legal-links ")
+    _language_picker_locator = (By.ID, "lang-picker")
 
     @property
     def addon_links(self):
@@ -293,12 +329,12 @@ class Footer(Region):
     @property
     def social_links(self):
         element = self.find_element(*self._footer_social_locator)
-        return element.find_elements(By.CSS_SELECTOR, 'li a')
+        return element.find_elements(By.CSS_SELECTOR, "li a")
 
     @property
     def legal_links(self):
         element = self.find_element(*self._footer_legal_locator)
-        return element.find_elements(By.CSS_SELECTOR, 'li a')
+        return element.find_elements(By.CSS_SELECTOR, "li a")
 
     def language_picker(self, value):
         select = Select(self.find_element(*self._language_picker_locator))

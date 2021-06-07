@@ -4,15 +4,20 @@ from pages.desktop.details import Detail
 
 
 @pytest.mark.nondestructive
-@pytest.mark.parametrize('addon_type, name_type', [
-    ['flagfox', 'Flagfox'],
-    ['japanese-tattoo', 'Japanese Tattoo'],
-    ['release-langpack', 'Release Langpack'],
-    ['release_dictionary', 'Release Dictionary']
-])
-def test_addon_install(base_url, selenium, firefox, firefox_notifications, addon_type, name_type):
+@pytest.mark.parametrize(
+    "addon_type, name_type",
+    [
+        ["flagfox", "Flagfox"],
+        ["japanese-tattoo", "Japanese Tattoo"],
+        ["release-langpack", "Release Langpack"],
+        ["release_dictionary", "Release Dictionary"],
+    ],
+)
+def test_addon_install(
+    base_url, selenium, firefox, firefox_notifications, addon_type, name_type
+):
     """Test that navigates to an addon and installs it."""
-    selenium.get(f'{base_url}/addon/{addon_type}')
+    selenium.get(f"{base_url}/addon/{addon_type}")
     addon = Detail(selenium, base_url)
     assert name_type in addon.name
     assert addon.is_compatible
@@ -23,13 +28,11 @@ def test_addon_install(base_url, selenium, firefox, firefox_notifications, addon
     firefox.browser.wait_for_notification(
         firefox_notifications.AddOnInstallComplete
     ).close()
-    assert 'Remove' in addon.button_text
+    assert "Remove" in addon.button_text
     # Reused the 'install()` method although the next step reflects an uninstall action.
     addon.install()
     # using a 'try - except AssertionError' method because the install button text is different for Themes.
     try:
-        assert 'Add to Firefox' in addon.button_text
+        assert "Add to Firefox" in addon.button_text
     except AssertionError:
-        assert 'Install Theme' in addon.button_text
-
-
+        assert "Install Theme" in addon.button_text

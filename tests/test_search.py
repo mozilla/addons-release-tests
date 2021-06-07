@@ -15,7 +15,7 @@ from pages.desktop.search import Search
 @pytest.mark.nondestructive
 def test_search_suggestion_term_is_higher(base_url, selenium, variables):
     page = Home(selenium, base_url).open()
-    term = variables['search_term']
+    term = variables["search_term"]
     suggestions = page.search.search_for(term, execute=False)
     assert suggestions[0].name == term
 
@@ -23,18 +23,20 @@ def test_search_suggestion_term_is_higher(base_url, selenium, variables):
 @pytest.mark.nondestructive
 def test_special_chars_dont_break_suggestions(base_url, selenium, variables):
     page = Home(selenium, base_url).open()
-    term = variables['search_term']
-    special_chars_term = f'{term}%ç√®å'
+    term = variables["search_term"]
+    special_chars_term = f"{term}%ç√®å"
     suggestions = page.search.search_for(special_chars_term, execute=False)
     results = [item.name for item in suggestions]
     assert term in results
 
 
-@pytest.mark.xfail(reason="There is an issue with search on stage - #16610", strict=False)
+@pytest.mark.xfail(
+    reason="There is an issue with search on stage - #16610", strict=False
+)
 @pytest.mark.nondestructive
 def test_uppercase_has_same_suggestions(base_url, selenium, variables):
     page = Home(selenium, base_url).open()
-    term = variables['search_term']
+    term = variables["search_term"]
     first_suggestions_list = page.search.search_for(term, execute=False)
     first_results = [item.name for item in first_suggestions_list]
     page.search.search_field.clear()
@@ -48,21 +50,20 @@ def test_uppercase_has_same_suggestions(base_url, selenium, variables):
 @pytest.mark.nondestructive
 def test_esc_key_closes_suggestion_list(base_url, selenium, variables):
     page = Home(selenium, base_url).open()
-    term = variables['search_term']
+    term = variables["search_term"]
     page.search.search_for(term, execute=False)
     action = ActionChains(selenium)
     # Send ESC key to browser
     action.send_keys(Keys.ESCAPE).perform()
     with pytest.raises(NoSuchElementException):
-        selenium.find_element_by_css_selector(
-            'AutoSearchInput-suggestions-list')
+        selenium.find_element_by_css_selector("AutoSearchInput-suggestions-list")
 
 
 @pytest.mark.skip(reason="this test requires more optimization")
 @pytest.mark.nondestructive
 def test_long_terms_dont_break_suggestions(base_url, selenium):
     page = Home(selenium, base_url).open()
-    term = 'videodo'
+    term = "videodo"
     suggestions = page.search.search_for(term, execute=False)
     # Sleep to let autocomplete update.
     term_max_len = 33
@@ -74,10 +75,10 @@ def test_long_terms_dont_break_suggestions(base_url, selenium):
 @pytest.mark.nondestructive
 def test_suggestions_change_by_query(base_url, selenium):
     page = Home(selenium, base_url).open()
-    term = 'pass'
+    term = "pass"
     suggestions = page.search.search_for(term, execute=False)
     first_suggestions_list = [item.name for item in suggestions]
-    new_term = 'word'
+    new_term = "word"
     suggestions = page.search.search_for(new_term, execute=False)
     # allows for search suggestions to update
     time.sleep(2)
@@ -88,7 +89,7 @@ def test_suggestions_change_by_query(base_url, selenium):
 @pytest.mark.nondestructive
 def test_select_result_with_enter_key(base_url, selenium, variables):
     page = Home(selenium, base_url).open()
-    term = variables['search_term']
+    term = variables["search_term"]
     page.search.search_for(term, execute=False)
     action = ActionChains(selenium)
     action.send_keys(Keys.ARROW_DOWN).send_keys(Keys.ENTER).perform()
@@ -102,7 +103,7 @@ def test_select_result_with_enter_key(base_url, selenium, variables):
 @pytest.mark.nondestructive
 def test_select_result_with_click(base_url, selenium, variables):
     page = Home(selenium, base_url).open()
-    term = variables['search_term']
+    term = variables["search_term"]
     suggestions = page.search.search_for(term, execute=False)
     result = suggestions[0].root
     action = ActionChains(selenium)
@@ -117,7 +118,7 @@ def test_select_result_with_click(base_url, selenium, variables):
 @pytest.mark.nondestructive
 def test_suggestion_icon_is_displayed(base_url, selenium, variables):
     page = Home(selenium, base_url).open()
-    term = variables['search_term']
+    term = variables["search_term"]
     suggestions = page.search.search_for(term, execute=False)
     assert suggestions[0].addon_icon.is_displayed()
 
@@ -125,15 +126,15 @@ def test_suggestion_icon_is_displayed(base_url, selenium, variables):
 @pytest.mark.nondestructive
 def test_recommended_icon_is_displayed(base_url, selenium, variables):
     page = Home(selenium, base_url).open()
-    term = variables['search_term']
+    term = variables["search_term"]
     suggestions = page.search.search_for(term, execute=False)
-    assert 'Recommended' in suggestions[0].promoted_icon
+    assert "Recommended" in suggestions[0].promoted_icon
 
 
 @pytest.mark.nondestructive
 def test_selected_result_is_highlighted(base_url, selenium, variables):
     page = Home(selenium, base_url).open()
-    term = variables['search_term']
+    term = variables["search_term"]
     suggestions = page.search.search_for(term, execute=False)
     result = suggestions[0].root
     action = ActionChains(selenium)
@@ -163,66 +164,64 @@ def test_search_loads_correct_results(base_url, selenium):
 @pytest.mark.nondestructive
 def test_blank_search_loads_results(base_url, selenium):
     page = Home(selenium, base_url).open()
-    search_page = page.search.search_for('', execute=True)
+    search_page = page.search.search_for("", execute=True)
     results = search_page.result_list.extensions
     assert len(results) == 25
     for result in results:
         assert result.promoted_badge
-    sort = 'users'
-    results = [getattr(result, sort)
-               for result in search_page.result_list.extensions]
+    sort = "users"
+    results = [getattr(result, sort) for result in search_page.result_list.extensions]
     assert sorted(results, reverse=True) == results
 
 
 @pytest.mark.nondestructive
 def test_search_pagination(base_url, selenium):
     page = Home(selenium, base_url).open()
-    search_page = page.search.search_for('', execute=True)
+    search_page = page.search.search_for("", execute=True)
     search_page.next_page()
-    assert '2' in search_page.page_number
+    assert "2" in search_page.page_number
     search_page.previous_page()
-    assert '1' in search_page.page_number
+    assert "1" in search_page.page_number
 
 
 # Tests covering search filtering
 @pytest.mark.nondestructive
 def test_filter_default(base_url, selenium, variables):
     page = Home(selenium, base_url).open()
-    term = variables['search_term']
+    term = variables["search_term"]
     page.search.search_for(term)
     search_page = Search(selenium, base_url)
     select = Select(search_page.filter_by_sort)
-    assert select.first_selected_option.text == 'Relevance'
+    assert select.first_selected_option.text == "Relevance"
     select = Select(search_page.filter_by_type)
-    assert select.first_selected_option.text == 'All'
+    assert select.first_selected_option.text == "All"
     select = Select(search_page.filter_by_badging)
-    assert select.first_selected_option.text == 'Any'
+    assert select.first_selected_option.text == "Any"
 
 
 @pytest.mark.nondestructive
 def test_filter_by_users(base_url, selenium):
     Home(selenium, base_url).open()
-    term = 'fox'
-    sort = 'users'
-    selenium.get(f'{base_url}/search/?&q={term}&sort={sort}')
+    term = "fox"
+    sort = "users"
+    selenium.get(f"{base_url}/search/?&q={term}&sort={sort}")
     search_page = Search(selenium, base_url)
-    results = [getattr(result, sort)
-               for result in search_page.result_list.extensions]
+    results = [getattr(result, sort) for result in search_page.result_list.extensions]
     assert sorted(results, reverse=True) == results
 
 
 @pytest.mark.nondestructive
-@pytest.mark.parametrize('category, sort_attr', [
-    ['Top Rated', 'rating'],
-    ['Trending', 'hotness']])
+@pytest.mark.parametrize(
+    "category, sort_attr", [["Top Rated", "rating"], ["Trending", "hotness"]]
+)
 def test_filter_by_rating_and_hotness(base_url, selenium, category, sort_attr):
     """Test searching for an addon and sorting."""
     Home(selenium, base_url).open()
-    addon_name = 'fox'
-    selenium.get(f'{base_url}/search/?&q={addon_name}&sort={sort_attr}')
+    addon_name = "fox"
+    selenium.get(f"{base_url}/search/?&q={addon_name}&sort={sort_attr}")
     search_page = Search(selenium, base_url)
     results = search_page.result_list.extensions
-    if sort_attr == 'rating':
+    if sort_attr == "rating":
         for result in search_page.result_list.extensions:
             assert result.rating > 4
     else:
@@ -232,11 +231,11 @@ def test_filter_by_rating_and_hotness(base_url, selenium, category, sort_attr):
 @pytest.mark.nondestructive
 def test_filter_extensions(base_url, selenium):
     page = Home(selenium, base_url).open()
-    term = 'fox'
+    term = "fox"
     page.search.search_for(term)
     search_page = Search(selenium, base_url)
     select = Select(search_page.filter_by_type)
-    select.select_by_value('extension')
+    select.select_by_value("extension")
     search_page.wait_for_contextcard_update("extensions")
     assert len(search_page.result_list.themes) == 0
 
@@ -244,20 +243,24 @@ def test_filter_extensions(base_url, selenium):
 @pytest.mark.nondestructive
 def test_filter_themes(base_url, selenium):
     page = Home(selenium, base_url).open()
-    term = 'fox'
+    term = "fox"
     page.search.search_for(term)
     search_page = Search(selenium, base_url)
     select = Select(search_page.filter_by_type)
-    select.select_by_value('statictheme')
+    select.select_by_value("statictheme")
     search_page.wait_for_contextcard_update("themes")
     assert len(search_page.result_list.themes) == 25
 
 
-@pytest.mark.parametrize('sort_attr, title', [
-    ['recommended', 'Recommended'],
-    ['line', 'by Firefox'],
-    ['sponsored,verified', 'Verified'],
-    ['badged', 'Reviewed']])
+@pytest.mark.parametrize(
+    "sort_attr, title",
+    [
+        ["recommended", "Recommended"],
+        ["line", "by Firefox"],
+        ["sponsored,verified", "Verified"],
+        ["badged", "Reviewed"],
+    ],
+)
 @pytest.mark.nondestructive
 def test_filter_promoted(base_url, selenium, sort_attr, title):
     page = Home(selenium, base_url).open()
@@ -266,9 +269,9 @@ def test_filter_promoted(base_url, selenium, sort_attr, title):
     search_page = Search(selenium, base_url)
     select = Select(search_page.filter_by_badging)
     select.select_by_value(sort_attr)
-    search_page.wait_for_contextcard_update('results found')
+    search_page.wait_for_contextcard_update("results found")
     results = search_page.result_list.extensions
     for result in results:
         assert result.promoted_badge
-        if title != 'Reviewed':
+        if title != "Reviewed":
             assert title.title() in result.promoted_badge_label

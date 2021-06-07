@@ -5,9 +5,9 @@ from selenium.webdriver.common.by import By
 
 class Shelves(Region):
 
-    _recommended_addons_locator = (By.CLASS_NAME, 'RecommendedAddons')
-    _top_rated_locator = (By.CLASS_NAME, 'HighlyRatedAddons')
-    _trending_addons_locator = (By.CLASS_NAME, 'TrendingAddons')
+    _recommended_addons_locator = (By.CLASS_NAME, "RecommendedAddons")
+    _top_rated_locator = (By.CLASS_NAME, "HighlyRatedAddons")
+    _trending_addons_locator = (By.CLASS_NAME, "TrendingAddons")
 
     @property
     def recommended_addons(self):
@@ -25,9 +25,9 @@ class Shelves(Region):
         return self.ShelfList(self, el)
 
     class ShelfList(Region):
-        _addon_item_locator = (By.CLASS_NAME, 'SearchResult')
-        _promo_card_header_locator = (By.CLASS_NAME, 'Card-header')
-        _browse_all_locator = (By.CSS_SELECTOR, '.Card-footer-link > a')
+        _addon_item_locator = (By.CLASS_NAME, "SearchResult")
+        _promo_card_header_locator = (By.CLASS_NAME, "Card-header")
+        _browse_all_locator = (By.CSS_SELECTOR, ".Card-footer-link > a")
 
         @property
         def list(self):
@@ -41,13 +41,14 @@ class Shelves(Region):
         def browse_all(self):
             self.find_element(*self._browse_all_locator).click()
             from pages.desktop.search import Search
+
             search = Search(self.selenium, self.page)
             return search.wait_for_page_to_load()
 
         class ShelfDetail(Region):
-            _addon_name_locator = (By.CLASS_NAME, 'SearchResult-name')
-            _addon_icon_locator = (By.CLASS_NAME, 'SearchResult-icon')
-            _addon_users_locator = (By.CLASS_NAME, 'SearchResult-users-text')
+            _addon_name_locator = (By.CLASS_NAME, "SearchResult-name")
+            _addon_icon_locator = (By.CLASS_NAME, "SearchResult-icon")
+            _addon_users_locator = (By.CLASS_NAME, "SearchResult-users-text")
 
             @property
             def name(self):
