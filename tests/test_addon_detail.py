@@ -286,7 +286,7 @@ def test_more_info_addon_size(selenium, base_url, variables):
     # get the file URL and read its size - conversion from bytes to Mb is required
     file = urllib.request.urlopen(
         'https://addons.allizom.org/firefox/downloads/file/1097275/ghostery_privacy_ad_blocker-8.5.6-an+fx.xpi')
-    size = file.length / (1024 * 1024)
+    size = file.length/(1024*1024)
     # transforming the file size in two decimal format and comparing
     # with the size number displayed in the more info card
     assert '%.2f' % size == more_info_size
@@ -328,17 +328,22 @@ def test_more_info_privacy_policy(selenium, base_url, variables):
     extension = variables['detail_extension_slug']
     selenium.get(f'{base_url}/addon/{extension}')
     addon = Detail(selenium, base_url).wait_for_page_to_load()
-    # enclosing in a try:except method as privacy policy is optional
-    # and not all add-ons will have it
-    try:
-        privacy = addon.more_info.addon_privacy_policy()
-        # checks that the AMO privacy policy page opens and has the correct content
-        assert 'Privacy policy for Ghostery - Privacy Ad Blocker' in \
-               privacy.custom_licence_and_privacy_header
-        assert privacy.custom_licence_and_privacy_text.is_displayed()
-        assert privacy.custom_licence_and_privacy_summary_card.is_displayed()
-    except NoSuchElementException:
-        print("The add-on doesn't have a privacy policy")
+    privacy = addon.more_info.addon_privacy_policy()
+    # checks that the AMO privacy policy page opens and has the correct content
+    assert 'Privacy policy for Ghostery - Privacy Ad Blocker' in \
+           privacy.custom_licence_and_privacy_header
+    assert privacy.custom_licence_and_privacy_text.is_displayed()
+    assert privacy.custom_licence_and_privacy_summary_card.is_displayed()
+
+
+@pytest.mark.nondestructive
+def test_more_info_privacy_policy_missing(selenium, base_url, variables):
+    extension = variables['addon_without_stats']
+    selenium.get(f'{base_url}/addon/{extension}')
+    Detail(selenium, base_url).wait_for_page_to_load()
+    with pytest.raises(NoSuchElementException):
+        selenium.find_element_by_class_name('AddonMoreInfo-privacy-policy-link')
+    print('The add-on does not have a Privacy Policy')
 
 
 @pytest.mark.nondestructive
@@ -346,16 +351,22 @@ def test_more_info_eula(selenium, base_url, variables):
     extension = variables['detail_extension_slug']
     selenium.get(f'{base_url}/addon/{extension}')
     addon = Detail(selenium, base_url).wait_for_page_to_load()
-    # enclosing in a try:except method as eula is optional, so not all add-ons will have it
-    try:
-        eula = addon.more_info.addon_eula()
-        # checks that the AMO eula page opens and has the correct content
-        assert 'End-User License Agreement for Ghostery - Privacy Ad Blocker' in \
-               eula.custom_licence_and_privacy_header
-        assert eula.custom_licence_and_privacy_text.is_displayed()
-        assert eula.custom_licence_and_privacy_summary_card.is_displayed()
-    except NoSuchElementException:
-        print("The add-on doesn't have an End User License Agreement")
+    eula = addon.more_info.addon_eula()
+    # checks that the AMO eula page opens and has the correct content
+    assert 'End-User License Agreement for Ghostery - Privacy Ad Blocker' in \
+           eula.custom_licence_and_privacy_header
+    assert eula.custom_licence_and_privacy_text.is_displayed()
+    assert eula.custom_licence_and_privacy_summary_card.is_displayed()
+
+
+@pytest.mark.nondestructive
+def test_more_info_eula_missing(selenium, base_url, variables):
+    extension = variables['addon_without_stats']
+    selenium.get(f'{base_url}/addon/{extension}')
+    Detail(selenium, base_url).wait_for_page_to_load()
+    with pytest.raises(NoSuchElementException):
+        selenium.find_element_by_class_name('AddonMoreInfo-eula')
+    print('The add-on does not have an End User License Agreement')
 
 
 @pytest.mark.nondestructive
