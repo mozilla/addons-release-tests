@@ -70,8 +70,7 @@ def test_non_promoted_addon(selenium, base_url, variables):
         selenium.find_element_by_class_name('PromotedBadge-large')
     # checks the presence of an install warning
     assert addon.install_warning.is_displayed()
-    assert variables['install_warning_message'] in \
-           addon.install_warning_message
+    assert variables['install_warning_message'] in addon.install_warning_message
     addon.click_install_warning_button()
     assert 'add-on-badges' in selenium.current_url
 
