@@ -8,23 +8,25 @@ from selenium.webdriver.support.select import Select
 
 @pytest.mark.parametrize(
     'count, category',
-    enumerate([
-        'Abstract',
-        'Causes',
-        'Fashion',
-        'Film and TV',
-        'Firefox',
-        'Foxkeh',
-        'Holiday',
-        'Music',
-        'Nature',
-        'Other',
-        'Scenery',
-        'Seasonal',
-        'Solid',
-        'Sports',
-        'Websites',
-    ])
+    enumerate(
+        [
+            'Abstract',
+            'Causes',
+            'Fashion',
+            'Film and TV',
+            'Firefox',
+            'Foxkeh',
+            'Holiday',
+            'Music',
+            'Nature',
+            'Other',
+            'Scenery',
+            'Seasonal',
+            'Solid',
+            'Sports',
+            'Websites',
+        ]
+    ),
 )
 @pytest.mark.nondestructive
 def test_themes_categories(base_url, selenium, count, category):
@@ -44,8 +46,7 @@ def test_themes_landing_header(base_url, selenium):
     # checking that 'Themes' is underlined in the header menu
     assert 'Themes' in themes.header.is_active_link
     assert 'Themes' in themes.title
-    assert "Change your browser's appearance" \
-           in themes.header_summary
+    assert "Change your browser's appearance" in themes.header_summary
 
 
 @pytest.mark.nondestructive

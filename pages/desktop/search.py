@@ -22,15 +22,17 @@ class Search(Page):
 
     def wait_for_page_to_load(self):
         self.wait.until(
-            expected.invisibility_of_element_located(
-                (By.CLASS_NAME, 'LoadingText')))
+            expected.invisibility_of_element_located((By.CLASS_NAME, 'LoadingText'))
+        )
         return self
 
     def wait_for_contextcard_update(self, value):
         try:
             self.wait.until(
                 expected.text_to_be_present_in_element(
-                    (By.CLASS_NAME, 'SearchContextCard-header'), value))
+                    (By.CLASS_NAME, 'SearchContextCard-header'), value
+                )
+            )
         except NoSuchElementException:
             print('Search context card header was not loaded')
 
@@ -93,8 +95,7 @@ class Search(Page):
 
         class ResultListItems(Region):
             _rating_locator = (By.CSS_SELECTOR, '.Rating--small')
-            _search_item_name_locator = (By.CSS_SELECTOR,
-                                         '.SearchResult-contents > h2')
+            _search_item_name_locator = (By.CSS_SELECTOR, '.SearchResult-contents > h2')
             _promoted_badge_locator = (By.CSS_SELECTOR, '.PromotedBadge')
             _promoted_badge_label_locator = (By.CSS_SELECTOR, '.PromotedBadge-label')
             _users_locator = (By.CLASS_NAME, 'SearchResult-users-text')
@@ -106,33 +107,29 @@ class Search(Page):
             def link(self):
                 self.find_element(*self._search_item_name_locator).click()
                 from pages.desktop.details import Detail
+
                 detail_page = Detail(self.selenium, self.page.base_url)
                 return detail_page.wait_for_page_to_load()
 
             @property
             def users(self):
                 users = self.find_element(*self._users_locator).text
-                return int(
-                    users.split()[0].replace(',', '').replace('users', ''))
+                return int(users.split()[0].replace(',', '').replace('users', ''))
 
             @property
             def rating(self):
                 """Returns the rating"""
-                rating = self.find_element(
-                    *self._rating_locator).get_property('title')
+                rating = self.find_element(*self._rating_locator).get_property('title')
                 return float(rating.split()[1])
 
             @property
             def promoted_badge(self):
                 WebDriverWait(self.selenium, 10).until(
-                    EC.visibility_of_element_located(
-                        self._promoted_badge_locator),
-                    message='Promoted badge was not found for these search results'
-                    )
+                    EC.visibility_of_element_located(self._promoted_badge_locator),
+                    message='Promoted badge was not found for these search results',
+                )
                 return self
 
             @property
             def promoted_badge_label(self):
                 return self.find_element(*self._promoted_badge_label_locator).text
-
-

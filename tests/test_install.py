@@ -4,13 +4,18 @@ from pages.desktop.details import Detail
 
 
 @pytest.mark.nondestructive
-@pytest.mark.parametrize('addon_type, name_type', [
-    ['flagfox', 'Flagfox'],
-    ['japanese-tattoo', 'Japanese Tattoo'],
-    ['release-langpack', 'Release Langpack'],
-    ['release_dictionary', 'Release Dictionary']
-])
-def test_addon_install(base_url, selenium, firefox, firefox_notifications, addon_type, name_type):
+@pytest.mark.parametrize(
+    'addon_type, name_type',
+    [
+        ['flagfox', 'Flagfox'],
+        ['japanese-tattoo', 'Japanese Tattoo'],
+        ['release-langpack', 'Release Langpack'],
+        ['release_dictionary', 'Release Dictionary'],
+    ],
+)
+def test_addon_install(
+    base_url, selenium, firefox, firefox_notifications, addon_type, name_type
+):
     """Test that navigates to an addon and installs it."""
     selenium.get(f'{base_url}/addon/{addon_type}')
     addon = Detail(selenium, base_url)
@@ -31,5 +36,3 @@ def test_addon_install(base_url, selenium, firefox, firefox_notifications, addon
         assert 'Add to Firefox' in addon.button_text
     except AssertionError:
         assert 'Install Theme' in addon.button_text
-
-

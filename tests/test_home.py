@@ -45,9 +45,7 @@ def test_browse_all_button_loads_correct_page(base_url, selenium):
 
 
 @pytest.mark.skip(reason="this test requires more optimization")
-@pytest.mark.parametrize(
-    'i, page_url',
-    enumerate(['language-tools', 'android']))
+@pytest.mark.parametrize('i, page_url', enumerate(['language-tools', 'android']))
 @pytest.mark.nondestructive
 def test_more_dropdown_navigates_correctly(base_url, selenium, i, page_url):
     page = Home(selenium, base_url).open()
@@ -57,14 +55,16 @@ def test_more_dropdown_navigates_correctly(base_url, selenium, i, page_url):
 
 @pytest.mark.parametrize(
     'count, category',
-    enumerate([
-        'Abstract',
-        'Nature',
-        'Film',
-        'Scenery',
-        'Music',
-        'Seasonal',
-    ])
+    enumerate(
+        [
+            'Abstract',
+            'Nature',
+            'Film',
+            'Scenery',
+            'Music',
+            'Seasonal',
+        ]
+    ),
 )
 @pytest.mark.nondestructive
 def test_theme_categories_shelf(base_url, selenium, count, category):
@@ -149,7 +149,13 @@ def test_products_footer_links(base_url, selenium, count, links):
 
 @pytest.mark.parametrize(
     "count, links",
-    enumerate(["twitter.com", "instagram.com", "youtube.com", ]),
+    enumerate(
+        [
+            "twitter.com",
+            "instagram.com",
+            "youtube.com",
+        ]
+    ),
 )
 @pytest.mark.nondestructive
 def test_social_footer_links(base_url, selenium, count, links):
@@ -160,7 +166,13 @@ def test_social_footer_links(base_url, selenium, count, links):
 
 @pytest.mark.parametrize(
     "count, links",
-    enumerate(["privacy/websites/", "privacy/websites/", "legal/terms/mozilla", ]),
+    enumerate(
+        [
+            "privacy/websites/",
+            "privacy/websites/",
+            "legal/terms/mozilla",
+        ]
+    ),
 )
 @pytest.mark.nondestructive
 def test_legal_footer_links(base_url, selenium, count, links):
