@@ -7,12 +7,12 @@ import pytest
 DESKTOP = (1920, 1080)
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope='session')
 def base_url(base_url, variables):
     return variables['base_url']
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope='session')
 def sensitive_url(request, base_url):
     # Override sensitive url check
     return False

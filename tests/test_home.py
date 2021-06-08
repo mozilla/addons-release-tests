@@ -44,7 +44,7 @@ def test_browse_all_button_loads_correct_page(base_url, selenium):
         assert result.promoted_badge
 
 
-@pytest.mark.skip(reason="this test requires more optimization")
+@pytest.mark.skip(reason='this test requires more optimization')
 @pytest.mark.parametrize('i, page_url', enumerate(['language-tools', 'android']))
 @pytest.mark.nondestructive
 def test_more_dropdown_navigates_correctly(base_url, selenium, i, page_url):
@@ -85,22 +85,22 @@ def test_theme_categories_shelf(base_url, selenium, count, category):
 def test_mozilla_footer_link(base_url, selenium):
     page = Home(selenium, base_url).open()
     page.footer.mozilla_link.click()
-    assert "mozilla.org" in selenium.current_url
+    assert 'mozilla.org' in selenium.current_url
 
 
 @pytest.mark.parametrize(
-    "count, links",
+    'count, links',
     enumerate(
         [
-            "about",
-            "blog.mozilla.org",
-            "extensionworkshop",
-            "developers",
-            "add-on-policies",
-            "discourse",
-            "Contact_us",
-            "review_guide",
-            "status",
+            'about',
+            'blog.mozilla.org',
+            'extensionworkshop',
+            'developers',
+            'add-on-policies',
+            'discourse',
+            'Contact_us',
+            'review_guide',
+            'status',
         ]
     ),
 )
@@ -112,13 +112,13 @@ def test_addons_footer_links(base_url, selenium, count, links):
 
 
 @pytest.mark.parametrize(
-    "count, links",
+    'count, links',
     enumerate(
         [
-            "firefox/new",
-            "firefox/mobile",
-            "mixedreality.mozilla.org",
-            "firefox",
+            'firefox/new',
+            'firefox/mobile',
+            'mixedreality.mozilla.org',
+            'firefox',
         ]
     ),
 )
@@ -130,13 +130,13 @@ def test_browsers_footer_links(base_url, selenium, count, links):
 
 
 @pytest.mark.parametrize(
-    "count, links",
+    'count, links',
     enumerate(
         [
-            "firefox/lockwise/",
-            "monitor.firefox",
-            "firefox/browsers/",
-            "getpocket.com",
+            'firefox/lockwise/',
+            'monitor.firefox',
+            'firefox/browsers/',
+            'getpocket.com',
         ]
     ),
 )
@@ -148,12 +148,12 @@ def test_products_footer_links(base_url, selenium, count, links):
 
 
 @pytest.mark.parametrize(
-    "count, links",
+    'count, links',
     enumerate(
         [
-            "twitter.com",
-            "instagram.com",
-            "youtube.com",
+            'twitter.com',
+            'instagram.com',
+            'youtube.com',
         ]
     ),
 )
@@ -165,12 +165,12 @@ def test_social_footer_links(base_url, selenium, count, links):
 
 
 @pytest.mark.parametrize(
-    "count, links",
+    'count, links',
     enumerate(
         [
-            "privacy/websites/",
-            "privacy/websites/",
-            "legal/terms/mozilla",
+            'privacy/websites/',
+            'privacy/websites/',
+            'legal/terms/mozilla',
         ]
     ),
 )
@@ -186,5 +186,5 @@ def test_change_language(base_url, selenium):
     page = Home(selenium, base_url).open()
     value = 'Deutsch'
     page.footer.language_picker(value)
-    assert "de/firefox" in selenium.current_url
-    assert "Erweiterungen" in page.header.extensions_text
+    assert 'de/firefox' in selenium.current_url
+    assert 'Erweiterungen' in page.header.extensions_text

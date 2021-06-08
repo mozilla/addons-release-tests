@@ -222,7 +222,7 @@ class Home(Base):
             )
             # add-ons that open in a separate domain ere not in scope yet
             # hence adding a check that we avoid such cases in the test envs
-            if link == "_blank":
+            if link == '_blank':
                 self.selenium.refresh()
             else:
                 self.find_element(*self._extension_button_locator).click()

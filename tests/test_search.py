@@ -31,7 +31,7 @@ def test_special_chars_dont_break_suggestions(base_url, selenium, variables):
 
 
 @pytest.mark.xfail(
-    reason="There is an issue with search on stage - #16610", strict=False
+    reason='There is an issue with search on stage - #16610', strict=False
 )
 @pytest.mark.nondestructive
 def test_uppercase_has_same_suggestions(base_url, selenium, variables):
@@ -59,7 +59,7 @@ def test_esc_key_closes_suggestion_list(base_url, selenium, variables):
         selenium.find_element_by_css_selector('AutoSearchInput-suggestions-list')
 
 
-@pytest.mark.skip(reason="this test requires more optimization")
+@pytest.mark.skip(reason='this test requires more optimization')
 @pytest.mark.nondestructive
 def test_long_terms_dont_break_suggestions(base_url, selenium):
     page = Home(selenium, base_url).open()
@@ -236,7 +236,7 @@ def test_filter_extensions(base_url, selenium):
     search_page = Search(selenium, base_url)
     select = Select(search_page.filter_by_type)
     select.select_by_value('extension')
-    search_page.wait_for_contextcard_update("extensions")
+    search_page.wait_for_contextcard_update('extensions')
     assert len(search_page.result_list.themes) == 0
 
 
@@ -248,7 +248,7 @@ def test_filter_themes(base_url, selenium):
     search_page = Search(selenium, base_url)
     select = Select(search_page.filter_by_type)
     select.select_by_value('statictheme')
-    search_page.wait_for_contextcard_update("themes")
+    search_page.wait_for_contextcard_update('themes')
     assert len(search_page.result_list.themes) == 25
 
 
@@ -264,7 +264,7 @@ def test_filter_themes(base_url, selenium):
 @pytest.mark.nondestructive
 def test_filter_promoted(base_url, selenium, sort_attr, title):
     page = Home(selenium, base_url).open()
-    term = ""
+    term = ''
     page.search.search_for(term)
     search_page = Search(selenium, base_url)
     select = Select(search_page.filter_by_badging)
