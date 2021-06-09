@@ -5,6 +5,7 @@ from selenium.webdriver.support import expected_conditions as expected
 
 from pages.desktop.base import Base
 from pages.desktop.reviews import Reviews
+from pages.desktop.versions import Versions
 
 
 class Detail(Base):
@@ -282,3 +283,48 @@ class Detail(Base):
             self.wait.until(
                 expected.invisibility_of_element_located(self._more_info_header_locator)
             )
+
+        def addon_custom_license(self):
+            self.find_element(*self._addon_license_locator).click()
+            return self.License(self).wait_for_region_to_load()
+
+        def addon_privacy_policy(self):
+            self.find_element(*self._privacy_policy_locator).click()
+            return self.License(self).wait_for_region_to_load()
+
+        def addon_eula(self):
+            self.find_element(*self._eula_locator).click()
+            return self.License(self).wait_for_region_to_load()
+
+        def addon_versions(self):
+            self.find_element(*self._all_versions_locator).click()
+            return Versions(self.selenium, self.page.base_url).wait_for_page_to_load()
+
+        class License(Region):
+            _license_and_privacy_header_locator = (
+                By.CSS_SELECTOR,
+                '.AddonInfo-info header',
+            )
+            _license_and_privacy_text_locator = (By.CSS_SELECTOR, '.AddonInfo-info p')
+            _addon_summary_card_locator = (By.CSS_SELECTOR, '.AddonSummaryCard')
+
+            def wait_for_region_to_load(self):
+                """Waits for various page components to be loaded"""
+                self.wait.until(
+                    expected.invisibility_of_element_located(
+                        (By.CLASS_NAME, 'LoadingText')
+                    )
+                )
+                return self
+
+            @property
+            def custom_licence_and_privacy_header(self):
+                return self.find_element(*self._license_and_privacy_header_locator).text
+
+            @property
+            def custom_licence_and_privacy_text(self):
+                return self.find_element(*self._license_and_privacy_text_locator)
+
+            @property
+            def custom_licence_and_privacy_summary_card(self):
+                return self.find_element(*self._addon_summary_card_locator)

@@ -314,3 +314,85 @@ def test_more_info_external_license(selenium, base_url, variables):
     addon.more_info.addon_external_license()
     # checks that redirection to an external page happens
     assert variables['base_url'] not in selenium.current_url
+
+
+@pytest.mark.nondestructive
+def test_more_info_custom_license(selenium, base_url, variables):
+    extension = variables['detail_extension_slug']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    # checks that the AMO custom license page opens and has the correct content
+    custom_license = addon.more_info.addon_custom_license()
+    assert (
+        'Custom License for Ghostery - Privacy Ad Blocker'
+        in custom_license.custom_licence_and_privacy_header
+    )
+    assert custom_license.custom_licence_and_privacy_text.is_displayed()
+    assert custom_license.custom_licence_and_privacy_summary_card.is_displayed()
+
+
+@pytest.mark.nondestructive
+def test_more_info_privacy_policy(selenium, base_url, variables):
+    extension = variables['detail_extension_slug']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    privacy = addon.more_info.addon_privacy_policy()
+    # checks that the AMO privacy policy page opens and has the correct content
+    assert (
+        'Privacy policy for Ghostery - Privacy Ad Blocker'
+        in privacy.custom_licence_and_privacy_header
+    )
+    assert privacy.custom_licence_and_privacy_text.is_displayed()
+    assert privacy.custom_licence_and_privacy_summary_card.is_displayed()
+
+
+@pytest.mark.nondestructive
+def test_more_info_privacy_policy_missing(selenium, base_url, variables):
+    extension = variables['addon_without_stats']
+    selenium.get(f'{base_url}/addon/{extension}')
+    Detail(selenium, base_url).wait_for_page_to_load()
+    with pytest.raises(NoSuchElementException):
+        selenium.find_element_by_class_name('AddonMoreInfo-privacy-policy-link')
+    print('The add-on does not have a Privacy Policy')
+
+
+@pytest.mark.nondestructive
+def test_more_info_eula(selenium, base_url, variables):
+    extension = variables['detail_extension_slug']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    eula = addon.more_info.addon_eula()
+    # checks that the AMO eula page opens and has the correct content
+    assert (
+        'End-User License Agreement for Ghostery - Privacy Ad Blocker'
+        in eula.custom_licence_and_privacy_header
+    )
+    assert eula.custom_licence_and_privacy_text.is_displayed()
+    assert eula.custom_licence_and_privacy_summary_card.is_displayed()
+
+
+@pytest.mark.nondestructive
+def test_more_info_eula_missing(selenium, base_url, variables):
+    extension = variables['addon_without_stats']
+    selenium.get(f'{base_url}/addon/{extension}')
+    Detail(selenium, base_url).wait_for_page_to_load()
+    with pytest.raises(NoSuchElementException):
+        selenium.find_element_by_class_name('AddonMoreInfo-eula')
+    print('The add-on does not have an End User License Agreement')
+
+
+@pytest.mark.nondestructive
+def test_compare_more_info_latest_version(selenium, base_url, variables):
+    extension = variables['detail_extension_slug']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    more_info_version = addon.more_info.addon_version_number.text
+    all_versions = addon.more_info.addon_versions()
+    assert (
+        'Ghostery - Privacy Ad Blocker version history'
+        in all_versions.versions_page_header.text
+    )
+    # verifies that the version number displayed in the more info card
+    # matches the latest version number present in all versions page
+    latest_version = all_versions.latest_version_number
+    assert more_info_version == latest_version
