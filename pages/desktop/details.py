@@ -15,7 +15,10 @@ class Detail(Base):
     _install_button_locator = (By.CLASS_NAME, 'AMInstallButton-button')
     _install_button_state_locator = (By.CSS_SELECTOR, '.AMInstallButton a')
     _promoted_badge_locator = (By.CLASS_NAME, 'PromotedBadge-large')
-    _promoted_badge_label_locator = (By.CSS_SELECTOR, '.PromotedBadge-large .PromotedBadge-label')
+    _promoted_badge_label_locator = (
+        By.CSS_SELECTOR,
+        '.PromotedBadge-large .PromotedBadge-label',
+    )
     _experimental_badge_locator = (By.CLASS_NAME, 'Badge-experimental')
     _addon_icon_locator = (By.CLASS_NAME, 'Addon-icon-image')
     _addon_author_locator = (By.CSS_SELECTOR, '.AddonTitle-author a')
@@ -27,8 +30,8 @@ class Detail(Base):
     def wait_for_page_to_load(self):
         """Waits for various page components to be loaded"""
         self.wait.until(
-            expected.invisibility_of_element_located(
-                (By.CLASS_NAME, 'LoadingText')))
+            expected.invisibility_of_element_located((By.CLASS_NAME, 'LoadingText'))
+        )
         return self
 
     @property
@@ -48,15 +51,19 @@ class Detail(Base):
 
     @property
     def button_text(self):
-        self.wait.until(expected.invisibility_of_element_located(
-            (By.CLASS_NAME, 'AMInstallButton-loading-button')))
+        self.wait.until(
+            expected.invisibility_of_element_located(
+                (By.CLASS_NAME, 'AMInstallButton-loading-button')
+            )
+        )
         return self.find_element(*self._install_button_locator).text
 
     @property
     def button_state_disabled(self):
         # checking that an inactive install button has a 'disabled' attribute
-        return self.find_element(*self._install_button_state_locator).\
-            get_attribute('disabled')
+        return self.find_element(*self._install_button_state_locator).get_attribute(
+            'disabled'
+        )
 
     @property
     def promoted_badge(self):
@@ -72,8 +79,9 @@ class Detail(Base):
         self.wait.until(expected.number_of_windows_to_be(2))
         new_tab = self.selenium.window_handles[1]
         self.selenium.switch_to_window(new_tab)
-        self.wait.until(expected.visibility_of_element_located(
-            (By.CLASS_NAME, 'sumo-page-heading')))
+        self.wait.until(
+            expected.visibility_of_element_located((By.CLASS_NAME, 'sumo-page-heading'))
+        )
 
     @property
     def experimental_badge(self):
@@ -105,8 +113,9 @@ class Detail(Base):
         self.wait.until(expected.number_of_windows_to_be(2))
         new_tab = self.selenium.window_handles[1]
         self.selenium.switch_to_window(new_tab)
-        self.wait.until(expected.visibility_of_element_located(
-            (By.CLASS_NAME, 'sumo-page-heading')))
+        self.wait.until(
+            expected.visibility_of_element_located((By.CLASS_NAME, 'sumo-page-heading'))
+        )
 
     @property
     def stats(self):
@@ -204,7 +213,10 @@ class Detail(Base):
 
     class Permissions(Region):
         _permissions_header_locator = (By.CSS_SELECTOR, '.PermissionsCard header')
-        _permissions_list_locator = (By.CSS_SELECTOR, '.PermissionsCard-list--required li')
+        _permissions_list_locator = (
+            By.CSS_SELECTOR,
+            '.PermissionsCard-list--required li',
+        )
         _permissions_learn_more_locator = (By.CLASS_NAME, 'PermissionsCard-learn-more')
 
         @property
@@ -268,8 +280,9 @@ class Detail(Base):
         def addon_external_license(self):
             self.find_element(*self._addon_license_locator).click()
             # clicking on license should open a link outside of AMO
-            self.wait.until(expected.invisibility_of_element_located(
-                self._more_info_header_locator))
+            self.wait.until(
+                expected.invisibility_of_element_located(self._more_info_header_locator)
+            )
 
         def addon_custom_license(self):
             self.find_element(*self._addon_license_locator).click()
@@ -285,10 +298,13 @@ class Detail(Base):
 
         def addon_versions(self):
             self.find_element(*self._all_versions_locator).click()
-            return Versions(self.selenium,self.page.base_url).wait_for_page_to_load()
+            return Versions(self.selenium, self.page.base_url).wait_for_page_to_load()
 
         class License(Region):
-            _license_and_privacy_header_locator = (By.CSS_SELECTOR, '.AddonInfo-info header')
+            _license_and_privacy_header_locator = (
+                By.CSS_SELECTOR,
+                '.AddonInfo-info header',
+            )
             _license_and_privacy_text_locator = (By.CSS_SELECTOR, '.AddonInfo-info p')
             _addon_summary_card_locator = (By.CSS_SELECTOR, '.AddonSummaryCard')
 
@@ -296,7 +312,9 @@ class Detail(Base):
                 """Waits for various page components to be loaded"""
                 self.wait.until(
                     expected.invisibility_of_element_located(
-                        (By.CLASS_NAME, 'LoadingText')))
+                        (By.CLASS_NAME, 'LoadingText')
+                    )
+                )
                 return self
 
             @property

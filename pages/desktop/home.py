@@ -9,9 +9,7 @@ from pages.desktop.base import Base
 class Home(Base):
     """Addons Home page"""
 
-    _recommended_extensions_locator = (
-        By.CLASS_NAME, 'Home-Recommended-extensions'
-    )
+    _recommended_extensions_locator = (By.CLASS_NAME, 'Home-Recommended-extensions')
     _recommended_themes_locator = (By.CLASS_NAME, 'Home-RecommendedThemes')
     _hero_locator = (By.CLASS_NAME, 'HeroRecommendation')
     _secondary_hero_locator = (By.CLASS_NAME, 'SecondaryHero')
@@ -22,9 +20,7 @@ class Home(Base):
     _featured_collections_locator = (By.CLASS_NAME, 'Home-FeaturedCollection')
 
     def wait_for_page_to_load(self):
-        self.wait.until(
-            lambda _: self.is_element_displayed(*self._hero_locator)
-        )
+        self.wait.until(lambda _: self.is_element_displayed(*self._hero_locator))
         return self
 
     @property
@@ -92,7 +88,9 @@ class Home(Base):
         class CategoryDetail(Region):
             _category_link_locator = (By.CLASS_NAME, 'Home-SubjectShelf-link')
             _category_name_locator = (
-                By.CSS_SELECTOR, '.Home-SubjectShelf-link span:nth-child(2)')
+                By.CSS_SELECTOR,
+                '.Home-SubjectShelf-link span:nth-child(2)',
+            )
             _category_icon_locator = (By.CLASS_NAME, 'CategoryIcon')
 
             @property
@@ -106,6 +104,7 @@ class Home(Base):
             def click(self):
                 self.root.click()
                 from pages.desktop.search import Search
+
                 return Search(self.selenium, self.page.base_url)
 
     class Extensions(Region):
@@ -121,6 +120,7 @@ class Home(Base):
         def browse_all(self):
             self.find_element(*self._browse_all_locator).click()
             from pages.desktop.search import Search
+
             search = Search(self.selenium, self.page.base_url)
             return search.wait_for_page_to_load()
 
@@ -145,6 +145,7 @@ class Home(Base):
         def browse_all(self):
             self.find_element(*self._browse_all_locator).click()
             from pages.desktop.search import Search
+
             search = Search(self.selenium, self.page.base_url)
             return search.wait_for_page_to_load()
 
@@ -166,6 +167,7 @@ class Home(Base):
         def click(self):
             self.find_element(*self._addon_link_locator).click()
             from pages.desktop.extensions import Extensions
+
             return Extensions(self.selenium, self.page.base_url)
 
         @property
@@ -215,17 +217,22 @@ class Home(Base):
             return self.find_element(*self._hero_extension_summary_locator)
 
         def click_hero_extension_link(self):
-            link = self.find_element(*self._extension_link_locator).get_attribute('target')
+            link = self.find_element(*self._extension_link_locator).get_attribute(
+                'target'
+            )
             # add-ons that open in a separate domain ere not in scope yet
             # hence adding a check that we avoid such cases in the test envs
-            if link == "_blank":
+            if link == '_blank':
                 self.selenium.refresh()
             else:
                 self.find_element(*self._extension_button_locator).click()
 
     class SecondaryHero(Region):
         _secondary_headline_locator = (By.CLASS_NAME, 'SecondaryHero-message-headline')
-        _secondary_description_locator = (By.CLASS_NAME, 'SecondaryHero-message-description')
+        _secondary_description_locator = (
+            By.CLASS_NAME,
+            'SecondaryHero-message-description',
+        )
         _see_all_extensions_locator = (By.CLASS_NAME, 'SecondaryHero-message-link')
         _modules_locator = (By.CLASS_NAME, 'SecondaryHero-module')
 
@@ -247,7 +254,10 @@ class Home(Base):
 
         class SecondaryHeroModules(Region):
             _module_icon_locator = (By.CLASS_NAME, 'SecondaryHero-module-icon')
-            _module_description_locator = (By.CLASS_NAME, 'SecondaryHero-module-description')
+            _module_description_locator = (
+                By.CLASS_NAME,
+                'SecondaryHero-module-description',
+            )
             _module_link_locator = (By.CSS_SELECTOR, '.SecondaryHero-module a')
             _module_link_text_locator = (By.CLASS_NAME, 'SecondaryHero-module-linkText')
 
@@ -269,8 +279,11 @@ class Home(Base):
                     new_tab = self.selenium.window_handles[1]
                     self.selenium.switch_to_window(new_tab)
                     # waiting for an element in the new page to be loaded
-                    self.wait.until(EC.visibility_of_element_located((
-                        By.CSS_SELECTOR, '.top-header-navigation')))
+                    self.wait.until(
+                        EC.visibility_of_element_located(
+                            (By.CSS_SELECTOR, '.top-header-navigation')
+                        )
+                    )
                     # closing the new tab and going back to homepage
                     self.selenium.close()
                     self.selenium.switch_to.window(home_tab)

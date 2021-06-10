@@ -10,8 +10,8 @@ class User(Base):
     def wait_for_page_to_load(self):
         """Waits for various page components to be loaded"""
         self.wait.until(
-            expected.invisibility_of_element_located(
-                (By.CLASS_NAME, 'LoadingText')))
+            expected.invisibility_of_element_located((By.CLASS_NAME, 'LoadingText'))
+        )
         return self
 
     @property

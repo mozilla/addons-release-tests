@@ -88,8 +88,10 @@ def test_lower_firefox_incompatibility(selenium, base_url, variables):
     extension = variables['lower_firefox_version']
     selenium.get(f'{base_url}/addon/{extension}')
     addon = Detail(selenium, base_url)
-    assert 'This add-on is not compatible with your version of Firefox.' \
-           in addon.incompatibility_message
+    assert (
+        'This add-on is not compatible with your version of Firefox.'
+        in addon.incompatibility_message
+    )
     assert addon.button_state_disabled
 
 
@@ -98,8 +100,10 @@ def test_higher_firefox_incompatibility(selenium, base_url, variables):
     extension = variables['higher_firefox_version']
     selenium.get(f'{base_url}/addon/{extension}')
     addon = Detail(selenium, base_url)
-    assert 'This add-on requires a newer version of Firefox' \
-           in addon.incompatibility_message
+    assert (
+        'This add-on requires a newer version of Firefox'
+        in addon.incompatibility_message
+    )
     assert addon.button_state_disabled
 
 
@@ -108,8 +112,10 @@ def test_platform_incompatibility(selenium, base_url, variables):
     extension = variables['incompatible_platform']
     selenium.get(f'{base_url}/addon/{extension}')
     addon = Detail(selenium, base_url)
-    assert 'This add-on is not available on your platform.' \
-           in addon.incompatibility_message
+    assert (
+        'This add-on is not available on your platform.'
+        in addon.incompatibility_message
+    )
     assert addon.button_state_disabled
 
 
@@ -218,8 +224,9 @@ def test_contribute_button(selenium, base_url, variables):
     selenium.get(f'{base_url}/addon/{extension}')
     addon = Detail(selenium, base_url)
     assert 'Support this developer' in addon.contribute.contribute_card_header
-    assert variables['contribute_card_summary'] in \
-           addon.contribute.contribute_card_content
+    assert (
+        variables['contribute_card_summary'] in addon.contribute.contribute_card_content
+    )
     addon.contribute.click_contribute_button()
     # verifies that utm params are passed from AMO to the external contribute site
     wait = WebDriverWait(selenium, 10)
@@ -250,8 +257,7 @@ def test_more_info_card_header(selenium, base_url, variables):
 
 
 @pytest.mark.parametrize(
-    'count, link',
-    enumerate(['Homepage', 'Support site', 'Support Email'])
+    'count, link', enumerate(['Homepage', 'Support site', 'Support Email'])
 )
 @pytest.mark.nondestructive
 def test_more_info_support_links(selenium, base_url, variables, count, link):
@@ -284,8 +290,9 @@ def test_more_info_addon_size(selenium, base_url, variables):
     more_info_size = addon.more_info.addon_size.text.split()[0].replace(' MB', '')
     # get the file URL and read its size - conversion from bytes to Mb is required
     file = urllib.request.urlopen(
-        'https://addons.allizom.org/firefox/downloads/file/1097275/ghostery_privacy_ad_blocker-8.5.6-an+fx.xpi')
-    size = file.length/(1024*1024)
+        'https://addons.allizom.org/firefox/downloads/file/1097275/ghostery_privacy_ad_blocker-8.5.6-an+fx.xpi'
+    )
+    size = file.length / (1024 * 1024)
     # transforming the file size in two decimal format and comparing
     # with the size number displayed in the more info card
     assert '%.2f' % size == more_info_size
@@ -316,8 +323,10 @@ def test_more_info_custom_license(selenium, base_url, variables):
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     # checks that the AMO custom license page opens and has the correct content
     custom_license = addon.more_info.addon_custom_license()
-    assert 'Custom License for Ghostery - Privacy Ad Blocker' in \
-           custom_license.custom_licence_and_privacy_header
+    assert (
+        'Custom License for Ghostery - Privacy Ad Blocker'
+        in custom_license.custom_licence_and_privacy_header
+    )
     assert custom_license.custom_licence_and_privacy_text.is_displayed()
     assert custom_license.custom_licence_and_privacy_summary_card.is_displayed()
 
@@ -329,8 +338,10 @@ def test_more_info_privacy_policy(selenium, base_url, variables):
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     privacy = addon.more_info.addon_privacy_policy()
     # checks that the AMO privacy policy page opens and has the correct content
-    assert 'Privacy policy for Ghostery - Privacy Ad Blocker' in \
-           privacy.custom_licence_and_privacy_header
+    assert (
+        'Privacy policy for Ghostery - Privacy Ad Blocker'
+        in privacy.custom_licence_and_privacy_header
+    )
     assert privacy.custom_licence_and_privacy_text.is_displayed()
     assert privacy.custom_licence_and_privacy_summary_card.is_displayed()
 
@@ -352,8 +363,10 @@ def test_more_info_eula(selenium, base_url, variables):
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     eula = addon.more_info.addon_eula()
     # checks that the AMO eula page opens and has the correct content
-    assert 'End-User License Agreement for Ghostery - Privacy Ad Blocker' in \
-           eula.custom_licence_and_privacy_header
+    assert (
+        'End-User License Agreement for Ghostery - Privacy Ad Blocker'
+        in eula.custom_licence_and_privacy_header
+    )
     assert eula.custom_licence_and_privacy_text.is_displayed()
     assert eula.custom_licence_and_privacy_summary_card.is_displayed()
 
@@ -375,8 +388,10 @@ def test_compare_more_info_latest_version(selenium, base_url, variables):
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     more_info_version = addon.more_info.addon_version_number.text
     all_versions = addon.more_info.addon_versions()
-    assert 'Ghostery - Privacy Ad Blocker version history' in \
-           all_versions.versions_page_header.text
+    assert (
+        'Ghostery - Privacy Ad Blocker version history'
+        in all_versions.versions_page_header.text
+    )
     # verifies that the version number displayed in the more info card
     # matches the latest version number present in all versions page
     latest_version = all_versions.latest_version_number

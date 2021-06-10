@@ -8,23 +8,25 @@ from pages.desktop.search import Search
 
 @pytest.mark.parametrize(
     'count, category',
-    enumerate([
-        'Alerts & Updates',
-        'Appearance',
-        'Bookmarks',
-        'Download Management',
-        'Feeds, News & Blogging',
-        'Games & Entertainment',
-        'Language Support',
-        'Other',
-        'Photos, Music & Videos',
-        'Privacy & Security',
-        'Search Tools',
-        'Shopping',
-        'Social & Communication',
-        'Tabs',
-        'Web Development',
-    ])
+    enumerate(
+        [
+            'Alerts & Updates',
+            'Appearance',
+            'Bookmarks',
+            'Download Management',
+            'Feeds, News & Blogging',
+            'Games & Entertainment',
+            'Language Support',
+            'Other',
+            'Photos, Music & Videos',
+            'Privacy & Security',
+            'Search Tools',
+            'Shopping',
+            'Social & Communication',
+            'Tabs',
+            'Web Development',
+        ]
+    ),
 )
 @pytest.mark.nondestructive
 def test_extensions_categories(base_url, selenium, count, category):
@@ -44,8 +46,7 @@ def test_extension_landing_header(base_url, selenium):
     # checking that 'Extensions' is underlined in the header menu
     assert 'Extensions' in extensions.header.is_active_link
     assert 'Extensions' in extensions.title
-    assert 'Explore powerful tools and features' \
-           in extensions.header_summary
+    assert 'Explore powerful tools and features' in extensions.header_summary
 
 
 @pytest.mark.nondestructive
