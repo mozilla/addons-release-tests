@@ -1,6 +1,7 @@
 from pypom import Region
 
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as expected
 
 from pages.desktop.base import Base
@@ -132,6 +133,10 @@ class Detail(Base):
     @property
     def more_info(self):
         return self.MoreInfo(self)
+
+    @property
+    def screenshots(self):
+        return self.Screenshots(self)
 
     class Stats(Region):
         _root_locator = (By.CLASS_NAME, 'AddonMeta')
@@ -328,3 +333,54 @@ class Detail(Base):
             @property
             def custom_licence_and_privacy_summary_card(self):
                 return self.find_element(*self._addon_summary_card_locator)
+
+    class Screenshots(Region):
+        _screenshot_thumbnail_locator = (By.CSS_SELECTOR, '.ScreenShots-list img')
+        _screenshot_viewer_locator = (By.CSS_SELECTOR, '.pswp--open')
+        _next_preview_locator = (By.CSS_SELECTOR, '.pswp__button--arrow--right')
+        _previous_preview_locator = (By.CSS_SELECTOR, '.pswp__button--arrow--left')
+        _image_view_close_button_locator = (
+            By.CSS_SELECTOR,
+            '.pswp--open .pswp__button--close',
+        )
+        _screenshot_counter_location = (By.CSS_SELECTOR, '.pswp__counter')
+
+        @property
+        def screenshot_preview(self):
+            return self.find_elements(*self._screenshot_thumbnail_locator)
+
+        @property
+        def screenshot_viewer(self):
+            return self.find_element(*self._screenshot_viewer_locator)
+
+        def go_to_next_screenshot(self):
+            self.find_element(*self._next_preview_locator).click()
+
+        def go_to_previous_screenshot(self):
+            self.find_element(*self._previous_preview_locator).click()
+
+        def right_key_for_next_screenshot(self):
+            self.find_element(*self._screenshot_viewer_locator).send_keys(
+                Keys.ARROW_RIGHT
+            )
+
+        def left_key_for_previous_screenshot(self):
+            self.find_element(*self._screenshot_viewer_locator).send_keys(
+                Keys.ARROW_LEFT
+            )
+
+        @property
+        def screenshot_counter(self):
+            return self.find_element(*self._screenshot_counter_location).text
+
+        def close_screenshot_view(self):
+            self.find_element(*self._image_view_close_button_locator).click()
+            self.wait.until(
+                expected.invisibility_of_element_located(self.screenshot_viewer)
+            )
+
+        def esc_to_close_screenshot_viewer(self):
+            self.find_element(*self._screenshot_viewer_locator).send_keys(Keys.ESCAPE)
+            self.wait.until(
+                expected.invisibility_of_element_located(self.screenshot_viewer)
+            )
