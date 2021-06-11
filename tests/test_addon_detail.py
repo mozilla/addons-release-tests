@@ -1,3 +1,4 @@
+import time
 import pytest
 import urllib.request
 
@@ -396,3 +397,48 @@ def test_compare_more_info_latest_version(selenium, base_url, variables):
     # matches the latest version number present in all versions page
     latest_version = all_versions.latest_version_number
     assert more_info_version == latest_version
+
+
+@pytest.mark.nondestructive
+def test_screenshot_viewer(selenium, base_url, variables):
+    extension = variables['detail_extension_slug']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    # clicks through each screenshot and verifies that the screenshot full size viewer is opened
+    for preview in addon.screenshots.screenshot_preview:
+        preview.click()
+        time.sleep(1)
+        assert addon.screenshots.screenshot_viewer.is_displayed()
+        addon.screenshots.close_screenshot_view()
+
+
+@pytest.mark.nondestructive
+def test_screenshot_ui_navigation(selenium, base_url, variables):
+    extension = variables['detail_extension_slug']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    addon.screenshots.screenshot_preview[0].click()
+    time.sleep(1)
+    # click on the right arrow to navigate to the next image
+    addon.screenshots.go_to_next_screenshot()
+    assert '2' in addon.screenshots.screenshot_counter
+    # click on the left arrow to navigate to the previous image
+    addon.screenshots.go_to_previous_screenshot()
+    assert '1' in addon.screenshots.screenshot_counter
+
+
+@pytest.mark.nondestructive
+def test_screenshot_keyboard_navigation(selenium, base_url, variables):
+    extension = variables['detail_extension_slug']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    addon.screenshots.screenshot_preview[0].click()
+    time.sleep(1)
+    # send the right key to navigate to the next image
+    addon.screenshots.right_key_for_next_screenshot()
+    assert '2' in addon.screenshots.screenshot_counter
+    # send the left key to navigate to the previous image
+    addon.screenshots.left_key_for_previous_screenshot()
+    assert '1' in addon.screenshots.screenshot_counter
+    # send ESC to close the screenshot viewer
+    addon.screenshots.esc_to_close_screenshot_viewer()
