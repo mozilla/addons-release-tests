@@ -442,3 +442,53 @@ def test_screenshot_keyboard_navigation(selenium, base_url, variables):
     assert '1' in addon.screenshots.screenshot_counter
     # send ESC to close the screenshot viewer
     addon.screenshots.esc_to_close_screenshot_viewer()
+
+
+@pytest.mark.nondestructive
+def test_add_to_collection_card(selenium, base_url, variables):
+    extension = variables['detail_extension_slug']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    # verifies that the Add to Collection card is present on the detail page
+    assert 'Add to collection' in addon.add_to_collection.collections_card_header
+    assert addon.add_to_collection.collections_select_field.is_displayed()
+
+
+@pytest.mark.nondestructive
+def test_release_notes(selenium, base_url, variables):
+    extension = variables['detail_extension_slug']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    assert (
+        'Release notes for ' + addon.more_info.addon_version_number.text
+        in addon.release_notes.release_notes_header
+    )
+    assert addon.release_notes.release_notes_text.is_displayed()
+
+
+@pytest.mark.nondestructive
+def test_more_addons_by_author_card(selenium, base_url, variables):
+    extension = variables['experimental_addon']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    # verifies that the author name from the add-on summary card
+    # is also present in the add-ons by same author card
+    assert (
+        'More extensions by ' + addon.authors.text
+        in addon.same_author_addons.addons_by_author_header
+    )
+    same_author_results = addon.same_author_addons.addons_by_author_results_list
+    # checks that up to six addons by the same author are displayed in the card
+    assert len(same_author_results) <= 6
+
+
+@pytest.mark.nondestructive
+def test_click_addon_in_more_addons_by_author(selenium, base_url, variables):
+    extension = variables['experimental_addon']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    result_name = addon.same_author_addons.addons_by_author_results_items[0].text
+    # clicks on an addon present in the card and checks that the addon detail page is loaded
+    addon.same_author_addons.addons_by_author_results_items[0].click()
+    addon.wait_for_page_to_load()
+    assert result_name in addon.name

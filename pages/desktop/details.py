@@ -138,6 +138,18 @@ class Detail(Base):
     def screenshots(self):
         return self.Screenshots(self)
 
+    @property
+    def release_notes(self):
+        return self.ReleaseNotes(self)
+
+    @property
+    def same_author_addons(self):
+        return self.AddonsByAuthor(self)
+
+    @property
+    def add_to_collection(self):
+        return self.AddToCollection(self)
+
     class Stats(Region):
         _root_locator = (By.CLASS_NAME, 'AddonMeta')
         _stats_users_locator = (By.CSS_SELECTOR, '.AddonMeta dl:nth-child(1)')
@@ -384,3 +396,62 @@ class Detail(Base):
             self.wait.until(
                 expected.invisibility_of_element_located(self.screenshot_viewer)
             )
+
+    class ReleaseNotes(Region):
+        _release_notes_card_header_locator = (
+            By.CSS_SELECTOR,
+            '.AddonDescription-version-notes header',
+        )
+        _release_notes_content_locator = (
+            By.CSS_SELECTOR,
+            '.AddonDescription-version-notes .ShowMoreCard-contents',
+        )
+
+        @property
+        def release_notes_header(self):
+            return self.find_element(*self._release_notes_card_header_locator).text
+
+        @property
+        def release_notes_text(self):
+            return self.find_element(*self._release_notes_content_locator)
+
+    class AddonsByAuthor(Region):
+        _addons_by_author_header_locator = (
+            By.CSS_SELECTOR,
+            '.AddonsByAuthorsCard header',
+        )
+        _addons_by_author_results_locator = (
+            By.CSS_SELECTOR,
+            '.AddonsByAuthorsCard .SearchResult',
+        )
+        _addons_by_author_results_item_locator = (
+            By.CSS_SELECTOR,
+            '.AddonsByAuthorsCard a',
+        )
+
+        @property
+        def addons_by_author_header(self):
+            return self.find_element(*self._addons_by_author_header_locator).text
+
+        @property
+        def addons_by_author_results_list(self):
+            return self.find_elements(*self._addons_by_author_results_locator)
+
+        @property
+        def addons_by_author_results_items(self):
+            return self.find_elements(*self._addons_by_author_results_item_locator)
+
+    class AddToCollection(Region):
+        _collection_card_header_locator = (
+            By.CSS_SELECTOR,
+            '.AddAddonToCollection header',
+        )
+        _collection_select_locator = (By.CLASS_NAME, 'AddAddonToCollection-select')
+
+        @property
+        def collections_card_header(self):
+            return self.find_element(*self._collection_card_header_locator).text
+
+        @property
+        def collections_select_field(self):
+            return self.find_element(*self._collection_select_locator)
