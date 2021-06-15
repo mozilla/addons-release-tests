@@ -460,7 +460,7 @@ def test_release_notes(selenium, base_url, variables):
     selenium.get(f'{base_url}/addon/{extension}')
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     assert (
-        'Release notes for ' + addon.more_info.addon_version_number.text
+        f'Release notes for {addon.more_info.addon_version_number.text}'
         in addon.release_notes.release_notes_header
     )
     assert addon.release_notes.release_notes_text.is_displayed()
@@ -474,7 +474,7 @@ def test_more_addons_by_author_card(selenium, base_url, variables):
     # verifies that the author name from the add-on summary card
     # is also present in the add-ons by same author card
     assert (
-        'More extensions by ' + addon.authors.text
+        f'More extensions by {addon.authors.text}'
         in addon.same_author_addons.addons_by_author_header
     )
     same_author_results = addon.same_author_addons.addons_by_author_results_list
