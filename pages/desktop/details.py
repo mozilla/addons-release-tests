@@ -13,6 +13,8 @@ class Detail(Base):
     _root_locator = (By.CLASS_NAME, 'Addon-extension')
     _addon_name_locator = (By.CLASS_NAME, 'AddonTitle')
     _compatible_locator = (By.CSS_SELECTOR, '.AddonCompatibilityError')
+    _new_compatibility_banner_locator = (By.CLASS_NAME, 'GetFirefoxButton-callout-text')
+    _get_firefox_button_locator = (By.CLASS_NAME, 'GetFirefoxButton-button')
     _install_button_locator = (By.CLASS_NAME, 'AMInstallButton-button')
     _install_button_state_locator = (By.CSS_SELECTOR, '.AMInstallButton a')
     _promoted_badge_locator = (By.CLASS_NAME, 'PromotedBadge-large')
@@ -46,6 +48,14 @@ class Detail(Base):
     @property
     def incompatibility_message(self):
         return self.find_element(*self._compatible_locator).text
+
+    @property
+    def compatibility_banner(self):
+        return self.find_element(*self._new_compatibility_banner_locator)
+
+    @property
+    def get_firefox_button(self):
+        return self.find_element(*self._get_firefox_button_locator)
 
     def install(self):
         self.find_element(*self._install_button_locator).click()
