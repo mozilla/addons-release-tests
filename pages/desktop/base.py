@@ -100,9 +100,13 @@ class Header(Region):
         By.CSS_SELECTOR,
         '.DropdownMenu-items .Header-logout-button button',
     )
-    _more_dropdown_locator = (
+    _more_menu_locator = (
         By.CSS_SELECTOR,
         '.Header-SectionLinks .SectionLinks-dropdown',
+    )
+    _more_dropdown_locator = (
+        By.CSS_SELECTOR,
+        '.SectionLinks-dropdown .DropdownMenu-items',
     )
     _more_dropdown_link_locator = (By.CSS_SELECTOR, '.DropdownMenuItem a')
     _themes_locator = (
@@ -180,18 +184,16 @@ class Header(Region):
         self.wait.until(lambda s: self.is_element_displayed(*self._login_locator))
 
     def more_menu(self, item=None):
-        menu = self.find_element(*self._more_dropdown_locator)
-        links = menu.find_elements(*self._more_dropdown_link_locator)
-        # Create an action chain clicking on the elements of the dropdown more
-        # menu. It pauses between each action to account for lag.
-        menu.click()
+        menu = self.find_element(*self._more_menu_locator)
+        dropdown = self.find_element(*self._more_dropdown_locator)
+        link = menu.find_elements(*self._more_dropdown_link_locator)
+        # Create an action chain clicking on the elements of the dropdown more menu
         action = ActionChains(self.selenium)
         action.move_to_element(menu)
-        action.click_and_hold()
         action.pause(2)
-        action.move_to_element(links[item])
-        action.pause(2)
-        action.click(links[item])
+        action.move_to_element(dropdown)
+        action.move_to_element(link[item])
+        action.click(link[item])
         action.pause(2)
         action.perform()
 
