@@ -100,12 +100,15 @@ def test_lower_firefox_incompatibility(selenium, base_url, variables):
 def test_higher_firefox_incompatibility(selenium, base_url, variables):
     extension = variables['higher_firefox_version']
     selenium.get(f'{base_url}/addon/{extension}')
-    addon = Detail(selenium, base_url)
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
     assert (
-        'This add-on requires a newer version of Firefox'
-        in addon.incompatibility_message
+        'You need an updated version of Firefox for this extension'
+        in addon.compatibility_banner.text
     )
-    assert addon.button_state_disabled
+    assert 'Download Firefox' in addon.get_firefox_button.text
+    # clicks on the Download button and checks that the download Firefox page opens
+    addon.get_firefox_button.click()
+    addon.wait_for_current_url('/firefox/new/')
 
 
 @pytest.mark.nondestructive

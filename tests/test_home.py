@@ -89,14 +89,15 @@ def test_mozilla_footer_link(base_url, selenium):
 
 
 @pytest.mark.parametrize(
-    'count, links',
+    'count, link',
     enumerate(
         [
             'about',
-            'blog.mozilla.org',
+            'blog',
             'extensionworkshop',
             'developers',
             'add-on-policies',
+            'blog.mozilla.org',
             'discourse',
             'Contact_us',
             'review_guide',
@@ -105,10 +106,10 @@ def test_mozilla_footer_link(base_url, selenium):
     ),
 )
 @pytest.mark.nondestructive
-def test_addons_footer_links(base_url, selenium, count, links):
+def test_addons_footer_links(base_url, selenium, count, link):
     page = Home(selenium, base_url).open()
     page.footer.addon_links[count].click()
-    page.wait_for_current_url(links)
+    page.wait_for_current_url(link)
 
 
 @pytest.mark.parametrize(
