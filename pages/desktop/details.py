@@ -10,30 +10,30 @@ from pages.desktop.versions import Versions
 
 
 class Detail(Base):
-    _root_locator = (By.CLASS_NAME, 'Addon-extension')
-    _addon_name_locator = (By.CLASS_NAME, 'AddonTitle')
-    _compatible_locator = (By.CSS_SELECTOR, '.AddonCompatibilityError')
-    _new_compatibility_banner_locator = (By.CLASS_NAME, 'GetFirefoxButton-callout-text')
-    _get_firefox_button_locator = (By.CLASS_NAME, 'GetFirefoxButton-button')
-    _install_button_locator = (By.CLASS_NAME, 'AMInstallButton-button')
-    _install_button_state_locator = (By.CSS_SELECTOR, '.AMInstallButton a')
-    _promoted_badge_locator = (By.CLASS_NAME, 'PromotedBadge-large')
+    _root_locator = (By.CLASS_NAME, "Addon-extension")
+    _addon_name_locator = (By.CLASS_NAME, "AddonTitle")
+    _compatible_locator = (By.CSS_SELECTOR, ".AddonCompatibilityError")
+    _new_compatibility_banner_locator = (By.CLASS_NAME, "GetFirefoxButton-callout-text")
+    _get_firefox_button_locator = (By.CLASS_NAME, "GetFirefoxButton-button")
+    _install_button_locator = (By.CLASS_NAME, "AMInstallButton-button")
+    _install_button_state_locator = (By.CSS_SELECTOR, ".AMInstallButton a")
+    _promoted_badge_locator = (By.CLASS_NAME, "PromotedBadge-large")
     _promoted_badge_label_locator = (
         By.CSS_SELECTOR,
-        '.PromotedBadge-large .PromotedBadge-label',
+        ".PromotedBadge-large .PromotedBadge-label",
     )
-    _experimental_badge_locator = (By.CLASS_NAME, 'Badge-experimental')
-    _addon_icon_locator = (By.CLASS_NAME, 'Addon-icon-image')
-    _addon_author_locator = (By.CSS_SELECTOR, '.AddonTitle-author a')
-    _summary_locator = (By.CLASS_NAME, 'Addon-summary')
-    _install_warning_locator = (By.CLASS_NAME, 'InstallWarning')
-    _install_warning_text_locator = (By.CSS_SELECTOR, '.InstallWarning p')
-    _install_warning_button_locator = (By.CSS_SELECTOR, '.InstallWarning a')
+    _experimental_badge_locator = (By.CLASS_NAME, "Badge-experimental")
+    _addon_icon_locator = (By.CLASS_NAME, "Addon-icon-image")
+    _addon_author_locator = (By.CSS_SELECTOR, ".AddonTitle-author a")
+    _summary_locator = (By.CLASS_NAME, "Addon-summary")
+    _install_warning_locator = (By.CLASS_NAME, "InstallWarning")
+    _install_warning_text_locator = (By.CSS_SELECTOR, ".InstallWarning p")
+    _install_warning_button_locator = (By.CSS_SELECTOR, ".InstallWarning a")
 
     def wait_for_page_to_load(self):
         """Waits for various page components to be loaded"""
         self.wait.until(
-            expected.invisibility_of_element_located((By.CLASS_NAME, 'LoadingText'))
+            expected.invisibility_of_element_located((By.CLASS_NAME, "LoadingText"))
         )
         return self
 
@@ -64,7 +64,7 @@ class Detail(Base):
     def button_text(self):
         self.wait.until(
             expected.invisibility_of_element_located(
-                (By.CLASS_NAME, 'AMInstallButton-loading-button')
+                (By.CLASS_NAME, "AMInstallButton-loading-button")
             )
         )
         return self.find_element(*self._install_button_locator).text
@@ -73,7 +73,7 @@ class Detail(Base):
     def button_state_disabled(self):
         # checking that an inactive install button has a 'disabled' attribute
         return self.find_element(*self._install_button_state_locator).get_attribute(
-            'disabled'
+            "disabled"
         )
 
     @property
@@ -91,7 +91,7 @@ class Detail(Base):
         new_tab = self.selenium.window_handles[1]
         self.selenium.switch_to_window(new_tab)
         self.wait.until(
-            expected.visibility_of_element_located((By.CLASS_NAME, 'sumo-page-heading'))
+            expected.visibility_of_element_located((By.CLASS_NAME, "sumo-page-heading"))
         )
 
     @property
@@ -125,7 +125,7 @@ class Detail(Base):
         new_tab = self.selenium.window_handles[1]
         self.selenium.switch_to_window(new_tab)
         self.wait.until(
-            expected.visibility_of_element_located((By.CLASS_NAME, 'sumo-page-heading'))
+            expected.visibility_of_element_located((By.CLASS_NAME, "sumo-page-heading"))
         )
 
     @property
@@ -160,14 +160,30 @@ class Detail(Base):
     def add_to_collection(self):
         return self.AddToCollection(self)
 
+    @property
+    def description(self):
+        return self.AddonDescription(self)
+
+    @property
+    def recommendations(self):
+        return self.AddonRecommendations(self)
+
+    @property
+    def ratings(self):
+        return self.Ratings(self)
+
+    @property
+    def themes(self):
+        return self.Theme(self)
+
     class Stats(Region):
-        _root_locator = (By.CLASS_NAME, 'AddonMeta')
-        _stats_users_locator = (By.CSS_SELECTOR, '.AddonMeta dl:nth-child(1)')
-        _stats_reviews_locator = (By.CSS_SELECTOR, '.AddonMeta dl:nth-child(2)')
-        _stats_ratings_locator = (By.CSS_SELECTOR, '.AddonMeta dl:nth-child(3)')
-        _grouped_ratings_locator = (By.CSS_SELECTOR, '.RatingsByStar-star a')
-        _rating_bar_locator = (By.CSS_SELECTOR, '.RatingsByStar-barContainer')
-        _rating_bar_count_locator = (By.CSS_SELECTOR, '.RatingsByStar-count a')
+        _root_locator = (By.CLASS_NAME, "AddonMeta")
+        _stats_users_locator = (By.CSS_SELECTOR, ".AddonMeta dl:nth-child(1)")
+        _stats_reviews_locator = (By.CSS_SELECTOR, ".AddonMeta dl:nth-child(2)")
+        _stats_ratings_locator = (By.CSS_SELECTOR, ".AddonMeta dl:nth-child(3)")
+        _grouped_ratings_locator = (By.CSS_SELECTOR, ".RatingsByStar-star a")
+        _rating_bar_locator = (By.CSS_SELECTOR, ".RatingsByStar-barContainer")
+        _rating_bar_count_locator = (By.CSS_SELECTOR, ".RatingsByStar-count a")
 
         @property
         def addon_user_stats(self):
@@ -175,12 +191,12 @@ class Detail(Base):
 
         @property
         def stats_users_count(self):
-            count = self.addon_user_stats.find_element(By.CSS_SELECTOR, 'dd').text
-            return int(count.split()[0].replace(',', ''))
+            count = self.addon_user_stats.find_element(By.CSS_SELECTOR, "dd").text
+            return int(count.split()[0].replace(",", ""))
 
         @property
         def no_user_stats(self):
-            return self.addon_user_stats.find_element(By.CSS_SELECTOR, 'dt').text
+            return self.addon_user_stats.find_element(By.CSS_SELECTOR, "dt").text
 
         @property
         def addon_reviews_stats(self):
@@ -189,15 +205,15 @@ class Detail(Base):
         @property
         def stats_reviews_count(self):
             count = self.addon_reviews_stats
-            return int(count.find_element(By.CSS_SELECTOR, 'dd').text)
+            return int(count.find_element(By.CSS_SELECTOR, "dd").text)
 
         def stats_reviews_link(self):
-            self.addon_reviews_stats.find_element(By.CSS_SELECTOR, 'dt a').click()
+            self.addon_reviews_stats.find_element(By.CSS_SELECTOR, "dt a").click()
             return Reviews(self.selenium, self.page.base_url).wait_for_page_to_load()
 
         @property
         def no_reviews_stats(self):
-            return self.addon_reviews_stats.find_element(By.CSS_SELECTOR, 'dt').text
+            return self.addon_reviews_stats.find_element(By.CSS_SELECTOR, "dt").text
 
         @property
         def addon_star_rating_stats(self):
@@ -205,7 +221,7 @@ class Detail(Base):
 
         @property
         def no_star_ratings(self):
-            return self.addon_star_rating_stats.find_element(By.CSS_SELECTOR, 'dt').text
+            return self.addon_star_rating_stats.find_element(By.CSS_SELECTOR, "dt").text
 
         @property
         def bar_grouped_ratings(self):
@@ -220,9 +236,9 @@ class Detail(Base):
             return self.find_elements(*self._rating_bar_count_locator)
 
     class Contribute(Region):
-        _contribute_header_locator = (By.CSS_SELECTOR, '.ContributeCard header')
-        _contribute_content_locator = (By.CLASS_NAME, 'ContributeCard-content')
-        _contribute_button_locator = (By.CLASS_NAME, 'ContributeCard-button')
+        _contribute_header_locator = (By.CSS_SELECTOR, ".ContributeCard header")
+        _contribute_content_locator = (By.CLASS_NAME, "ContributeCard-content")
+        _contribute_button_locator = (By.CLASS_NAME, "ContributeCard-button")
 
         @property
         def contribute_card_header(self):
@@ -239,12 +255,12 @@ class Detail(Base):
             self.selenium.switch_to_window(new_tab)
 
     class Permissions(Region):
-        _permissions_header_locator = (By.CSS_SELECTOR, '.PermissionsCard header')
+        _permissions_header_locator = (By.CSS_SELECTOR, ".PermissionsCard header")
         _permissions_list_locator = (
             By.CSS_SELECTOR,
-            '.PermissionsCard-list--required li',
+            ".PermissionsCard-list--required li",
         )
-        _permissions_learn_more_locator = (By.CLASS_NAME, 'PermissionsCard-learn-more')
+        _permissions_learn_more_locator = (By.CLASS_NAME, "PermissionsCard-learn-more")
 
         @property
         def permissions_card_header(self):
@@ -262,8 +278,8 @@ class Detail(Base):
             self.selenium.switch_to_window(new_tab)
 
         class PermissionDetails(Region):
-            _permission_icon_locator = (By.CSS_SELECTOR, '.Permission .Icon')
-            _permission_description_locator = (By.CLASS_NAME, 'Permission-description')
+            _permission_icon_locator = (By.CSS_SELECTOR, ".Permission .Icon")
+            _permission_description_locator = (By.CLASS_NAME, "Permission-description")
 
             @property
             def permission_icon(self):
@@ -274,15 +290,15 @@ class Detail(Base):
                 return self.find_element(*self._permission_description_locator)
 
     class MoreInfo(Region):
-        _more_info_header_locator = (By.CSS_SELECTOR, '.AddonMoreInfo header')
-        _support_links_locator = (By.CSS_SELECTOR, '.AddonMoreInfo-links a')
-        _version_number_locator = (By.CLASS_NAME, 'AddonMoreInfo-version')
-        _addon_size_locator = (By.CLASS_NAME, 'AddonMoreInfo-filesize')
-        _last_updated_locator = (By.CLASS_NAME, 'AddonMoreInfo-last-updated')
-        _addon_license_locator = (By.CLASS_NAME, 'AddonMoreInfo-license-link')
-        _privacy_policy_locator = (By.CLASS_NAME, 'AddonMoreInfo-privacy-policy-link')
-        _eula_locator = (By.CLASS_NAME, 'AddonMoreInfo-eula')
-        _all_versions_locator = (By.CLASS_NAME, 'AddonMoreInfo-version-history-link')
+        _more_info_header_locator = (By.CSS_SELECTOR, ".AddonMoreInfo header")
+        _support_links_locator = (By.CSS_SELECTOR, ".AddonMoreInfo-links a")
+        _version_number_locator = (By.CLASS_NAME, "AddonMoreInfo-version")
+        _addon_size_locator = (By.CLASS_NAME, "AddonMoreInfo-filesize")
+        _last_updated_locator = (By.CLASS_NAME, "AddonMoreInfo-last-updated")
+        _addon_license_locator = (By.CLASS_NAME, "AddonMoreInfo-license-link")
+        _privacy_policy_locator = (By.CLASS_NAME, "AddonMoreInfo-privacy-policy-link")
+        _eula_locator = (By.CLASS_NAME, "AddonMoreInfo-eula")
+        _all_versions_locator = (By.CLASS_NAME, "AddonMoreInfo-version-history-link")
 
         @property
         def more_info_card_header(self):
@@ -330,16 +346,16 @@ class Detail(Base):
         class License(Region):
             _license_and_privacy_header_locator = (
                 By.CSS_SELECTOR,
-                '.AddonInfo-info header',
+                ".AddonInfo-info header",
             )
-            _license_and_privacy_text_locator = (By.CSS_SELECTOR, '.AddonInfo-info p')
-            _addon_summary_card_locator = (By.CSS_SELECTOR, '.AddonSummaryCard')
+            _license_and_privacy_text_locator = (By.CSS_SELECTOR, ".AddonInfo-info p")
+            _addon_summary_card_locator = (By.CSS_SELECTOR, ".AddonSummaryCard")
 
             def wait_for_region_to_load(self):
                 """Waits for various page components to be loaded"""
                 self.wait.until(
                     expected.invisibility_of_element_located(
-                        (By.CLASS_NAME, 'LoadingText')
+                        (By.CLASS_NAME, "LoadingText")
                     )
                 )
                 return self
@@ -357,15 +373,15 @@ class Detail(Base):
                 return self.find_element(*self._addon_summary_card_locator)
 
     class Screenshots(Region):
-        _screenshot_thumbnail_locator = (By.CSS_SELECTOR, '.ScreenShots-list img')
-        _screenshot_viewer_locator = (By.CSS_SELECTOR, '.pswp--open')
-        _next_preview_locator = (By.CSS_SELECTOR, '.pswp__button--arrow--right')
-        _previous_preview_locator = (By.CSS_SELECTOR, '.pswp__button--arrow--left')
+        _screenshot_thumbnail_locator = (By.CSS_SELECTOR, ".ScreenShots-list img")
+        _screenshot_viewer_locator = (By.CSS_SELECTOR, ".pswp--open")
+        _next_preview_locator = (By.CSS_SELECTOR, ".pswp__button--arrow--right")
+        _previous_preview_locator = (By.CSS_SELECTOR, ".pswp__button--arrow--left")
         _image_view_close_button_locator = (
             By.CSS_SELECTOR,
-            '.pswp--open .pswp__button--close',
+            ".pswp--open .pswp__button--close",
         )
-        _screenshot_counter_location = (By.CSS_SELECTOR, '.pswp__counter')
+        _screenshot_counter_location = (By.CSS_SELECTOR, ".pswp__counter")
 
         @property
         def screenshot_preview(self):
@@ -410,11 +426,11 @@ class Detail(Base):
     class ReleaseNotes(Region):
         _release_notes_card_header_locator = (
             By.CSS_SELECTOR,
-            '.AddonDescription-version-notes header',
+            ".AddonDescription-version-notes header",
         )
         _release_notes_content_locator = (
             By.CSS_SELECTOR,
-            '.AddonDescription-version-notes .ShowMoreCard-contents',
+            ".AddonDescription-version-notes .ShowMoreCard-contents",
         )
 
         @property
@@ -428,15 +444,15 @@ class Detail(Base):
     class AddonsByAuthor(Region):
         _addons_by_author_header_locator = (
             By.CSS_SELECTOR,
-            '.AddonsByAuthorsCard header',
+            ".AddonsByAuthorsCard header",
         )
         _addons_by_author_results_locator = (
             By.CSS_SELECTOR,
-            '.AddonsByAuthorsCard .SearchResult',
+            ".AddonsByAuthorsCard .SearchResult",
         )
         _addons_by_author_results_item_locator = (
             By.CSS_SELECTOR,
-            '.AddonsByAuthorsCard a',
+            ".AddonsByAuthorsCard a",
         )
 
         @property
@@ -454,9 +470,9 @@ class Detail(Base):
     class AddToCollection(Region):
         _collection_card_header_locator = (
             By.CSS_SELECTOR,
-            '.AddAddonToCollection header',
+            ".AddAddonToCollection header",
         )
-        _collection_select_locator = (By.CLASS_NAME, 'AddAddonToCollection-select')
+        _collection_select_locator = (By.CLASS_NAME, "AddAddonToCollection-select")
 
         @property
         def collections_card_header(self):
@@ -465,3 +481,81 @@ class Detail(Base):
         @property
         def collections_select_field(self):
             return self.find_element(*self._collection_select_locator)
+
+    class AddonDescription(Region):
+        _description_header_locator = (By.CSS_SELECTOR, ".AddonDescription header")
+        _description_text_locator = (By.CLASS_NAME, "AddonDescription-contents")
+
+        @property
+        def addon_description_header(self):
+            return self.find_element(*self._description_header_locator).text
+
+        @property
+        def addon_description_text(self):
+            return self.find_element(*self._description_text_locator)
+
+    class AddonRecommendations(Region):
+        _addon_recommendations_root_locator = (By.CSS_SELECTOR, ".AddonRecommendations")
+        _recommendations_card_header_locator = (
+            By.CSS_SELECTOR,
+            ".AddonRecommendations header",
+        )
+        _recommendations_card_results_locator = (
+            By.CSS_SELECTOR,
+            ".AddonRecommendations .SearchResult",
+        )
+        _recommendations_name_locator = (
+            By.CSS_SELECTOR,
+            ".AddonRecommendations .SearchResult-link",
+        )
+
+        @property
+        def addon_recommendations_header(self):
+            return self.find_element(*self._recommendations_card_header_locator).text
+
+        @property
+        def addons_recommendations_results_list(self):
+            return self.find_elements(*self._recommendations_card_results_locator)
+
+        @property
+        def recommendations_results_item(self):
+            return self.find_elements(*self._recommendations_name_locator)
+
+    class Theme(Region):
+        _theme_preview_locator = (By.CSS_SELECTOR, ".ThemeImage-image")
+        _same_author_theme_previews_locator = (By.CSS_SELECTOR, ".SearchResult-icon")
+
+        @property
+        def theme_preview(self):
+            return self.find_element(*self._theme_preview_locator)
+
+        @property
+        def more_themes_by_author_previews(self):
+            return self.find_elements(*self._same_author_theme_previews_locator)
+
+        @property
+        def preview_source(self):
+            return [
+                item.get_attribute("src")
+                for item in self.more_themes_by_author_previews
+            ]
+
+    class Ratings(Region):
+        _ratings_card_header_locator = (By.CSS_SELECTOR, ".Addon-overall-rating header")
+        _ratings_card_summary_locator = (By.CLASS_NAME, "RatingManager-legend")
+        _login_to_rate_button_locator = (
+            By.CLASS_NAME,
+            "RatingManager-log-in-to-rate-button",
+        )
+
+        @property
+        def ratings_card_header(self):
+            return self.find_element(*self._ratings_card_header_locator).text
+
+        @property
+        def ratings_card_summary(self):
+            return self.find_element(*self._ratings_card_summary_locator).text
+
+        @property
+        def rating_login_button(self):
+            return self.find_element(*self._login_to_rate_button_locator)
