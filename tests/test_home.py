@@ -44,13 +44,22 @@ def test_browse_all_button_loads_correct_page(base_url, selenium):
         assert result.promoted_badge
 
 
-@pytest.mark.skip(reason='this test requires more optimization')
-@pytest.mark.parametrize('i, page_url', enumerate(['language-tools', 'android']))
+@pytest.mark.parametrize(
+    'count, title',
+    enumerate(
+        [
+            'Dictionaries and Language Packs',
+            'Firefox Add-on Reviews',
+            'Add-ons for Firefox Android',
+        ]
+    ),
+)
 @pytest.mark.nondestructive
-def test_more_dropdown_navigates_correctly(base_url, selenium, i, page_url):
-    page = Home(selenium, base_url).open()
-    page.header.more_menu(item=i)
-    assert page_url in selenium.current_url
+def test_more_dropdown_navigates_correctly(base_url, selenium, count, title):
+    page = Home(selenium, base_url).open().wait_for_page_to_load()
+    # clicks on a link in the More menu and verifies that the correct page opens
+    page.header.more_menu(item=count)
+    page.wait_for_title_update(title)
 
 
 @pytest.mark.parametrize(
