@@ -509,7 +509,7 @@ def test_addon_description(selenium, base_url, variables):
 @pytest.mark.nondestructive
 def test_addon_ratings_card(selenium, base_url, variables):
     extension = variables['detail_extension_slug']
-    selenium.get('{}/addon/{}'.format(base_url, extension))
+    selenium.get(f'{base_url}/addon/{extension}')
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     assert 'Rate your experience' in addon.ratings.ratings_card_header
     assert (
