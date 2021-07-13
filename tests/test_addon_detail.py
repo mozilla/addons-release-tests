@@ -495,3 +495,81 @@ def test_click_addon_in_more_addons_by_author(selenium, base_url, variables):
     addon.same_author_addons.addons_by_author_results_items[0].click()
     addon.wait_for_page_to_load()
     assert result_name in addon.name
+
+
+@pytest.mark.nondestructive
+def test_addon_description(selenium, base_url, variables):
+    extension = variables['detail_extension_slug']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    assert 'About this extension' in addon.description.addon_description_header
+    assert addon.description.addon_description_text.is_displayed()
+
+
+@pytest.mark.nondestructive
+def test_addon_ratings_card(selenium, base_url, variables):
+    extension = variables['detail_extension_slug']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    assert 'Rate your experience' in addon.ratings.ratings_card_header
+    assert (
+        'How are you enjoying Ghostery - Privacy Ad Blocker'
+        in addon.ratings.ratings_card_summary
+    )
+    # checks that the login button is present in the ratings card
+    # when the add-on detail page is viewed by unauthenticated users
+    addon.ratings.rating_login_button.is_displayed()
+
+
+@pytest.mark.nondestructive
+def test_addon_recommendations(selenium, base_url, variables):
+    extension = variables['detail_extension_slug']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    recommendations = addon.recommendations.addons_recommendations_results_list
+    # verifies that the recommendations card shows up to 4 recommendations if available
+    assert len(recommendations) <= 4
+
+
+@pytest.mark.nondestructive
+def test_click_addon_recommendations(selenium, base_url, variables):
+    extension = variables['detail_extension_slug']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    recommendation_name = addon.recommendations.recommendations_results_item[0].text
+    # clicks on a recommendations and checks that the addon detail page is loaded
+    addon.recommendations.recommendations_results_item[0].click()
+    addon.wait_for_page_to_load()
+    assert recommendation_name in addon.name
+
+
+@pytest.mark.nondestructive
+def test_theme_detail_page(selenium, base_url, variables):
+    extension = variables['theme_detail_page']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    assert addon.themes.theme_preview.is_displayed()
+    # checks that we display More themes from the same artist and that
+    # each additional theme has its own preview from a total of 6
+    assert (
+        f'More themes by {addon.authors.text}'
+        in addon.same_author_addons.addons_by_author_header
+    )
+    theme_by_same_artist = addon.same_author_addons.addons_by_author_results_list
+    theme_by_same_artist_previews = addon.themes.more_themes_by_author_previews
+    assert len(theme_by_same_artist) <= 6
+    assert len(theme_by_same_artist) == len(theme_by_same_artist_previews)
+
+
+@pytest.mark.nondestructive
+def test_current_theme_not_in_more_by_artist_previews(selenium, base_url, variables):
+    extension = variables['theme_detail_page']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    # makes a record of the preview image source displayed first in the more themes by artist
+    # card, clicks on the preview and verifies that the theme is no longer present in
+    # the preview list since it is the currently opened theme detail page
+    theme_preview = addon.themes.more_themes_by_author_previews[0].get_attribute('src')
+    addon.themes.more_themes_by_author_previews[0].click()
+    addon.wait_for_page_to_load()
+    assert theme_preview not in addon.themes.preview_source

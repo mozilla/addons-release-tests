@@ -160,6 +160,22 @@ class Detail(Base):
     def add_to_collection(self):
         return self.AddToCollection(self)
 
+    @property
+    def description(self):
+        return self.AddonDescription(self)
+
+    @property
+    def recommendations(self):
+        return self.AddonRecommendations(self)
+
+    @property
+    def ratings(self):
+        return self.Ratings(self)
+
+    @property
+    def themes(self):
+        return self.Theme(self)
+
     class Stats(Region):
         _root_locator = (By.CLASS_NAME, 'AddonMeta')
         _stats_users_locator = (By.CSS_SELECTOR, '.AddonMeta dl:nth-child(1)')
@@ -465,3 +481,87 @@ class Detail(Base):
         @property
         def collections_select_field(self):
             return self.find_element(*self._collection_select_locator)
+
+    class AddonDescription(Region):
+        _description_header_locator = (By.CSS_SELECTOR, '.AddonDescription header')
+        _description_text_locator = (By.CLASS_NAME, 'AddonDescription-contents')
+
+        @property
+        def addon_description_header(self):
+            return self.find_element(*self._description_header_locator).text
+
+        @property
+        def addon_description_text(self):
+            return self.find_element(*self._description_text_locator)
+
+    class AddonRecommendations(Region):
+        _addon_recommendations_root_locator = (By.CSS_SELECTOR, '.AddonRecommendations')
+        _recommendations_card_header_locator = (
+            By.CSS_SELECTOR,
+            '.AddonRecommendations header',
+        )
+        _recommendations_card_results_locator = (
+            By.CSS_SELECTOR,
+            '.AddonRecommendations .SearchResult',
+        )
+        _recommendations_name_locator = (
+            By.CSS_SELECTOR,
+            '.AddonRecommendations .SearchResult-link',
+        )
+
+        @property
+        def addon_recommendations_header(self):
+            return self.find_element(*self._recommendations_card_header_locator).text
+
+        @property
+        def addons_recommendations_results_list(self):
+            return self.find_elements(*self._recommendations_card_results_locator)
+
+        @property
+        def recommendations_results_item(self):
+            return self.find_elements(*self._recommendations_name_locator)
+
+    class Theme(Region):
+        _theme_preview_locator = (By.CSS_SELECTOR, '.ThemeImage-image')
+        _same_author_theme_previews_locator = (By.CSS_SELECTOR, '.SearchResult-icon')
+
+        @property
+        def theme_preview(self):
+            return self.find_element(*self._theme_preview_locator)
+
+        @property
+        def more_themes_by_author_previews(self):
+            # waiting for the element to be clickable to avoid 'element could not be scrolled into view' exception
+            self.wait.until(
+                expected.element_to_be_clickable(
+                    self._same_author_theme_previews_locator
+                )
+            )
+            return self.find_elements(*self._same_author_theme_previews_locator)
+
+        @property
+        def preview_source(self):
+            return [
+                item.get_attribute('src')
+                for item in self.more_themes_by_author_previews
+            ]
+
+    class Ratings(Region):
+        _ratings_card_header_locator = (By.CSS_SELECTOR, '.Addon-overall-rating header')
+        _ratings_card_summary_locator = (By.CLASS_NAME, 'RatingManager-legend')
+        _login_to_rate_button_locator = (
+            By.CLASS_NAME,
+            'RatingManager-log-in-to-rate-button',
+        )
+
+        @property
+        def ratings_card_header(self):
+            return self.find_element(*self._ratings_card_header_locator).text
+
+        @property
+        def ratings_card_summary(self):
+            return self.find_element(*self._ratings_card_summary_locator).text
+
+        @property
+        def rating_login_button(self):
+            return self.find_element(*self._login_to_rate_button_locator)
