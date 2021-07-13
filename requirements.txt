@@ -48,7 +48,7 @@ pytest-instafail==0.4.2
 pytest-metadata==1.11.0
 pytest-selenium==2.0.1
 pytest-variables==1.9.0
-pytest-xdist==2.2.1
+pytest-xdist==2.3.0
 regex==2021.7.6
 requests==2.26.0
 selenium==3.141.0
