@@ -7,6 +7,7 @@ from pages.desktop.base import Base
 class Reviews(Base):
     _review_count_title_locator = (By.CLASS_NAME, 'AddonReviewList-reviewCount')
     _filter_by_score_locator = (By.CLASS_NAME, 'AddonReviewList-filterByScoreSelector')
+    _user_review_permalink_locator = (By.CSS_SELECTOR, '.FeaturedAddonReview header')
 
     def wait_for_page_to_load(self):
         """Waits for various page components to be loaded"""
@@ -27,3 +28,7 @@ class Reviews(Base):
     @property
     def filter_by_score(self):
         return self.find_element(*self._filter_by_score_locator)
+
+    @property
+    def user_review_permalink(self):
+        return self.find_element(*self._user_review_permalink_locator).text

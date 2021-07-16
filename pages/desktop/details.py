@@ -553,6 +553,39 @@ class Detail(Base):
             By.CLASS_NAME,
             'RatingManager-log-in-to-rate-button',
         )
+        _rating_stars_locator = (By.CSS_SELECTOR, '.RatingManager-UserRating button')
+        _highlighted_star_locator = (
+            By.CSS_SELECTOR,
+            '.RatingManager-UserRating .Rating-selected-star',
+        )
+        _delete_rating_link_locator = (By.CSS_SELECTOR, '.AddonReviewCard-delete')
+        _delete_confirm_button_locator = (
+            By.CSS_SELECTOR,
+            '.ConfirmationDialog-confirm-button',
+        )
+        _write_review_button_locator = (
+            By.CLASS_NAME,
+            'AddonReviewCard-writeReviewButton',
+        )
+        _review_textarea_locator = (By.CSS_SELECTOR, '.AddonReviewManager textarea')
+        _cancel_review_write_locator = (
+            By.CSS_SELECTOR,
+            '.AddonReviewManager .DismissibleTextForm-dismiss',
+        )
+        _submit_review_button_locator = (
+            By.CSS_SELECTOR,
+            '.AddonReviewManager .DismissibleTextForm-submit',
+        )
+        _review_text_locator = (By.CSS_SELECTOR, '.UserReview-body')
+        _edit_review_link_locator = (By.CSS_SELECTOR, '.AddonReviewCard-allControls a')
+        _delete_review_link_locator = (By.CLASS_NAME, 'AddonReviewCard-delete')
+        _keep_review_button_locator = (
+            By.CSS_SELECTOR,
+            '.ConfirmationDialog-cancel-button',
+        )
+        _review_permalink_locator = (By.CSS_SELECTOR, '.UserReview-byLine a')
+        _report_abuse_button_locator = (By.CLASS_NAME, 'ReportAbuseButton-show-more')
+        _all_reviews_link_locator = (By.CLASS_NAME, 'Addon-all-reviews-link')
 
         @property
         def ratings_card_header(self):
@@ -565,3 +598,77 @@ class Detail(Base):
         @property
         def rating_login_button(self):
             return self.find_element(*self._login_to_rate_button_locator)
+
+        @property
+        def rating_stars(self):
+            return self.find_elements(*self._rating_stars_locator)
+
+        @property
+        def selected_star_highlight(self):
+            return self.find_elements(*self._highlighted_star_locator)
+
+        @property
+        def delete_rating_link(self):
+            return self.find_element(*self._delete_rating_link_locator)
+
+        def delete_confirm_button(self):
+            self.find_element(*self._delete_confirm_button_locator).click()
+            self.wait.until(
+                expected.invisibility_of_element_located(self._review_text_locator)
+            )
+
+        @property
+        def write_a_review(self):
+            return self.find_element(*self._write_review_button_locator)
+
+        def wait_for_rating_form(self):
+            self.wait.until(
+                expected.visibility_of_element_located(
+                    self._write_review_button_locator
+                )
+            )
+
+        def review_text_input(self, value):
+            self.find_element(*self._review_textarea_locator).send_keys(value)
+
+        def submit_review(self):
+            self.find_element(*self._submit_review_button_locator).click()
+            self.wait.until(
+                expected.visibility_of_element_located(self._edit_review_link_locator)
+            )
+
+        @property
+        def written_review(self):
+            return self.find_element(*self._review_text_locator)
+
+        @property
+        def cancel_review(self):
+            return self.find_element(*self._cancel_review_write_locator)
+
+        @property
+        def edit_review(self):
+            return self.find_element(*self._edit_review_link_locator)
+
+        @property
+        def delete_review(self):
+            return self.find_element(*self._delete_review_link_locator)
+
+        @property
+        def keep_review(self):
+            return self.find_element(*self._keep_review_button_locator)
+
+        @property
+        def review_permalink(self):
+            return self.find_element(*self._review_permalink_locator)
+
+        def all_reviews_link(self):
+            self.find_element(*self._all_reviews_link_locator).click()
+            return Reviews(self.selenium, self.page.base_url).wait_for_page_to_load()
+
+        @property
+        def all_reviews_link_rating_count(self):
+            count = self.find_element(*self._all_reviews_link_locator).text
+            return int(count.split()[2])
+
+        def report_abuse(self):
+            self.find_element(*self._report_abuse_button_locator).click()

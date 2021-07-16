@@ -20,11 +20,17 @@ jobs:
           name: Install Firefox
           command: choco install firefox-nightly --pre
       - run:
-          name: Run tests
+          name: Run parallel tests
           environment:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 2
-          command: pytest --driver Firefox --variables stage.json
+          command: pytest -m "not serial" --driver Firefox --variables stage.json
+          no_output_timeout: 30m
+      - run:
+          name: Run serial tests
+          environment:
+            MOZ_HEADLESS: 1
+          command: pytest -m "serial" --driver Firefox --variables stage.json
           no_output_timeout: 30m
       - store_artifacts:
           path: ui-test-release.html
