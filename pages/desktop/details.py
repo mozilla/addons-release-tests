@@ -554,6 +554,7 @@ class Detail(Base):
             'RatingManager-log-in-to-rate-button',
         )
         _rating_stars_locator = (By.CSS_SELECTOR, '.RatingManager-UserRating button')
+        _loaded_rating_stars_locator = (By.CSS_SELECTOR, '.Rating--loading')
         _highlighted_star_locator = (
             By.CSS_SELECTOR,
             '.RatingManager-UserRating .Rating-selected-star',
@@ -564,8 +565,8 @@ class Detail(Base):
             '.ConfirmationDialog-confirm-button',
         )
         _write_review_button_locator = (
-            By.CLASS_NAME,
-            'AddonReviewCard-writeReviewButton',
+            By.CSS_SELECTOR,
+            '.AddonReviewCard-writeReviewButton',
         )
         _review_textarea_locator = (By.CSS_SELECTOR, '.AddonReviewManager textarea')
         _cancel_review_write_locator = (
@@ -601,14 +602,32 @@ class Detail(Base):
 
         @property
         def rating_stars(self):
+            # waits for the ratings stars to be fully loaded and editable
+            self.wait.until(
+                expected.invisibility_of_element_located(
+                    self._loaded_rating_stars_locator
+                )
+            )
             return self.find_elements(*self._rating_stars_locator)
 
         @property
         def selected_star_highlight(self):
+            # waits for the ratings stars to be fully loaded and editable
+            self.wait.until(
+                expected.invisibility_of_element_located(
+                    self._loaded_rating_stars_locator
+                )
+            )
             return self.find_elements(*self._highlighted_star_locator)
 
         @property
         def delete_rating_link(self):
+            # waits for the ratings stars to be fully loaded and editable
+            self.wait.until(
+                expected.invisibility_of_element_located(
+                    self._loaded_rating_stars_locator
+                )
+            )
             return self.find_element(*self._delete_rating_link_locator)
 
         def delete_confirm_button(self):
@@ -623,9 +642,7 @@ class Detail(Base):
 
         def wait_for_rating_form(self):
             self.wait.until(
-                expected.visibility_of_element_located(
-                    self._write_review_button_locator
-                )
+                expected.element_to_be_clickable(self._write_review_button_locator)
             )
 
         def review_text_input(self, value):
