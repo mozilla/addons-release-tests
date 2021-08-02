@@ -108,7 +108,7 @@ class Home(Base):
                 return Search(self.selenium, self.page.base_url)
 
     class Extensions(Region):
-        _browse_all_locator = (By.CSS_SELECTOR, '.Card-footer-link > a')
+        _browse_all_locator = (By.CSS_SELECTOR, '.Card-shelf-footer-in-header a')
         _extensions_locator = (By.CLASS_NAME, 'SearchResult')
         _promo_card_header_locator = (By.CLASS_NAME, 'Card-header')
 
