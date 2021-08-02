@@ -10,75 +10,6 @@ from pages.desktop.reviews import Reviews
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-def test_rating_without_text(selenium, base_url, variables):
-    extension = variables['detail_extension_slug']
-    selenium.get(f'{base_url}/addon/{extension}')
-    addon = Detail(selenium, base_url).wait_for_page_to_load()
-    addon.login('regular_user')
-    # total number of reviews in stats card before leaving a new rating
-    prior_rating_count = addon.stats.stats_reviews_count
-    # number of ratings with a score of 5 stars before leaving a new rating
-    prior_bar_rating_count = int(addon.stats.bar_rating_counts[0].text)
-    # post a 5 star rating score and check that 5 stars are highlighted
-    addon.ratings.rating_stars[4].click()
-    assert len(addon.ratings.selected_star_highlight) == 5
-    addon.ratings.wait_for_rating_form()
-    # number of reviews in stats card after leaving a rating
-    new_rating_count = addon.stats.stats_reviews_count
-    new_bar_rating_count = int(addon.stats.bar_rating_counts[0].text)
-    assert new_rating_count == prior_rating_count + 1
-    assert new_bar_rating_count == prior_bar_rating_count + 1
-
-
-@pytest.mark.serial
-@pytest.mark.nondestructive
-@pytest.mark.depends(on=['test_rating_without_text'])
-def test_edit_star_rating(selenium, base_url, variables):
-    extension = variables['detail_extension_slug']
-    selenium.get(f'{base_url}/addon/{extension}')
-    addon = Detail(selenium, base_url).wait_for_page_to_load()
-    addon.login('regular_user')
-    # checks the rating score before selecting a different star rating
-    assert len(addon.ratings.selected_star_highlight) == 5
-    addon.ratings.rating_stars[3].click()
-    # verifies that the new score is reflected by the number of highlighted stars
-    assert len(addon.ratings.selected_star_highlight) == 4
-
-
-@pytest.mark.serial
-@pytest.mark.nondestructive
-@pytest.mark.depends(on=['test_edit_star_rating'])
-def test_link_to_all_reviews(selenium, base_url, variables):
-    extension = variables['detail_extension_slug']
-    selenium.get(f'{base_url}/addon/{extension}')
-    addon = Detail(selenium, base_url).wait_for_page_to_load()
-    addon.login('regular_user')
-    reviews_link_count = addon.ratings.all_reviews_link_rating_count
-    # click on the ratings card link to open the All Reviews page
-    reviews = addon.ratings.all_reviews_link()
-    # check that the ratings card review counts and All Reviews counts are matching
-    assert reviews_link_count == reviews.reviews_title_count
-
-
-@pytest.mark.serial
-@pytest.mark.nondestructive
-@pytest.mark.depends(on=['test_link_to_all_reviews'])
-def test_delete_rating(selenium, base_url, variables):
-    extension = variables['detail_extension_slug']
-    selenium.get(f'{base_url}/addon/{extension}')
-    addon = Detail(selenium, base_url).wait_for_page_to_load()
-    addon.login('regular_user')
-    addon.ratings.delete_rating_link.click()
-    addon.ratings.delete_confirm_button()
-    # verifies that rating stars are no longer full after deleting the rating
-    WebDriverWait(selenium, 10).until(
-        EC.invisibility_of_element_located(addon.ratings.selected_star_highlight)
-    )
-
-
-@pytest.mark.serial
-@pytest.mark.nondestructive
-@pytest.mark.depends(on=['test_delete_rating'])
 def test_rating_with_text(selenium, base_url, variables):
     extension = variables['detail_extension_slug']
     selenium.get(f'{base_url}/addon/{extension}')
@@ -173,3 +104,72 @@ def test_delete_review(selenium, base_url, variables):
     # checks that the review text is no longer displayed
     with pytest.raises(NoSuchElementException):
         selenium.find_element_by_css_selector('.UserReview-body')
+
+
+@pytest.mark.serial
+@pytest.mark.nondestructive
+@pytest.mark.depends(on=['test_delete_review'])
+def test_rating_without_text(selenium, base_url, variables):
+    extension = variables['detail_extension_slug']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    addon.login('regular_user')
+    # total number of reviews in stats card before leaving a new rating
+    prior_rating_count = addon.stats.stats_reviews_count
+    # number of ratings with a score of 5 stars before leaving a new rating
+    prior_bar_rating_count = int(addon.stats.bar_rating_counts[0].text)
+    # post a 5 star rating score and check that 5 stars are highlighted
+    addon.ratings.rating_stars[4].click()
+    assert len(addon.ratings.selected_star_highlight) == 5
+    addon.ratings.wait_for_rating_form()
+    # number of reviews in stats card after leaving a rating
+    new_rating_count = addon.stats.stats_reviews_count
+    new_bar_rating_count = int(addon.stats.bar_rating_counts[0].text)
+    assert new_rating_count == prior_rating_count + 1
+    assert new_bar_rating_count == prior_bar_rating_count + 1
+
+
+@pytest.mark.serial
+@pytest.mark.nondestructive
+@pytest.mark.depends(on=['test_rating_without_text'])
+def test_edit_star_rating(selenium, base_url, variables):
+    extension = variables['detail_extension_slug']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    addon.login('regular_user')
+    # checks the rating score before selecting a different star rating
+    assert len(addon.ratings.selected_star_highlight) == 5
+    addon.ratings.rating_stars[3].click()
+    # verifies that the new score is reflected by the number of highlighted stars
+    assert len(addon.ratings.selected_star_highlight) == 4
+
+
+@pytest.mark.serial
+@pytest.mark.nondestructive
+@pytest.mark.depends(on=['test_edit_star_rating'])
+def test_link_to_all_reviews(selenium, base_url, variables):
+    extension = variables['detail_extension_slug']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    addon.login('regular_user')
+    reviews_link_count = addon.ratings.all_reviews_link_rating_count
+    # click on the ratings card link to open the All Reviews page
+    reviews = addon.ratings.all_reviews_link()
+    # check that the ratings card review counts and All Reviews counts are matching
+    assert reviews_link_count == reviews.reviews_title_count
+
+
+@pytest.mark.serial
+@pytest.mark.nondestructive
+@pytest.mark.depends(on=['test_link_to_all_reviews'])
+def test_delete_rating(selenium, base_url, variables):
+    extension = variables['detail_extension_slug']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    addon.login('regular_user')
+    addon.ratings.delete_rating_link.click()
+    addon.ratings.delete_confirm_button()
+    # verifies that rating stars are no longer full after deleting the rating
+    WebDriverWait(selenium, 10).until(
+        EC.invisibility_of_element_located(addon.ratings.selected_star_highlight)
+    )
