@@ -664,10 +664,22 @@ class Detail(Base):
 
         @property
         def edit_review(self):
+            # waits for the ratings stars to be fully loaded and editable
+            self.wait.until(
+                expected.invisibility_of_element_located(
+                    self._loaded_rating_stars_locator
+                )
+            )
             return self.find_element(*self._edit_review_link_locator)
 
         @property
         def delete_review(self):
+            # waits for the ratings stars to be fully loaded and editable
+            self.wait.until(
+                expected.invisibility_of_element_located(
+                    self._loaded_rating_stars_locator
+                )
+            )
             return self.find_element(*self._delete_review_link_locator)
 
         @property
