@@ -25,6 +25,8 @@ jobs:
             MOZ_HEADLESS: 1
           command: pytest -m "serial" --driver Firefox --variables stage.json
           no_output_timeout: 30m
+      - store_artifacts:
+          path: release-test-results.html
       - run:
           name: Run parallel tests
           environment:
@@ -32,8 +34,6 @@ jobs:
             PYTEST_ADDOPTS: -n 2
           command: pytest -m "not serial" --driver Firefox --variables stage.json
           no_output_timeout: 30m
-      - store_artifacts:
-          path: release-test-results.html
       - store_artifacts:
           path: release-test-results.html
 workflows:
