@@ -19,7 +19,7 @@ hjson==3.0.2
 idna==3.2
 importlib-metadata==4.6.1
 iniconfig==1.1.1
-isort==5.9.2
+isort==5.9.3
 lazy-object-proxy==1.6.0
 mccabe==0.6.1
 more-itertools==8.8.0
