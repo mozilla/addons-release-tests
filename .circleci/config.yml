@@ -23,7 +23,7 @@ jobs:
           name: Run serial tests
           environment:
             MOZ_HEADLESS: 1
-          command: pytest -m "serial" --driver Firefox --variables stage.json
+          command: pytest -m "serial" --driver Firefox --variables stage.json --reverse
           no_output_timeout: 30m
       - run:
           name: Run parallel tests
