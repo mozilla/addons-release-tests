@@ -30,7 +30,6 @@ def test_rating_with_text(selenium, base_url, variables):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-# @pytest.mark.depends(on=['test_rating_with_text'])
 def test_user_review_permalink(selenium, base_url, variables):
     extension = variables['detail_extension_slug']
     selenium.get(f'{base_url}/addon/{extension}')
@@ -45,7 +44,6 @@ def test_user_review_permalink(selenium, base_url, variables):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-# @pytest.mark.depends(on=['test_user_review_permalink'])
 def test_edit_review(selenium, base_url, variables):
     extension = variables['detail_extension_slug']
     selenium.get(f'{base_url}/addon/{extension}')
@@ -61,7 +59,6 @@ def test_edit_review(selenium, base_url, variables):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-# @pytest.mark.depends(on=['test_edit_review'])
 def test_cancel_edit_review(selenium, base_url, variables):
     extension = variables['detail_extension_slug']
     selenium.get(f'{base_url}/addon/{extension}')
@@ -78,7 +75,6 @@ def test_cancel_edit_review(selenium, base_url, variables):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-# @pytest.mark.depends(on=['test_cancel_edit_review'])
 def test_cancel_delete_review(selenium, base_url, variables):
     extension = variables['detail_extension_slug']
     selenium.get(f'{base_url}/addon/{extension}')
@@ -93,7 +89,6 @@ def test_cancel_delete_review(selenium, base_url, variables):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-# @pytest.mark.depends(on=['test_cancel_delete_review'])
 def test_delete_review(selenium, base_url, variables):
     extension = variables['detail_extension_slug']
     selenium.get(f'{base_url}/addon/{extension}')
@@ -108,7 +103,6 @@ def test_delete_review(selenium, base_url, variables):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-# @pytest.mark.depends(on=['test_delete_review'])
 def test_rating_without_text(selenium, base_url, variables):
     extension = variables['detail_extension_slug']
     selenium.get(f'{base_url}/addon/{extension}')
@@ -131,7 +125,6 @@ def test_rating_without_text(selenium, base_url, variables):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-# @pytest.mark.depends(on=['test_rating_without_text'])
 def test_edit_star_rating(selenium, base_url, variables):
     extension = variables['detail_extension_slug']
     selenium.get(f'{base_url}/addon/{extension}')
@@ -146,7 +139,6 @@ def test_edit_star_rating(selenium, base_url, variables):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-# @pytest.mark.depends(on=['test_edit_star_rating'])
 def test_link_to_all_reviews(selenium, base_url, variables):
     extension = variables['detail_extension_slug']
     selenium.get(f'{base_url}/addon/{extension}')
@@ -161,7 +153,6 @@ def test_link_to_all_reviews(selenium, base_url, variables):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-# @pytest.mark.depends(on=['test_link_to_all_reviews'])
 def test_delete_rating(selenium, base_url, variables):
     extension = variables['detail_extension_slug']
     selenium.get(f'{base_url}/addon/{extension}')
