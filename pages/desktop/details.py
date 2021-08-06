@@ -630,7 +630,7 @@ class Detail(Base):
             )
             return self.find_element(*self._delete_rating_link_locator)
 
-        def delete_confirm_button(self):
+        def click_delete_confirm_button(self):
             self.find_element(*self._delete_confirm_button_locator).click()
             self.wait.until(
                 expected.invisibility_of_element_located(self._review_text_locator)
@@ -699,5 +699,5 @@ class Detail(Base):
             count = self.find_element(*self._all_reviews_link_locator).text
             return int(count.split()[2])
 
-        def report_abuse(self):
+        def click_report_abuse(self):
             self.find_element(*self._report_abuse_button_locator).click()

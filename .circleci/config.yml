@@ -2,12 +2,11 @@ version: 2.1
 orbs:
   win: circleci/windows@2.2.0
 jobs:
-  test:
+  serial_tests:
     executor:
       name: win/default
       size: "medium"
     working_directory:  ~/addons-release-tests/
-
     steps:
       - checkout
       - run:
@@ -26,6 +25,25 @@ jobs:
             PYTEST_ADDOPTS: -n 1
           command: pytest -m "serial" --driver Firefox --variables stage.json --html=serial-test-results.html --self-contained-html
           no_output_timeout: 30m
+      - store_artifacts:
+          path: serial-test-results.html
+
+  parallel_tests:
+    executor:
+      name: win/default
+      size: "medium"
+    working_directory: ~/addons-release-tests/
+    steps:
+      - checkout
+      - run:
+          name: Install requirements
+          command: pip install --no-deps -r ./requirements.txt
+      - run:
+          name: Install geckodriver
+          command: choco install selenium-gecko-driver
+      - run:
+          name: Install Firefox
+          command: choco install firefox-nightly --pre
       - run:
           name: Run parallel tests
           environment:
@@ -34,13 +52,13 @@ jobs:
           command: pytest -m "not serial" --driver Firefox --variables stage.json --html=parallel-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
-          path: serial-test-results.html
-      - store_artifacts:
           path: parallel-test-results.html
+
 workflows:
   commit_workflow:
     jobs:
-      - test
+      - serial_tests
+      - parallel_tests
   scheduled_stage_release_run:
     triggers:
       - schedule:
@@ -50,4 +68,5 @@ workflows:
             branches:
               only: master
     jobs:
-      - test
+      - serial_tests
+      - parallel_tests

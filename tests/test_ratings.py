@@ -95,7 +95,7 @@ def test_delete_review(selenium, base_url, variables):
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     addon.login('regular_user')
     addon.ratings.delete_review.click()
-    addon.ratings.delete_confirm_button()
+    addon.ratings.click_delete_confirm_button()
     # checks that the review text is no longer displayed
     with pytest.raises(NoSuchElementException):
         selenium.find_element_by_css_selector('.UserReview-body')
@@ -159,7 +159,7 @@ def test_delete_rating(selenium, base_url, variables):
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     addon.login('regular_user')
     addon.ratings.delete_rating_link.click()
-    addon.ratings.delete_confirm_button()
+    addon.ratings.click_delete_confirm_button()
     # verifies that rating stars are no longer full after deleting the rating
     WebDriverWait(selenium, 10).until(
         EC.invisibility_of_element_located(addon.ratings.selected_star_highlight)
