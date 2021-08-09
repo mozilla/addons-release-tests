@@ -1,6 +1,8 @@
 import pytest
 
 from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -146,7 +148,7 @@ def test_link_to_all_reviews(selenium, base_url, variables):
     addon.login('regular_user')
     reviews_link_count = addon.ratings.all_reviews_link_rating_count
     # click on the ratings card link to open the All Reviews page
-    reviews = addon.ratings.all_reviews_link()
+    reviews = addon.ratings.click_all_reviews_link()
     # check that the ratings card review counts and All Reviews counts are matching
     assert reviews_link_count == reviews.reviews_title_count
 
@@ -164,3 +166,112 @@ def test_delete_rating(selenium, base_url, variables):
     WebDriverWait(selenium, 10).until(
         EC.invisibility_of_element_located(addon.ratings.selected_star_highlight)
     )
+
+
+@pytest.mark.nondestructive
+def test_all_reviews_page_items(selenium, base_url, variables):
+    extension = variables['detail_extension_slug']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    reviews = addon.ratings.click_all_reviews_link()
+    assert reviews.addon_summary_card.is_displayed()
+    for review in reviews.review_items:
+        assert review.rating_stars.is_displayed()
+        assert review.rating_user.is_displayed()
+        assert review.posting_date.is_displayed()
+
+
+@pytest.mark.nondestructive
+def test_filter_reviews_by_score(selenium, base_url, variables):
+    extension = variables['all_scores_addon']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    reviews = addon.ratings.click_all_reviews_link()
+    select = Select(reviews.filter_by_score)
+    count = 1
+    # selecting rating score filters from 1 to 5, verifying that the reviews card
+    # header counts reflect the number of reviews available for that rating score
+    # and that the ratings stars for each review reflect the selected score
+    while count < 6:
+        select.select_by_value(str(count))
+        # waiting for the reviews page to be refreshed
+        reviews.wait_for_page_to_load()
+        assert reviews.reviews_title_count == len(reviews.reviews_list)
+        for stars in reviews.review_items:
+            assert len(stars.selected_star) == count
+        count += 1
+
+
+@pytest.mark.nondestructive
+def test_filter_reviews_from_rating_bars(selenium, base_url, variables):
+    extension = variables['all_scores_addon']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    reviews = addon.ratings.click_all_reviews_link()
+    count = 0
+    # sort reviews based on score by clicking on the ratings bars present
+    # in the AddonSummaryCard; verify that the correct score is displayed
+    # in the reviews card header and in the rating stars associated to each review
+    while count < 5:
+        reviews.score_bars[count].click()
+        # waiting for the reviews page to be refreshed
+        reviews.wait_for_page_to_load()
+        assert reviews.reviews_title_count == len(reviews.reviews_list)
+        for stars in reviews.review_items:
+            assert len(stars.selected_star) == int(reviews.bar_rating_score[count].text)
+        count += 1
+
+
+@pytest.mark.nondestructive
+def test_flag_review_action(selenium, base_url, variables):
+    extension = variables['all_scores_addon']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    addon.login('regular_user')
+    reviews = addon.ratings.click_all_reviews_link()
+    flag = reviews.review_items
+    # the 'Flag' menu is displayed only for reviews with text
+    # iterating through the list of reviews until a review with text is found
+    count = 0
+    while True:
+        if len(flag[count].review_body) > 0:
+            flag[count].flag_review.click()
+            # choosing the option to flag the review for spam
+            assert 'This is spam' in flag[count].flag_review_option[0].text
+            flag[count].select_flag_option(0)
+            assert 'Flagged as spam' in flag[count].flag_review_success_text[0].text
+            break
+        else:
+            count += 1
+
+
+@pytest.mark.nondestructive
+def test_flag_missing_for_empty_review(selenium, base_url, variables):
+    extension = variables['detail_extension_slug']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    reviews = addon.ratings.click_all_reviews_link()
+    # checks that each review without text doesn't have the Flag button
+    for user_review in reviews.review_items:
+        if len(user_review.review_body) == 0:
+            with pytest.raises(NoSuchElementException):
+                user_review.find_element(By.CSS_SELECTOR, '.FlagReviewMenu-menu')
+
+
+@pytest.mark.nondestructive
+def test_flag_review_requires_login(selenium, base_url, variables):
+    extension = variables['detail_extension_slug']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    reviews = addon.ratings.click_all_reviews_link()
+    review_item = reviews.review_items
+    # the 'Flag' menu is displayed only for reviews with text
+    # iterating through the list of reviews until a review with text is found
+    count = 0
+    while True:
+        if len(review_item[count].review_body) > 0:
+            review_item[count].flag_review.click()
+            assert review_item[count].flag_review_login_button.is_displayed()
+            break
+        else:
+            count += 1

@@ -690,7 +690,7 @@ class Detail(Base):
         def review_permalink(self):
             return self.find_element(*self._review_permalink_locator)
 
-        def all_reviews_link(self):
+        def click_all_reviews_link(self):
             self.find_element(*self._all_reviews_link_locator).click()
             return Reviews(self.selenium, self.page.base_url).wait_for_page_to_load()
 
