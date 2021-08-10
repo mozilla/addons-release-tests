@@ -233,7 +233,7 @@ def test_flag_review_action(selenium, base_url, variables):
     # the 'Flag' menu is displayed only for reviews with text
     # iterating through the list of reviews until a review with text is found
     count = 0
-    while True:
+    while count <= 25:
         if len(flag[count].review_body) > 0:
             flag[count].flag_review.click()
             # choosing the option to flag the review for spam
@@ -260,7 +260,7 @@ def test_flag_missing_for_empty_review(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 def test_flag_review_requires_login(selenium, base_url, variables):
-    extension = variables['detail_extension_slug']
+    extension = variables['all_scores_addon']
     selenium.get(f'{base_url}/addon/{extension}')
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     reviews = addon.ratings.click_all_reviews_link()
@@ -268,7 +268,7 @@ def test_flag_review_requires_login(selenium, base_url, variables):
     # the 'Flag' menu is displayed only for reviews with text
     # iterating through the list of reviews until a review with text is found
     count = 0
-    while True:
+    while count <= 25:
         if len(review_item[count].review_body) > 0:
             review_item[count].flag_review.click()
             assert review_item[count].flag_review_login_button.is_displayed()
