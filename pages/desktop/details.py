@@ -688,9 +688,15 @@ class Detail(Base):
 
         @property
         def review_permalink(self):
+            # waits for the ratings stars to be fully loaded and editable
+            self.wait.until(
+                expected.invisibility_of_element_located(
+                    self._loaded_rating_stars_locator
+                )
+            )
             return self.find_element(*self._review_permalink_locator)
 
-        def all_reviews_link(self):
+        def click_all_reviews_link(self):
             self.find_element(*self._all_reviews_link_locator).click()
             return Reviews(self.selenium, self.page.base_url).wait_for_page_to_load()
 
