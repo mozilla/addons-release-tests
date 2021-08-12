@@ -8,6 +8,7 @@ from selenium.webdriver.support import expected_conditions as expected
 from selenium.webdriver.support.select import Select
 
 from pages.desktop.details import Detail
+from pages.desktop.search import Search
 from pages.desktop.users import User
 from pages.desktop.reviews import Reviews
 
@@ -308,6 +309,28 @@ def test_more_info_addon_last_update(selenium, base_url, variables):
     selenium.get(f'{base_url}/addon/{extension}')
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     assert addon.more_info.addon_last_update_date.is_displayed()
+
+
+@pytest.mark.nondestructive
+def test_more_info_related_categories(selenium, base_url, variables):
+    extension = variables['detail_extension_slug']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    # get the name of one of the categories related to this addon
+    category_name = addon.more_info.addon_categories[0].text
+    addon.more_info.addon_categories[0].click()
+    # clicking on the category opens a search results page with addons that share the same category
+    same_category_results = Search(selenium, base_url).wait_for_page_to_load()
+    count = 0
+    # checking that the search results do include the category of the initial addon
+    # I think it's sufficient to cross-check for the first five add-on in the results list
+    while count <= 4:
+        same_category_results.result_list.click_search_result(count)
+        category_name_from_search = [el.text for el in addon.more_info.addon_categories]
+        assert category_name in category_name_from_search
+        selenium.back()
+        same_category_results.wait_for_page_to_load()
+        count += 1
 
 
 @pytest.mark.nondestructive
