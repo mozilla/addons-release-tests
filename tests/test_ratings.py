@@ -233,7 +233,7 @@ def test_flag_review_action(selenium, base_url, variables):
     # the 'Flag' menu is displayed only for reviews with text
     # iterating through the list of reviews until a review with text is found
     count = 0
-    while count <= 25:
+    while count <= len(reviews.reviews_list):
         if len(flag[count].review_body) > 0:
             flag[count].flag_review.click()
             # choosing the option to flag the review for spam
@@ -268,7 +268,7 @@ def test_flag_review_requires_login(selenium, base_url, variables):
     # the 'Flag' menu is displayed only for reviews with text
     # iterating through the list of reviews until a review with text is found
     count = 0
-    while count <= 25:
+    while count <= len(reviews.reviews_list):
         if len(review_item[count].review_body) > 0:
             review_item[count].flag_review.click()
             assert review_item[count].flag_review_login_button.is_displayed()
