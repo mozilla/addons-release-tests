@@ -93,6 +93,12 @@ class Search(Page):
             items = self.find_elements(*self._extension_locator)
             return [self.ResultListItems(self, el) for el in items]
 
+        def click_search_result(self, count):
+            self.find_elements(*self._result_locator)[count].click()
+            from pages.desktop.details import Detail
+
+            return Detail(self.selenium, self.page.base_url).wait_for_page_to_load()
+
         class ResultListItems(Region):
             _rating_locator = (By.CSS_SELECTOR, '.Rating--small')
             _search_item_name_locator = (By.CSS_SELECTOR, '.SearchResult-contents > h2')

@@ -295,6 +295,10 @@ class Detail(Base):
         _version_number_locator = (By.CLASS_NAME, 'AddonMoreInfo-version')
         _addon_size_locator = (By.CLASS_NAME, 'AddonMoreInfo-filesize')
         _last_updated_locator = (By.CLASS_NAME, 'AddonMoreInfo-last-updated')
+        _addon_categories_locator = (
+            By.CSS_SELECTOR,
+            '.AddonMoreInfo-related-categories-list a',
+        )
         _addon_license_locator = (By.CLASS_NAME, 'AddonMoreInfo-license-link')
         _privacy_policy_locator = (By.CLASS_NAME, 'AddonMoreInfo-privacy-policy-link')
         _eula_locator = (By.CLASS_NAME, 'AddonMoreInfo-eula')
@@ -319,6 +323,10 @@ class Detail(Base):
         @property
         def addon_last_update_date(self):
             return self.find_element(*self._last_updated_locator)
+
+        @property
+        def addon_categories(self):
+            return self.find_elements(*self._addon_categories_locator)
 
         def addon_external_license(self):
             self.find_element(*self._addon_license_locator).click()
