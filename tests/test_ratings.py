@@ -407,5 +407,7 @@ def test_delete_developer_reply_to_review(selenium, base_url, variables):
     reviews.review_items[0].click_confirm_delete_button()
     # verifies that the Developer reply section is no longer displayed
     WebDriverWait(selenium, 10).until(
-        EC.invisibility_of_element_located(reviews.review_items[0].dev_reply_header)
+        EC.invisibility_of_element_located(
+            (By.CSS_SELECTOR, '.AddonReviewCard-reply .ShowMoreCard-contents > div')
+        )
     )
