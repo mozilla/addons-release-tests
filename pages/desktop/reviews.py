@@ -82,6 +82,10 @@ class Reviews(Base):
             '.UserReview-byLine .Rating-selected-star',
         )
         _review_body_locator = (By.CSS_SELECTOR, '.UserReview-body')
+        _delete_confirm_locator = (
+            By.CSS_SELECTOR,
+            '.ConfirmationDialog-confirm-button',
+        )
         _flag_review_button_locator = (By.CSS_SELECTOR, '.FlagReviewMenu-menu')
         _flag_review_menu_options = (By.CSS_SELECTOR, '.TooltipMenu-inner button')
         _flag_review_success_text = (By.CSS_SELECTOR, '.TooltipMenu-inner li')
@@ -89,6 +93,17 @@ class Reviews(Base):
             By.CSS_SELECTOR,
             '.TooltipMenu-list .Button--micro',
         )
+        _reply_to_review_locator = (By.CSS_SELECTOR, '.AddonReviewCard-allControls a')
+        _review_reply_textarea_locator = (
+            By.CSS_SELECTOR,
+            '.DismissibleTextForm-textarea',
+        )
+        _publish_reply_button_locator = (By.CSS_SELECTOR, '.DismissibleTextForm-submit')
+        _reply_text_locator = (
+            By.CSS_SELECTOR,
+            '.AddonReviewCard-reply .ShowMoreCard-contents > div',
+        )
+        _dev_reply_header_locator = (By.CSS_SELECTOR, '.UserReview-reply-header')
 
         @property
         def rating_stars(self):
@@ -109,6 +124,9 @@ class Reviews(Base):
         @property
         def review_body(self):
             return self.find_element(*self._review_body_locator).text
+
+        def click_confirm_delete_button(self):
+            self.find_element(*self._delete_confirm_locator).click()
 
         @property
         def flag_review(self):
@@ -133,3 +151,26 @@ class Reviews(Base):
         @property
         def flag_review_login_button(self):
             return self.find_element(*self._flag_review_login_button)
+
+        def click_reply_to_review(self):
+            self.find_element(*self._reply_to_review_locator).click()
+            self.wait.until(
+                expected.element_to_be_clickable(self._review_reply_textarea_locator)
+            )
+
+        def reply_text_input(self, value):
+            self.find_element(*self._review_reply_textarea_locator).send_keys(value)
+
+        def publish_reply(self):
+            self.find_element(*self._publish_reply_button_locator).click()
+            self.wait.until(
+                expected.visibility_of_element_located(self._dev_reply_header_locator)
+            )
+
+        @property
+        def posted_reply_text(self):
+            return self.find_element(*self._reply_text_locator).text
+
+        @property
+        def dev_reply_header(self):
+            return self.find_element(*self._dev_reply_header_locator)

@@ -275,3 +275,137 @@ def test_flag_review_requires_login(selenium, base_url, variables):
             break
         else:
             count += 1
+
+
+@pytest.mark.nondestructive
+def test_flag_review_menu_options(selenium, base_url, variables):
+    extension = variables['all_scores_addon']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    addon.login('regular_user')
+    reviews = addon.ratings.click_all_reviews_link()
+    flag = reviews.review_items
+    count = 0
+    while count <= len(reviews.reviews_list):
+        if len(flag[count].review_body) > 0:
+            flag[count].flag_review.click()
+            # verifies that the following 3 report options are available in the flag menu
+            assert 'This is spam' in flag[count].flag_review_option[0].text
+            assert (
+                'This contains inappropriate language'
+                in flag[count].flag_review_option[1].text
+            )
+            assert (
+                'This is a bug report or support request'
+                in flag[count].flag_review_option[2].text
+            )
+            break
+        else:
+            count += 1
+
+
+@pytest.mark.serial
+@pytest.mark.nondestructive
+def test_write_review_in_all_reviews_page(selenium, base_url, variables):
+    extension = variables['detail_extension_slug']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    addon.login('regular_user')
+    # post a rating on the detail page
+    addon.ratings.rating_stars[4].click()
+    # navigate to the All reviews page to write your review
+    reviews = addon.ratings.click_all_reviews_link()
+    addon.ratings.write_a_review.click()
+    review_text = 'first review text'
+    addon.ratings.review_text_input(review_text)
+    addon.ratings.submit_review()
+    assert reviews.review_items[0].review_body == review_text
+
+
+@pytest.mark.serial
+@pytest.mark.nondestructive
+def test_edit_review_in_all_reviews_page(selenium, base_url, variables):
+    extension = variables['detail_extension_slug']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    addon.login('regular_user')
+    reviews = addon.ratings.click_all_reviews_link()
+    addon.ratings.edit_review.click()
+    # edit the previous rating in All reviews page and verify that the score is updated
+    reviews.edit_review_score[3].click()
+    assert len(reviews.selected_score_highlight) == 4
+    # update the written review text in All reviews page
+    edited_review_text = ' edited review text'
+    addon.ratings.review_text_input(edited_review_text)
+    addon.ratings.submit_review()
+    assert edited_review_text in reviews.review_items[0].review_body
+
+
+@pytest.mark.serial
+@pytest.mark.nondestructive
+def test_delete_review_in_all_reviews_page(selenium, base_url, variables):
+    extension = variables['detail_extension_slug']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    addon.login('regular_user')
+    reviews = addon.ratings.click_all_reviews_link()
+    review_text = reviews.review_items[0].review_body
+    reviews_count = reviews.reviews_title_count
+    addon.ratings.delete_review.click()
+    reviews.review_items[0].click_confirm_delete_button()
+    # waits until the reviews count in the list header decreases by 1
+    WebDriverWait(selenium, 10).until(
+        EC.text_to_be_present_in_element(
+            (By.CLASS_NAME, 'AddonReviewList-reviewCount'), f'{reviews_count - 1}'
+        )
+    )
+    # checks that the review is no longer found in the list of available reviews
+    for review in reviews.review_items:
+        assert review_text not in review.review_body
+
+
+@pytest.mark.serial
+@pytest.mark.nondestructive
+def test_developer_reply_to_review(selenium, base_url, variables):
+    extension = variables['dev_reply_review']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    addon.login('developer')
+    reviews = addon.ratings.click_all_reviews_link()
+    reviews.review_items[0].click_reply_to_review()
+    reply_text = 'first reply'
+    reviews.review_items[0].reply_text_input(reply_text)
+    reviews.review_items[0].publish_reply()
+    assert 'Developer response' in reviews.review_items[0].dev_reply_header.text
+    assert reply_text == reviews.review_items[0].posted_reply_text
+
+
+@pytest.mark.serial
+@pytest.mark.nondestructive
+def test_edit_developer_reply_to_review(selenium, base_url, variables):
+    extension = variables['dev_reply_review']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    addon.login('developer')
+    reviews = addon.ratings.click_all_reviews_link()
+    edited_reply = ' edited reply'
+    addon.ratings.edit_review.click()
+    reviews.review_items[0].reply_text_input(edited_reply)
+    reviews.review_items[0].publish_reply()
+    assert edited_reply in reviews.review_items[0].posted_reply_text
+
+
+@pytest.mark.serial
+@pytest.mark.nondestructive
+def test_delete_developer_reply_to_review(selenium, base_url, variables):
+    extension = variables['dev_reply_review']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    addon.login('developer')
+    reviews = addon.ratings.click_all_reviews_link()
+    addon.ratings.delete_review.click()
+    reviews.review_items[0].click_confirm_delete_button()
+    # verifies that the Developer reply section is no longer displayed
+    WebDriverWait(selenium, 10).until(
+        EC.invisibility_of_element_located(reviews.review_items[0].dev_reply_header)
+    )
