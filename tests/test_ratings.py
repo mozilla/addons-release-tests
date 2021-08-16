@@ -21,7 +21,7 @@ def test_rating_with_text(selenium, base_url, variables):
     # waits for the write a review form to be displayed
     addon.ratings.wait_for_rating_form()
     addon.ratings.write_a_review.click()
-    review_text = 'first review text'
+    review_text = variables['initial_text_input']
     addon.ratings.review_text_input(review_text)
     addon.ratings.submit_review()
     # verifies that the input review text was saved
@@ -52,7 +52,7 @@ def test_edit_review(selenium, base_url, variables):
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     addon.login('regular_user')
     addon.ratings.edit_review.click()
-    edited_review_text = ' edited review text'
+    edited_review_text = variables['edited_text_input']
     addon.ratings.review_text_input(edited_review_text)
     # updates the review text and verifies that the changes are saved
     addon.ratings.submit_review()
@@ -237,9 +237,14 @@ def test_flag_review_action(selenium, base_url, variables):
         if len(flag[count].review_body) > 0:
             flag[count].flag_review.click()
             # choosing the option to flag the review for spam
-            assert 'This is spam' in flag[count].flag_review_option[0].text
+            assert (
+                variables['review_flag_spam'] in flag[count].flag_review_option[0].text
+            )
             flag[count].select_flag_option(0)
-            assert 'Flagged as spam' in flag[count].flag_review_success_text[0].text
+            assert (
+                variables['review_flagged_for_spam']
+                in flag[count].flag_review_success_text[0].text
+            )
             break
         else:
             count += 1
@@ -290,14 +295,15 @@ def test_flag_review_menu_options(selenium, base_url, variables):
         if len(flag[count].review_body) > 0:
             flag[count].flag_review.click()
             # verifies that the following 3 report options are available in the flag menu
-            assert 'This is spam' in flag[count].flag_review_option[0].text
             assert (
-                'This contains inappropriate language'
+                variables['review_flag_spam'] in flag[count].flag_review_option[0].text
+            )
+            assert (
+                variables['review_flag_language']
                 in flag[count].flag_review_option[1].text
             )
             assert (
-                'This is a bug report or support request'
-                in flag[count].flag_review_option[2].text
+                variables['review_flag_bug'] in flag[count].flag_review_option[2].text
             )
             break
         else:
@@ -316,7 +322,7 @@ def test_write_review_in_all_reviews_page(selenium, base_url, variables):
     # navigate to the All reviews page to write your review
     reviews = addon.ratings.click_all_reviews_link()
     addon.ratings.write_a_review.click()
-    review_text = 'first review text'
+    review_text = variables['initial_text_input']
     addon.ratings.review_text_input(review_text)
     addon.ratings.submit_review()
     assert reviews.review_items[0].review_body == review_text
@@ -335,7 +341,7 @@ def test_edit_review_in_all_reviews_page(selenium, base_url, variables):
     reviews.edit_review_score[3].click()
     assert len(reviews.selected_score_highlight) == 4
     # update the written review text in All reviews page
-    edited_review_text = ' edited review text'
+    edited_review_text = variables['edited_text_input']
     addon.ratings.review_text_input(edited_review_text)
     addon.ratings.submit_review()
     assert edited_review_text in reviews.review_items[0].review_body
@@ -373,7 +379,7 @@ def test_developer_reply_to_review(selenium, base_url, variables):
     addon.login('developer')
     reviews = addon.ratings.click_all_reviews_link()
     reviews.review_items[0].click_reply_to_review()
-    reply_text = 'first reply'
+    reply_text = variables['initial_text_input']
     reviews.review_items[0].reply_text_input(reply_text)
     reviews.review_items[0].publish_reply()
     assert 'Developer response' in reviews.review_items[0].dev_reply_header.text
@@ -388,7 +394,7 @@ def test_edit_developer_reply_to_review(selenium, base_url, variables):
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     addon.login('developer')
     reviews = addon.ratings.click_all_reviews_link()
-    edited_reply = ' edited reply'
+    edited_reply = variables['edited_text_input']
     addon.ratings.edit_review.click()
     reviews.review_items[0].reply_text_input(edited_reply)
     reviews.review_items[0].publish_reply()
