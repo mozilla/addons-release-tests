@@ -1,6 +1,8 @@
 {
   "base_url": "https://addons.allizom.org",
+
   "search_term": "Flagfox",
+
   "detail_extension_slug": "ghostery",
   "detail_extension_name": "Ghostery - Privacy Ad Blocker",
   "addon_with_stats": "facebook-container",
@@ -11,8 +13,16 @@
   "by_firefox_addon": "by-firefox",
   "experimental_addon": "experimental",
   "theme_detail_page": "flag-of-mexico",
-  "all_scores_addon": "all-scores",
   "install_warning_message": "This add-on is not actively monitored for security by Mozilla. Make sure you trust it before installing.",
   "contribute_utm_param": "utm_content=product-page-contribute&utm_medium=referral&utm_source=addons.mozilla.org",
-  "contribute_card_summary": "The developer of this extension asks that you help support its continued development by making a small contribution."
+  "contribute_card_summary": "The developer of this extension asks that you help support its continued development by making a small contribution.",
+
+  "all_scores_addon": "all-scores",
+  "dev_reply_review": "dev-reply-review",
+  "initial_text_input": "original text",
+  "edited_text_input": " edited text",
+  "review_flag_spam": "This is spam",
+  "review_flagged_for_spam": "Flagged as spam",
+  "review_flag_language": "This contains inappropriate language",
+  "review_flag_bug": "This is a bug report or support request"
 }
