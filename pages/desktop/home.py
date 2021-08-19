@@ -4,6 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 
 from pages.desktop.base import Base
+from pages.desktop.details import Detail
 
 
 class Home(Base):
@@ -190,7 +191,7 @@ class Home(Base):
     class PrimaryHero(Region):
         _hero_locator = (By.CLASS_NAME, 'HeroRecommendation')
         _hero_image_locator = (By.CLASS_NAME, 'HeroRecommendation-image')
-        _hero_title_locator = (By.CLASS_NAME, 'HeroRecommendation-recommended')
+        _hero_title_locator = (By.CLASS_NAME, 'HeroRecommendation-title-text')
         _hero_extension_name_locator = (By.CLASS_NAME, 'HeroRecommendation-heading')
         _hero_extension_summary_locator = (By.CLASS_NAME, 'HeroRecommendation-body')
         _extension_button_locator = (By.CLASS_NAME, 'HeroRecommendation-link')
@@ -209,7 +210,7 @@ class Home(Base):
             return self.find_element(*self._hero_title_locator).text
 
         @property
-        def primary_hero_extension(self):
+        def primary_hero_extension_name(self):
             return self.find_element(*self._hero_extension_name_locator).text
 
         @property
@@ -217,15 +218,8 @@ class Home(Base):
             return self.find_element(*self._hero_extension_summary_locator)
 
         def click_hero_extension_link(self):
-            link = self.find_element(*self._extension_link_locator).get_attribute(
-                'target'
-            )
-            # add-ons that open in a separate domain ere not in scope yet
-            # hence adding a check that we avoid such cases in the test envs
-            if link == '_blank':
-                self.selenium.refresh()
-            else:
-                self.find_element(*self._extension_button_locator).click()
+            self.find_element(*self._extension_button_locator).click()
+            return Detail(self.selenium, self.page.base_url).wait_for_page_to_load()
 
     class SecondaryHero(Region):
         _secondary_headline_locator = (By.CLASS_NAME, 'SecondaryHero-message-headline')
@@ -246,6 +240,9 @@ class Home(Base):
 
         def see_all_extensions(self):
             self.find_element(*self._see_all_extensions_locator).click()
+            from pages.desktop.extensions import Extensions
+
+            return Extensions(self.selenium, self.page.base_url).wait_for_page_to_load()
 
         @property
         def secondary_hero_modules(self):
@@ -272,6 +269,7 @@ class Home(Base):
             def click_secondary_module_link(self):
                 link = self.find_element(*self._module_link_locator)
                 target = link.get_attribute('target')
+                # external links are opened in new tabs, so we need to account for multiple windows
                 if target == '_blank':
                     home_tab = self.selenium.current_window_handle
                     link.click()
