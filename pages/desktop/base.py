@@ -202,6 +202,9 @@ class Header(Region):
         self.wait.until(EC.number_of_windows_to_be(2))
         new_tab = self.selenium.window_handles[1]
         self.selenium.switch_to_window(new_tab)
+        self.wait.until(
+            EC.visibility_of_element_located((By.CLASS_NAME, 'DevHub-Navigation-Logo'))
+        )
 
     def click_extension_workshop(self):
         self.find_element(*self._extension_workshop_locator).click()

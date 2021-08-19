@@ -17,6 +17,9 @@
   "contribute_utm_param": "utm_content=product-page-contribute&utm_medium=referral&utm_source=addons.mozilla.org",
   "contribute_card_summary": "The developer of this extension asks that you help support its continued development by making a small contribution.",
 
+  "secondary_hero_title": "Extensions are like apps for Firefox.",
+  "secondary_hero_summary": "They add features to Firefox to make browsing faster, safer, or just plain fun",
+
   "all_scores_addon": "all-scores",
   "dev_reply_review": "dev-reply-review",
   "initial_text_input": "original text",
