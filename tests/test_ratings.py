@@ -25,7 +25,7 @@ def test_rating_with_text(selenium, base_url, variables):
     addon.ratings.review_text_input(review_text)
     addon.ratings.submit_review()
     # verifies that the input review text was saved
-    assert addon.ratings.written_review.text != review_text
+    assert addon.ratings.written_review.text == review_text
     # checks that the review posting time is recorded
     assert 'a few seconds ago' in addon.ratings.review_permalink.text
 
