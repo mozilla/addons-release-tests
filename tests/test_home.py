@@ -103,6 +103,24 @@ def test_secondary_hero_modules(base_url, selenium):
         assert module.module_description.is_displayed()
 
 
+@pytest.mark.parametrize(
+    'count, module',
+    enumerate(
+        [
+            'First module',
+            'Second module',
+            'Third module',
+        ]
+    ),
+)
+@pytest.mark.nondestructive
+def test_click_module_link(base_url, selenium, count, module):
+    page = Home(selenium, base_url).open()
+    # checks that the content linked in the secondary modules is available
+    module = page.secondary_hero.secondary_hero_modules
+    module[count].click_secondary_module_link()
+
+
 # Tests covering promo shelves
 @pytest.mark.nondestructive
 def test_browse_all_recommended_extensions(base_url, selenium):
