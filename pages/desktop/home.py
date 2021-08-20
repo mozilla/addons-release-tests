@@ -283,11 +283,7 @@ class Home(Base):
                     # (i.e. we check that the page response status is 200)
                     self.wait.until(custom_waits.url_not_contins('about:blank'))
                     page = requests.head(self.selenium.current_url)
-                    try:
-                        assert page.status_code == 200
-                    except AssertionError:
-                        print(f'The response status code was {page.status_code}')
-
+                    assert page.status_code == 200, f'The response status code was {page.status_code}'
                 else:
                     # this condition handles links that open on the amo domain; again, we might not know the
                     # content in advance, so the best we can do is check that the page opens in AMO
@@ -300,7 +296,4 @@ class Home(Base):
                     )
                     assert 'addons' in self.selenium.current_url
                     page = requests.head(self.selenium.current_url)
-                    try:
-                        assert page.status_code == 200
-                    except AssertionError:
-                        print(f'The response status code was {page.status_code}')
+                    assert page.status_code == 200, f'The response status code was {page.status_code}'
