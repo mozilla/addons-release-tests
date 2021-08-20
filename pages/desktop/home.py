@@ -1,8 +1,10 @@
+import requests
 from pypom import Region
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 
+import custom_waits
 from pages.desktop.base import Base
 from pages.desktop.details import Detail
 
@@ -271,21 +273,34 @@ class Home(Base):
                 target = link.get_attribute('target')
                 # external links are opened in new tabs, so we need to account for multiple windows
                 if target == '_blank':
-                    home_tab = self.selenium.current_window_handle
                     link.click()
                     self.wait.until(EC.number_of_windows_to_be(2))
                     new_tab = self.selenium.window_handles[1]
                     self.selenium.switch_to_window(new_tab)
-                    # waiting for an element in the new page to be loaded
+                    # editorial might change these links when they need to push new content and we don't know
+                    # in advance what that content might be; also, we want to avoid frequent maintenance for
+                    # these tests; the solution used is to verify that the content we link to is available
+                    # (i.e. we check that the page response status is 200)
+                    self.wait.until(custom_waits.url_not_contins('about:blank'))
+                    page = requests.head(self.selenium.current_url)
+                    try:
+                        assert page.status_code == 200
+                    except AssertionError:
+                        print(f'The response status code was {page.status_code}')
+
+                else:
+                    # this condition handles links that open on the amo domain; again, we might not know the
+                    # content in advance, so the best we can do is check that the page opens in AMO
+                    # and the status code we receive is 200
+                    link.click()
                     self.wait.until(
-                        EC.visibility_of_element_located(
-                            (By.CSS_SELECTOR, '.top-header-navigation')
+                        EC.invisibility_of_element_located(
+                            (By.CLASS_NAME, 'LoadingText')
                         )
                     )
-                    # closing the new tab and going back to homepage
-                    self.selenium.close()
-                    self.selenium.switch_to.window(home_tab)
-                else:
-                    # this condition handles links that open on the amo domain
-                    link.click()
-                    assert '/firefox/collections/' in self.selenium.current_url
+                    assert 'addons' in self.selenium.current_url
+                    page = requests.head(self.selenium.current_url)
+                    try:
+                        assert page.status_code == 200
+                    except AssertionError:
+                        print(f'The response status code was {page.status_code}')
