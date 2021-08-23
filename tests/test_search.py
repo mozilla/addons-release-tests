@@ -145,7 +145,7 @@ def test_selected_result_is_highlighted(base_url, selenium, variables):
 # Tests covering search results page"
 @pytest.mark.nondestructive
 def test_search_loads_and_navigates_to_correct_page(base_url, selenium):
-    page = Home(selenium, base_url).open()
+    page = Home(selenium, base_url).open().wait_for_page_to_load()
     addon_name = page.recommended_extensions.list[0].name
     search = page.search.search_for(addon_name)
     search_name = search.result_list.extensions[0].name
@@ -155,7 +155,7 @@ def test_search_loads_and_navigates_to_correct_page(base_url, selenium):
 
 @pytest.mark.nondestructive
 def test_search_loads_correct_results(base_url, selenium):
-    page = Home(selenium, base_url).open()
+    page = Home(selenium, base_url).open().wait_for_page_to_load()
     addon_name = page.recommended_extensions.list[0].name
     items = page.search.search_for(addon_name)
     assert addon_name in items.result_list.extensions[0].name
