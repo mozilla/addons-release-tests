@@ -1,7 +1,10 @@
 import pytest
 
+from selenium.webdriver import ActionChains
+
 from pages.desktop.home import Home
 from pages.desktop.search import Search
+from scripts import reusables
 
 
 # Tests covering the homepage header
@@ -130,6 +133,75 @@ def test_browse_all_recommended_extensions(base_url, selenium):
     search_page = Search(selenium, base_url)
     for result in search_page.result_list.extensions:
         assert result.promoted_badge
+
+
+@pytest.mark.nondestructive
+def test_home_recommended_extensions_shelf(base_url, selenium):
+    page = Home(selenium, base_url).open().wait_for_page_to_load()
+    assert "Recommended extensions" in page.recommended_extensions.card_header
+    shelf_items = page.recommended_extensions.list
+    # verifies that each shelf extension has the necessary components
+    assert len(shelf_items) == 4
+    for item in shelf_items:
+        assert item.name.is_displayed()
+        assert item.addon_icon_preview.is_displayed()
+        assert item.addon_users_preview.is_displayed()
+
+
+@pytest.mark.nondestructive
+def test_home_see_more_popular_themes(base_url, selenium):
+    page = Home(selenium, base_url).open().wait_for_page_to_load()
+    page.popular_themes.browse_all()
+    sort = "users"
+    search_page = Search(selenium, base_url).wait_for_page_to_load()
+    # checking that popular themes results are indeed sorted by users
+    results = [getattr(result, sort) for result in search_page.result_list.themes]
+    assert sorted(results, reverse=True) == results
+
+
+@pytest.mark.nondestructive
+def test_home_popular_themes_shelf(base_url, selenium):
+    page = Home(selenium, base_url).open().wait_for_page_to_load()
+    assert "Popular themes" in page.popular_themes.card_header
+    shelf_items = page.popular_themes.list
+    # verifies that each shelf themes has the necessary components
+    assert len(shelf_items) == 3
+    for item in shelf_items:
+        assert item.name.is_displayed()
+        assert item.addon_icon_preview.is_displayed()
+        assert item.addon_users_preview.is_displayed()
+
+
+@pytest.mark.nondestructive
+def test_home_see_more_recommended_themes(base_url, selenium):
+    page = Home(selenium, base_url).open().wait_for_page_to_load()
+    page.recommended_themes.browse_all()
+    assert "type=statictheme" in selenium.current_url
+    search_page = Search(selenium, base_url)
+    for result in search_page.result_list.themes:
+        assert result.promoted_badge
+
+
+@pytest.mark.nondestructive
+def test_home_shelf_item_rating(base_url, selenium):
+    page = Home(selenium, base_url).open().wait_for_page_to_load()
+    shelf_item = page.recommended_extensions.list[0].root
+    # wait for the shelf to become intractable (scrolled into view)
+    reusables.scroll_into_view(selenium, shelf_item)
+    # add-on ratings are displayed when hovering over a shelf item
+    action = ActionChains(selenium)
+    action.move_to_element(shelf_item).perform()
+    assert page.recommended_extensions.list[0].addon_rating_preview.is_displayed()
+
+
+@pytest.mark.nondestructive
+def test_home_see_more_links(base_url, selenium):
+    page = Home(selenium, base_url).open().wait_for_page_to_load()
+    count = 0
+    # clicks through each link in the homepage shelves and checks that the content is available
+    while count < len(page.see_more_links_in_shelves):
+        page.click_see_more_links(count)
+        count += 1
 
 
 @pytest.mark.parametrize(

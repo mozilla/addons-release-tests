@@ -1,4 +1,4 @@
-"""A class where we customize waits that are not found in the predefined
+"""A module where we customize waits that are not found in the predefined
 selenium expected_conditions class"""
 
 

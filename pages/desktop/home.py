@@ -4,7 +4,7 @@ from pypom import Region
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 
-import custom_waits
+from scripts import custom_waits
 from pages.desktop.base import Base
 from pages.desktop.details import Detail
 
@@ -13,17 +13,24 @@ class Home(Base):
     """Addons Home page"""
 
     _recommended_extensions_locator = (By.CLASS_NAME, 'Home-Recommended-extensions')
-    _recommended_themes_locator = (By.CLASS_NAME, 'Home-RecommendedThemes')
+    _recommended_themes_locator = (By.CLASS_NAME, 'Home-Recommended-themes')
     _hero_locator = (By.CLASS_NAME, 'HeroRecommendation')
     _secondary_hero_locator = (By.CLASS_NAME, 'SecondaryHero')
     _popular_extensions_locator = (By.CLASS_NAME, 'Home-PopularExtensions')
-    _popular_themes_locator = (By.CLASS_NAME, 'Home-PopularThemes')
+    _popular_themes_locator = (By.CLASS_NAME, 'Home-Popular-themes')
     _themes_category_locator = (By.CLASS_NAME, 'Home-CuratedThemes')
     _toprated_themes_locator = (By.CLASS_NAME, 'Home-TopRatedThemes')
     _featured_collections_locator = (By.CLASS_NAME, 'Home-FeaturedCollection')
+    _shelves_see_more_links_locator = (
+        By.CSS_SELECTOR,
+        '.Card-shelf-footer-in-header a',
+    )
 
     def wait_for_page_to_load(self):
-        self.wait.until(lambda _: self.is_element_displayed(*self._hero_locator))
+        """Waits for various page components to be loaded"""
+        self.wait.until(
+            EC.invisibility_of_element_located((By.CLASS_NAME, 'LoadingText'))
+        )
         return self
 
     @property
@@ -75,6 +82,47 @@ class Home(Base):
         el = self.find_element(*self._featured_collections_locator)
         return self.Extensions(self, el)
 
+    @property
+    def see_more_links_in_shelves(self):
+        return self.find_elements(*self._shelves_see_more_links_locator)
+
+    def click_see_more_links(self, count):
+        link = [el for el in self.see_more_links_in_shelves]
+        target = link[count].get_attribute('target')
+        # external links are opened in new tabs, so we need to account for multiple windows
+        if target == '_blank':
+            home_tab = self.selenium.current_window_handle
+            link[count].click()
+            self.wait.until(EC.number_of_windows_to_be(2))
+            new_tab = self.selenium.window_handles[1]
+            self.selenium.switch_to_window(new_tab)
+            # see more external links can contain variable content we might not know in advance (especially on prod)
+            # the solution used here is to verify that the content we link to is available (i.e. page response = 200)
+            self.wait.until(custom_waits.url_not_contins('about:blank'))
+            page = requests.head(self.selenium.current_url)
+            assert (
+                page.status_code == 200
+            ), f'The response status code was {page.status_code}'
+            self.selenium.close()
+            self.selenium.switch_to_window(home_tab)
+        else:
+            # similar to external links, internal links might contain unpredictable content;
+            # in this case, we check that the content exists inside the AMO domain
+            link[count].click()
+            self.wait.until(
+                EC.invisibility_of_element_located((By.CLASS_NAME, 'LoadingText'))
+            )
+            assert 'addons' in self.selenium.current_url
+            page = requests.head(self.selenium.current_url)
+            assert (
+                page.status_code == 200
+            ), f'The response status code was {page.status_code}'
+            self.selenium.back()
+            # waits for the homepage to reload
+            self.wait.until(
+                EC.invisibility_of_element_located((By.CLASS_NAME, 'LoadingText'))
+            )
+
     class ThemeCategory(Region):
         _home_theme_category_locator = (By.CLASS_NAME, 'Home-SubjectShelf-list-item')
         _shelf_summary_locator = (By.CLASS_NAME, 'Home-SubjectShelf-subheading')
@@ -113,7 +161,7 @@ class Home(Base):
     class Extensions(Region):
         _browse_all_locator = (By.CSS_SELECTOR, '.Card-shelf-footer-in-header a')
         _extensions_locator = (By.CLASS_NAME, 'SearchResult')
-        _promo_card_header_locator = (By.CLASS_NAME, 'Card-header')
+        _promo_card_header_locator = (By.CLASS_NAME, 'Card-header-text')
 
         @property
         def list(self):
@@ -136,9 +184,9 @@ class Home(Base):
             # TODO: add additional validations when I'm covering collections
 
     class Themes(Region):
-        _browse_all_locator = (By.CSS_SELECTOR, '.Card-footer-link > a')
+        _browse_all_locator = (By.CSS_SELECTOR, '.Card-shelf-footer-in-header a')
         _themes_locator = (By.CLASS_NAME, 'SearchResult--theme')
-        _promo_card_header_locator = (By.CLASS_NAME, 'Card-header')
+        _promo_card_header_locator = (By.CLASS_NAME, 'Card-header-text')
 
         @property
         def list(self):
@@ -165,7 +213,7 @@ class Home(Base):
 
         @property
         def name(self):
-            return self.find_element(*self._addon_name_locator).text
+            return self.find_element(*self._addon_name_locator)
 
         def click(self):
             self.find_element(*self._addon_link_locator).click()
@@ -283,7 +331,9 @@ class Home(Base):
                     # (i.e. we check that the page response status is 200)
                     self.wait.until(custom_waits.url_not_contins('about:blank'))
                     page = requests.head(self.selenium.current_url)
-                    assert page.status_code == 200, f'The response status code was {page.status_code}'
+                    assert (
+                        page.status_code == 200
+                    ), f'The response status code was {page.status_code}'
                 else:
                     # this condition handles links that open on the amo domain; again, we might not know the
                     # content in advance, so the best we can do is check that the page opens in AMO
@@ -296,4 +346,6 @@ class Home(Base):
                     )
                     assert 'addons' in self.selenium.current_url
                     page = requests.head(self.selenium.current_url)
-                    assert page.status_code == 200, f'The response status code was {page.status_code}'
+                    assert (
+                        page.status_code == 200
+                    ), f'The response status code was {page.status_code}'
