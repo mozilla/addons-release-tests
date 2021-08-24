@@ -1,12 +1,10 @@
 import pytest
 
 from selenium.webdriver import ActionChains
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 
 from pages.desktop.home import Home
 from pages.desktop.search import Search
+from scripts import reusables
 
 
 # Tests covering the homepage header
@@ -188,17 +186,10 @@ def test_home_see_more_recommended_themes(base_url, selenium):
 def test_home_shelf_item_rating(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     shelf_item = page.recommended_extensions.list[0].root
+    # wait for the shelf to become intractable (scrolled into view)
+    reusables.scroll_into_view(selenium, shelf_item)
     # add-on ratings are displayed when hovering over a shelf item
     action = ActionChains(selenium)
-    # wait for the shelf to become intractable (scrolled into view)
-    WebDriverWait(selenium, 10).until(
-        EC.element_to_be_clickable(
-            (
-                By.CSS_SELECTOR,
-                '.Home-Recommended-extensions .Card-shelf-footer-in-header',
-            )
-        )
-    )
     action.move_to_element(shelf_item).perform()
     assert page.recommended_extensions.list[0].addon_rating_preview.is_displayed()
 

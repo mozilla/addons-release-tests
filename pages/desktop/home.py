@@ -4,7 +4,7 @@ from pypom import Region
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 
-import custom_waits
+from scripts import custom_waits
 from pages.desktop.base import Base
 from pages.desktop.details import Detail
 
