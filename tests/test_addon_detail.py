@@ -1,6 +1,7 @@
 import time
 import pytest
 import urllib.request
+import urllib.parse
 
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.support.wait import WebDriverWait
@@ -423,6 +424,29 @@ def test_compare_more_info_latest_version(selenium, base_url, variables):
     # matches the latest version number present in all versions page
     latest_version = all_versions.latest_version_number
     assert more_info_version == latest_version
+
+
+@pytest.mark.nondestructive
+def test_more_info_addon_tags(selenium, base_url, variables):
+    extension = variables['detail_extension_slug']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    # get the name of one of the tags related to this addon
+    tag_name = addon.more_info.addon_tags[0].text
+    addon.more_info.addon_tags[0].click()
+    # clicking on the tag opens a search results page with addons that share the same tag
+    same_tag_results = Search(selenium, base_url).wait_for_page_to_load()
+    # verifies that the results URL mention the tag name (encoded)
+    assert f'/tag/{urllib.parse.quote(tag_name)}/' in selenium.current_url
+    count = 0
+    # checking that search results do include the tag of the initial addon
+    while count <= 4:
+        same_tag_results.result_list.click_search_result(count)
+        tag_name_from_search = [el.text for el in addon.more_info.addon_tags]
+        assert tag_name in tag_name_from_search
+        selenium.back()
+        same_tag_results.wait_for_page_to_load()
+        count += 1
 
 
 @pytest.mark.nondestructive
