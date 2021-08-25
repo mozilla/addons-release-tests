@@ -439,13 +439,17 @@ def test_more_info_addon_tags(selenium, base_url, variables):
     # verifies that the results URL mention the tag name (encoded)
     assert f'/tag/{urllib.parse.quote(tag_name)}/' in selenium.current_url
     count = 0
-    # checking that search results do include the tag of the initial addon
-    while count <= 4:
-        same_tag_results.result_list.click_search_result(count)
-        tag_name_from_search = [el.text for el in addon.more_info.addon_tags]
-        assert tag_name in tag_name_from_search
-        selenium.back()
-        same_tag_results.wait_for_page_to_load()
+    # checking that the first 5 search results do include the tag of the initial addon
+    while count < 5:
+        try:
+            same_tag_results.result_list.click_search_result(count)
+            tag_name_from_search = [el.text for el in addon.more_info.addon_tags]
+            assert tag_name in tag_name_from_search
+            selenium.back()
+            same_tag_results.wait_for_page_to_load()
+        except IndexError:
+            print('There were less than 5 results matching the selected tag')
+            break
         count += 1
 
 
