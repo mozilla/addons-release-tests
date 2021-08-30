@@ -137,6 +137,11 @@ class Reviews(Base):
             return self.find_elements(*self._flag_review_menu_options)
 
         def select_flag_option(self, count):
+            self.wait.until(
+                expected.element_to_be_clickable(
+                    (By.CSS_SELECTOR, '.TooltipMenu-list li:nth-of-type(1)')
+                )
+            )
             self.flag_review_option[count].click()
             self.wait.until(
                 expected.text_to_be_present_in_element(
@@ -150,6 +155,9 @@ class Reviews(Base):
 
         @property
         def flag_review_login_button(self):
+            self.wait.until(
+                expected.element_to_be_clickable(self._flag_review_login_button)
+            )
             return self.find_element(*self._flag_review_login_button)
 
         def click_reply_to_review(self):
