@@ -303,6 +303,7 @@ class Detail(Base):
         _privacy_policy_locator = (By.CLASS_NAME, 'AddonMoreInfo-privacy-policy-link')
         _eula_locator = (By.CLASS_NAME, 'AddonMoreInfo-eula')
         _all_versions_locator = (By.CLASS_NAME, 'AddonMoreInfo-version-history-link')
+        _addon_tags_locator = (By.CSS_SELECTOR, '.AddonMoreInfo-tag-links-list a')
 
         @property
         def more_info_card_header(self):
@@ -350,6 +351,10 @@ class Detail(Base):
         def addon_versions(self):
             self.find_element(*self._all_versions_locator).click()
             return Versions(self.selenium, self.page.base_url).wait_for_page_to_load()
+
+        @property
+        def addon_tags(self):
+            return self.find_elements(*self._addon_tags_locator)
 
         class License(Region):
             _license_and_privacy_header_locator = (
