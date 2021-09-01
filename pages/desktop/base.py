@@ -95,9 +95,17 @@ class Header(Region):
                            > li:nth-child(2) > a:nth-child(1)',
     )
     _login_locator = (By.CLASS_NAME, 'Header-authenticate-button')
+    _user_locator = (
+        By.CSS_SELECTOR,
+        '.Header-user-and-external-links .DropdownMenu-button-text',
+    )
     _account_dropdown_locator = (
         By.CSS_SELECTOR,
         '.DropdownMenu.Header-authenticate-button .DropdownMenu-items',
+    )
+    _user_menu_links_locator = (
+        By.CSS_SELECTOR,
+        '.Header-user-and-external-links .DropdownMenuItem-link a',
     )
     _logout_locator = (
         By.CSS_SELECTOR,
@@ -116,26 +124,6 @@ class Header(Region):
         By.CSS_SELECTOR,
         '.SectionLinks > li:nth-child(3) > \
                        a:nth-child(1)',
-    )
-    _user_locator = (
-        By.CSS_SELECTOR,
-        '.Header-user-and-external-links .DropdownMenu-button-text',
-    )
-    _user_menu_collection_link_locator = (
-        By.CSS_SELECTOR,
-        '.Header-user-menu-collections-link',
-    )
-    _user_menu_view_profile_locator = (
-        By.CSS_SELECTOR,
-        '.Header-user-menu-view-profile-link',
-    )
-    _user_menu_edit_profile_locator = (
-        By.CSS_SELECTOR,
-        '.Header-user-menu-edit-profile-link',
-    )
-    _user_menu_devhub_links_locator = (
-        By.CSS_SELECTOR,
-        '.Header-user-and-external-links .DropdownMenuItem-link a',
     )
     _devhub_locator = (By.CLASS_NAME, 'Header-developer-hub-link')
     _extension_workshop_locator = (By.CLASS_NAME, 'Header-extension-workshop-link')
@@ -202,7 +190,7 @@ class Header(Region):
         action.perform()
         self.wait.until(lambda s: self.is_element_displayed(*self._login_locator))
 
-    def click_user_menu_collections_link(self):
+    def click_user_menu_links(self, count, landing_page):
         user = WebDriverWait(
             self.selenium, 30, ignored_exceptions=StaleElementReferenceException
         ).until(
@@ -214,124 +202,10 @@ class Header(Region):
                 )
             )
         )
-        link = self.find_element(*self._user_menu_collection_link_locator)
+        links = self.find_elements(*self._user_menu_links_locator)
         dropdown = self.find_element(*self._account_dropdown_locator)
         loop = 0
         while loop < 3:
-            try:
-                action = ActionChains(self.selenium)
-                action.move_to_element(user)
-                action.pause(2)
-                action.move_to_element(dropdown)
-                action.move_to_element(link)
-                action.pause(2)
-                action.click()
-                action.perform()
-                # waits for the user collections page to open
-                self.wait.until(
-                    EC.visibility_of_element_located(
-                        (By.CSS_SELECTOR, '.CollectionList-info')
-                    )
-                )
-                break
-            except (StaleElementReferenceException, WebDriverException) as error:
-                print(f'{error} Retrying action chains')
-            loop += 1
-
-    def click_user_menu_view_profile(self):
-        user = WebDriverWait(
-            self.selenium, 30, ignored_exceptions=StaleElementReferenceException
-        ).until(
-            EC.element_to_be_clickable(
-                (
-                    By.CSS_SELECTOR,
-                    '.Header-user-and-external-links \
-            .DropdownMenu-button-text',
-                )
-            )
-        )
-        link = self.find_element(*self._user_menu_view_profile_locator)
-        dropdown = self.find_element(*self._account_dropdown_locator)
-        loop = 0
-        while loop < 1:
-            try:
-                action = ActionChains(self.selenium)
-                action.move_to_element(user)
-                action.pause(2)
-                action.move_to_element(dropdown)
-                action.move_to_element(link)
-                action.pause(2)
-                action.click()
-                action.perform()
-                # waits for the View profile page to open
-                self.wait.until(
-                    EC.visibility_of_element_located(
-                        (By.CSS_SELECTOR, '.UserProfile-name')
-                    )
-                )
-                break
-            except (StaleElementReferenceException, WebDriverException) as error:
-                print(f'{error} Retrying action chains')
-            loop += 1
-
-    def click_user_menu_edit_profile(self):
-        user = WebDriverWait(
-            self.selenium, 30, ignored_exceptions=StaleElementReferenceException
-        ).until(
-            EC.element_to_be_clickable(
-                (
-                    By.CSS_SELECTOR,
-                    '.Header-user-and-external-links \
-            .DropdownMenu-button-text',
-                )
-            )
-        )
-        link = self.find_element(*self._user_menu_edit_profile_locator)
-        dropdown = self.find_element(*self._account_dropdown_locator)
-        loop = 0
-        while loop < 1:
-            try:
-                action = ActionChains(self.selenium)
-                action.move_to_element(user)
-                action.pause(2)
-                action.move_to_element(dropdown)
-                action.move_to_element(link)
-                action.pause(2)
-                action.click()
-                action.perform()
-                # waits for the Edit profile page to open
-                self.wait.until(
-                    EC.visibility_of_element_located(
-                        (By.CSS_SELECTOR, '.UserProfileEdit-displayName')
-                    )
-                )
-                break
-            except (StaleElementReferenceException, WebDriverException) as error:
-                print(f'{error} Retrying action chains')
-            loop += 1
-
-    @property
-    def user_menu_devhub_links(self):
-        links = self.find_elements(*self._user_menu_devhub_links_locator)
-        # return the last 3 elements from the list
-        return links[-3:]
-
-    def click_user_menu_devhub_links(self, count):
-        user = WebDriverWait(
-            self.selenium, 30, ignored_exceptions=StaleElementReferenceException
-        ).until(
-            EC.element_to_be_clickable(
-                (
-                    By.CSS_SELECTOR,
-                    '.Header-user-and-external-links \
-            .DropdownMenu-button-text',
-                )
-            )
-        )
-        links = self.user_menu_devhub_links
-        dropdown = self.find_element(*self._account_dropdown_locator)
-        loop = 0
-        while loop < 1:
             try:
                 action = ActionChains(self.selenium)
                 action.move_to_element(user)
@@ -341,10 +215,10 @@ class Header(Region):
                 action.pause(2)
                 action.click()
                 action.perform()
-                # waits for the devhub page to open
+                # waits for the landing page to open
                 self.wait.until(
-                    EC.element_to_be_clickable(
-                        (By.CSS_SELECTOR, '.site-title.prominent')
+                    EC.visibility_of_element_located(
+                        (By.CSS_SELECTOR, landing_page)
                     )
                 )
                 break
