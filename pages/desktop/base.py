@@ -154,6 +154,10 @@ class Header(Region):
 
         return Home(self.selenium, self.page.base_url).wait_for_page_to_load()
 
+    @property
+    def login_button(self):
+        return self.find_element(*self._login_locator)
+
     def click_login(self):
         self.find_element(*self._login_locator).click()
         from pages.desktop.login import Login
