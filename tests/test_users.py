@@ -1,8 +1,4 @@
 import pytest
-from selenium.webdriver.common.by import By
-
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 
 from pages.desktop.home import Home
 from pages.desktop.users import User
@@ -13,7 +9,7 @@ def test_login(selenium, base_url):
     page = Home(selenium, base_url).open()
     user = 'regular_user'
     page.login(user)
-    assert user in page.header.user_display_name.text
+    page.header.user_header_display_name(user)
 
 
 @pytest.mark.nondestructive
@@ -90,16 +86,8 @@ def test_user_edit_profile(base_url, selenium, variables):
     user.edit.profile_picture_is_displayed()
     user.edit.submit_changes()
     # checks that the updated display name is visible in the header
-    WebDriverWait(selenium, 10).until(
-        EC.text_to_be_present_in_element(
-            (
-                By.CSS_SELECTOR,
-                '.Header-user-and-external-links .DropdownMenu-button-text',
-            ),
-            variables['display_name'],
-        )
-    )
-    
+    user.header.user_header_display_name(variables['display_name'])
+
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
