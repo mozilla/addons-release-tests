@@ -33,5 +33,6 @@
   "homepage": "https://mozilla.org/",
   "location": "Neverland",
   "occupation": "scientist",
-  "biography": "I am the very model of a scientist salarian"
+  "biography": "I am the very model of a scientist salarian",
+  "email_field_help_text": "You can change your email address on Firefox Accounts."
 }

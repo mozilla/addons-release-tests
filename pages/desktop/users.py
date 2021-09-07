@@ -20,6 +20,12 @@ class User(Base):
         )
         return self
 
+    def wait_for_user_to_load(self):
+        self.wait.until(
+            lambda _: self.is_element_displayed(*self._display_name_locator)
+        )
+        return self
+
     @property
     def user_display_name(self):
         return self.find_element(*self._display_name_locator).text
@@ -56,6 +62,10 @@ class User(Base):
             return self.find_element(*self._user_profile_image_locator)
 
         @property
+        def icon_source(self):
+            return self.user_profile_icon.get_attribute('src')
+
+        @property
         def user_homepage(self):
             return self.find_element(*self._user_homepage_locator).get_attribute('href')
 
@@ -83,10 +93,11 @@ class User(Base):
         def user_biography(self):
             return self.find_element(*self._user_biography_locator).text
 
-        def edit_profile_button(self):
+        def click_edit_profile_button(self):
             self.find_element(*self._user_profile_edit_link_locator).click()
 
     class EditProfile(Region):
+        _view_profile_link_locator = (By.CSS_SELECTOR, '.UserProfileEdit-user-links a')
         _user_email_locator = (By.CSS_SELECTOR, '.UserProfileEdit-email')
         _user_email_help_text_locator = (
             By.CSS_SELECTOR,
@@ -157,13 +168,17 @@ class User(Base):
             '.UserProfileEdit-deletion-modal .UserProfileEdit-confirm-button',
         )
 
+        def click_view_profile_link(self):
+            self.find_element(*self._view_profile_link_locator).click()
+            return User(self.selenium, self.page.base_url).wait_for_user_to_load()
+
         @property
         def email_field(self):
-            return self.find_element(*self._user_email_locator)
+            return self.find_element(*self._user_email_locator).get_attribute('value')
 
         @property
         def email_field_help_text(self):
-            return self.find_element(*self._user_email_help_text_locator)
+            return self.find_element(*self._user_email_help_text_locator).text
 
         def email_field_help_link(self):
             self.find_element(*self._user_email_help_link_locator).click()
@@ -197,10 +212,10 @@ class User(Base):
         def profile_avatar_placeholder(self):
             return self.find_element(*self._profile_picture_placeholder_locator)
 
-        def upload_picture(self):
+        def upload_picture(self, image):
             button = self.find_element(*self._upload_picture_button_locator)
             path = os.getcwd()
-            img = f'{path}\img\profile_picture.png'
+            img = f'{path}\img\{image}'
             button.send_keys(img)
 
         def profile_picture_is_displayed(self):
@@ -219,6 +234,9 @@ class User(Base):
 
         def delete_profile_picture(self):
             self.find_element(*self._delete_picture_button_locator).click()
+            self.wait.until(
+                EC.element_to_be_clickable(self._confirm_delete_picture_locator)
+            )
 
         def cancel_delete_picture(self):
             self.find_element(*self._cancel_delete_picture_locator).click()
