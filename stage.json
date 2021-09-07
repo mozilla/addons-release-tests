@@ -27,5 +27,11 @@
   "review_flag_spam": "This is spam",
   "review_flagged_for_spam": "Flagged as spam",
   "review_flag_language": "This contains inappropriate language",
-  "review_flag_bug": "This is a bug report or support request"
+  "review_flag_bug": "This is a bug report or support request",
+
+  "display_name": "reusable_user",
+  "homepage": "https://mozilla.org/",
+  "location": "Neverland",
+  "occupation": "scientist",
+  "biography": "I am the very model of a scientist salarian"
 }

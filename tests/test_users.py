@@ -1,6 +1,7 @@
 import pytest
 
 from pages.desktop.home import Home
+from pages.desktop.users import User
 
 
 @pytest.mark.nondestructive
@@ -8,7 +9,7 @@ def test_login(selenium, base_url):
     page = Home(selenium, base_url).open()
     user = 'regular_user'
     page.login(user)
-    assert user in page.header.user_display_name.text
+    page.header.user_header_display_name(user)
 
 
 @pytest.mark.nondestructive
@@ -67,3 +68,61 @@ def test_user_menu_devhub_links(base_url, selenium):
         # waiting for the homepage o reload
         page.wait_for_page_to_load()
         count += 1
+
+
+@pytest.mark.serial
+@pytest.mark.nondestructive
+def test_user_edit_profile(base_url, selenium, variables):
+    user = User(selenium, base_url).open().wait_for_page_to_load()
+    user.login('reusable_user')
+    # fill in the Edit profile form fields
+    user.edit.display_name(variables['display_name'])
+    user.edit.homepage_link(variables['homepage'])
+    user.edit.location(variables['location'])
+    user.edit.occupation(variables['occupation'])
+    user.edit.biography(variables['biography'])
+    user.edit.upload_picture()
+    # checks that the picture uploaded by the user is displayed
+    user.edit.profile_picture_is_displayed()
+    user.edit.submit_changes()
+    # checks that the updated display name is visible in the header
+    user.header.user_header_display_name(variables['display_name'])
+
+
+@pytest.mark.serial
+@pytest.mark.nondestructive
+def test_user_view_profile(base_url, selenium, variables):
+    user = User(selenium, base_url).open().wait_for_page_to_load()
+    user.login('reusable_user')
+    landing_page = '.UserProfile-name'
+    count = 1
+    # opens the View profile page
+    user.header.click_user_menu_links(count, landing_page)
+    # checks that the information provided in the user_edit_profile test
+    # is present on the user View profile page
+    assert user.view.user_profile_icon.is_displayed()
+    assert variables['display_name'] in user.user_display_name
+    assert variables['homepage'] in user.view.user_homepage
+    assert variables['location'] in user.view.user_location
+    assert variables['occupation'] in user.view.user_occupation
+    assert variables['biography'] in user.view.user_biography
+    # clicks on the Edit profile button and checks that the Edit profile page opens
+    user.view.edit_profile_button()
+    user.wait_for_current_url('/users/edit')
+
+
+@pytest.mark.serial
+@pytest.mark.nondestructive
+def test_user_delete_profile(base_url, selenium):
+    user = User(selenium, base_url).open().wait_for_page_to_load()
+    user.login('reusable_user')
+    user.edit.delete_account()
+    # click cancel to close the delete profile overlay
+    user.edit.cancel_delete_account()
+    # click on delete account again and this time confirm
+    user.edit.delete_account()
+    home = user.edit.confirm_delete_account()
+    # checks that user is redirected to Homepage after account deletion
+    assert home.primary_hero.is_displayed()
+    # check that the user was logged out
+    assert user.header.login_button.is_displayed()

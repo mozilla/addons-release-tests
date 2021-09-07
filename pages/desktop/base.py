@@ -154,16 +154,21 @@ class Header(Region):
 
         return Home(self.selenium, self.page.base_url).wait_for_page_to_load()
 
+    @property
+    def login_button(self):
+        return self.find_element(*self._login_locator)
+
     def click_login(self):
         self.find_element(*self._login_locator).click()
         from pages.desktop.login import Login
 
         return Login(self.selenium, self.page.base_url)
 
-    @property
-    def user_display_name(self):
-        self.wait.until(EC.visibility_of_element_located(self._user_locator))
-        return self.find_element(*self._user_locator)
+    def user_header_display_name(self, value):
+        self.wait.until(
+            EC.text_to_be_present_in_element(self._user_locator, value),
+            message=f'The displayed name was {self.find_element(*self._user_locator).text}.',
+        )
 
     def click_logout(self):
         user = WebDriverWait(
@@ -217,9 +222,7 @@ class Header(Region):
                 action.perform()
                 # waits for the landing page to open
                 self.wait.until(
-                    EC.visibility_of_element_located(
-                        (By.CSS_SELECTOR, landing_page)
-                    )
+                    EC.visibility_of_element_located((By.CSS_SELECTOR, landing_page))
                 )
                 break
             except (StaleElementReferenceException, WebDriverException) as error:
