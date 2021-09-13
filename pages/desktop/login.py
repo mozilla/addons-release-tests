@@ -25,7 +25,7 @@ class Login(Base):
     REUSABLE_USER_PASSWORD = os.environ.get('REUSABLE_USER_PASSWORD')
 
     _email_locator = (By.NAME, 'email')
-    _continue_locator = (By.ID, 'submit-btn')
+    _continue_locator = (By.CSS_SELECTOR, '.button-row button')
     _password_locator = (By.ID, 'password')
     _login_btn_locator = (By.ID, 'submit-btn')
     _repeat_password_locator = (By.ID, 'vpassword')

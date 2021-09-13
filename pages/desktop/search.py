@@ -36,6 +36,11 @@ class Search(Page):
         except NoSuchElementException:
             print('Search context card header was not loaded')
 
+    def search_results_list_loaded(self, count):
+        """method used when we need to check that the search results list
+        contains a certain number of items"""
+        self.wait.until(lambda _: len(self.result_list.extensions) > count)
+
     @property
     def result_list(self):
         return self.SearchResultList(self)
