@@ -443,6 +443,9 @@ def test_more_info_addon_tags(selenium, base_url, variables):
     while count < 5:
         try:
             same_tag_results.result_list.click_search_result(count)
+            # the 'click_search_result' function should already wait for the detail page to load
+            # but I also want to check that the page switch occurred; helps with debugging test failures
+            addon.wait_for_current_url('firefox/addon/')
             tag_name_from_search = [el.text for el in addon.more_info.addon_tags]
             assert tag_name in tag_name_from_search, f'for {addon.name}'
             selenium.back()

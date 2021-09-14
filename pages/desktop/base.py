@@ -30,7 +30,9 @@ class Base(Page):
         return self
 
     def wait_for_current_url(self, term):
-        self.wait.until(EC.url_contains(term))
+        self.wait.until(
+            EC.url_contains(term), message=f'The url was {self.selenium.current_url}'
+        )
         return self
 
     @property
