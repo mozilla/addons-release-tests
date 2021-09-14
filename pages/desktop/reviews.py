@@ -142,7 +142,10 @@ class Reviews(Base):
                     (By.CSS_SELECTOR, '.TooltipMenu-list li:nth-of-type(1)')
                 )
             )
-            self.flag_review_option[count].click()
+            # using JavaScriptExecutor to avoid ElementClickInterceptedException
+            self.selenium.execute_script(
+                "arguments[0].click();", self.flag_review_option[count]
+            )
             self.wait.until(
                 expected.text_to_be_present_in_element(
                     self._flag_review_button_locator, 'Flagged'
