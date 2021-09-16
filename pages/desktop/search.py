@@ -36,6 +36,14 @@ class Search(Page):
         except NoSuchElementException:
             print('Search context card header was not loaded')
 
+    def search_results_list_loaded(self, count):
+        """method used when we need to check that the search results list
+        contains a certain number of items"""
+        self.wait.until(
+            lambda _: len(self.result_list.extensions) > count,
+            message=f'Expected search results to be {count} but the list returned {len(self.result_list.extensions)}',
+        )
+
     @property
     def result_list(self):
         return self.SearchResultList(self)
@@ -75,6 +83,7 @@ class Search(Page):
 
     class SearchResultList(Region):
         _result_locator = (By.CLASS_NAME, 'SearchResult')
+        _result_link_locator = (By.CLASS_NAME, 'SearchResult-link')
         _theme_locator = (By.CLASS_NAME, 'SearchResult--theme')
         _extension_locator = (By.CLASS_NAME, 'SearchResult-name')
 
@@ -94,7 +103,7 @@ class Search(Page):
             return [self.ResultListItems(self, el) for el in items]
 
         def click_search_result(self, count):
-            self.find_elements(*self._result_locator)[count].click()
+            self.find_elements(*self._result_link_locator)[count].click()
             from pages.desktop.details import Detail
 
             return Detail(self.selenium, self.page.base_url).wait_for_page_to_load()

@@ -404,6 +404,12 @@ class Detail(Base):
         def screenshot_viewer(self):
             return self.find_element(*self._screenshot_viewer_locator)
 
+        def screenshot_full_view_displayed(self):
+            self.wait.until(
+                lambda _: self.is_element_displayed(*self._screenshot_viewer_locator)
+            )
+            return self
+
         def go_to_next_screenshot(self):
             self.find_element(*self._next_preview_locator).click()
 

@@ -443,10 +443,13 @@ def test_more_info_addon_tags(selenium, base_url, variables):
     while count < 5:
         try:
             same_tag_results.result_list.click_search_result(count)
+            # the 'click_search_result' function should already wait for the detail page to load
+            # but I also want to check that the page switch occurred; helps with debugging test failures
+            addon.wait_for_current_url('firefox/addon/')
             tag_name_from_search = [el.text for el in addon.more_info.addon_tags]
-            assert tag_name in tag_name_from_search
+            assert tag_name in tag_name_from_search, f'for {addon.name}'
             selenium.back()
-            same_tag_results.wait_for_page_to_load()
+            same_tag_results.search_results_list_loaded(5)
         except IndexError:
             print('There were less than 5 results matching the selected tag')
             break
@@ -462,7 +465,8 @@ def test_screenshot_viewer(selenium, base_url, variables):
     for preview in addon.screenshots.screenshot_preview:
         preview.click()
         time.sleep(1)
-        assert addon.screenshots.screenshot_viewer.is_displayed()
+        # checks that the screenshot viewer has opened
+        addon.screenshots.screenshot_full_view_displayed()
         addon.screenshots.close_screenshot_view()
 
 
