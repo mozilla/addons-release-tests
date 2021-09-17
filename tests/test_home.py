@@ -268,9 +268,9 @@ def test_addons_footer_links(base_url, selenium, count, link):
     enumerate(
         [
             'firefox/new',
-            'firefox/mobile',
+            'firefox/browsers/mobile/',
             'mixedreality.mozilla.org',
-            'firefox',
+            'firefox/enterprise/',
         ]
     ),
 )
