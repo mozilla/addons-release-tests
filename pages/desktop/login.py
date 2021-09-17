@@ -45,6 +45,9 @@ class Login(Base):
     def fxa_login(self, email, password):
         self.find_element(*self._email_locator).send_keys(email)
         self.find_element(*self._continue_locator).click()
-        self.wait.until(EC.element_to_be_clickable(self._login_btn_locator))
+        self.wait.until(
+            EC.element_to_be_clickable(self._login_btn_locator),
+            message='FxA login button was not displayed',
+        )
         self.find_element(*self._password_locator).send_keys(password)
         self.find_element(*self._login_btn_locator).click()

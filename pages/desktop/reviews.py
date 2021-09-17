@@ -23,7 +23,8 @@ class Reviews(Base):
     def wait_for_page_to_load(self):
         """Waits for various page components to be loaded"""
         self.wait.until(
-            expected.invisibility_of_element_located((By.CLASS_NAME, 'LoadingText'))
+            expected.invisibility_of_element_located((By.CLASS_NAME, 'LoadingText')),
+            message='All reviews page could not be loaded',
         )
         return self
 
@@ -140,7 +141,8 @@ class Reviews(Base):
             self.wait.until(
                 expected.element_to_be_clickable(
                     (By.CSS_SELECTOR, '.TooltipMenu-list li:nth-of-type(1)')
-                )
+                ),
+                message='Flag menu options were not loaded',
             )
             # using JavaScriptExecutor to avoid ElementClickInterceptedException
             self.selenium.execute_script(
@@ -149,7 +151,8 @@ class Reviews(Base):
             self.wait.until(
                 expected.text_to_be_present_in_element(
                     self._flag_review_button_locator, 'Flagged'
-                )
+                ),
+                message='Flag review button state did not change',
             )
 
         @property
@@ -159,14 +162,20 @@ class Reviews(Base):
         @property
         def flag_review_login_button(self):
             self.wait.until(
-                expected.element_to_be_clickable(self._flag_review_login_button)
+                expected.element_to_be_clickable(self._flag_review_login_button),
+                message='Login button in Flag review menu was not loaded',
             )
             return self.find_element(*self._flag_review_login_button)
 
         def click_reply_to_review(self):
-            self.find_element(*self._reply_to_review_locator).click()
+            reply = self.wait.until(
+                expected.element_to_be_clickable(self._reply_to_review_locator),
+                message='Reply button was not loaded',
+            )
+            reply.click()
             self.wait.until(
-                expected.element_to_be_clickable(self._review_reply_textarea_locator)
+                expected.element_to_be_clickable(self._review_reply_textarea_locator),
+                message='Reply text area was not opened',
             )
 
         def reply_text_input(self, value):
@@ -175,7 +184,8 @@ class Reviews(Base):
         def publish_reply(self):
             self.find_element(*self._publish_reply_button_locator).click()
             self.wait.until(
-                expected.visibility_of_element_located(self._dev_reply_header_locator)
+                expected.visibility_of_element_located(self._dev_reply_header_locator),
+                message='Developer reply section header was not displayed',
             )
 
         @property

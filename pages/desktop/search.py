@@ -1,6 +1,5 @@
 from pypom import Page, Region
 
-from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as expected
 from selenium.webdriver.support.wait import WebDriverWait
@@ -22,19 +21,18 @@ class Search(Page):
 
     def wait_for_page_to_load(self):
         self.wait.until(
-            expected.invisibility_of_element_located((By.CLASS_NAME, 'LoadingText'))
+            expected.invisibility_of_element_located((By.CLASS_NAME, 'LoadingText')),
+            message='Search page could not be loaded',
         )
         return self
 
     def wait_for_contextcard_update(self, value):
-        try:
-            self.wait.until(
-                expected.text_to_be_present_in_element(
-                    (By.CLASS_NAME, 'SearchContextCard-header'), value
-                )
-            )
-        except NoSuchElementException:
-            print('Search context card header was not loaded')
+        self.wait.until(
+            expected.text_to_be_present_in_element(
+                (By.CLASS_NAME, 'SearchContextCard-header'), value
+            ),
+            message=f'Expected header title not displayed; title was {value}',
+        )
 
     def search_results_list_loaded(self, count):
         """method used when we need to check that the search results list
@@ -77,7 +75,8 @@ class Search(Page):
     @property
     def page_number(self):
         self.wait.until(
-            lambda _: self.is_element_displayed(*self._selected_page_locator)
+            lambda _: self.is_element_displayed(*self._selected_page_locator),
+            message='Pagination items were not loaded',
         )
         return self.find_element(*self._selected_page_locator).text
 
