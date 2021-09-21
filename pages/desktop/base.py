@@ -30,7 +30,8 @@ class Base(Page):
 
     def wait_for_title_update(self, term):
         self.wait.until(
-            EC.title_contains(term), message=f'Page title was {self.selenium.title}'
+            EC.title_contains(term),
+            message=f'Page title was {self.selenium.title}, expected {term}',
         )
         return self
 
@@ -59,7 +60,7 @@ class Base(Page):
                 self.is_element_displayed(*self.header._user_locator)
                 break
             except StaleElementReferenceException as exception:
-                print(f'{exception}: Trying to find the element again')
+                print(f'{exception}: Try to find the element again')
             count += 1
         return self
 
@@ -261,7 +262,7 @@ class Header(Region):
         self.find_element(*self._devhub_locator).click()
         self.wait.until(
             EC.number_of_windows_to_be(2),
-            message=f'Number of windows was {len(self.selenium.window_handles)}',
+            message=f'Number of windows was {len(self.selenium.window_handles)}, expected 2',
         )
         new_tab = self.selenium.window_handles[1]
         self.selenium.switch_to_window(new_tab)
@@ -274,7 +275,7 @@ class Header(Region):
         self.find_element(*self._extension_workshop_locator).click()
         self.wait.until(
             EC.number_of_windows_to_be(2),
-            message=f'Number of windows was {len(self.selenium.window_handles)}',
+            message=f'Number of windows was {len(self.selenium.window_handles)}, expected 2',
         )
         new_tab = self.selenium.window_handles[1]
         self.selenium.switch_to_window(new_tab)
