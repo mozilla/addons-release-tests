@@ -34,5 +34,17 @@
   "location": "Neverland",
   "occupation": "scientist",
   "biography": "I am the very model of a scientist salarian",
-  "email_field_help_text": "You can change your email address on Firefox Accounts."
+  "email_field_help_text": "You can change your email address on Firefox Accounts.",
+  "notifications": [
+    "an add-on developer replies to my review",
+    "new add-ons or Firefox features are available",
+    "my add-on's compatibility is upgraded successfully",
+    "someone writes a review of my add-on",
+    "my add-on's compatibility cannot be upgraded",
+    "my add-on is reviewed by a reviewer",
+    "Mozilla needs to contact me about my individual add-on",
+    "stay up-to-date with news and events relevant to add-on developers (including the about:addons newsletter)"
+  ],
+  "notifications_info_text": "From time to time, Mozilla may send you email about upcoming releases and add-on events. Please select the topics you are interested in.",
+  "notifications_help_text": "Mozilla reserves the right to contact you individually about specific concerns with your hosted add-ons."
 }

@@ -1,3 +1,5 @@
+import time
+
 import pytest
 
 from selenium.webdriver.support.wait import WebDriverWait
@@ -78,6 +80,8 @@ def test_user_menu_devhub_links(base_url, selenium):
 def test_user_edit_profile(base_url, selenium, variables):
     user = User(selenium, base_url).open().wait_for_page_to_load()
     user.login('reusable_user')
+    # make sure that the submit changes button is disabled if display_name is not filled in
+    assert user.edit.submit_changes_button_disabled.is_displayed()
     # fill in the Edit profile form fields
     user.edit.display_name(variables['display_name'])
     user.edit.homepage_link(variables['homepage'])
@@ -173,6 +177,21 @@ def test_user_delete_profile_picture(base_url, selenium):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
+def test_user_regular_notifications(base_url, selenium, variables):
+    user = User(selenium, base_url).open().wait_for_page_to_load()
+    user.login('reusable_user')
+    # regular users can only opt in/out for 2 notifications
+    assert len(user.edit.notification_text) == 2
+    count = 0
+    while count < len(user.edit.notification_text):
+        assert (
+            variables['notifications'][count] in user.edit.notification_text[count].text
+        )
+        count += 1
+
+
+@pytest.mark.serial
+@pytest.mark.nondestructive
 def test_user_delete_profile(base_url, selenium):
     user = User(selenium, base_url).open().wait_for_page_to_load()
     user.login('reusable_user')
@@ -200,3 +219,55 @@ def test_user_data_for_deleted_profile(base_url, selenium):
     # checks that the default icon and display name are present for the deleted user
     assert user.view.user_profile_icon_placeholder.is_displayed
     assert 'Firefox user' in user.user_display_name
+
+
+@pytest.mark.serial
+@pytest.mark.nondestructive
+def test_user_developer_notifications(base_url, selenium, variables):
+    user = User(selenium, base_url).open().wait_for_page_to_load()
+    user.login('developer')
+    # verifies that information messages about the scope of notifications are displayed
+    assert variables['notifications_info_text'] in user.edit.notifications_info_text
+    assert variables['notifications_help_text'] in user.edit.notifications_help_text
+    # there are 8 types of notifications a developer will/can choose to receive
+    assert len(user.edit.notification_text) == 8
+    count = 0
+    while count < len(user.edit.notification_text):
+        assert (
+            variables['notifications'][count] in user.edit.notification_text[count].text
+        )
+        count += 1
+
+
+@pytest.mark.serial
+@pytest.mark.nondestructive
+def test_user_notifications_subscriptions(base_url, selenium):
+    user = User(selenium, base_url).open().wait_for_page_to_load()
+    user.login('developer')
+    # verify that the first 7 notifications are selected by default
+    for checkbox in user.edit.notifications_checkbox[0:7]:
+        assert checkbox.is_selected()
+    # unsubscribe from one of the non-mandatory notifications
+    user.edit.notifications_checkbox[0].click()
+    user.edit.submit_changes()
+    user.wait_for_user_to_load()
+    user.view.click_edit_profile_button()
+    # verify that the notification checkbox is no longer selected
+    with pytest.raises(AssertionError):
+        assert user.edit.notifications_checkbox[0].is_selected()
+
+
+@pytest.mark.serial
+@pytest.mark.nondestructive
+def test_user_mandatory_notifications(base_url, selenium):
+    user = User(selenium, base_url).open().wait_for_page_to_load()
+    user.login('developer')
+    # notifications 5 to 7 are mandatory for developers; clicking the checkboxes should have no effect
+    for checkbox in user.edit.notifications_checkbox[4:7]:
+        checkbox.click()
+    user.edit.submit_changes()
+    user.wait_for_user_to_load()
+    user.view.click_edit_profile_button()
+    # checks that the mandatory notification checkboxes are still selected
+    for checkbox in user.edit.notifications_checkbox[4:7]:
+        checkbox.is_selected()

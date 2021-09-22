@@ -95,6 +95,7 @@ class User(Base):
 
         def click_edit_profile_button(self):
             self.find_element(*self._user_profile_edit_link_locator).click()
+            return User(self.selenium, self.page.base_url).wait_for_page_to_load()
 
     class EditProfile(Region):
         _view_profile_link_locator = (By.CSS_SELECTOR, '.UserProfileEdit-user-links a')
@@ -141,11 +142,19 @@ class User(Base):
         )
         _notification_checkbox_locator = (
             By.CSS_SELECTOR,
-            '.UserProfileEditNotification-checkbox',
+            '.UserProfileEditNotification-input',
         )
         _notification_text_locator = (
             By.CSS_SELECTOR,
             '.UserProfileEditNotification label',
+        )
+        _notifications_help_text_locator = (
+            By.CSS_SELECTOR,
+            '.UserProfileEdit-notifications--help',
+        )
+        _edit_profile_submit_disabled_button_locator = (
+            By.CSS_SELECTOR,
+            '.UserProfileEdit-submit-button.Button--disabled',
         )
         _edit_profile_submit_button_locator = (
             By.CSS_SELECTOR,
@@ -260,16 +269,36 @@ class User(Base):
             self.find_element(*self._edit_biography_locator).send_keys(value)
 
         @property
-        def notifications_help_text(self):
-            return self.find_element(*self._notifications_info_text_locator)
+        def notifications_info_text(self):
+            return self.find_element(*self._notifications_info_text_locator).text
 
         @property
         def notifications_checkbox(self):
-            return self.find_elements(*self._notification_checkbox_locator)
+            """function used for developer notifications"""
+            items = self.find_elements(*self._notification_checkbox_locator)
+            self.wait.until(
+                lambda _: len(self.notification_text) == 8,
+                message=f'There were {len(self.notification_text)} notifications displayed, expected 8',
+            )
+            return items
 
         @property
         def notification_text(self):
-            return self.find_elements(*self._notification_text_locator)
+            items = self.find_elements(*self._notification_text_locator)
+            # the notifications endpoint takes a bit longer to respond, so a wait is helpful here
+            self.wait.until(
+                lambda _: len(items) > 0,
+                message=f'Expected notifications list to be loaded but the list contains {len(items)} items',
+            )
+            return items
+
+        @property
+        def notifications_help_text(self):
+            return self.find_element(*self._notifications_help_text_locator).text
+
+        @property
+        def submit_changes_button_disabled(self):
+            return self.find_element(*self._edit_profile_submit_disabled_button_locator)
 
         def submit_changes(self):
             self.find_element(*self._edit_profile_submit_button_locator).click()
