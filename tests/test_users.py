@@ -1,5 +1,3 @@
-import time
-
 import pytest
 
 from selenium.webdriver.support.wait import WebDriverWait
@@ -12,7 +10,7 @@ from scripts import custom_waits
 
 @pytest.mark.nondestructive
 def test_login(selenium, base_url):
-    page = Home(selenium, base_url).open()
+    page = Home(selenium, base_url).open().wait_for_page_to_load()
     user = 'regular_user'
     page.login(user)
     page.header.user_header_display_name(user)
@@ -21,7 +19,7 @@ def test_login(selenium, base_url):
 @pytest.mark.nondestructive
 def test_logout(base_url, selenium):
     """User can logout"""
-    page = Home(selenium, base_url).open()
+    page = Home(selenium, base_url).open().wait_for_page_to_load()
     user = 'regular_user'
     page.login(user)
     page.logout()
