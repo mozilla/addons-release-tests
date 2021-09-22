@@ -253,6 +253,13 @@ def test_user_notifications_subscriptions(base_url, selenium):
     # verify that the notification checkbox is no longer selected
     with pytest.raises(AssertionError):
         assert user.edit.notifications_checkbox[0].is_selected()
+    # subscribe to the notification again
+    user.edit.notifications_checkbox[0].click()
+    user.edit.submit_changes()
+    user.wait_for_user_to_load()
+    user.view.click_edit_profile_button()
+    assert user.edit.notifications_checkbox[0].is_selected()
+
 
 
 @pytest.mark.serial
