@@ -23,7 +23,6 @@ def test_logout(base_url, selenium):
     user = 'regular_user'
     page.login(user)
     page.logout()
-    assert not page.logged_in
 
 
 @pytest.mark.nondestructive

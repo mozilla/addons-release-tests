@@ -22,11 +22,17 @@ class Base(Page):
         )
 
     def wait_for_page_to_load(self):
-        self.wait.until(lambda _: self.find_element(*self._amo_header).is_displayed())
+        self.wait.until(
+            lambda _: self.find_element(*self._amo_header).is_displayed(),
+            message='AMO header was not loaded',
+        )
         return self
 
     def wait_for_title_update(self, term):
-        self.wait.until(EC.title_contains(term))
+        self.wait.until(
+            EC.title_contains(term),
+            message=f'Page title was {self.selenium.title}, expected {term}',
+        )
         return self
 
     def wait_for_current_url(self, term):
@@ -48,18 +54,15 @@ class Base(Page):
         """Returns True if a user is logged in. Since the user element can become
         stale sometimes and causes the login test to fail, a StaleElementReferenceException
         was added to catch this error and wait for the element to be located again"""
-        try:
-            return self.is_element_displayed(*self.header._user_locator)
-        except StaleElementReferenceException:
-            self.wait.until(
-                EC.element_to_be_clickable(
-                    (
-                        By.CSS_SELECTOR,
-                        '.Header-user-and-external-links .DropdownMenu-button-text',
-                    )
-                )
-            )
-            return self.is_element_displayed(*self.header._user_locator)
+        count = 0
+        while count < 5:
+            try:
+                self.is_element_displayed(*self.header._user_locator)
+                break
+            except StaleElementReferenceException as exception:
+                print(f'{exception}: Try to find the element again')
+            count += 1
+        return self
 
     @property
     def search(self):
@@ -68,10 +71,16 @@ class Base(Page):
     def login(self, user):
         fxa = self.header.click_login()
         # wait for the FxA login page to load
-        self.wait.until(EC.visibility_of_element_located((By.NAME, 'email')))
+        self.wait.until(
+            EC.visibility_of_element_located((By.NAME, 'email')),
+            message=f'FxA email input field was not displayed in {self.selenium.current_url}',
+        )
         fxa.account(user)
         # wait for transition between FxA page and AMO (URL and page)
-        self.wait.until(EC.url_contains('addons'))
+        self.wait.until(
+            EC.url_contains('addons'),
+            message=f'AMO could not be loaded in {self.selenium.current_url}',
+        )
         WebDriverWait(self.selenium, 30).until(
             EC.invisibility_of_element_located((By.CLASS_NAME, 'LoadingText'))
         )
@@ -195,7 +204,10 @@ class Header(Region):
         action.click()
         action.pause(3)
         action.perform()
-        self.wait.until(lambda s: self.is_element_displayed(*self._login_locator))
+        self.wait.until(
+            lambda s: self.is_element_displayed(*self._login_locator),
+            message='The login button was not displayed after logout',
+        )
 
     def click_user_menu_links(self, count, landing_page):
         user = WebDriverWait(
@@ -224,7 +236,8 @@ class Header(Region):
                 action.perform()
                 # waits for the landing page to open
                 self.wait.until(
-                    EC.visibility_of_element_located((By.CSS_SELECTOR, landing_page))
+                    EC.visibility_of_element_located((By.CSS_SELECTOR, landing_page)),
+                    message=f'Expected page not loaded; page was {self.selenium.current_url}',
                 )
                 break
             except (StaleElementReferenceException, WebDriverException) as error:
@@ -247,19 +260,29 @@ class Header(Region):
 
     def click_developer_hub(self):
         self.find_element(*self._devhub_locator).click()
-        self.wait.until(EC.number_of_windows_to_be(2))
+        self.wait.until(
+            EC.number_of_windows_to_be(2),
+            message=f'Number of windows was {len(self.selenium.window_handles)}, expected 2',
+        )
         new_tab = self.selenium.window_handles[1]
         self.selenium.switch_to_window(new_tab)
         self.wait.until(
-            EC.visibility_of_element_located((By.CLASS_NAME, 'DevHub-Navigation-Logo'))
+            EC.visibility_of_element_located((By.CLASS_NAME, 'DevHub-Navigation-Logo')),
+            message=f'DevHub homepage not loaded; page was {self.selenium.current_url}',
         )
 
     def click_extension_workshop(self):
         self.find_element(*self._extension_workshop_locator).click()
-        self.wait.until(EC.number_of_windows_to_be(2))
+        self.wait.until(
+            EC.number_of_windows_to_be(2),
+            message=f'Number of windows was {len(self.selenium.window_handles)}, expected 2',
+        )
         new_tab = self.selenium.window_handles[1]
         self.selenium.switch_to_window(new_tab)
-        self.wait.until(EC.visibility_of_element_located((By.CLASS_NAME, 'logo')))
+        self.wait.until(
+            EC.visibility_of_element_located((By.CLASS_NAME, 'logo')),
+            message=f'Extension Workshop not loaded; page was {self.selenium.current_url}',
+        )
 
     @property
     def is_active_link(self):
@@ -307,7 +330,8 @@ class Header(Region):
             self.wait.until(
                 lambda _: self.is_element_displayed(
                     *self._search_suggestions_list_locator
-                )
+                ),
+                message='Search suggestions list did not open',
             )
             WebDriverWait(self.selenium, 30).until(
                 EC.invisibility_of_element_located((By.CLASS_NAME, 'LoadingText'))
