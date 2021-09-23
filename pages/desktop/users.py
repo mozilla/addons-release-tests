@@ -41,6 +41,10 @@ class User(Base):
     class ViewProfile(Region):
         _user_icon_placeholder_locator = (By.CSS_SELECTOR, '.Icon-anonymous-user')
         _user_profile_image_locator = (By.CSS_SELECTOR, '.UserAvatar-image')
+        _user_developer_role_locator = (By.CSS_SELECTOR, '.UserProfile-developer')
+        _user_developer_role_icon_locator = (By.CSS_SELECTOR, '.Icon-developer')
+        _user_artist_role_locator = (By.CSS_SELECTOR, '.UserProfile-artist')
+        _user_artist_role_icon_locator = (By.CSS_SELECTOR, '.Icon-artist')
         _user_homepage_locator = (By.CSS_SELECTOR, '.UserProfile-homepage a')
         _user_location_locator = (By.CSS_SELECTOR, '.UserProfile-location')
         _user_occupation_locator = (By.CSS_SELECTOR, '.UserProfile-occupation')
@@ -64,6 +68,22 @@ class User(Base):
         @property
         def icon_source(self):
             return self.user_profile_icon.get_attribute('src')
+
+        @property
+        def developer_role(self):
+            return self.find_element(*self._user_developer_role_locator)
+
+        @property
+        def developer_role_icon(self):
+            return self.find_element(*self._user_developer_role_icon_locator)
+
+        @property
+        def artist_role(self):
+            return self.find_element(*self._user_artist_role_locator)
+
+        @property
+        def artist_role_icon(self):
+            return self.find_element(*self._user_artist_role_icon_locator)
 
         @property
         def user_homepage(self):
