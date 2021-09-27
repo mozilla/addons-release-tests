@@ -50,7 +50,7 @@ pytest-metadata==1.11.0
 pytest-selenium==2.0.1
 pytest-variables==1.9.0
 pytest-xdist==2.4.0
-regex==2021.8.28
+regex==2021.9.24
 requests==2.26.0
 selenium==3.141.0
 six==1.16.0
@@ -59,7 +59,7 @@ toml==0.10.2
 typed-ast==1.4.3
 typing-extensions==3.10.0.2
 urllib3==1.26.7
-virtualenv==20.8.0
+virtualenv==20.8.1
 wcwidth==0.2.5
 WebOb==1.8.7
 wrapt==1.12.1
