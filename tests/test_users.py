@@ -1,9 +1,12 @@
 import pytest
+import requests
 
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.support.wait import WebDriverWait
 
 from pages.desktop.home import Home
 from pages.desktop.login import Login
+from pages.desktop.static_pages import StaticPages
 from pages.desktop.users import User
 from scripts import custom_waits
 
@@ -261,7 +264,6 @@ def test_user_notifications_subscriptions(base_url, selenium):
     assert user.edit.notifications_checkbox[0].is_selected()
 
 
-
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_user_mandatory_notifications(base_url, selenium):
@@ -276,3 +278,59 @@ def test_user_mandatory_notifications(base_url, selenium):
     # checks that the mandatory notification checkboxes are still selected
     for checkbox in user.edit.notifications_checkbox[4:7]:
         checkbox.is_selected()
+
+
+@pytest.mark.nondestructive
+def test_user_developer_role(base_url, selenium, variables):
+    developer = variables['developer_profile']
+    selenium.get(f'{base_url}/user/{developer}')
+    user = User(selenium, base_url).wait_for_user_to_load()
+    # check that the 'developer' role badge is displayed in the view profile page
+    assert 'Add-ons developer' in user.view.developer_role.text
+    assert user.view.developer_role_icon.is_displayed()
+
+
+@pytest.mark.nondestructive
+def test_user_theme_artist_role(base_url, selenium, variables):
+    artist = variables['theme_artist_profile']
+    selenium.get(f'{base_url}/user/{artist}')
+    user = User(selenium, base_url).wait_for_user_to_load()
+    # check that the 'artist' role badge is displayed in the view profile page
+    assert 'Theme artist' in user.view.artist_role.text
+    assert user.view.artist_role_icon.is_displayed()
+
+
+@pytest.mark.nondestructive
+def test_user_artist_and_developer_role(base_url, selenium, variables):
+    dev_artist = variables['developer_and_artist_role']
+    selenium.get(f'{base_url}/user/{dev_artist}')
+    user = User(selenium, base_url).wait_for_user_to_load()
+    # check that a user who is both a developer and a theme artist has both role badges
+    assert 'Add-ons developer' in user.view.developer_role.text
+    assert user.view.developer_role_icon.is_displayed()
+    assert 'Theme artist' in user.view.artist_role.text
+    assert user.view.artist_role_icon.is_displayed()
+
+
+@pytest.mark.nondestructive
+def test_user_regular_has_no_role(base_url, selenium):
+    user = User(selenium, base_url).open().wait_for_page_to_load()
+    user.login('regular_user')
+    user.edit.click_view_profile_link()
+    # check that we do not display role badges for regular users
+    with pytest.raises(NoSuchElementException):
+        selenium.find_element_by_css_selector('.UserProfile-developer')
+
+
+@pytest.mark.nondestructive
+def test_non_developer_user_profile_is_not_public(base_url, selenium, variables):
+    """Non developer users' profile pages are not publicly available;
+    when accessed, they will return a 404 page"""
+    non_developer_user = variables['non_developer_user']
+    selenium.get(f'{base_url}/user/{non_developer_user}')
+    page = StaticPages(selenium, base_url).wait_for_page_to_load()
+    assert variables['not_found_page_title'] in page.not_found_page_header
+    response = requests.head(selenium.current_url)
+    assert (
+        response.status_code == 404
+    ), f'The response status code was {response.status_code}'

@@ -3,6 +3,8 @@
 
   "search_term": "Flagfox",
 
+  "not_found_page_title": "Oops! We can’t find that page",
+
   "detail_extension_slug": "ghostery",
   "detail_extension_name": "Ghostery - Privacy Ad Blocker",
   "addon_with_stats": "facebook-container",
@@ -45,6 +47,11 @@
     "Mozilla needs to contact me about my individual add-on",
     "stay up-to-date with news and events relevant to add-on developers (including the about:addons newsletter)"
   ],
+  "developer_profile": "11687230",
+  "theme_artist_profile": "6199839",
+  "developer_and_artist_role": "11686381",
+  "non_developer_user": "11686961",
+
   "notifications_info_text": "From time to time, Mozilla may send you email about upcoming releases and add-on events. Please select the topics you are interested in.",
   "notifications_help_text": "Mozilla reserves the right to contact you individually about specific concerns with your hosted add-ons."
 }
