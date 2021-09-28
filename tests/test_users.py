@@ -343,8 +343,10 @@ def test_user_profile_extensions_card(base_url, selenium, variables):
     selenium.get(f'{base_url}/user/{page}')
     user = User(selenium, base_url).wait_for_user_to_load()
     extensions = user.view.user_extensions_results
-    # the extensions card can display up to 10 addons per page
-    assert len(extensions) <= 10, f'The list contains {len(extensions)} extensions'
+    # the extensions card can display up to 10 extensions per page with a minimum of 1
+    assert len(extensions) in range(
+        1, 11
+    ), f'The list contains {len(extensions)} extensions'
     # checks that pagination is present if the user has more than 10 extensions
     try:
         user.view.extensions_pagination.is_displayed()  # if not present, exception is raised
@@ -371,9 +373,9 @@ def test_user_profile_themes_card(base_url, selenium, variables):
     selenium.get(f'{base_url}/user/{page}')
     user = User(selenium, base_url).wait_for_user_to_load()
     themes = user.view.user_themes
-    # the themes card can display up to 12 addons per page
+    # the themes card can display up to 12 themes per page with a minimum of 1
     themes_count = len(themes.result_list.themes)
-    assert themes_count <= 12, f'The list contains {themes_count} extensions'
+    assert themes_count in range(1, 13), f'The list contains {themes_count} extensions'
     # checks that pagination is present if the user has more than 12 themes
     try:
         user.view.themes_pagination.is_displayed()  # if not present, exception is raised
