@@ -6,6 +6,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 from pages.desktop.base import Base
 from pages.desktop.home import Home
+from pages.desktop.search import Search
 
 
 class User(Base):
@@ -56,6 +57,37 @@ class User(Base):
         )
         _user_biography_locator = (By.CSS_SELECTOR, '.UserProfile-biography')
         _user_profile_edit_link_locator = (By.CSS_SELECTOR, '.UserProfile-edit-link')
+        _user_extensions_card_locator = (By.CSS_SELECTOR, '.AddonsCard--vertical')
+        _user_extensions_results_locator = (
+            By.CSS_SELECTOR,
+            '.AddonsCard--vertical .SearchResult',
+        )
+        _user_themes_card_locator = (By.CSS_SELECTOR, '.AddonsByAuthorsCard--theme')
+        _user_reviews_card_locator = (By.CSS_SELECTOR, '.UserProfile-reviews')
+        _extensions_pagination_locator = (
+            By.CSS_SELECTOR,
+            '.AddonsCard--vertical .Paginate',
+        )
+        _extensions_next_page_locator = (
+            By.CSS_SELECTOR,
+            '.AddonsCard--vertical .Paginate-item--next',
+        )
+        _extensions_page_number_locator = (
+            By.CSS_SELECTOR,
+            '.AddonsCard--vertical .Paginate-page-number',
+        )
+        _themes_pagination_locator = (
+            By.CSS_SELECTOR,
+            '.AddonsByAuthorsCard--theme .Paginate',
+        )
+        _themes_next_page_locator = (
+            By.CSS_SELECTOR,
+            '.AddonsByAuthorsCard--theme .Paginate-item--next',
+        )
+        _themes_page_number_locator = (
+            By.CSS_SELECTOR,
+            '.AddonsByAuthorsCard--theme .Paginate-page-number',
+        )
 
         @property
         def user_profile_icon_placeholder(self):
@@ -67,6 +99,9 @@ class User(Base):
 
         @property
         def icon_source(self):
+            self.wait.until(
+                EC.visibility_of_element_located(self._user_profile_image_locator)
+            )
             return self.user_profile_icon.get_attribute('src')
 
         @property
@@ -116,6 +151,50 @@ class User(Base):
         def click_edit_profile_button(self):
             self.find_element(*self._user_profile_edit_link_locator).click()
             return User(self.selenium, self.page.base_url).wait_for_page_to_load()
+
+        @property
+        def user_extensions(self):
+            self.find_element(*self._user_extensions_card_locator)
+            return Search(self.selenium, self.page.base_url).wait_for_page_to_load()
+
+        @property
+        def user_extensions_results(self):
+            items = self.find_elements(*self._user_extensions_results_locator)
+            return [
+                Search(
+                    self.selenium, self.page.base_url
+                ).SearchResultList.ResultListItems(self, el)
+                for el in items
+            ]
+
+        @property
+        def user_themes(self):
+            self.find_element(*self._user_themes_card_locator)
+            return Search(self.selenium, self.page.base_url).wait_for_page_to_load()
+
+        @property
+        def extensions_pagination(self):
+            return self.find_element(*self._extensions_pagination_locator)
+
+        def extensions_next_page(self):
+            self.find_element(*self._extensions_next_page_locator).click()
+            return User(self.selenium, self.page.base_url).wait_for_page_to_load()
+
+        @property
+        def extensions_page_number(self):
+            return self.find_element(*self._extensions_page_number_locator).text
+
+        @property
+        def themes_pagination(self):
+            return self.find_element(*self._themes_pagination_locator)
+
+        def themes_next_page(self):
+            self.find_element(*self._themes_next_page_locator).click()
+            return User(self.selenium, self.page.base_url).wait_for_page_to_load()
+
+        @property
+        def themes_page_number(self):
+            return self.find_element(*self._themes_page_number_locator).text
 
     class EditProfile(Region):
         _view_profile_link_locator = (By.CSS_SELECTOR, '.UserProfileEdit-user-links a')
@@ -295,12 +374,11 @@ class User(Base):
         @property
         def notifications_checkbox(self):
             """function used for developer notifications"""
-            items = self.find_elements(*self._notification_checkbox_locator)
             self.wait.until(
                 lambda _: len(self.notification_text) == 8,
                 message=f'There were {len(self.notification_text)} notifications displayed, expected 8',
             )
-            return items
+            return self.find_elements(*self._notification_checkbox_locator)
 
         @property
         def notification_text(self):
