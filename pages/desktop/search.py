@@ -109,7 +109,7 @@ class Search(Page):
 
         class ResultListItems(Region):
             _rating_locator = (By.CSS_SELECTOR, '.Rating--small')
-            _search_item_name_locator = (By.CSS_SELECTOR, '.SearchResult-contents > h2')
+            _search_item_name_locator = (By.CSS_SELECTOR, '.SearchResult-link')
             _promoted_badge_locator = (By.CSS_SELECTOR, '.PromotedBadge')
             _promoted_badge_label_locator = (By.CSS_SELECTOR, '.PromotedBadge-label')
             _users_locator = (By.CLASS_NAME, 'SearchResult-users-text')

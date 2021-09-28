@@ -6,6 +6,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from pages.desktop.home import Home
 from pages.desktop.login import Login
+from pages.desktop.search import Search
 from pages.desktop.static_pages import StaticPages
 from pages.desktop.users import User
 from scripts import custom_waits
@@ -334,3 +335,82 @@ def test_non_developer_user_profile_is_not_public(base_url, selenium, variables)
     assert (
         response.status_code == 404
     ), f'The response status code was {response.status_code}'
+
+
+@pytest.mark.nondestructive
+def test_user_profile_extensions_card(base_url, selenium, variables):
+    page = variables['developer_and_artist_role']
+    selenium.get(f'{base_url}/user/{page}')
+    user = User(selenium, base_url).wait_for_user_to_load()
+    extensions = user.view.user_extensions_results
+    # the extensions card can display up to 10 addons per page
+    assert len(extensions) <= 10, f'The list contains {len(extensions)} extensions'
+    # checks that pagination is present if the user has more than 10 extensions
+    try:
+        user.view.extensions_pagination.is_displayed()  # if not present, exception is raised
+        first_page_list = [el.name for el in user.view.user_extensions_results]
+        user.view.extensions_next_page()
+        assert (
+            '2' in user.view.extensions_page_number
+        ), f'Pagination was:{user.view.extensions_page_number}'
+        # verifies that extensions search results have changed
+        assert first_page_list != [el.name for el in user.view.user_extensions_results]
+    except NoSuchElementException as exception:
+        # making sure that we only ignore the exception for the 'extensions_pagination' element
+        if '.AddonsCard--vertical .Paginate' in exception.msg:
+            print(
+                f'The user had {len(extensions)} extensions, so pagination is not present'
+            )
+        else:
+            pytest.fail(exception.msg)
+
+
+@pytest.mark.nondestructive
+def test_user_profile_themes_card(base_url, selenium, variables):
+    page = variables['developer_and_artist_role']
+    selenium.get(f'{base_url}/user/{page}')
+    user = User(selenium, base_url).wait_for_user_to_load()
+    themes = user.view.user_themes
+    # the themes card can display up to 12 addons per page
+    themes_count = len(themes.result_list.themes)
+    assert themes_count <= 12, f'The list contains {themes_count} extensions'
+    # checks that pagination is present if the user has more than 12 themes
+    try:
+        user.view.themes_pagination.is_displayed()  # if not present, exception is raised
+        first_page_list = [el.name for el in themes.result_list.themes]
+        user.view.themes_next_page()
+        assert (
+            '2' in user.view.themes_page_number
+        ), f'Pagination was:{user.view.themes_page_number}'
+        # verifies that themes search results have changed
+        assert first_page_list != [el.name for el in themes.result_list.themes]
+    except NoSuchElementException as exception:
+        # making sure that we only ignore the exception for the 'themes_pagination' element
+        if '.AddonsByAuthorsCard--theme .Paginate' in exception.msg:
+            print(f'The user had {themes_count} themes, so pagination is not present')
+        else:
+            pytest.fail(exception.msg)
+
+
+@pytest.mark.nondestructive
+def test_user_profile_open_extension_detail_page(base_url, selenium, variables):
+    page = variables['developer_profile']
+    selenium.get(f'{base_url}/user/{page}')
+    extension = Search(selenium, base_url).wait_for_page_to_load()
+    extension_name = extension.result_list.extensions[0].name
+    # clicks on an extension in the user profile page
+    detail_extension = extension.result_list.click_search_result(0)
+    # checks that the expected extension detail page is opened
+    assert extension_name in detail_extension.name
+
+
+@pytest.mark.nondestructive
+def test_user_profile_open_theme_detail_page(base_url, selenium, variables):
+    artist = variables['theme_artist_profile']
+    selenium.get(f'{base_url}/user/{artist}')
+    theme = Search(selenium, base_url).wait_for_page_to_load()
+    theme_name = theme.result_list.themes[0].name
+    # clicks on a theme in the user profile page
+    theme_detail = theme.result_list.click_search_result(0)
+    # checks that the expected theme detail page is opened
+    assert theme_name in theme_detail.name
