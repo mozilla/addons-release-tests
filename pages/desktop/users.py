@@ -374,12 +374,11 @@ class User(Base):
         @property
         def notifications_checkbox(self):
             """function used for developer notifications"""
-            items = self.find_elements(*self._notification_checkbox_locator)
             self.wait.until(
                 lambda _: len(self.notification_text) == 8,
                 message=f'There were {len(self.notification_text)} notifications displayed, expected 8',
             )
-            return items
+            return self.find_elements(*self._notification_checkbox_locator)
 
         @property
         def notification_text(self):
