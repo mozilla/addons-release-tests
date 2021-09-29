@@ -129,9 +129,14 @@ class Reviews(Base):
         def click_confirm_delete_button(self):
             self.find_element(*self._delete_confirm_locator).click()
 
-        @property
-        def flag_review(self):
-            return self.find_element(*self._flag_review_button_locator)
+        def click_flag_review(self):
+            self.find_element(*self._flag_review_button_locator).click()
+            self.wait.until(
+                expected.visibility_of_element_located(
+                    (By.CSS_SELECTOR, '.TooltipMenu-list')
+                ),
+                message='The flag review menu did not open',
+            )
 
         @property
         def flag_review_option(self):

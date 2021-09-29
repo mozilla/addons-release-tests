@@ -118,7 +118,7 @@ def test_secondary_hero_modules(base_url, selenium):
 )
 @pytest.mark.nondestructive
 def test_click_module_link(base_url, selenium, count, module):
-    page = Home(selenium, base_url).open()
+    page = Home(selenium, base_url).open().wait_for_page_to_load()
     # checks that the content linked in the secondary modules is available
     module = page.secondary_hero.secondary_hero_modules
     module[count].click_secondary_module_link()
@@ -219,7 +219,7 @@ def test_home_see_more_links(base_url, selenium):
 )
 @pytest.mark.nondestructive
 def test_theme_categories_shelf(base_url, selenium, count, category):
-    page = Home(selenium, base_url).open()
+    page = Home(selenium, base_url).open().wait_for_page_to_load()
     # verifying the elements present in the homepage Theme Category shelf
     assert 'Change the way Firefox looks' in page.theme_category.shelf_summary
     categories = page.theme_category.list
@@ -234,7 +234,7 @@ def test_theme_categories_shelf(base_url, selenium, count, category):
 # Tests covering the homepage footer
 @pytest.mark.nondestructive
 def test_mozilla_footer_link(base_url, selenium):
-    page = Home(selenium, base_url).open()
+    page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.footer.mozilla_link.click()
     assert 'mozilla.org' in selenium.current_url
 
@@ -258,7 +258,7 @@ def test_mozilla_footer_link(base_url, selenium):
 )
 @pytest.mark.nondestructive
 def test_addons_footer_links(base_url, selenium, count, link):
-    page = Home(selenium, base_url).open()
+    page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.footer.addon_links[count].click()
     page.wait_for_current_url(link)
 
@@ -276,7 +276,7 @@ def test_addons_footer_links(base_url, selenium, count, link):
 )
 @pytest.mark.nondestructive
 def test_browsers_footer_links(base_url, selenium, count, links):
-    page = Home(selenium, base_url).open()
+    page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.footer.browsers_links[count].click()
     page.wait_for_current_url(links)
 
@@ -294,7 +294,7 @@ def test_browsers_footer_links(base_url, selenium, count, links):
 )
 @pytest.mark.nondestructive
 def test_products_footer_links(base_url, selenium, count, links):
-    page = Home(selenium, base_url).open()
+    page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.footer.products_links[count].click()
     page.wait_for_current_url(links)
 
@@ -311,7 +311,7 @@ def test_products_footer_links(base_url, selenium, count, links):
 )
 @pytest.mark.nondestructive
 def test_social_footer_links(base_url, selenium, count, links):
-    page = Home(selenium, base_url).open()
+    page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.footer.social_links[count].click()
     page.wait_for_current_url(links)
 
@@ -328,14 +328,14 @@ def test_social_footer_links(base_url, selenium, count, links):
 )
 @pytest.mark.nondestructive
 def test_legal_footer_links(base_url, selenium, count, links):
-    page = Home(selenium, base_url).open()
+    page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.footer.legal_links[count].click()
     page.wait_for_current_url(links)
 
 
 @pytest.mark.nondestructive
 def test_change_language(base_url, selenium):
-    page = Home(selenium, base_url).open()
+    page = Home(selenium, base_url).open().wait_for_page_to_load()
     value = 'Deutsch'
     page.footer.language_picker(value)
     assert 'de/firefox' in selenium.current_url
