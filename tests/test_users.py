@@ -19,9 +19,9 @@ def test_login(selenium, base_url):
     page.login(user)
     # the AMO header state changed after the transition from FxA so we have to
     # reassign it to another variable because 'page' can become stale at this point
-    user = Home(selenium, base_url).wait_for_page_to_load()
+    username = Home(selenium, base_url).wait_for_page_to_load()
     # verifies that the user display_name is visible after log in
-    user.header.user_header_display_name(user)
+    username.header.user_header_display_name(user)
 
 
 @pytest.mark.nondestructive

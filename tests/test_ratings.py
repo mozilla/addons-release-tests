@@ -235,7 +235,7 @@ def test_flag_review_action(selenium, base_url, variables):
     count = 0
     while count <= len(reviews.reviews_list):
         if len(flag[count].review_body) > 0:
-            flag[count].flag_review.click()
+            flag[count].click_flag_review()
             # choosing the option to flag the review for spam
             assert (
                 variables['review_flag_spam'] in flag[count].flag_review_option[0].text
@@ -275,7 +275,7 @@ def test_flag_review_requires_login(selenium, base_url, variables):
     count = 0
     while count <= len(reviews.reviews_list):
         if len(review_item[count].review_body) > 0:
-            review_item[count].flag_review.click()
+            review_item[count].click_flag_review()
             assert review_item[count].flag_review_login_button.is_displayed()
             break
         else:
@@ -293,7 +293,7 @@ def test_flag_review_menu_options(selenium, base_url, variables):
     count = 0
     while count <= len(reviews.reviews_list):
         if len(flag[count].review_body) > 0:
-            flag[count].flag_review.click()
+            flag[count].click_flag_review()
             # verifies that the following 3 report options are available in the flag menu
             assert (
                 variables['review_flag_spam'] in flag[count].flag_review_option[0].text
