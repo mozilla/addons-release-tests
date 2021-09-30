@@ -6,6 +6,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 from pages.desktop.base import Base
 from pages.desktop.home import Home
+from pages.desktop.reviews import Reviews
 from pages.desktop.search import Search
 
 
@@ -87,6 +88,36 @@ class User(Base):
         _themes_page_number_locator = (
             By.CSS_SELECTOR,
             '.AddonsByAuthorsCard--theme .Paginate-page-number',
+        )
+        _user_review_list_locator = (By.CSS_SELECTOR, '.AddonReviewCard-viewOnly')
+        _user_abuse_report_button_locator = (
+            By.CSS_SELECTOR,
+            '.ReportUserAbuse-show-more',
+        )
+        _abuse_report_form_header_locator = (By.CSS_SELECTOR, '.ReportUserAbuse-header')
+        _abuse_report_form_help_text = (
+            By.CSS_SELECTOR,
+            '.ReportUserAbuse-form p:nth-child(2)',
+        )
+        _abuse_report_textarea_locator = (
+            By.CSS_SELECTOR,
+            '.DismissibleTextForm-textarea',
+        )
+        _abuse_report_cancel_button_locator = (
+            By.CSS_SELECTOR,
+            '.DismissibleTextForm-dismiss',
+        )
+        _abuse_report_submit_disabled_button_locator = (
+            By.CSS_SELECTOR,
+            '.DismissibleTextForm-submit.Button--disabled',
+        )
+        _abuse_report_submit_button_locator = (
+            By.CSS_SELECTOR,
+            '.DismissibleTextForm-submit',
+        )
+        _abuse_report_confirm_message_locator = (
+            By.CSS_SELECTOR,
+            '.ReportUserAbuse--report-sent p:nth-child(2)',
         )
 
         @property
@@ -195,6 +226,56 @@ class User(Base):
         @property
         def themes_page_number(self):
             return self.find_element(*self._themes_page_number_locator).text
+
+        def user_reviews_section_loaded(self):
+            self.wait.until(
+                EC.visibility_of_element_located(self._user_reviews_card_locator)
+            )
+
+        @property
+        def user_review_items(self):
+            items = self.find_elements(*self._user_review_list_locator)
+            reviews = Reviews(self.selenium, self.page.base_url).wait_for_page_to_load()
+            return [reviews.UserReview(self, el) for el in items]
+
+        def click_user_abuse_report(self):
+            self.find_element(*self._user_abuse_report_button_locator).click()
+            self.wait.until(
+                EC.element_to_be_clickable(self._abuse_report_textarea_locator)
+            )
+
+        @property
+        def abuse_report_form_header(self):
+            return self.find_element(*self._abuse_report_form_header_locator).text
+
+        @property
+        def abuse_report_form_help_text(self):
+            return self.find_element(*self._abuse_report_form_help_text).text
+
+        def user_abuse_report_input_text(self, value):
+            self.find_element(*self._abuse_report_textarea_locator).send_keys(value)
+
+        def cancel_abuse_report_form(self):
+            self.find_element(*self._abuse_report_cancel_button_locator).click()
+            self.wait.until(
+                EC.element_to_be_clickable(self._user_abuse_report_button_locator)
+            )
+
+        @property
+        def abuse_report_submit_disabled(self):
+            return self.find_element(*self._abuse_report_submit_disabled_button_locator)
+
+        def submit_user_abuse_report(self):
+            self.find_element(*self._abuse_report_submit_button_locator).click()
+            self.wait.until(
+                EC.invisibility_of_element_located(
+                    self._abuse_report_submit_button_locator
+                )
+            )
+
+        @property
+        def user_abuse_confirmation_message(self):
+            return self.find_element(*self._abuse_report_confirm_message_locator).text
 
     class EditProfile(Region):
         _view_profile_link_locator = (By.CSS_SELECTOR, '.UserProfileEdit-user-links a')

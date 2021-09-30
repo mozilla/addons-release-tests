@@ -667,6 +667,10 @@ class Detail(Base):
         def review_text_input(self, value):
             self.find_element(*self._review_textarea_locator).send_keys(value)
 
+        @property
+        def submit_review_button(self):
+            return self.find_element(*self._submit_review_button_locator)
+
         def submit_review(self):
             self.find_element(*self._submit_review_button_locator).click()
             self.wait.until(

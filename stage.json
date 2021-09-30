@@ -47,11 +47,15 @@
     "Mozilla needs to contact me about my individual add-on",
     "stay up-to-date with news and events relevant to add-on developers (including the about:addons newsletter)"
   ],
+  "notifications_info_text": "From time to time, Mozilla may send you email about upcoming releases and add-on events. Please select the topics you are interested in.",
+  "notifications_help_text": "Mozilla reserves the right to contact you individually about specific concerns with your hosted add-ons.",
   "developer_profile": "11687230",
   "theme_artist_profile": "6199839",
   "developer_and_artist_role": "11686381",
   "non_developer_user": "11686961",
-
-  "notifications_info_text": "From time to time, Mozilla may send you email about upcoming releases and add-on events. Please select the topics you are interested in.",
-  "notifications_help_text": "Mozilla reserves the right to contact you individually about specific concerns with your hosted add-ons."
+  "user_abuse_initial_form_header": "Report this user for abuse",
+  "user_abuse_form_initial_help_text": "If you think this user is violating Mozilla's Add-on Policies, please report this user to Mozilla.",
+  "user_abuse_input_text": "Submitting a user abuse report",
+  "user_abuse_confirmed_form_header": "4You reported this user for abuse",
+  "user_abuse_form_confirmed_help_text": "We have received your report. Thanks for letting us know about your concerns with this user."
 }
