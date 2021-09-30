@@ -12,6 +12,7 @@ from pages.desktop.users import User
 from scripts import custom_waits
 
 
+@pytest.mark.serial
 @pytest.mark.nondestructive
 def test_login(selenium, base_url):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
@@ -24,6 +25,7 @@ def test_login(selenium, base_url):
     username.header.user_header_display_name(user)
 
 
+@pytest.mark.serial
 @pytest.mark.nondestructive
 def test_logout(base_url, selenium):
     """User can logout"""
