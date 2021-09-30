@@ -12,6 +12,7 @@ from pages.desktop.users import User
 from scripts import custom_waits
 
 
+@pytest.mark.serial
 @pytest.mark.nondestructive
 def test_login(selenium, base_url):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
@@ -24,6 +25,7 @@ def test_login(selenium, base_url):
     username.header.user_header_display_name(user)
 
 
+@pytest.mark.serial
 @pytest.mark.nondestructive
 def test_logout(base_url, selenium):
     """User can logout"""
@@ -158,9 +160,10 @@ def test_user_change_profile_picture(base_url, selenium):
         custom_waits.check_value_inequality(edit_old_icon, user.edit.picture_source)
     )
     user.edit.submit_changes()
-    user.wait_for_user_to_load()
+    # reassign 'User' to a new variable since the page has been refreshed and 'user' can become stale
+    view_profile = User(selenium, base_url).wait_for_user_to_load()
     # checks that the image change is also reflected in the view profile page
-    assert view_old_icon != user.view.icon_source
+    assert view_old_icon != view_profile.view.icon_source
 
 
 @pytest.mark.serial
