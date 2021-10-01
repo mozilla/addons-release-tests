@@ -4,6 +4,8 @@ import pytest
 
 
 # Window resolutions
+from selenium.webdriver.support.wait import WebDriverWait
+
 DESKTOP = (1920, 1080)
 
 
@@ -60,6 +62,13 @@ def selenium(selenium, request):
     """Fixture to set a custom resolution for tests running on Desktop."""
     selenium.set_window_size(*request.param)
     return selenium
+
+
+@pytest.fixture
+def wait():
+    """A preset wait to be used in test methods. Removes the necessity to declare a
+    WebDriverWait whenever we need to wait for certain conditions to happen in a test"""
+    return WebDriverWait(selenium, 10)
 
 
 @pytest.fixture

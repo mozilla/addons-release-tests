@@ -2,8 +2,9 @@ import pytest
 import requests
 
 from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
+from pages.desktop.details import Detail
 from pages.desktop.home import Home
 from pages.desktop.login import Login
 from pages.desktop.search import Search
@@ -143,7 +144,7 @@ def test_user_account_manage_section(base_url, selenium, variables):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-def test_user_change_profile_picture(base_url, selenium):
+def test_user_change_profile_picture(base_url, selenium, wait):
     user = User(selenium, base_url).open().wait_for_page_to_load()
     user.login('reusable_user')
     # opens the View profile page
@@ -156,7 +157,7 @@ def test_user_change_profile_picture(base_url, selenium):
     user.edit.upload_picture('profile_picture_alt.png')
     # waits for the image source to change after the new image is uploaded and verifies
     # that the new source doesn't match the old source, i.e. image has changed
-    WebDriverWait(selenium, 10).until(
+    wait.until(
         custom_waits.check_value_inequality(edit_old_icon, user.edit.picture_source)
     )
     user.edit.submit_changes()
@@ -423,3 +424,103 @@ def test_user_profile_open_theme_detail_page(base_url, selenium, variables):
     theme_detail = theme.result_list.click_search_result(0)
     # checks that the expected theme detail page is opened
     assert theme_name in theme_detail.name
+
+
+@pytest.mark.serial
+@pytest.mark.nondestructive
+def test_user_profile_write_review(base_url, selenium, variables, wait):
+    extension = variables['detail_extension_slug']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    addon.login('regular_user')
+    # post a rating on the detail page
+    addon.ratings.rating_stars[4].click()
+    # navigate to the user profile page to write a review
+    count = 1
+    landing_page = '.UserProfile-name'
+    addon.header.click_user_menu_links(count, landing_page)
+    user = User(selenium, base_url).wait_for_user_to_load()
+    # the review card doesn't have preload elements, so we need to wait for it to load individually
+    user.view.user_reviews_section_loaded()
+    addon.ratings.write_a_review.click()
+    review_text = variables['initial_text_input']
+    addon.ratings.review_text_input(review_text)
+    addon.ratings.submit_review()
+    # verifies that the written review is displayed
+    wait.until(
+        lambda _: user.view.user_review_items[0].review_body == review_text,
+        message=f'Expected text "{review_text}" not in "{user.view.user_review_items[0].review_body}"',
+    )
+
+
+@pytest.mark.serial
+@pytest.mark.nondestructive
+def test_user_profile_edit_review(base_url, selenium, variables, wait):
+    user = User(selenium, base_url).open().wait_for_page_to_load()
+    user.login('regular_user')
+    user.edit.click_view_profile_link()
+    # the review card doesn't have preload elements, so we need to wait for it to load individually
+    user.view.user_reviews_section_loaded()
+    edit = Detail(selenium, base_url)
+    edit.ratings.edit_review.click()
+    edited_review_text = variables['edited_text_input']
+    edit.ratings.review_text_input(edited_review_text)
+    edit.ratings.submit_review()
+    # verifies that the review text has been updated
+    wait.until(
+        lambda _: edited_review_text in user.view.user_review_items[0].review_body,
+        message=f'Expected text "{edited_review_text}" not in "{user.view.user_review_items[0].review_body}"',
+    )
+
+
+@pytest.mark.serial
+@pytest.mark.nondestructive
+def test_user_profile_delete_review(base_url, selenium, variables, wait):
+    user = User(selenium, base_url).open().wait_for_page_to_load()
+    user.login('regular_user')
+    user.edit.click_view_profile_link()
+    # the review card doesn't have preload elements, so we need to wait for it to load individually
+    user.view.user_reviews_section_loaded()
+    review_list_count = len(user.view.user_review_items)
+    delete = Detail(selenium, base_url)
+    delete.ratings.delete_review.click()
+    user.view.user_review_items[0].click_confirm_delete_button()
+    # confirms that the review was deleted from the list
+    wait.until(
+        lambda _: len(user.view.user_review_items) == review_list_count - 1,
+        message=f'Expected {review_list_count - 1} reviews but got {len(user.view.user_review_items)}',
+    )
+
+
+@pytest.mark.nondestructive
+def test_user_abuse_report(base_url, selenium, variables, wait):
+    developer = variables['developer_profile']
+    selenium.get(f'{base_url}/user/{developer}')
+    user = User(selenium, base_url).wait_for_user_to_load()
+    user.view.click_user_abuse_report()
+    # checks the information present in the abuse report form before submission
+    assert (
+        variables['user_abuse_initial_form_header']
+        in user.view.abuse_report_form_header
+    )
+    assert (
+        variables['user_abuse_form_initial_help_text']
+        in user.view.abuse_report_form_help_text
+    )
+    # click on Cancel to close the form
+    user.view.cancel_abuse_report_form()
+    user.view.click_user_abuse_report()
+    # checks that the submit button is disabled if no text is inserted
+    assert user.view.abuse_report_submit_disabled.is_displayed()
+    user.view.user_abuse_report_input_text(variables['user_abuse_input_text'])
+    user.view.submit_user_abuse_report()
+    # verifies the abuse report form after submission
+    wait.until(
+        lambda _: variables['user_abuse_confirmed_form_header']
+        in user.view.abuse_report_form_header,
+        message=f'Abuse report form header was "{user.view.abuse_report_form_header}"',
+    )
+    assert (
+        variables['user_abuse_form_confirmed_help_text']
+        in user.view.user_abuse_confirmation_message
+    )
