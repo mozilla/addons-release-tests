@@ -446,8 +446,6 @@ def test_user_profile_write_review(base_url, selenium, variables, wait):
     review_text = variables['initial_text_input']
     addon.ratings.review_text_input(review_text)
     addon.ratings.submit_review()
-    # waits for the review writing form to close
-    wait.until(EC.invisibility_of_element_located(addon.ratings.submit_review_button))
     # verifies that the written review is displayed
     wait.until(
         lambda _: user.view.user_review_items[0].review_body == review_text,
@@ -468,8 +466,6 @@ def test_user_profile_edit_review(base_url, selenium, variables, wait):
     edited_review_text = variables['edited_text_input']
     edit.ratings.review_text_input(edited_review_text)
     edit.ratings.submit_review()
-    # waits for the review writing form to close
-    wait.until(EC.invisibility_of_element_located(edit.ratings.submit_review_button))
     # verifies that the review text has been updated
     wait.until(
         lambda _: edited_review_text in user.view.user_review_items[0].review_body,
