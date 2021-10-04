@@ -1,6 +1,10 @@
 """A module where we store reusable methods and various scripts
  that can help with our test functions"""
 
+import datetime
+import random
+import string
+
 
 def scroll_into_view(driver, element):
     """This method adds page scrolling to accompany tests
@@ -8,10 +12,20 @@ def scroll_into_view(driver, element):
     MoveTargetOutOfBoundsException in Firefox"""
     x = element.location['x']
     y = element.location['y']
-    scroll_by_coord = 'window.scrollTo(%s,%s);' % (
-        x,
-        y
-    )
+    scroll_by_coord = 'window.scrollTo(%s,%s);' % (x, y)
     scroll = 'window.scrollBy(0, -120);'
     driver.execute_script(scroll_by_coord)
     driver.execute_script(scroll)
+
+
+def get_random_string(length):
+    letters = string.ascii_lowercase
+    result_str = ''.join(random.choice(letters) for i in range(length))
+    return result_str
+
+
+def current_date():
+    """Getting the current date in string format"""
+    today = datetime.datetime.today()
+    time = today.strftime('%b %#d, %Y')
+    return time

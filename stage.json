@@ -57,5 +57,15 @@
   "user_abuse_form_initial_help_text": "If you think this user is violating Mozilla's Add-on Policies, please report this user to Mozilla.",
   "user_abuse_input_text": "Submitting a user abuse report",
   "user_abuse_confirmed_form_header": "You reported this user for abuse",
-  "user_abuse_form_confirmed_help_text": "We have received your report. Thanks for letting us know about your concerns with this user."
+  "user_abuse_form_confirmed_help_text": "We have received your report. Thanks for letting us know about your concerns with this user.",
+
+  "collections_card_summary": "Collections make it easy to keep track of favorite add-ons and share your perfectly customized browser with others.",
+  "collection_description": "A short collection description.",
+  "collection_edit_name": "Edited collection name",
+  "collection_edit_description": " Edited collection description",
+  "public_collection": "/4757633/privacy-matters/",
+  "public_collection_name": "Privacy Matters",
+  "collection_addon_note": "original note",
+  "collection_addon_edited_note": " edited note",
+  "public_collection_popularity": "https://addons.allizom.org/api/v5/accounts/account/4757633/collections/privacy-matters/addons/?page=1&sort=-popularity"
 }
