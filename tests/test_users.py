@@ -36,6 +36,7 @@ def test_logout(base_url, selenium):
     page.logout()
 
 
+@pytest.mark.serial
 @pytest.mark.nondestructive
 def test_user_menu_collections_link(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
@@ -47,6 +48,7 @@ def test_user_menu_collections_link(base_url, selenium):
     page.header.click_user_menu_links(count, landing_page)
 
 
+@pytest.mark.serial
 @pytest.mark.nondestructive
 def test_user_menu_view_profile(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
@@ -57,6 +59,7 @@ def test_user_menu_view_profile(base_url, selenium):
     page.header.click_user_menu_links(count, landing_page)
 
 
+@pytest.mark.serial
 @pytest.mark.nondestructive
 def test_user_menu_edit_profile(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
@@ -67,6 +70,7 @@ def test_user_menu_edit_profile(base_url, selenium):
     page.header.click_user_menu_links(count, landing_page)
 
 
+@pytest.mark.serial
 @pytest.mark.nondestructive
 def test_user_menu_devhub_links(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
