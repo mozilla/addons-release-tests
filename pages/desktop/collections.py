@@ -60,10 +60,10 @@ class Collections(Base):
     def click_create_collection(self):
         self.find_element(*self._collections_create_button_locator).click()
         self.wait.until(
-            EC.visibility_of_element_located(
-                self.CollectionCreate.create_button_disabled
+            lambda _: self.is_element_displayed(
+                By.CSS_SELECTOR, '.CollectionManager-submit.Button--disabled'
             ),
-            message='The collection save button wax not displayed. The collection create form was not loaded properly',
+            message='The collection save button was not displayed. The collection create form was not loaded properly',
         )
 
     @property
