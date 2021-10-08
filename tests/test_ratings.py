@@ -319,6 +319,8 @@ def test_write_review_in_all_reviews_page(selenium, base_url, variables):
     addon.login('regular_user')
     # post a rating on the detail page
     addon.ratings.rating_stars[4].click()
+    # waits for the rating to be properly recorded
+    addon.ratings.wait_for_rating_form()
     # navigate to the All reviews page to write your review
     reviews = addon.ratings.click_all_reviews_link()
     addon.ratings.write_a_review.click()

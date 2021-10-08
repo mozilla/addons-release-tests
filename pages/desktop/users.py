@@ -30,7 +30,7 @@ class User(Base):
 
     @property
     def user_display_name(self):
-        return self.find_element(*self._display_name_locator).text
+        return self.find_element(*self._display_name_locator)
 
     @property
     def view(self):
