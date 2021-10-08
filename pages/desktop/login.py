@@ -1,7 +1,9 @@
 import os
 
+from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.wait import WebDriverWait
 
 from pages.desktop.base import Base
 
@@ -45,7 +47,9 @@ class Login(Base):
     def fxa_login(self, email, password):
         self.find_element(*self._email_locator).send_keys(email)
         self.find_element(*self._continue_locator).click()
-        self.wait.until(
+        WebDriverWait(
+            self.selenium, 30, ignored_exceptions=StaleElementReferenceException
+        ).until(
             EC.element_to_be_clickable(self._login_btn_locator),
             message='FxA login button was not displayed',
         )
