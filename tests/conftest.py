@@ -4,6 +4,7 @@ import pytest
 
 
 # Window resolutions
+from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.support.wait import WebDriverWait
 
 DESKTOP = (1920, 1080)
@@ -68,7 +69,7 @@ def selenium(selenium, request):
 def wait():
     """A preset wait to be used in test methods. Removes the necessity to declare a
     WebDriverWait whenever we need to wait for certain conditions to happen in a test"""
-    return WebDriverWait(selenium, 10)
+    return WebDriverWait(selenium, 10, ignored_exceptions=StaleElementReferenceException)
 
 
 @pytest.fixture

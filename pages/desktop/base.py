@@ -176,7 +176,9 @@ class Header(Region):
         return Login(self.selenium, self.page.base_url)
 
     def user_header_display_name(self, value):
-        self.wait.until(
+        WebDriverWait(
+            self.selenium, 30, ignored_exceptions=StaleElementReferenceException
+        ).until(
             EC.text_to_be_present_in_element(self._user_locator, value),
             message=f'The displayed name was {self.find_element(*self._user_locator).text}.',
         )

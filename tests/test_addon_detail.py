@@ -36,7 +36,7 @@ def test_detail_author_links(selenium, base_url, variables):
     addon.authors.click()
     # verify that the author profile page opens
     user = User(selenium, base_url).wait_for_page_to_load()
-    assert author in user.user_display_name
+    assert author in user.user_display_name.text
 
 
 @pytest.mark.nondestructive

@@ -2,7 +2,6 @@ import pytest
 import requests
 
 from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.support import expected_conditions as EC
 
 from pages.desktop.details import Detail
 from pages.desktop.home import Home
@@ -15,7 +14,7 @@ from scripts import custom_waits
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-def test_login(selenium, base_url):
+def test_login(selenium, base_url, wait):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     user = 'regular_user'
     page.login(user)
@@ -119,7 +118,7 @@ def test_user_view_profile(base_url, selenium, variables):
     # checks that the information provided in the user_edit_profile test
     # is present on the user View profile page
     assert user.view.user_profile_icon.is_displayed()
-    assert variables['display_name'] in user.user_display_name
+    assert variables['display_name'] in user.user_display_name.text
     assert variables['homepage'] in user.view.user_homepage
     assert variables['location'] in user.view.user_location
     assert variables['occupation'] in user.view.user_occupation
@@ -232,7 +231,7 @@ def test_user_data_for_deleted_profile(base_url, selenium):
     user.edit.click_view_profile_link()
     # checks that the default icon and display name are present for the deleted user
     assert user.view.user_profile_icon_placeholder.is_displayed
-    assert 'Firefox user' in user.user_display_name
+    assert 'Firefox user' in user.user_display_name.text
 
 
 @pytest.mark.serial
@@ -255,7 +254,7 @@ def test_user_developer_notifications(base_url, selenium, variables):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-def test_user_notifications_subscriptions(base_url, selenium):
+def test_user_notifications_subscriptions(base_url, selenium, wait):
     user = User(selenium, base_url).open().wait_for_page_to_load()
     user.login('developer')
     # verify that the first 7 notifications are selected by default
@@ -272,7 +271,7 @@ def test_user_notifications_subscriptions(base_url, selenium):
     # subscribe to the notification again
     user.edit.notifications_checkbox[0].click()
     user.edit.submit_changes()
-    user.wait_for_user_to_load()
+    wait.until(lambda _: user.user_display_name.is_displayed())
     user.view.click_edit_profile_button()
     assert user.edit.notifications_checkbox[0].is_selected()
 
