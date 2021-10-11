@@ -25,6 +25,9 @@ class Login(Base):
     # 4. user who re-creates accounts on AMO after having deleted them previously
     REUSABLE_USER_EMAIL = os.environ.get('REUSABLE_USER_EMAIL')
     REUSABLE_USER_PASSWORD = os.environ.get('REUSABLE_USER_PASSWORD')
+    # 5. user used for the ratings tests
+    RATING_USER_EMAIL = os.environ.get('RATING_USER_EMAIL')
+    RATING_USER_PASSWORD = os.environ.get('RATING_USER_PASSWORD')
 
     _email_locator = (By.NAME, 'email')
     _continue_locator = (By.CSS_SELECTOR, '.button-row button')
@@ -41,6 +44,8 @@ class Login(Base):
             self.fxa_login(self.ADMIN_USER_EMAIL, self.ADMIN_USER_PASSWORD)
         elif user == 'developer':
             self.fxa_login(self.DEVELOPER_EMAIL, self.DEVELOPER_PASSWORD)
+        elif user == 'rating_user':
+            self.fxa_login(self.RATING_USER_EMAIL, self.RATING_USER_PASSWORD)
         else:
             self.fxa_login(self.REGULAR_USER_EMAIL, self.REGULAR_USER_PASSWORD)
 
