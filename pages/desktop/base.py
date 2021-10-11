@@ -1,3 +1,4 @@
+import requests
 from pypom import Page, Region
 
 from selenium.common.exceptions import (
@@ -79,7 +80,8 @@ class Base(Page):
         # wait for transition between FxA page and AMO (URL and page)
         self.wait.until(
             EC.url_contains('addons'),
-            message=f'AMO could not be loaded in {self.selenium.current_url}',
+            message=f'AMO could not be loaded in {self.selenium.current_url}'
+                    f'Response status code was {requests.head(self.selenium.current_url).status_code}',
         )
         WebDriverWait(self.selenium, 30).until(
             EC.invisibility_of_element_located((By.CLASS_NAME, 'LoadingText'))
@@ -180,7 +182,7 @@ class Header(Region):
             self.selenium, 30, ignored_exceptions=StaleElementReferenceException
         ).until(
             EC.text_to_be_present_in_element(self._user_locator, value),
-            message=f'The displayed name was {self.find_element(*self._user_locator).text}.',
+            message='The expected displayed name was not visible',
         )
 
     def click_logout(self):
