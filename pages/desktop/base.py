@@ -81,13 +81,16 @@ class Base(Page):
         self.wait.until(
             EC.url_contains('addons'),
             message=f'AMO could not be loaded in {self.selenium.current_url}'
-                    f'Response status code was {requests.head(self.selenium.current_url).status_code}',
+            f'Response status code was {requests.head(self.selenium.current_url).status_code}',
         )
         WebDriverWait(self.selenium, 30).until(
             EC.invisibility_of_element_located((By.CLASS_NAME, 'LoadingText'))
         )
         # assess that the user has been logged in
-        self.wait.until(lambda _: self.logged_in)
+        self.wait.until(
+            lambda _: self.logged_in,
+            message=f'Log in flow was not successful. URL at fail time was {self.selenium.current_url}',
+        )
 
     def logout(self):
         self.header.click_logout()
