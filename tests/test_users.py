@@ -167,7 +167,10 @@ def test_user_change_profile_picture(base_url, selenium, wait):
     # reassign 'User' to a new variable since the page has been refreshed and 'user' can become stale
     view_profile = User(selenium, base_url).wait_for_user_to_load()
     # checks that the image change is also reflected in the view profile page
-    assert view_old_icon != view_profile.view.icon_source
+    wait.until(
+        lambda _: view_old_icon != view_profile.view.icon_source,
+        message='The profile icon change was not properly recorded',
+    )
 
 
 @pytest.mark.serial
@@ -271,7 +274,7 @@ def test_user_notifications_subscriptions(base_url, selenium, wait):
     # subscribe to the notification again
     user.edit.notifications_checkbox[0].click()
     user.edit.submit_changes()
-    wait.until(lambda _: user.user_display_name.is_displayed())
+    wait.until(lambda _: user.view.edit_profile_button.is_displayed())
     user.view.click_edit_profile_button()
     assert user.edit.notifications_checkbox[0].is_selected()
 
