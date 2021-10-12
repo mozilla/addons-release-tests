@@ -46,6 +46,9 @@ class Collections(Base):
         return self.find_element(*self._collections_card_summary_locator).text
 
     def select_collection(self, count):
+        # wait needed to avoid a weird bug on the site where you land on the
+        # homepage when clicking on a collection before the name is visible
+        self.wait.until(lambda _: len(self.list[0].name.text) > 0)
         self.find_elements(*self._collection_item_locator)[count].click()
         return self.CollectionDetail(self).wait_for_details_to_load()
 

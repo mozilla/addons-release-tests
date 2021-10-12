@@ -55,8 +55,13 @@ class Login(Base):
         WebDriverWait(
             self.selenium, 30, ignored_exceptions=StaleElementReferenceException
         ).until(
-            EC.element_to_be_clickable(self._login_btn_locator),
-            message='FxA login button was not displayed',
+            EC.element_to_be_clickable(self._password_locator),
+            message='Password input field was not displayed',
         )
         self.find_element(*self._password_locator).send_keys(password)
+        # waits for the password to be filled in
+        self.wait.until(
+            EC.invisibility_of_element_located((By.CSS_SELECTOR, '.password.empty')),
+            message='There was no input added in the password field',
+        )
         self.find_element(*self._login_btn_locator).click()

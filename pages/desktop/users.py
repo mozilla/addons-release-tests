@@ -179,6 +179,10 @@ class User(Base):
         def user_biography(self):
             return self.find_element(*self._user_biography_locator).text
 
+        @property
+        def edit_profile_button(self):
+            return self.find_element(*self._user_profile_edit_link_locator)
+
         def click_edit_profile_button(self):
             self.find_element(*self._user_profile_edit_link_locator).click()
             return User(self.selenium, self.page.base_url).wait_for_page_to_load()
