@@ -36,6 +36,7 @@ class Login(Base):
     _repeat_password_locator = (By.ID, 'vpassword')
     _age_locator = (By.ID, 'age')
     _code_input_locator = (By.CSS_SELECTOR, '.tooltip-below')
+    _login_card_header_locator = (By.CSS_SELECTOR, '.card header h1')
 
     def account(self, user):
         if user == 'reusable_user':
@@ -51,17 +52,19 @@ class Login(Base):
 
     def fxa_login(self, email, password):
         self.find_element(*self._email_locator).send_keys(email)
+        print(self.find_element(*self._login_card_header_locator).text)
         self.wait.until(
             EC.element_to_be_clickable(self._continue_locator),
             message='The continue to login button could not be clicked',
         )
+        print(self.find_element(*self._login_card_header_locator).text)
         self.find_element(*self._continue_locator).click()
-        WebDriverWait(
-            self.selenium, 30, ignored_exceptions=StaleElementReferenceException
-        ).until(
-            EC.element_to_be_clickable(self._password_locator),
-            message='Password input field was not displayed',
+        print(self.find_element(*self._login_card_header_locator).text)
+        self.wait.until(
+            EC.text_to_be_present_in_element(self._login_card_header_locator, 'Sign in'),
+            message=f'FxA card header was {self.find_element(*self._login_card_header_locator).text}',
         )
+        print(self.find_element(*self._login_card_header_locator).text)
         self.find_element(*self._password_locator).send_keys(password)
         # waits for the password to be filled in
         self.wait.until(
