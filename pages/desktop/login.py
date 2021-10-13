@@ -51,6 +51,10 @@ class Login(Base):
 
     def fxa_login(self, email, password):
         self.find_element(*self._email_locator).send_keys(email)
+        self.wait.until(
+            EC.element_to_be_clickable(self._continue_locator),
+            message='The continue to login button could not be clicked',
+        )
         self.find_element(*self._continue_locator).click()
         WebDriverWait(
             self.selenium, 30, ignored_exceptions=StaleElementReferenceException
