@@ -1,4 +1,5 @@
 import os
+import time
 
 from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.common.by import By
@@ -52,11 +53,7 @@ class Login(Base):
 
     def fxa_login(self, email, password):
         self.find_element(*self._email_locator).send_keys(email)
-        print(self.find_element(*self._login_card_header_locator).text)
-        self.wait.until(
-            EC.element_to_be_clickable(self._continue_locator),
-            message='The continue to login button could not be clicked',
-        )
+        time.sleep(2)
         print(self.find_element(*self._login_card_header_locator).text)
         self.find_element(*self._continue_locator).click()
         print(self.find_element(*self._login_card_header_locator).text)
