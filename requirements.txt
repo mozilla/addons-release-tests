@@ -3,7 +3,7 @@ appdirs==1.4.4
 astroid==2.8.0
 atomicwrites==1.4.0
 attrs==21.2.0
-cffi==1.14.6
+cffi==1.15.0
 chardet==4.0.0
 click==8.0.3
 colorama==0.4.4
