@@ -53,12 +53,17 @@ class Login(Base):
 
     def fxa_login(self, email, password):
         self.find_element(*self._email_locator).send_keys(email)
-        time.sleep(2)
-        print(self.find_element(*self._login_card_header_locator).text)
-        self.find_element(*self._continue_locator).click()
+        continue_btn = self.wait.until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, '.button-row button'))
+        )
+        # time.sleep(2)
+        continue_btn.click()
+        # self.find_element(*self._continue_locator).click()
         print(self.find_element(*self._login_card_header_locator).text)
         self.wait.until(
-            EC.text_to_be_present_in_element(self._login_card_header_locator, 'Sign in'),
+            EC.text_to_be_present_in_element(
+                self._login_card_header_locator, 'Sign in'
+            ),
             message=f'FxA card header was {self.find_element(*self._login_card_header_locator).text}',
         )
         print(self.find_element(*self._login_card_header_locator).text)
