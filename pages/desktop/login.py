@@ -1,10 +1,8 @@
 import os
-import time
 
-from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.wait import WebDriverWait
 
 from pages.desktop.base import Base
 
@@ -53,23 +51,30 @@ class Login(Base):
 
     def fxa_login(self, email, password):
         self.find_element(*self._email_locator).send_keys(email)
+        # sometimes, the login function fails on the 'continue_btn.click()' event with a
+        # TimeoutException, triggered by the built in timeout of the 'click()' method;
+        # however, the screenshot captured by the html report shows that the click occurred
+        # since the expected page has been loaded; here, I'm capturing that TimeoutException
+        # and trying to push the script to continue to the next steps
         try:
             continue_btn = self.wait.until(
                 EC.element_to_be_clickable((By.CSS_SELECTOR, '.button-row button'))
             )
-            # time.sleep(2)
             continue_btn.click()
-        except TimeoutException as e:
-            print(e.msg)
+        except TimeoutException as error:
+            print(error.msg)
             pass
-        print(self.find_element(*self._login_card_header_locator).text)
+        print('The "click continue button" event occurred.')
         self.wait.until(
             EC.text_to_be_present_in_element(
                 self._login_card_header_locator, 'Sign in'
             ),
             message=f'FxA card header was {self.find_element(*self._login_card_header_locator).text}',
         )
-        print(self.find_element(*self._login_card_header_locator).text)
+        print(
+            f'The script should be on the password input screen here. We should see "Sign in" in the header.'
+            f' The card  header title is "{self.find_element(*self._login_card_header_locator).text}"'
+        )
         self.find_element(*self._password_locator).send_keys(password)
         # waits for the password to be filled in
         self.wait.until(
