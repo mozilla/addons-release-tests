@@ -1,7 +1,7 @@
 import os
 import time
 
-from selenium.common.exceptions import StaleElementReferenceException
+from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
@@ -53,12 +53,15 @@ class Login(Base):
 
     def fxa_login(self, email, password):
         self.find_element(*self._email_locator).send_keys(email)
-        continue_btn = self.wait.until(
-            EC.element_to_be_clickable((By.CSS_SELECTOR, '.button-row button'))
-        )
-        # time.sleep(2)
-        continue_btn.click()
-        # self.find_element(*self._continue_locator).click()
+        try:
+            continue_btn = self.wait.until(
+                EC.element_to_be_clickable((By.CSS_SELECTOR, '.button-row button'))
+            )
+            # time.sleep(2)
+            continue_btn.click()
+        except TimeoutException as e:
+            print(e.msg)
+            pass
         print(self.find_element(*self._login_card_header_locator).text)
         self.wait.until(
             EC.text_to_be_present_in_element(
