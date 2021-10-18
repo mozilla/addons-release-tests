@@ -51,11 +51,13 @@ class Login(Base):
 
     def fxa_login(self, email, password):
         self.find_element(*self._email_locator).send_keys(email)
-        # sometimes, the login function fails on the 'continue_btn.click()' event with a
-        # TimeoutException, triggered by the built in timeout of the 'click()' method;
-        # however, the screenshot captured by the html report shows that the click occurred
-        # since the expected page has been loaded; here, I'm capturing that TimeoutException
-        # and trying to push the script to continue to the next steps
+        # sometimes, the login function fails on the 'continue_btn.click()' event with a TimeoutException
+        # triggered by the built in timeout of the 'click()' method;
+        # however, the screenshot captured by the html report at test fail time shows that the click occurred
+        # since the expected page has been loaded;
+        # this seems to be a reoccurring issue in geckodriver as explained in
+        # https://github.com/mozilla/geckodriver/issues/1608;
+        # here, I'm capturing that TimeoutException and trying to push the script to continue to the next steps.
         try:
             continue_btn = self.wait.until(
                 EC.element_to_be_clickable((By.CSS_SELECTOR, '.button-row button'))
