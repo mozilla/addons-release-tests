@@ -1,9 +1,8 @@
 import os
 
-from selenium.common.exceptions import StaleElementReferenceException
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.wait import WebDriverWait
 
 from pages.desktop.base import Base
 
@@ -36,6 +35,7 @@ class Login(Base):
     _repeat_password_locator = (By.ID, 'vpassword')
     _age_locator = (By.ID, 'age')
     _code_input_locator = (By.CSS_SELECTOR, '.tooltip-below')
+    _login_card_header_locator = (By.CSS_SELECTOR, '.card header h1')
 
     def account(self, user):
         if user == 'reusable_user':
@@ -51,16 +51,31 @@ class Login(Base):
 
     def fxa_login(self, email, password):
         self.find_element(*self._email_locator).send_keys(email)
+        # sometimes, the login function fails on the 'continue_btn.click()' event with a TimeoutException
+        # triggered by the built in timeout of the 'click()' method;
+        # however, the screenshot captured by the html report at test fail time shows that the click occurred
+        # since the expected page has been loaded;
+        # this seems to be a reoccurring issue in geckodriver as explained in
+        # https://github.com/mozilla/geckodriver/issues/1608;
+        # here, I'm capturing that TimeoutException and trying to push the script to continue to the next steps.
+        try:
+            continue_btn = self.wait.until(
+                EC.element_to_be_clickable((By.CSS_SELECTOR, '.button-row button'))
+            )
+            continue_btn.click()
+        except TimeoutException as error:
+            print(error.msg)
+            pass
+        print('The "click continue button" event occurred.')
         self.wait.until(
-            EC.element_to_be_clickable(self._continue_locator),
-            message='The continue to login button could not be clicked',
+            EC.text_to_be_present_in_element(
+                self._login_card_header_locator, 'Sign in'
+            ),
+            message=f'FxA card header was {self.find_element(*self._login_card_header_locator).text}',
         )
-        self.find_element(*self._continue_locator).click()
-        WebDriverWait(
-            self.selenium, 30, ignored_exceptions=StaleElementReferenceException
-        ).until(
-            EC.element_to_be_clickable(self._password_locator),
-            message='Password input field was not displayed',
+        print(
+            f'The script should be on the password input screen here. We should see "Sign in" in the header.'
+            f' The card  header title is "{self.find_element(*self._login_card_header_locator).text}"'
         )
         self.find_element(*self._password_locator).send_keys(password)
         # waits for the password to be filled in
