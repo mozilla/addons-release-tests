@@ -9,13 +9,6 @@ from scripts import reusables
 
 # Tests covering the homepage header
 @pytest.mark.nondestructive
-def test_click_header_explore(base_url, selenium):
-    page = Home(selenium, base_url).open()
-    page.header.click_explore()
-    assert 'Add-ons for Firefox' in selenium.title
-
-
-@pytest.mark.nondestructive
 def test_click_header_extensions(base_url, selenium):
     page = Home(selenium, base_url).open()
     ext_page = page.header.click_extensions()
@@ -252,7 +245,7 @@ def test_mozilla_footer_link(base_url, selenium):
             'discourse',
             'Contact_us',
             'review_guide',
-            'status',
+            'mozilla.org',  # temporary
         ]
     ),
 )
