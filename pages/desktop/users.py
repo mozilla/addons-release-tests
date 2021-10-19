@@ -2,6 +2,8 @@ import os
 
 from pypom import Region
 from selenium.webdriver.common.by import By
+from selenium.common.exceptions import StaleElementReferenceException
+from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 from pages.desktop.base import Base
@@ -23,9 +25,9 @@ class User(Base):
         return self
 
     def wait_for_user_to_load(self):
-        self.wait.until(
-            lambda _: self.is_element_displayed(*self._display_name_locator)
-        )
+        WebDriverWait(
+            self.selenium, 20, ignored_exceptions=StaleElementReferenceException
+        ).until(lambda _: self.is_element_displayed(*self._display_name_locator))
         return self
 
     @property
