@@ -36,10 +36,10 @@ def test_collection_addon_count_is_correct(selenium, base_url, variables):
 @pytest.mark.nondestructive
 def test_collection_creator_and_modified_date(selenium, base_url, variables, wait):
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
-    collections.login('regular_user')
+    collections.login('collection_user')
     collections.select_collection(0)
     # checks that the display name of the logged in user is present in the meta card
-    assert 'regular_user' in collections.collection_detail.collection_stats[1].text
+    assert 'collection_user' in collections.collection_detail.collection_stats[1].text
     # making a small edit to trigger a modified date change in the collection
     collections.collection_detail.click_edit_collection_button()
     collections.collection_detail.click_edit_collection_meta()
@@ -59,7 +59,7 @@ def test_collection_creator_and_modified_date(selenium, base_url, variables, wai
 @pytest.mark.nondestructive
 def test_my_collections_page_items(selenium, base_url, variables):
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
-    collections.login('regular_user')
+    collections.login('collection_user')
     # checking that various elements are present on the user collections page
     assert 'Collections' in collections.collections_summary_card_header
     assert variables['collections_card_summary'] in collections.collections_card_summary
@@ -74,7 +74,7 @@ def test_my_collections_page_items(selenium, base_url, variables):
 @pytest.mark.nondestructive
 def test_select_collection_from_list(selenium, base_url, wait):
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
-    collections.login('regular_user')
+    collections.login('collection_user')
     # capture collection name and number of add-on displayed in My collections list
     list_collection_name = collections.list[0].name.text
     list_addon_count = collections.list[0].list_addons_count
@@ -92,7 +92,7 @@ def test_select_collection_from_list(selenium, base_url, wait):
 @pytest.mark.nondestructive
 def test_create_collection(selenium, base_url, variables, wait):
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
-    collections.login('regular_user')
+    collections.login('collection_user')
     collections.click_create_collection()
     # using random strings to make sure we're always getting a unique URL,
     # which is constructed from the name of the collection
@@ -114,7 +114,7 @@ def test_create_collection(selenium, base_url, variables, wait):
 @pytest.mark.nondestructive
 def test_add_addons_to_collection(selenium, base_url, variables, wait):
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
-    collections.login('regular_user')
+    collections.login('collection_user')
     collections.select_collection(0)
     collections.collection_detail.click_edit_collection_button()
     search_addon = collections.create.addon_search.search(variables['search_term'])
@@ -138,7 +138,7 @@ def test_add_addons_to_collection(selenium, base_url, variables, wait):
 @pytest.mark.nondestructive
 def test_collection_add_duplicate_addons_error(selenium, base_url, variables):
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
-    collections.login('regular_user')
+    collections.login('collection_user')
     collections.select_collection(0)
     collections.collection_detail.click_edit_collection_button()
     # adds an add-on that already belongs to this collection and
@@ -155,7 +155,7 @@ def test_collection_add_duplicate_addons_error(selenium, base_url, variables):
 @pytest.mark.nondestructive
 def test_remove_addon_from_collection(selenium, base_url, variables, wait):
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
-    collections.login('regular_user')
+    collections.login('collection_user')
     collections.select_collection(0)
     collections.collection_detail.click_edit_collection_button()
     addons_list = len(collections.create.edit_addons_list)
@@ -186,7 +186,7 @@ def test_remove_addon_from_collection(selenium, base_url, variables, wait):
 @pytest.mark.nondestructive
 def test_collection_edit_metadata(selenium, base_url, variables, wait):
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
-    collections.login('regular_user')
+    collections.login('collection_user')
     collections.select_collection(0)
     collections.collection_detail.click_edit_collection_button()
     # open the edit collection meta form
@@ -218,7 +218,7 @@ def test_collection_edit_metadata(selenium, base_url, variables, wait):
 @pytest.mark.nondestructive
 def test_delete_collection(selenium, base_url, variables):
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
-    collections.login('regular_user')
+    collections.login('collection_user')
     # make a note of the collection name in My Collections list
     collection_name = collections.list[0].name
     collections.select_collection(0)
