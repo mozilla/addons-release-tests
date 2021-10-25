@@ -1,6 +1,13 @@
 import pytest
+import requests
+
+from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.select import Select
 
 from pages.desktop.collections import Collections
+from pages.desktop.details import Detail
+from pages.desktop.search import Search
 from scripts import reusables
 
 
@@ -216,6 +223,115 @@ def test_collection_edit_metadata(selenium, base_url, variables, wait):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
+def test_collection_addon_notes(selenium, base_url, variables):
+    collections = Collections(selenium, base_url).open().wait_for_page_to_load()
+    collections.login('collection_user')
+    collections.select_collection(0)
+    collections.collection_detail.click_edit_collection_button()
+    # writing a note for an addon in the collection list
+    collections.create.edit_addons_list[0].click_add_note()
+    collections.create.edit_addons_list[0].note_input_text(
+        variables['collection_addon_note']
+    )
+    collections.create.edit_addons_list[0].click_save_note()
+    # check that the note written is displayed after saving
+    assert (
+        variables['collection_addon_note']
+        in collections.create.edit_addons_list[0].note_text
+    )
+    # edit the collection addon note
+    collections.create.edit_addons_list[0].click_edit_note()
+    collections.create.edit_addons_list[0].note_input_text(
+        variables['collection_addon_edited_note']
+    )
+    collections.create.edit_addons_list[0].click_save_note()
+    # check that the edited note text is displayed after saving
+    assert (
+        variables['collection_addon_edited_note']
+        in collections.create.edit_addons_list[0].note_text
+    )
+    collections.create.edit_addons_list[0].click_edit_note()
+    # delete the collection note and check it is no longer displayed
+    collections.create.edit_addons_list[0].click_delete_note()
+    with pytest.raises(NoSuchElementException):
+        selenium.find_element(By.CSS_SELECTOR, '.EditableCollectionAddon-notes-content')
+
+
+@pytest.mark.serial
+@pytest.mark.nondestructive
+def test_add_to_collection_in_addon_detail_page(selenium, base_url, variables, wait):
+    collections = Collections(selenium, base_url).open().wait_for_page_to_load()
+    collections.login('collection_user')
+    # make a note of the collection name to be used for this test
+    collection_name = collections.list[0].name.text
+    # make a note of the collections present in My Collections page
+    my_collections_list = [el.name.text for el in collections.list]
+    extension = variables['non_recommended_addon']
+    # open an addon detail page
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    # make a note of the addon name to use it later
+    addon_name = addon.name
+    select = Select(addon.add_to_collection.collections_select_field)
+    add_to_collection_list = [
+        el.text for el in addon.add_to_collection.add_to_collections_list
+    ]
+    # check that the list of user collections matches the list present in Add to collection from detail page;
+    # the detail page displays collections in alphabetical order, so we need to sort the other list to have a match
+    assert sorted(my_collections_list, key=str.lower) == add_to_collection_list
+    # add the addon to the test collection
+    select.select_by_visible_text(collection_name)
+    # verify that a success message is displayed once the collection is selected
+    assert (
+        f'Added to {collection_name}'
+        in addon.add_to_collection.add_to_collection_success_notice
+    )
+    # select the same collection again and check that an error message is displayed
+    select.select_by_visible_text(collection_name)
+    assert (
+        'This add-on already belongs to the collection'
+        in addon.add_to_collection.add_to_collection_error_notice
+    )
+    collections.open().wait_for_page_to_load()
+    # open the collection details and check that the new addon was included
+    collections.select_collection(0)
+    addons_list = Search(selenium, base_url).wait_for_page_to_load()
+    assert addon_name in addons_list.result_list.extensions[0].name
+
+
+@pytest.mark.serial
+@pytest.mark.nondestructive
+def test_collection_sort_addons_by_date_added(selenium, base_url, variables, wait):
+    collections = Collections(selenium, base_url).open().wait_for_page_to_load()
+    collections.login('collection_user')
+    collections.select_collection(0)
+    collections.collection_detail.click_edit_collection_button()
+    # adding one more addon to the collection
+    search_addon = collections.create.addon_search.search(
+        variables['detail_extension_name']
+    )
+    search_addon[0].name.click()
+    # waits for the new add-on to be added to the collection
+    wait.until(
+        lambda _: len(collections.create.edit_addons_list) == 2,
+        message=f'The list contains {len(collections.create.edit_addons_list)} addons',
+    )
+    collections.collection_detail.click_back_to_collection()
+    # using the Search class to interact with the list of addons present in the collection
+    addons = Search(selenium, base_url).wait_for_page_to_load()
+    sort = Select(collections.collection_detail.sort_addons)
+    sort.select_by_visible_text('Oldest first')
+    addons.wait_for_page_to_load()
+    # this addon was already in the collection, so it is the older one when sort is applied
+    assert variables['search_term'] in addons.result_list.extensions[0].name
+    sort.select_by_visible_text('Newest first')
+    addons.wait_for_page_to_load()
+    # this is the new addon added to the collection, so it is the most recent when sort is applied
+    assert variables['detail_extension_name'] in addons.result_list.extensions[0].name
+
+
+@pytest.mark.serial
+@pytest.mark.nondestructive
 def test_delete_collection(selenium, base_url, variables):
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
     collections.login('collection_user')
@@ -230,3 +346,75 @@ def test_delete_collection(selenium, base_url, variables):
     collections.collection_detail.confirm_delete_collection()
     # verify that the deleted collection is no longer present in My Collections
     assert collection_name not in [el.name for el in collections.list]
+
+
+@pytest.mark.serial
+@pytest.mark.nondestructive
+def test_create_collection_from_addon_detail_page(selenium, base_url, variables, wait):
+    extension = variables['non_recommended_addon']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    addon.login('collection_user')
+    addon_name = addon.name
+    select = Select(addon.add_to_collection.collections_select_field)
+    # start the collection crete process from the addon detail page
+    # which will automatically include the addon to the new collection
+    select.select_by_visible_text('Create new collection')
+    collections = Collections(selenium, base_url).wait_for_page_to_load()
+    # fill up the collection creation form opened
+    name = reusables.get_random_string(15)
+    collections.create.set_name(name)
+    collections.create.save_collection()
+    # waits for the collection detail to be loaded after saving
+    wait.until(lambda _: len(collections.create.edit_addons_list) > 0)
+    collection_addon = collections.create.edit_addons_list[0].edit_list_addon_name
+    # verify that the addon was indeed added to the collection
+    assert addon_name == collection_addon
+    # deleting the collection to avoid having too many collections for this test user
+    collections.collection_detail.delete_collection()
+    collections.collection_detail.confirm_delete_collection()
+
+
+@pytest.mark.nondestructive
+def test_collection_sort_addons_by_name(selenium, base_url, variables):
+    public_collection = variables['public_collection']
+    selenium.get(f'{base_url}/collections{public_collection}')
+    collection = Collections(selenium, base_url).wait_for_page_to_load()
+    # using the Search class to interact with the list of addons present in the collection
+    addons = Search(selenium, base_url).wait_for_page_to_load()
+    sort = Select(collection.collection_detail.sort_addons)
+    sort.select_by_visible_text('Name')
+    # waiting for the new addon sorting to take effect
+    addons.wait_for_page_to_load()
+    addons_list = [el.name for el in addons.result_list.extensions]
+    # check that the addons list has been sorted alphabetically
+    assert addons_list == sorted(addons_list)
+
+
+@pytest.mark.nondestructive
+def test_collection_sort_addons_by_popularity(selenium, base_url, variables):
+    public_collection = variables['public_collection']
+    selenium.get(f'{base_url}/collections{public_collection}')
+    collection = Collections(selenium, base_url).wait_for_page_to_load()
+    # using the Search class to interact with the list of addons present in the collection
+    addons = Search(selenium, base_url).wait_for_page_to_load()
+    sort = Select(collection.collection_detail.sort_addons)
+    sort.select_by_visible_text('Popularity')
+    # waiting for the new addon sorting to take effect
+    addons.wait_for_page_to_load()
+    # making a record of the list of addons after being sorted
+    frontend_addons_list = [el.name for el in addons.result_list.extensions]
+    # there is no way to directly determine that the sorting is correct in the frontend so we need to
+    # take the api request sent by the frontend and compare the results with the api response
+    request = requests.get(variables['public_collection_popularity'], timeout=10)
+    response = request.json()
+    # first, capture the popularity sorting, which is the 'weekly_downloads` property in the api response
+    popularity = [result['addon']['weekly_downloads'] for result in response['results']]
+    # first, check that the api is returning the addons sorted by weekly downloads in descending order
+    assert popularity == sorted(popularity, reverse=True)
+    # second, capture the list of addon names in the order they are returned by the api
+    api_addon_name_list = [
+        result['addon']['name']['en-US'] for result in response['results']
+    ]
+    # finally, make sure that the list of addons from the frontend matches the list of addons returned by the api
+    assert api_addon_name_list == frontend_addons_list
