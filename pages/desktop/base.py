@@ -99,16 +99,11 @@ class Base(Page):
 class Header(Region):
     _root_locator = (By.CLASS_NAME, 'Header')
     _header_title_locator = (By.CLASS_NAME, 'Header-title')
-    _explore_locator = (
-        By.CSS_SELECTOR,
-        '.SectionLinks > li:nth-child(1) \
-                        > a:nth-child(1)',
-    )
     _firefox_logo_locator = (By.CLASS_NAME, 'Header-title')
     _extensions_locator = (
         By.CSS_SELECTOR,
         '.SectionLinks \
-                           > li:nth-child(2) > a:nth-child(1)',
+                           > li:nth-child(1) > a:nth-child(1)',
     )
     _login_locator = (By.CLASS_NAME, 'Header-authenticate-button')
     _user_locator = (
@@ -138,15 +133,12 @@ class Header(Region):
     _more_dropdown_link_locator = (By.CSS_SELECTOR, '.DropdownMenuItem a')
     _themes_locator = (
         By.CSS_SELECTOR,
-        '.SectionLinks > li:nth-child(3) > \
+        '.SectionLinks > li:nth-child(2) > \
                        a:nth-child(1)',
     )
     _devhub_locator = (By.CLASS_NAME, 'Header-developer-hub-link')
     _extension_workshop_locator = (By.CLASS_NAME, 'Header-extension-workshop-link')
     _active_link_locator = (By.CLASS_NAME, 'SectionLinks-link--active')
-
-    def click_explore(self):
-        self.find_element(*self._firefox_logo_locator).click()
 
     def click_extensions(self):
         self.find_element(*self._extensions_locator).click()
