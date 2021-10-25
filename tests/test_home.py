@@ -48,7 +48,7 @@ def test_extension_workshop_link(base_url, selenium):
     enumerate(
         [
             'Dictionaries and Language Packs',
-            'Firefox Add-on Reviews',
+            'Firefox Add-ons Blog',
             'Add-ons for Firefox Android',
         ]
     ),
