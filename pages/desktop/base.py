@@ -192,21 +192,32 @@ class Header(Region):
                 )
             )
         )
-        dropdown = self.find_element(*self._account_dropdown_locator)
-        logout = self.find_element(*self._logout_locator)
-        action = ActionChains(self.selenium)
-        action.move_to_element(user)
-        action.pause(3)
-        action.move_to_element(dropdown)
-        action.move_to_element(logout)
-        action.pause(3)
-        action.click()
-        action.pause(3)
-        action.perform()
-        self.wait.until(
-            lambda s: self.is_element_displayed(*self._login_locator),
-            message='The login button was not displayed after logout',
-        )
+        loop = 0
+        while loop < 3:
+            try:
+                action = ActionChains(self.selenium)
+                action.move_to_element(user)
+                action.pause(3)
+                # assigning the webelement to a variable before initializing the action chains can lead
+                # to stale element errors since the dropdown state changes when we hover over it
+                action.move_to_element(
+                    self.find_element(*self._account_dropdown_locator)
+                )
+                action.move_to_element(self.find_element(*self._logout_locator))
+                action.pause(3)
+                action.click()
+                action.pause(3)
+                action.perform()
+                self.wait.until(
+                    lambda s: self.is_element_displayed(*self._login_locator),
+                    message='The login button was not displayed after logout',
+                )
+                break
+            # the "WebDriverException: Message: TypeError: can't access property "x", rect is undefined" has
+            # popped out again recently; I'm trying to catch this exception here and rerun the action chains
+            except (StaleElementReferenceException, WebDriverException) as error:
+                print(f'{error} Retry action chains')
+            loop += 1
 
     def click_user_menu_links(self, count, landing_page):
         user = WebDriverWait(
@@ -220,16 +231,18 @@ class Header(Region):
                 )
             )
         )
-        links = self.find_elements(*self._user_menu_links_locator)
-        dropdown = self.find_element(*self._account_dropdown_locator)
         loop = 0
         while loop < 3:
             try:
                 action = ActionChains(self.selenium)
                 action.move_to_element(user)
                 action.pause(2)
-                action.move_to_element(dropdown)
-                action.move_to_element(links[count])
+                action.move_to_element(
+                    self.find_element(*self._account_dropdown_locator)
+                )
+                action.move_to_element(
+                    self.find_elements(*self._user_menu_links_locator)[count]
+                )
                 action.pause(2)
                 action.click()
                 action.perform()
