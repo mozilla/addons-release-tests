@@ -181,9 +181,9 @@ class Detail(Base):
         _stats_users_locator = (By.CSS_SELECTOR, '.AddonMeta dl:nth-child(1)')
         _stats_reviews_locator = (By.CSS_SELECTOR, '.AddonMeta dl:nth-child(2)')
         _stats_ratings_locator = (By.CSS_SELECTOR, '.AddonMeta dl:nth-child(3)')
-        _grouped_ratings_locator = (By.CSS_SELECTOR, '.RatingsByStar-star a')
+        _grouped_ratings_locator = (By.CSS_SELECTOR, '.RatingsByStar-star')
         _rating_bar_locator = (By.CSS_SELECTOR, '.RatingsByStar-barContainer')
-        _rating_bar_count_locator = (By.CSS_SELECTOR, '.RatingsByStar-count a')
+        _rating_bar_count_locator = (By.CSS_SELECTOR, '.RatingsByStar-count')
 
         @property
         def addon_user_stats(self):
