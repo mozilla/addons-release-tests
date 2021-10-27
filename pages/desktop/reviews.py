@@ -18,7 +18,7 @@ class Reviews(Base):
         '.Rating--editable .Rating-selected-star',
     )
     _rating_score_bars_locator = (By.CSS_SELECTOR, '.RatingsByStar-barContainer')
-    _bar_rating_score_locator = (By.CSS_SELECTOR, '.RatingsByStar-star a')
+    _bar_rating_score_locator = (By.CSS_SELECTOR, '.RatingsByStar-star')
 
     def wait_for_page_to_load(self):
         """Waits for various page components to be loaded"""
