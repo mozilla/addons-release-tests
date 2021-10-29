@@ -364,8 +364,13 @@ class User(Base):
         )
 
         def click_view_profile_link(self):
-            self.find_element(*self._view_profile_link_locator).click()
-            return User(self.selenium, self.page.base_url).wait_for_user_to_load()
+            link = WebDriverWait(
+                self.selenium, 20, ignored_exceptions=StaleElementReferenceException
+            ).until(EC.element_to_be_clickable(self._view_profile_link_locator))
+            link.click()
+            self.wait.until(
+                EC.visibility_of_element_located((By.CSS_SELECTOR, '.UserProfile-name'))
+            )
 
         @property
         def email_field(self):
