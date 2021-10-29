@@ -258,25 +258,26 @@ def test_user_developer_notifications(base_url, selenium, variables):
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_user_notifications_subscriptions(base_url, selenium, wait):
-    user = User(selenium, base_url).open().wait_for_page_to_load()
-    user.login('developer')
+    edit_user = User(selenium, base_url).open().wait_for_page_to_load()
+    edit_user.login('developer')
     # verify that the first 7 notifications are selected by default
-    for checkbox in user.edit.notifications_checkbox[0:7]:
+    for checkbox in edit_user.edit.notifications_checkbox[0:7]:
         assert checkbox.is_selected()
     # unsubscribe from one of the non-mandatory notifications
-    user.edit.notifications_checkbox[0].click()
-    user.edit.submit_changes()
-    user.wait_for_user_to_load()
-    user.view.click_edit_profile_button()
+    edit_user.edit.notifications_checkbox[0].click()
+    edit_user.edit.submit_changes()
+    view_user = User(selenium, base_url)
+    wait.until(lambda _: view_user.view.edit_profile_button.is_displayed())
+    view_user.view.click_edit_profile_button()
     # verify that the notification checkbox is no longer selected
     with pytest.raises(AssertionError):
-        assert user.edit.notifications_checkbox[0].is_selected()
+        assert edit_user.edit.notifications_checkbox[0].is_selected()
     # subscribe to the notification again
-    user.edit.notifications_checkbox[0].click()
-    user.edit.submit_changes()
-    wait.until(lambda _: user.view.edit_profile_button.is_displayed())
-    user.view.click_edit_profile_button()
-    assert user.edit.notifications_checkbox[0].is_selected()
+    edit_user.edit.notifications_checkbox[0].click()
+    edit_user.edit.submit_changes()
+    wait.until(lambda _: view_user.view.edit_profile_button.is_displayed())
+    view_user.view.click_edit_profile_button()
+    assert edit_user.edit.notifications_checkbox[0].is_selected()
 
 
 @pytest.mark.serial
