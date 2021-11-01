@@ -168,6 +168,7 @@ def test_delete_rating(selenium, base_url, variables):
     )
 
 
+@pytest.mark.serial
 @pytest.mark.nondestructive
 def test_all_reviews_page_items(selenium, base_url, variables):
     extension = variables['detail_extension_slug']
@@ -181,6 +182,7 @@ def test_all_reviews_page_items(selenium, base_url, variables):
         assert review.posting_date.is_displayed()
 
 
+@pytest.mark.serial
 @pytest.mark.nondestructive
 def test_filter_reviews_by_score(selenium, base_url, variables):
     extension = variables['all_scores_addon']
@@ -202,6 +204,7 @@ def test_filter_reviews_by_score(selenium, base_url, variables):
         count += 1
 
 
+@pytest.mark.serial
 @pytest.mark.nondestructive
 def test_filter_reviews_from_rating_bars(selenium, base_url, variables):
     extension = variables['all_scores_addon']
@@ -222,6 +225,7 @@ def test_filter_reviews_from_rating_bars(selenium, base_url, variables):
         count += 1
 
 
+@pytest.mark.serial
 @pytest.mark.nondestructive
 def test_flag_review_action(selenium, base_url, variables):
     extension = variables['all_scores_addon']
@@ -250,6 +254,7 @@ def test_flag_review_action(selenium, base_url, variables):
             count += 1
 
 
+@pytest.mark.serial
 @pytest.mark.nondestructive
 def test_flag_missing_for_empty_review(selenium, base_url, variables):
     extension = variables['detail_extension_slug']
@@ -263,6 +268,7 @@ def test_flag_missing_for_empty_review(selenium, base_url, variables):
                 user_review.find_element(By.CSS_SELECTOR, '.FlagReviewMenu-menu')
 
 
+@pytest.mark.serial
 @pytest.mark.nondestructive
 def test_flag_review_requires_login(selenium, base_url, variables):
     extension = variables['all_scores_addon']
@@ -282,6 +288,7 @@ def test_flag_review_requires_login(selenium, base_url, variables):
             count += 1
 
 
+@pytest.mark.serial
 @pytest.mark.nondestructive
 def test_flag_review_menu_options(selenium, base_url, variables):
     extension = variables['all_scores_addon']

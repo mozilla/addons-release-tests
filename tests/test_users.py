@@ -296,6 +296,7 @@ def test_user_mandatory_notifications(base_url, selenium):
         checkbox.is_selected()
 
 
+@pytest.mark.serial
 @pytest.mark.nondestructive
 def test_user_developer_role(base_url, selenium, variables):
     developer = variables['developer_profile']
@@ -306,6 +307,7 @@ def test_user_developer_role(base_url, selenium, variables):
     assert user.view.developer_role_icon.is_displayed()
 
 
+@pytest.mark.serial
 @pytest.mark.nondestructive
 def test_user_theme_artist_role(base_url, selenium, variables):
     artist = variables['theme_artist_profile']
@@ -316,6 +318,7 @@ def test_user_theme_artist_role(base_url, selenium, variables):
     assert user.view.artist_role_icon.is_displayed()
 
 
+@pytest.mark.serial
 @pytest.mark.nondestructive
 def test_user_artist_and_developer_role(base_url, selenium, variables):
     dev_artist = variables['developer_and_artist_role']
@@ -328,6 +331,7 @@ def test_user_artist_and_developer_role(base_url, selenium, variables):
     assert user.view.artist_role_icon.is_displayed()
 
 
+@pytest.mark.serial
 @pytest.mark.nondestructive
 def test_user_regular_has_no_role(base_url, selenium):
     user = User(selenium, base_url).open().wait_for_page_to_load()
@@ -338,6 +342,7 @@ def test_user_regular_has_no_role(base_url, selenium):
         selenium.find_element_by_css_selector('.UserProfile-developer')
 
 
+@pytest.mark.serial
 @pytest.mark.nondestructive
 def test_non_developer_user_profile_is_not_public(base_url, selenium, variables):
     """Non developer users' profile pages are not publicly available;
@@ -352,6 +357,7 @@ def test_non_developer_user_profile_is_not_public(base_url, selenium, variables)
     ), f'The response status code was {response.status_code}'
 
 
+@pytest.mark.serial
 @pytest.mark.nondestructive
 def test_user_profile_extensions_card(base_url, selenium, variables):
     page = variables['developer_and_artist_role']
@@ -382,6 +388,7 @@ def test_user_profile_extensions_card(base_url, selenium, variables):
             pytest.fail(exception.msg)
 
 
+@pytest.mark.serial
 @pytest.mark.nondestructive
 def test_user_profile_themes_card(base_url, selenium, variables):
     page = variables['developer_and_artist_role']
@@ -409,6 +416,7 @@ def test_user_profile_themes_card(base_url, selenium, variables):
             pytest.fail(exception.msg)
 
 
+@pytest.mark.serial
 @pytest.mark.nondestructive
 def test_user_profile_open_extension_detail_page(base_url, selenium, variables):
     page = variables['developer_profile']
@@ -421,6 +429,7 @@ def test_user_profile_open_extension_detail_page(base_url, selenium, variables):
     assert extension_name in detail_extension.name
 
 
+@pytest.mark.serial
 @pytest.mark.nondestructive
 def test_user_profile_open_theme_detail_page(base_url, selenium, variables):
     artist = variables['theme_artist_profile']
@@ -499,6 +508,7 @@ def test_user_profile_delete_review(base_url, selenium, variables, wait):
     )
 
 
+@pytest.mark.serial
 @pytest.mark.nondestructive
 def test_user_abuse_report(base_url, selenium, variables, wait):
     developer = variables['developer_profile']
