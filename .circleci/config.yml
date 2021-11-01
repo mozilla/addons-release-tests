@@ -24,7 +24,7 @@ jobs:
           environment:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 1
-          command: pytest test_collections.py --driver Firefox --variables stage.json --html=collections-test-results.html --self-contained-html
+          command: pytest tests\test_collections.py --driver Firefox --variables stage.json --html=collections-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: collections-test-results.html
@@ -51,7 +51,7 @@ jobs:
           environment:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 1
-          command: pytest test_ratings.py --driver Firefox --variables stage.json --html=ratings-test-results.html --self-contained-html
+          command: pytest tests\test_ratings.py --driver Firefox --variables stage.json --html=ratings-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: ratings-test-results.html
@@ -78,7 +78,7 @@ jobs:
           environment:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 1
-          command: pytest test_users.py --driver Firefox --variables stage.json --html=user-test-results.html --self-contained-html
+          command: pytest tests\test_users.py --driver Firefox --variables stage.json --html=user-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: user-test-results.html
