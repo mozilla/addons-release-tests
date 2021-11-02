@@ -1,8 +1,9 @@
 version: 2.1
 orbs:
-  win: circleci/windows@2.2.0
+  win: circleci/windows@2.4.1
 jobs:
-  serial_tests:
+  # run collections tests in a separate serial job to make serial workflows more granular
+  collections_serial_tests:
     executor:
       name: win/default
       size: "medium"
@@ -19,15 +20,70 @@ jobs:
           name: Install Firefox
           command: choco install firefox-nightly --pre
       - run:
-          name: Run serial tests
+          name: Run collections serial tests
           environment:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 1
-          command: pytest -m "serial" --driver Firefox --variables stage.json --html=serial-test-results.html --self-contained-html
+          command: pytest tests\test_collections.py --driver Firefox --variables stage.json --html=collections-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
-          path: serial-test-results.html
+          path: collections-test-results.html
 
+  # run ratings tests in a separate serial job to make serial workflows more granular
+  ratings_serial_tests:
+    executor:
+      name: win/default
+      size: "medium"
+    working_directory: ~/addons-release-tests/
+    steps:
+      - checkout
+      - run:
+          name: Install requirements
+          command: pip install --no-deps -r ./requirements.txt
+      - run:
+          name: Install geckodriver
+          command: choco install selenium-gecko-driver
+      - run:
+          name: Install Firefox
+          command: choco install firefox-nightly --pre
+      - run:
+          name: Run ratings serial tests
+          environment:
+            MOZ_HEADLESS: 1
+            PYTEST_ADDOPTS: -n 1
+          command: pytest tests\test_ratings.py --driver Firefox --variables stage.json --html=ratings-test-results.html --self-contained-html
+          no_output_timeout: 30m
+      - store_artifacts:
+          path: ratings-test-results.html
+
+  # run user tests in a separate serial job to make serial workflows more granular
+  user_serial_tests:
+    executor:
+      name: win/default
+      size: "medium"
+    working_directory: ~/addons-release-tests/
+    steps:
+      - checkout
+      - run:
+          name: Install requirements
+          command: pip install --no-deps -r ./requirements.txt
+      - run:
+          name: Install geckodriver
+          command: choco install selenium-gecko-driver
+      - run:
+          name: Install Firefox
+          command: choco install firefox-nightly --pre
+      - run:
+          name: Run user serial tests
+          environment:
+            MOZ_HEADLESS: 1
+            PYTEST_ADDOPTS: -n 1
+          command: pytest tests\test_users.py --driver Firefox --variables stage.json --html=user-test-results.html --self-contained-html
+          no_output_timeout: 30m
+      - store_artifacts:
+          path: user-test-results.html
+
+  # tests that do not require login; they include homepage, addon detail, search, addon landing pages, install and other misc tests
   parallel_tests:
     executor:
       name: win/default
@@ -57,7 +113,9 @@ jobs:
 workflows:
   commit_workflow:
     jobs:
-      - serial_tests
+      - collections_serial_tests
+      - ratings_serial_tests
+      - user_serial_tests
       - parallel_tests
   scheduled_stage_release_run:
     triggers:
@@ -68,5 +126,7 @@ workflows:
             branches:
               only: master
     jobs:
-      - serial_tests
+      - collections_serial_tests
+      - ratings_serial_tests
+      - user_serial_tests
       - parallel_tests

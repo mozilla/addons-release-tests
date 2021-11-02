@@ -4,6 +4,7 @@ from pages.desktop.collections import Collections
 from scripts import reusables
 
 
+@pytest.mark.serial
 @pytest.mark.nondestructive
 def test_collection_meta_card(selenium, base_url, variables):
     public_collection = variables['public_collection']
@@ -20,6 +21,7 @@ def test_collection_meta_card(selenium, base_url, variables):
     assert collection.collection_detail.collection_last_update_date.is_displayed()
 
 
+@pytest.mark.serial
 @pytest.mark.nondestructive
 def test_collection_addon_count_is_correct(selenium, base_url, variables):
     public_collection = variables['public_collection']
@@ -56,6 +58,7 @@ def test_collection_creator_and_modified_date(selenium, base_url, variables, wai
     )
 
 
+@pytest.mark.serial
 @pytest.mark.nondestructive
 def test_my_collections_page_items(selenium, base_url, variables):
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
