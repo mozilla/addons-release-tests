@@ -39,7 +39,17 @@ class Detail(Base):
 
     @property
     def name(self):
-        return self.find_element(*self._addon_name_locator).text
+        """The only valid locator for the addon name on AMO will return the name
+        as 'Addon name by author(s) name'. This format makes it difficult to determine
+        the exact addon name, especially when we want to use it in comparisons.
+        The following method makes sure that we only return the addon name without authors"""
+        el = self.find_element(*self._addon_name_locator).text
+        name_value = el.split()
+        # we want to remove all elements from the list starting from 'by', but its index varies
+        get_index = name_value.index('by')
+        # finally recreating the addon name without the authors
+        final_name = name_value[0:get_index]
+        return ' '.join(final_name)
 
     @property
     def is_compatible(self):
@@ -492,6 +502,18 @@ class Detail(Base):
             '.AddAddonToCollection header',
         )
         _collection_select_locator = (By.CLASS_NAME, 'AddAddonToCollection-select')
+        _select_collections_list_locator = (
+            By.CSS_SELECTOR,
+            '.AddAddonToCollection optgroup option',
+        )
+        _add_to_collection_success_notice_locator = (
+            By.CSS_SELECTOR,
+            '.AddAddonToCollection-added .Notice-text',
+        )
+        _add_to_collection_error_notice_locator = (
+            By.CSS_SELECTOR,
+            '.Notice-error .Notice-text',
+        )
 
         @property
         def collections_card_header(self):
@@ -500,6 +522,32 @@ class Detail(Base):
         @property
         def collections_select_field(self):
             return self.find_element(*self._collection_select_locator)
+
+        @property
+        def add_to_collections_list(self):
+            return self.find_elements(*self._select_collections_list_locator)
+
+        @property
+        def add_to_collection_success_notice(self):
+            self.wait.until(
+                expected.visibility_of_element_located(
+                    self._add_to_collection_success_notice_locator
+                ),
+                message='The Add to collection success message was not displayed',
+            )
+            return self.find_element(
+                *self._add_to_collection_success_notice_locator
+            ).text
+
+        @property
+        def add_to_collection_error_notice(self):
+            self.wait.until(
+                expected.visibility_of_element_located(
+                    self._add_to_collection_error_notice_locator
+                ),
+                message='The Add to collection error message was not displayed',
+            )
+            return self.find_element(*self._add_to_collection_error_notice_locator).text
 
     class AddonDescription(Region):
         _description_header_locator = (By.CSS_SELECTOR, '.AddonDescription header')
