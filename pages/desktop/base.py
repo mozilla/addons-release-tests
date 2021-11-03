@@ -138,6 +138,7 @@ class Header(Region):
     )
     _devhub_locator = (By.CLASS_NAME, 'Header-developer-hub-link')
     _extension_workshop_locator = (By.CLASS_NAME, 'Header-extension-workshop-link')
+    _blog_link_locator = (By.CLASS_NAME, 'Header-blog-link')
     _active_link_locator = (By.CLASS_NAME, 'SectionLinks-link--active')
 
     def click_extensions(self):
@@ -295,6 +296,9 @@ class Header(Region):
             EC.visibility_of_element_located((By.CLASS_NAME, 'logo')),
             message=f'Extension Workshop not loaded; page was {self.selenium.current_url}',
         )
+
+    def click_firefox_addons_blog(self):
+        self.find_element(*self._blog_link_locator).click()
 
     @property
     def is_active_link(self):

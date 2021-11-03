@@ -30,6 +30,13 @@ def test_logo_routes_to_home(base_url, selenium):
 
 
 @pytest.mark.nondestructive
+def test_firefox_addons_blog_link(base_url, selenium):
+    page = Home(selenium, base_url).open().wait_for_page_to_load()
+    page.header.click_firefox_addons_blog()
+    page.wait_for_current_url('/blog/')
+
+
+@pytest.mark.nondestructive
 def test_developer_hub_link(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.header.click_developer_hub()
@@ -48,7 +55,6 @@ def test_extension_workshop_link(base_url, selenium):
     enumerate(
         [
             'Dictionaries and Language Packs',
-            'Firefox Add-ons Blog',
             'Add-ons for Firefox Android',
         ]
     ),
@@ -278,9 +284,10 @@ def test_browsers_footer_links(base_url, selenium, count, links):
     'count, links',
     enumerate(
         [
-            'firefox/lockwise/',
-            'monitor.firefox',
             'firefox/browsers/',
+            'products/vpn/',
+            'relay.firefox.com/',
+            'monitor.firefox',
             'getpocket.com',
         ]
     ),
