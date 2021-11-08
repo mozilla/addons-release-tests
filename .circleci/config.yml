@@ -23,7 +23,7 @@ jobs:
           name: Run collections serial tests
           environment:
             MOZ_HEADLESS: 1
-            PYTEST_ADDOPTS: -n 1
+            PYTEST_ADDOPTS: -n 1 --reruns 2
           command: pytest tests\test_collections.py --driver Firefox --variables stage.json --html=collections-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
@@ -50,7 +50,7 @@ jobs:
           name: Run ratings serial tests
           environment:
             MOZ_HEADLESS: 1
-            PYTEST_ADDOPTS: -n 1
+            PYTEST_ADDOPTS: -n 1 --reruns 2
           command: pytest tests\test_ratings.py --driver Firefox --variables stage.json --html=ratings-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
@@ -77,7 +77,7 @@ jobs:
           name: Run user serial tests
           environment:
             MOZ_HEADLESS: 1
-            PYTEST_ADDOPTS: -n 1
+            PYTEST_ADDOPTS: -n 1 --reruns 2
           command: pytest tests\test_users.py --driver Firefox --variables stage.json --html=user-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
@@ -104,7 +104,7 @@ jobs:
           name: Run parallel tests
           environment:
             MOZ_HEADLESS: 1
-            PYTEST_ADDOPTS: -n 4
+            PYTEST_ADDOPTS: -n 4 --reruns 2
           command: pytest -m "not serial" --driver Firefox --variables stage.json --html=parallel-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
