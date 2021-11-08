@@ -84,7 +84,7 @@ jobs:
           path: user-test-results.html
 
   # tests that do not require login; they include homepage, addon detail, search, addon landing pages, install and other misc tests
-  parallel_tests:
+  frontend_parallel_tests:
     executor:
       name: win/default
       size: "medium"
@@ -101,14 +101,41 @@ jobs:
           name: Install Firefox
           command: choco install firefox-nightly --pre
       - run:
-          name: Run parallel tests
+          name: Run frontend parallel tests
           environment:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 4 --reruns 2
-          command: pytest -m "not serial" --driver Firefox --variables stage.json --html=parallel-test-results.html --self-contained-html
+          command: pytest -m "not serial" --driver Firefox --variables stage.json --html=frontend-parallel-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
-          path: parallel-test-results.html
+          path: frontend-parallel-test-results.html
+
+  # tests that are covering the developer hub homepage
+  devhub_parallel_tests:
+    executor:
+      name: win/default
+      size: "medium"
+    working_directory: ~/addons-release-tests/
+    steps:
+      - checkout
+      - run:
+          name: Install requirements
+          command: pip install --no-deps -r ./requirements.txt
+      - run:
+          name: Install geckodriver
+          command: choco install selenium-gecko-driver
+      - run:
+          name: Install Firefox
+          command: choco install firefox-nightly --pre
+      - run:
+          name: Run devhub parallel tests
+          environment:
+            MOZ_HEADLESS: 1
+            PYTEST_ADDOPTS: -n 4 --reruns 2
+          command: pytest tests\test_devhub.py --driver Firefox --variables stage.json --html=devhub-parallel-test-results.html --self-contained-html
+          no_output_timeout: 30m
+      - store_artifacts:
+          path: devhub-parallel-test-results.html
 
 workflows:
   commit_workflow:
@@ -116,7 +143,8 @@ workflows:
       - collections_serial_tests
       - ratings_serial_tests
       - user_serial_tests
-      - parallel_tests
+      - frontend_parallel_tests
+      - devhub_parallel_tests
   scheduled_stage_release_run:
     triggers:
       - schedule:
@@ -129,4 +157,5 @@ workflows:
       - collections_serial_tests
       - ratings_serial_tests
       - user_serial_tests
-      - parallel_tests
+      - frontend_parallel_tests
+      - devhub_parallel_tests
