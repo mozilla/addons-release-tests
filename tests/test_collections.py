@@ -194,6 +194,37 @@ def test_remove_addon_from_collection(selenium, base_url, variables, wait):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
+def test_collection_sort_addons_by_date_added(selenium, base_url, variables, wait):
+    collections = Collections(selenium, base_url).open().wait_for_page_to_load()
+    collections.login('collection_user')
+    collections.select_collection(0)
+    collections.collection_detail.click_edit_collection_button()
+    # adding one more addon to the collection
+    search_addon = collections.create.addon_search.search(
+        variables['detail_extension_name']
+    )
+    search_addon[0].name.click()
+    # waits for the new add-on to be added to the collection
+    wait.until(
+        lambda _: len(collections.create.edit_addons_list) == 2,
+        message=f'The list contains {len(collections.create.edit_addons_list)} addons',
+    )
+    collections.collection_detail.click_back_to_collection()
+    # using the Search class to interact with the list of addons present in the collection
+    addons = Search(selenium, base_url).wait_for_page_to_load()
+    sort = Select(collections.collection_detail.sort_addons)
+    sort.select_by_visible_text('Oldest first')
+    addons.wait_for_page_to_load()
+    # this addon was already in the collection, so it is the older one when sort is applied
+    assert variables['search_term'] in addons.result_list.extensions[0].name
+    sort.select_by_visible_text('Newest first')
+    addons.wait_for_page_to_load()
+    # this is the new addon added to the collection, so it is the most recent when sort is applied
+    assert variables['detail_extension_name'] in addons.result_list.extensions[0].name
+
+
+@pytest.mark.serial
+@pytest.mark.nondestructive
 def test_collection_edit_metadata(selenium, base_url, variables, wait):
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
     collections.login('collection_user')
@@ -300,37 +331,6 @@ def test_add_to_collection_in_addon_detail_page(selenium, base_url, variables, w
     collections.select_collection(0)
     addons_list = Search(selenium, base_url).wait_for_page_to_load()
     assert addon_name in addons_list.result_list.extensions[0].name
-
-
-@pytest.mark.serial
-@pytest.mark.nondestructive
-def test_collection_sort_addons_by_date_added(selenium, base_url, variables, wait):
-    collections = Collections(selenium, base_url).open().wait_for_page_to_load()
-    collections.login('collection_user')
-    collections.select_collection(0)
-    collections.collection_detail.click_edit_collection_button()
-    # adding one more addon to the collection
-    search_addon = collections.create.addon_search.search(
-        variables['detail_extension_name']
-    )
-    search_addon[0].name.click()
-    # waits for the new add-on to be added to the collection
-    wait.until(
-        lambda _: len(collections.create.edit_addons_list) == 2,
-        message=f'The list contains {len(collections.create.edit_addons_list)} addons',
-    )
-    collections.collection_detail.click_back_to_collection()
-    # using the Search class to interact with the list of addons present in the collection
-    addons = Search(selenium, base_url).wait_for_page_to_load()
-    sort = Select(collections.collection_detail.sort_addons)
-    sort.select_by_visible_text('Oldest first')
-    addons.wait_for_page_to_load()
-    # this addon was already in the collection, so it is the older one when sort is applied
-    assert variables['search_term'] in addons.result_list.extensions[0].name
-    sort.select_by_visible_text('Newest first')
-    addons.wait_for_page_to_load()
-    # this is the new addon added to the collection, so it is the most recent when sort is applied
-    assert variables['detail_extension_name'] in addons.result_list.extensions[0].name
 
 
 @pytest.mark.serial
