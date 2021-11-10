@@ -4,3 +4,7 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    # Allow only one open pull request at a time for pip dependencies in order to prevent concurrent jobs;
+    # for context: we have tests that are strictly interdependent so, if the same test is being run in
+    # multiple concurrent jobs, there is a high risk of failure
+    open-pull-requests-limit: 1
