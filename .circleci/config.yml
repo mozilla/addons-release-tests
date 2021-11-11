@@ -40,7 +40,7 @@ jobs:
     working_directory: ~/addons-release-tests/
     steps:
       - checkout
-      -run:
+      - run:
           name: Upgrade pip
           command: pip install --upgrade pip
       - run:
