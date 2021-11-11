@@ -278,7 +278,7 @@ class Header(Region):
             message=f'Number of windows was {len(self.selenium.window_handles)}, expected 2',
         )
         new_tab = self.selenium.window_handles[1]
-        self.selenium.switch_to_window(new_tab)
+        self.selenium.switch_to.window(new_tab)
         self.wait.until(
             EC.visibility_of_element_located((By.CLASS_NAME, 'DevHub-Navigation-Logo')),
             message=f'DevHub homepage not loaded; page was {self.selenium.current_url}',
@@ -291,7 +291,7 @@ class Header(Region):
             message=f'Number of windows was {len(self.selenium.window_handles)}, expected 2',
         )
         new_tab = self.selenium.window_handles[1]
-        self.selenium.switch_to_window(new_tab)
+        self.selenium.switch_to.window(new_tab)
         self.wait.until(
             EC.visibility_of_element_located((By.CLASS_NAME, 'logo')),
             message=f'Extension Workshop not loaded; page was {self.selenium.current_url}',

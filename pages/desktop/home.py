@@ -95,7 +95,7 @@ class Home(Base):
             link[count].click()
             self.wait.until(EC.number_of_windows_to_be(2))
             new_tab = self.selenium.window_handles[1]
-            self.selenium.switch_to_window(new_tab)
+            self.selenium.switch_to.window(new_tab)
             # see more external links can contain variable content we might not know in advance (especially on prod)
             # the solution used here is to verify that the content we link to is available (i.e. page response = 200)
             self.wait.until(custom_waits.url_not_contins('about:blank'))
@@ -104,7 +104,7 @@ class Home(Base):
                 page.status_code == 200
             ), f'The response status code was {page.status_code}'
             self.selenium.close()
-            self.selenium.switch_to_window(home_tab)
+            self.selenium.switch_to.window(home_tab)
         else:
             # similar to external links, internal links might contain unpredictable content;
             # in this case, we check that the content exists inside the AMO domain
@@ -324,7 +324,7 @@ class Home(Base):
                     link.click()
                     self.wait.until(EC.number_of_windows_to_be(2))
                     new_tab = self.selenium.window_handles[1]
-                    self.selenium.switch_to_window(new_tab)
+                    self.selenium.switch_to.window(new_tab)
                     # editorial might change these links when they need to push new content and we don't know
                     # in advance what that content might be; also, we want to avoid frequent maintenance for
                     # these tests; the solution used is to verify that the content we link to is available

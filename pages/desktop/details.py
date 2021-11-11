@@ -99,7 +99,7 @@ class Detail(Base):
         self.promoted_badge.click()
         self.wait.until(expected.number_of_windows_to_be(2))
         new_tab = self.selenium.window_handles[1]
-        self.selenium.switch_to_window(new_tab)
+        self.selenium.switch_to.window(new_tab)
         self.wait.until(
             expected.visibility_of_element_located((By.CLASS_NAME, 'sumo-page-heading'))
         )
@@ -133,7 +133,7 @@ class Detail(Base):
         self.find_element(*self._install_warning_button_locator).click()
         self.wait.until(expected.number_of_windows_to_be(2))
         new_tab = self.selenium.window_handles[1]
-        self.selenium.switch_to_window(new_tab)
+        self.selenium.switch_to.window(new_tab)
         self.wait.until(
             expected.visibility_of_element_located((By.CLASS_NAME, 'sumo-page-heading'))
         )
@@ -262,7 +262,7 @@ class Detail(Base):
             self.find_element(*self._contribute_button_locator).click()
             self.wait.until(expected.number_of_windows_to_be(2))
             new_tab = self.selenium.window_handles[1]
-            self.selenium.switch_to_window(new_tab)
+            self.selenium.switch_to.window(new_tab)
 
     class Permissions(Region):
         _permissions_header_locator = (By.CSS_SELECTOR, '.PermissionsCard header')
@@ -285,7 +285,7 @@ class Detail(Base):
             self.find_element(*self._permissions_learn_more_locator).click()
             self.wait.until(expected.number_of_windows_to_be(2))
             new_tab = self.selenium.window_handles[1]
-            self.selenium.switch_to_window(new_tab)
+            self.selenium.switch_to.window(new_tab)
 
         class PermissionDetails(Region):
             _permission_icon_locator = (By.CSS_SELECTOR, '.Permission .Icon')
