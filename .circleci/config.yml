@@ -12,7 +12,7 @@ jobs:
       - checkout
       - run:
           name: Upgrade pip
-          command: pip install --upgrade pip
+          command: pip install --upgrade pip --user
       - run:
           name: Install requirements
           command: pip install --no-deps -r ./requirements.txt
@@ -42,7 +42,7 @@ jobs:
       - checkout
       - run:
           name: Upgrade pip
-          command: pip install --upgrade pip
+          command: pip install --upgrade pip --user
       - run:
           name: Install requirements
           command: pip install --no-deps -r ./requirements.txt
@@ -72,7 +72,7 @@ jobs:
       - checkout
       - run:
           name: Upgrade pip
-          command: pip install --upgrade pip
+          command: pip install --upgrade pip --user
       - run:
           name: Install requirements
           command: pip install --no-deps -r ./requirements.txt
@@ -102,7 +102,7 @@ jobs:
       - checkout
       - run:
           name: Upgrade pip
-          command: pip install --upgrade pip
+          command: pip install --upgrade pip --user
       - run:
           name: Install requirements
           command: pip install --no-deps -r ./requirements.txt
