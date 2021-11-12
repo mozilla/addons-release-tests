@@ -4,6 +4,52 @@ from pages.desktop.devhub import DevHub
 
 
 @pytest.mark.nondestructive
+def test_devhub_logo(selenium, base_url):
+    page = DevHub(selenium, base_url).open().wait_for_page_to_load()
+    # clicks on the page logo and verifies page is reloaded
+    page.page_logo.click()
+    assert page.page_logo.is_displayed()
+
+
+@pytest.mark.nondestructive
+def test_click_extension_workshop(selenium, base_url):
+    page = DevHub(selenium, base_url).open().wait_for_page_to_load()
+    # clicks on EW in the header menu and checks page is loaded
+    page.extension_workshop.click()
+    page.extension_workshop_is_loaded()
+
+
+@pytest.mark.nondestructive
+def test_click_documentation(selenium, base_url):
+    page = DevHub(selenium, base_url).open().wait_for_page_to_load()
+    # clicks on Documentation header menu and checks page is loaded
+    page.click_documentation()
+
+
+@pytest.mark.nondestructive
+def test_click_support(selenium, base_url):
+    page = DevHub(selenium, base_url).open().wait_for_page_to_load()
+    # clicks on Support header menu and checks page is loaded
+    page.click_support()
+    page.wait_for_current_url('Add-ons#Get_in_touch')
+
+
+@pytest.mark.nondestructive
+def test_click_blog(selenium, base_url):
+    page = DevHub(selenium, base_url).open().wait_for_page_to_load()
+    # clicks on Blog header menu and checks page is loaded
+    page.click_blog()
+
+
+@pytest.mark.nondestructive
+def test_devhub_login(selenium, base_url, wait):
+    page = DevHub(selenium, base_url).open().wait_for_page_to_load()
+    page.devhub_login('developer')
+    # verifies that the user has been logged in by looking at the user icon
+    wait.until(lambda _: page.user_avatar.is_displayed())
+
+
+@pytest.mark.nondestructive
 def test_devhub_mozilla_footer_link(base_url, selenium):
     page = DevHub(selenium, base_url).open().wait_for_page_to_load()
     page.footer.mozilla_link.click()
