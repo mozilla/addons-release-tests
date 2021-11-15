@@ -1,10 +1,13 @@
 import os
+import time
+import requests
 
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 
 from pages.desktop.base import Base
+from scripts import reusables
 
 
 class Login(Base):
@@ -89,3 +92,52 @@ class Login(Base):
             message='There was no input added in the password field',
         )
         self.find_element(*self._login_btn_locator).click()
+
+    def fxa_register(self):
+        email = f'{reusables.get_random_string(10)}@restmail.net'
+        password = reusables.get_random_string(10)
+        self.find_element(*self._email_locator).send_keys(email)
+        # catching the geckodriver click() issue, in cae it happens here
+        # issue - https://github.com/mozilla/geckodriver/issues/1608
+        try:
+            continue_btn = self.wait.until(
+                EC.element_to_be_clickable((By.CSS_SELECTOR, '.button-row button'))
+            )
+            continue_btn.click()
+        except TimeoutException as error:
+            print(error.msg)
+            pass
+        # verify that the fxa register form was opened
+        self.wait.until(
+            EC.text_to_be_present_in_element(
+                self._login_card_header_locator, 'Create a Firefox Account'
+            ),
+            message=f'FxA card header was {self.find_element(*self._login_card_header_locator).text}',
+        )
+        self.find_element(*self._password_locator).send_keys(password)
+        self.find_element(*self._repeat_password_locator).send_keys(password)
+        self.find_element(*self._age_locator).send_keys(23)
+        self.find_element(*self._login_btn_locator).click()
+        # sleep to allow FxA to process the request and communicate with the email client
+        time.sleep(3)
+        verification_code = self.get_verification_code(email)
+        self.find_element(*self._code_input_locator).send_keys(verification_code)
+        self.find_element(*self._login_btn_locator).click()
+
+    def get_verification_code(self, mail):
+        request = requests.get(f'https://restmail.net/mail/{mail}', timeout=10)
+        response = request.json()
+        # creating a timed loop to address a possible communication delay between
+        # FxA and restmail; this loop polls the endpoint for 20s to await a response
+        # and exits if there was no response received in the given amount of time
+        timeout_start = time.time()
+        while time.time() < timeout_start + 20:
+            if response:
+                verification_code = [
+                    key['headers']['x-verify-short-code'] for key in response
+                ]
+                return verification_code
+            elif not response:
+                requests.get(f'https://restmail.net/mail/{mail}', timeout=10)
+                print('Restmail did not receive an email from FxA')
+        return self
