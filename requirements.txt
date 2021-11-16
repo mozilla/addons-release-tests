@@ -36,7 +36,7 @@ PyFxA==0.7.7
 PyJWT==2.3.0
 pylint==2.11.1
 pyparsing==3.0.6
-PyPOM==2.2.1
+PyPOM==2.2.3
 pytest==6.2.5
 pytest-base-url==1.4.2
 pytest-dependency==0.5.1
