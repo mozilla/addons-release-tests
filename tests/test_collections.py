@@ -194,6 +194,42 @@ def test_remove_addon_from_collection(selenium, base_url, variables, wait):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
+def test_collection_addon_notes(selenium, base_url, variables):
+    collections = Collections(selenium, base_url).open().wait_for_page_to_load()
+    collections.login('collection_user')
+    collections.select_collection(0)
+    collections.collection_detail.click_edit_collection_button()
+    # writing a note for an addon in the collection list
+    collections.create.edit_addons_list[0].click_add_note()
+    collections.create.edit_addons_list[0].note_input_text(
+        variables['collection_addon_note']
+    )
+    collections.create.edit_addons_list[0].click_save_note()
+    # check that the note written is displayed after saving
+    assert (
+        variables['collection_addon_note']
+        in collections.create.edit_addons_list[0].note_text
+    )
+    # edit the collection addon note
+    collections.create.edit_addons_list[0].click_edit_note()
+    collections.create.edit_addons_list[0].note_input_text(
+        variables['collection_addon_edited_note']
+    )
+    collections.create.edit_addons_list[0].click_save_note()
+    # check that the edited note text is displayed after saving
+    assert (
+        variables['collection_addon_edited_note']
+        in collections.create.edit_addons_list[0].note_text
+    )
+    collections.create.edit_addons_list[0].click_edit_note()
+    # delete the collection note and check it is no longer displayed
+    collections.create.edit_addons_list[0].click_delete_note()
+    with pytest.raises(NoSuchElementException):
+        selenium.find_element(By.CSS_SELECTOR, '.EditableCollectionAddon-notes-content')
+
+
+@pytest.mark.serial
+@pytest.mark.nondestructive
 def test_collection_sort_addons_by_date_added(selenium, base_url, variables, wait):
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
     collections.login('collection_user')
