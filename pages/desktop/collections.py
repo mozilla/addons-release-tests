@@ -295,7 +295,7 @@ class Collections(Base):
                 ).create.edit_addons_list
                 self.wait.until(
                     lambda _: len(addon_list) > 0,
-                    message=f'Expected the collection addons list to load but got "{len(addon_list)}" addons',
+                    message='The edit collection addons list could not be loaded',
                 )
 
             def remove_addon(self):
