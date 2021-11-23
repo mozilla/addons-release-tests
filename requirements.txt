@@ -52,7 +52,7 @@ pytest-variables==1.9.0
 pytest-xdist==2.4.0
 regex==2021.11.10
 requests==2.26.0
-selenium==4.0.0
+selenium==4.1.0
 six==1.16.0
 tenacity==8.0.1
 toml==0.10.2
