@@ -92,6 +92,14 @@ class Base(Page):
             message=f'Log in flow was not successful. URL at fail time was {self.selenium.current_url}',
         )
 
+    def register(self):
+        fxa_register_page = self.header.click_login()
+        self.wait.until(EC.visibility_of_element_located((By.NAME, 'email')))
+        fxa_register_page.fxa_register()
+        # wait for transition between FxA page and AMO
+        self.wait.until(EC.url_contains('addons'))
+        self.wait.until(lambda _: self.logged_in)
+
     def logout(self):
         self.header.click_logout()
 
