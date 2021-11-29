@@ -68,5 +68,12 @@
   "public_collection_name": "Privacy Matters",
   "collection_addon_note": "original note",
   "collection_addon_edited_note": " edited note",
-  "public_collection_popularity": "https://addons.allizom.org/api/v5/accounts/account/4757633/collections/privacy-matters/addons/?page=1&sort=-popularity"
+  "public_collection_popularity": "https://addons.allizom.org/api/v5/accounts/account/4757633/collections/privacy-matters/addons/?page=1&sort=-popularity",
+
+  "devhub_overview_header": "Customize Firefox",
+  "devhub_overview_summary": "Whether you’re new to extension development, polishing up or porting an existing extension or theme, or creating a custom enterprise solution, we’ve got the resources to support you.",
+  "devhub_content_header": "Ready to submit or manage your extension?",
+  "devhub_content_summary": "Sign in to the Developer Hub to submit or manage extensions and themes",
+  "devhub_get_involved_header": "Get involved",
+  "devhub_get_involved_summary": "Connect with thousands of developers and discover more ways you can contribute to the extension ecosystem."
 }

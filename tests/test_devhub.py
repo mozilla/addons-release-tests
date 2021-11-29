@@ -50,6 +50,54 @@ def test_devhub_login(selenium, base_url, wait):
 
 
 @pytest.mark.nondestructive
+def test_devhub_logout(selenium, base_url, wait):
+    page = DevHub(selenium, base_url).open().wait_for_page_to_load()
+    page.devhub_login('developer')
+    page.click_sign_out()
+    # confirms user is no longer logged in
+    wait.until(lambda _: page.header_login_button.is_displayed())
+
+
+@pytest.mark.nondestructive
+def test_devhub_page_overview(selenium, base_url, variables):
+    page = DevHub(selenium, base_url).open().wait_for_page_to_load()
+    # checks the content in the page 'Overview' - main section
+    assert variables['devhub_overview_header'] in page.devhub_overview_title
+    assert variables['devhub_overview_summary'] in page.devhub_overview_summary
+    page.click_overview_learn_how_button()
+    # checks that the link redirects to the extension workshop
+    page.extension_workshop_is_loaded()
+
+
+@pytest.mark.nondestructive
+def test_devhub_page_content(selenium, base_url, variables):
+    page = DevHub(selenium, base_url).open().wait_for_page_to_load()
+    # checks the content in the page 'Content' - secondary section
+    assert variables['devhub_content_header'] in page.devhub_content_title
+    assert variables['devhub_content_summary'] in page.devhub_content_summary
+    assert page.devhub_content_image.is_displayed()
+
+
+@pytest.mark.nondestructive
+def test_devhub_content_login_link(selenium, base_url, variables):
+    page = DevHub(selenium, base_url).open().wait_for_page_to_load()
+    page.click_content_login_link()
+    # verify that the link opens the FxA login page
+    page.wait_for_current_url('accounts.firefox.com')
+
+
+@pytest.mark.nondestructive
+def test_devhub_page_get_involved(selenium, base_url, variables):
+    page = DevHub(selenium, base_url).open().wait_for_page_to_load()
+    # checks the content in the page 'Get Involved' - secondary section
+    assert variables['devhub_get_involved_header'] in page.devhub_get_involved_title
+    assert variables['devhub_get_involved_summary'] in page.devhub_get_involved_summary
+    assert page.devhub_get_involved_image.is_displayed()
+    page.devhub_get_involved_link.click()
+    page.wait_for_title_update('Add-ons/Contribute')
+
+
+@pytest.mark.nondestructive
 def test_devhub_mozilla_footer_link(base_url, selenium):
     page = DevHub(selenium, base_url).open().wait_for_page_to_load()
     page.footer.mozilla_link.click()

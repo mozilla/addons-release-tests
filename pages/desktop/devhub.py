@@ -25,6 +25,38 @@ class DevHub(Base):
         By.CSS_SELECTOR,
         '.DevHub-Navigation-SignOut a:nth-child(2)',
     )
+    _page_overview_title_locator = (By.CSS_SELECTOR, '.DevHub-Overview h1')
+    _page_overview_summary_locator = (By.CSS_SELECTOR, '.DevHub-Overview p')
+    _learn_how_button_locator = (By.CSS_SELECTOR, '.DevHub-Overview a')
+    _page_content_title_locator = (
+        By.CSS_SELECTOR,
+        '.DevHub-content-header--submit-or-manage',
+    )
+    _page_content_summary_locator = (
+        By.CSS_SELECTOR,
+        '.DevHub-content-copy p:nth-child(3)',
+    )
+    _page_content_login_link_locator = (
+        By.CSS_SELECTOR,
+        '.DevHub-content-copy:nth-child(1) > a',
+    )
+    _page_content_featured_image_locator = (
+        By.CSS_SELECTOR,
+        '.DevHub-content-image--submit-or-manage',
+    )
+    _get_involved_title_locator = (
+        By.CSS_SELECTOR,
+        '.DevHub-content-container--get-involved h3',
+    )
+    _get_involved_summary_locator = (
+        By.CSS_SELECTOR,
+        '.DevHub-content-container--get-involved p',
+    )
+    _dev_community_link_locator = (
+        By.CSS_SELECTOR,
+        '.DevHub-content-container--get-involved a',
+    )
+    _get_involved_image_locator = (By.CLASS_NAME, 'DevHub-content-image--get-involved')
     _footer_language_picker_locator = (By.ID, 'language')
     _footer_products_section_locator = (By.CSS_SELECTOR, '.Footer-products-links')
     _footer_links_locator = (By.CSS_SELECTOR, '.Footer-links li a')
@@ -65,6 +97,10 @@ class DevHub(Base):
         self.find_element(*self._blog_link_locator).click()
         self.wait.until(EC.visibility_of_element_located((By.ID, 'site-title')))
 
+    @property
+    def header_login_button(self):
+        return self.find_element(*self._fxa_login_button_locator)
+
     def click_header_login_button(self):
         self.find_element(*self._fxa_login_button_locator).click()
         from pages.desktop.login import Login
@@ -74,6 +110,9 @@ class DevHub(Base):
     @property
     def sign_out_link(self):
         return self.find_element(*self._sign_out_link_locator)
+
+    def click_sign_out(self):
+        self.sign_out_link.click()
 
     @property
     def user_avatar(self):
@@ -98,6 +137,48 @@ class DevHub(Base):
             lambda _: self.sign_out_link.is_displayed(),
             message=f'Log in flow was not successful. URL at fail time was {self.selenium.current_url}',
         )
+
+    @property
+    def devhub_overview_title(self):
+        return self.find_element(*self._page_overview_title_locator).text
+
+    @property
+    def devhub_overview_summary(self):
+        return self.find_element(*self._page_overview_summary_locator).text
+
+    def click_overview_learn_how_button(self):
+        self.find_element(*self._learn_how_button_locator).click()
+
+    @property
+    def devhub_content_title(self):
+        return self.find_element(*self._page_content_title_locator).text
+
+    @property
+    def devhub_content_summary(self):
+        return self.find_element(*self._page_content_summary_locator).text
+
+    @property
+    def devhub_content_image(self):
+        return self.find_element(*self._page_content_featured_image_locator)
+
+    @property
+    def devhub_get_involved_title(self):
+        return self.find_element(*self._get_involved_title_locator).text
+
+    @property
+    def devhub_get_involved_summary(self):
+        return self.find_element(*self._get_involved_summary_locator).text
+
+    @property
+    def devhub_get_involved_link(self):
+        return self.find_element(*self._dev_community_link_locator)
+
+    @property
+    def devhub_get_involved_image(self):
+        return self.find_element(*self._get_involved_image_locator)
+
+    def click_content_login_link(self):
+        self.find_element(*self._page_content_login_link_locator).click()
 
     def footer_language_picker(self, value):
         select = Select(self.find_element(*self._footer_language_picker_locator))
