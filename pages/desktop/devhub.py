@@ -1,4 +1,9 @@
+import time
+import pytest
 import requests
+
+from pypom import Region
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support import expected_conditions as EC
@@ -180,6 +185,10 @@ class DevHub(Base):
     def click_content_login_link(self):
         self.find_element(*self._page_content_login_link_locator).click()
 
+    @property
+    def connect(self):
+        return ConnectFooter(self)
+
     def footer_language_picker(self, value):
         select = Select(self.find_element(*self._footer_language_picker_locator))
         select.select_by_visible_text(value)
@@ -188,3 +197,126 @@ class DevHub(Base):
     def products_links(self):
         element = self.find_element(*self._footer_products_section_locator)
         return element.find_elements(*self._footer_links_locator)
+
+
+class ConnectFooter(Region):
+    _connect_footer_title_locator = (
+        By.CSS_SELECTOR,
+        '.DevHub-content-header--Connect h2',
+    )
+    _twitter_column_title_locator = (
+        By.CSS_SELECTOR,
+        '.Devhub-content-copy--Connect \
+                                     div:nth-child(1) h4:nth-child(1)',
+    )
+    _twitter_links_locator = (
+        By.CSS_SELECTOR,
+        '.DevHub-content-copy--Connect-twitter-list a',
+    )
+    _more_column_title_locator = (
+        By.CSS_SELECTOR,
+        '.Devhub-content-copy--Connect \
+                                  div:nth-child(2) h4:nth-child(1)',
+    )
+    _more_contact_links_locator = (
+        By.CSS_SELECTOR,
+        '.DevHub-Connect-section:nth-child(2) > ul a',
+    )
+    _newsletter_header_locator = (
+        By.CSS_SELECTOR,
+        '.Devhub-content-copy--Connect div:nth-child(3) h4',
+    )
+    _newsletter_info_text_locator = (
+        By.CSS_SELECTOR,
+        '.Devhub-content-copy--Connect div:nth-child(3) p',
+    )
+    _newsletter_email_input_field_locator = (By.ID, 'email')
+    _newsletter_sign_up_button_locator = (By.CSS_SELECTOR, '.btn-success')
+    _newsletter_privacy_checkbox_locator = (By.ID, 'privacy')
+    _newsletter_privacy_notice_link_locator = (By.CSS_SELECTOR, '.form_group-agree a')
+    _newsletter_sign_up_confirmation_header_locator = (
+        By.CSS_SELECTOR,
+        '.newsletter_thanks h2',
+    )
+    _newsletter_sign_up_confirmation_message_locator = (
+        By.CSS_SELECTOR,
+        '.newsletter_thanks p',
+    )
+
+    @property
+    def connect_footer_title(self):
+        return self.find_element(*self._connect_footer_title_locator).text
+
+    @property
+    def connect_twitter_title(self):
+        return self.find_element(*self._twitter_column_title_locator).text
+
+    @property
+    def twitter_links(self):
+        return self.find_elements(*self._twitter_links_locator)
+
+    @property
+    def connect_more_title(self):
+        return self.find_element(*self._more_column_title_locator).text
+
+    @property
+    def more_connect_links(self):
+        return self.find_elements(*self._more_contact_links_locator)
+
+    @property
+    def newsletter_section_header(self):
+        return self.find_element(*self._newsletter_header_locator).text
+
+    @property
+    def newsletter_info_text(self):
+        return self.find_element(*self._newsletter_info_text_locator).text
+
+    def newsletter_email_input_field(self, email):
+        self.find_element(*self._newsletter_email_input_field_locator).send_keys(email)
+
+    @property
+    def newsletter_sign_up(self):
+        return self.find_element(*self._newsletter_sign_up_button_locator)
+
+    def click_privacy_checkbox(self):
+        self.find_element(*self._newsletter_privacy_checkbox_locator).click()
+
+    def click_newsletter_privacy_notice_link(self):
+        self.find_element(*self._newsletter_privacy_notice_link_locator).click()
+        self.wait.until(
+            EC.number_of_windows_to_be(2),
+            message=f'Number of windows was {len(self.selenium.window_handles)}, expected 2',
+        )
+        new_tab = self.selenium.window_handles[1]
+        self.selenium.switch_to.window(new_tab)
+
+    @property
+    def newsletter_signup_confirmation_header(self):
+        return self.find_element(
+            *self._newsletter_sign_up_confirmation_header_locator
+        ).text
+
+    @property
+    def newsletter_signup_confirmation_message(self):
+        return self.find_element(
+            *self._newsletter_sign_up_confirmation_message_locator
+        ).text
+
+    def check_newsletter_signup_email(self, email):
+        retry = 0
+        while retry < 10:
+            # verify that a response is available and get the email subject
+            request = requests.get(f'https://restmail.net/mail/{email}', timeout=10)
+            response = request.json()
+            if response:
+                confirmation = [key['subject'] for key in response]
+                return confirmation
+            elif not response:
+                print('Confirmation email not received yet')
+                # fail if we retired 10 times and there was no email received
+                if retry == 9:
+                    pytest.fail('Newsletter confirmation email was not sent')
+                # pause between subsequent requests to give more time to the email to be sent
+                time.sleep(2)
+                retry += 1
+        return self

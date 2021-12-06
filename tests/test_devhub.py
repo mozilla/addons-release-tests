@@ -1,6 +1,9 @@
 import pytest
 
+from selenium.webdriver.support import expected_conditions as EC
+
 from pages.desktop.devhub import DevHub
+from scripts import reusables
 
 
 @pytest.mark.nondestructive
@@ -95,6 +98,81 @@ def test_devhub_page_get_involved(selenium, base_url, variables):
     assert page.devhub_get_involved_image.is_displayed()
     page.devhub_get_involved_link.click()
     page.wait_for_title_update('Add-ons/Contribute')
+
+
+@pytest.mark.parametrize(
+    'count, link',
+    enumerate(
+        [
+            'twitter.com/mozamo',
+            'twitter.com/rockyourfirefox',
+        ]
+    ),
+)
+@pytest.mark.nondestructive
+def test_page_connect_footer_twitter(selenium, base_url, count, link):
+    page = DevHub(selenium, base_url).open().wait_for_page_to_load()
+    assert 'Connect with us' in page.connect.connect_footer_title
+    assert 'Twitter' in page.connect.connect_twitter_title
+    page.connect.twitter_links[count].click()
+    assert link in selenium.current_url
+
+
+@pytest.mark.parametrize(
+    'count, link',
+    enumerate(
+        [
+            'chat.mozilla.org/#/room/#addons:mozilla.org',
+            'discourse.mozilla.org/c/add-ons/',
+        ]
+    ),
+    ids=[
+        'AMO Matrix channel',
+        'Mozilla Discourse',
+    ],
+)
+@pytest.mark.nondestructive
+def test_page_connect_footer_more_links(selenium, base_url, count, link):
+    page = DevHub(selenium, base_url).open().wait_for_page_to_load()
+    assert 'More' in page.connect.connect_more_title
+    page.connect.more_connect_links[count].click()
+    assert link in selenium.current_url
+
+
+@pytest.mark.nondestructive
+def test_connect_newsletter_section(selenium, base_url, variables):
+    page = DevHub(selenium, base_url).open().wait_for_page_to_load()
+    # verifies the elements of the Newsletter signup section
+    assert (
+        variables['devhub_newsletter_header'] in page.connect.newsletter_section_header
+    )
+    assert variables['devhub_newsletter_info_text'] in page.connect.newsletter_info_text
+    # verify that the Privacy notice links opens the right page
+    page.connect.click_newsletter_privacy_notice_link()
+    page.wait_for_current_url('/privacy/websites/')
+
+
+@pytest.mark.nondestructive
+def test_verify_newsletter_signup_confirmation(selenium, base_url, variables, wait):
+    page = DevHub(selenium, base_url).open().wait_for_page_to_load()
+    email = f'{reusables.get_random_string(10)}@restmail.net'
+    # fill in the newsletter subscription form
+    page.connect.newsletter_email_input_field(email)
+    page.connect.click_privacy_checkbox()
+    page.connect.newsletter_sign_up.click()
+    # checks that the form transitions to confirmation messages after clicking Sign up
+    wait.until(EC.invisibility_of_element(page.connect.newsletter_sign_up))
+    assert (
+        variables['devhub_signup_confirmation_title']
+        in page.connect.newsletter_signup_confirmation_header
+    )
+    assert (
+        variables['devhub_signup_confirmation_message']
+        in page.connect.newsletter_signup_confirmation_message
+    )
+    # verify that a confirmation email was received after subscribing
+    confirmation_email = page.connect.check_newsletter_signup_email(email)
+    assert 'Action Required: Confirm Your Subscription' in confirmation_email
 
 
 @pytest.mark.nondestructive

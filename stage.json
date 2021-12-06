@@ -75,5 +75,12 @@
   "devhub_content_header": "Ready to submit or manage your extension?",
   "devhub_content_summary": "Sign in to the Developer Hub to submit or manage extensions and themes",
   "devhub_get_involved_header": "Get involved",
-  "devhub_get_involved_summary": "Connect with thousands of developers and discover more ways you can contribute to the extension ecosystem."
+  "devhub_get_involved_summary": "Connect with thousands of developers and discover more ways you can contribute to the extension ecosystem.",
+  "devhub_newsletter_header": "Extensions Developers Newsletter",
+  "devhub_newsletter_info_text": "Stay up-to-date on news and events for Firefox extension developers.",
+  "devhub_signup_confirmation_title": "Thanks!",
+  "devhub_signup_confirmation_message": "If you haven’t previously confirmed a subscription to a Mozilla-related newsletter you may have to do so. Please check your inbox or your spam filter for an email from us.",
+  "devhub_newsletter_email": "test-auto-news@restmail.net",
+  "devhub_logged_in_banner_header": "Build best-in-class extensions and themes",
+  "devhub_logged_in_banner_text": "Whether you’re new to extension development, polishing up or porting an existing extension or theme, or creating a custom enterprise solution, we’ve got the resources to support you."
 }
