@@ -34,7 +34,7 @@ PyBrowserID==0.14.0
 pycparser==2.21
 PyFxA==0.7.7
 PyJWT==2.3.0
-pylint==2.12.1
+pylint==2.12.2
 pyparsing==3.0.6
 PyPOM==2.2.3
 pytest==6.2.5
@@ -56,7 +56,7 @@ selenium==4.1.0
 six==1.16.0
 tenacity==8.0.1
 toml==0.10.2
-typed-ast==1.5.0
+typed-ast==1.5.1
 typing-extensions==4.0.1
 urllib3==1.26.7
 virtualenv==20.10.0
