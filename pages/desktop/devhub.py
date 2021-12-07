@@ -206,8 +206,7 @@ class ConnectFooter(Region):
     )
     _twitter_column_title_locator = (
         By.CSS_SELECTOR,
-        '.Devhub-content-copy--Connect \
-                                     div:nth-child(1) h4:nth-child(1)',
+        '.Devhub-content-copy--Connect div:nth-child(1) h4:nth-child(1)',
     )
     _twitter_links_locator = (
         By.CSS_SELECTOR,
@@ -215,8 +214,7 @@ class ConnectFooter(Region):
     )
     _more_column_title_locator = (
         By.CSS_SELECTOR,
-        '.Devhub-content-copy--Connect \
-                                  div:nth-child(2) h4:nth-child(1)',
+        '.Devhub-content-copy--Connect div:nth-child(2) h4:nth-child(1)',
     )
     _more_contact_links_locator = (
         By.CSS_SELECTOR,
