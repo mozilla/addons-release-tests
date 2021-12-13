@@ -387,6 +387,7 @@ def test_delete_collection(selenium, base_url, variables):
     assert collection_name not in [el.name for el in collections.list]
 
 
+@pytest.mark.skip(reason='Skipping test until a bug in the collection form is fixed')
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_create_collection_from_addon_detail_page(selenium, base_url, variables, wait):
