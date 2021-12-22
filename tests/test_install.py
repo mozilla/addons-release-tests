@@ -7,7 +7,7 @@ from pages.desktop.details import Detail
 @pytest.mark.parametrize(
     'addon_type, name_type',
     [
-        ['flagfox', 'Flagfox'],
+        ['weather-stage', 'Weather Stage'],
         ['japanese-tattoo', 'Japanese Tattoo'],
         ['release-langpack', 'Release Langpack'],
         ['release_dictionary', 'Release Dictionary'],
