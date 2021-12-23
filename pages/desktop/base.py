@@ -14,12 +14,12 @@ from selenium.webdriver.support import expected_conditions as EC
 
 
 class Base(Page):
-    _url = '{base_url}/{locale}'
+    _url = '{base_url}'
     _amo_header = (By.CLASS_NAME, 'Header')
 
-    def __init__(self, selenium, base_url, locale='en-US', **kwargs):
+    def __init__(self, selenium, base_url, **kwargs):
         super(Base, self).__init__(
-            selenium, base_url, locale=locale, timeout=30, **kwargs
+            selenium, base_url, timeout=30, **kwargs
         )
 
     def wait_for_page_to_load(self):
