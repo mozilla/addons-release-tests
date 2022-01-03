@@ -59,11 +59,11 @@ toml==0.10.2
 typed-ast==1.5.1
 typing-extensions==4.0.1
 urllib3==1.26.7
-virtualenv==20.10.0
+virtualenv==20.13.0
 wcwidth==0.2.5
 WebOb==1.8.7
 wrapt==1.13.3
-zipp==3.6.0
+zipp==3.7.0
 zope.component==5.0.1
 zope.deferredimport==4.4
 zope.deprecation==4.4.0
