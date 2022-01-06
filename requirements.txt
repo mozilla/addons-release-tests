@@ -1,6 +1,6 @@
 ﻿apipkg==2.1.0
 appdirs==1.4.4
-astroid==2.9.0
+astroid==2.9.2
 atomicwrites==1.4.0
 attrs==21.4.0
 cffi==1.15.0
@@ -28,7 +28,7 @@ numpy==1.21.5
 packaging==21.3
 pathspec==0.9.0
 pluggy==1.0.0
-psutil==5.8.0
+psutil==5.9.0
 py==1.11.0
 PyBrowserID==0.14.0
 pycparser==2.21
