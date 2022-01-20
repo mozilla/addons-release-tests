@@ -151,7 +151,7 @@ class Header(Region):
 
     def click_extensions(self):
         self.find_element(*self._extensions_locator).click()
-        from pages.desktop.extensions import Extensions
+        from pages.desktop.frontend.extensions import Extensions
 
         return Extensions(self.selenium, self.page.base_url).wait_for_page_to_load()
 
@@ -161,13 +161,13 @@ class Header(Region):
 
     def click_themes(self):
         self.find_element(*self._themes_locator).click()
-        from pages.desktop.themes import Themes
+        from pages.desktop.frontend.themes import Themes
 
         return Themes(self.selenium, self.page.base_url).wait_for_page_to_load()
 
     def click_title(self):
         self.find_element(*self._header_title_locator).click()
-        from pages.desktop.home import Home
+        from pages.desktop.frontend.home import Home
 
         return Home(self.selenium, self.page.base_url).wait_for_page_to_load()
 
@@ -177,7 +177,7 @@ class Header(Region):
 
     def click_login(self):
         self.find_element(*self._login_locator).click()
-        from pages.desktop.login import Login
+        from pages.desktop.frontend.login import Login
 
         return Login(self.selenium, self.page.base_url)
 
@@ -341,7 +341,7 @@ class Header(Region):
             # Send 'enter' since the mobile page does not have a submit button
             if execute:
                 textbox.send_keys(Keys.ENTER)
-                from pages.desktop.search import Search
+                from pages.desktop.frontend.search import Search
 
                 return Search(self.selenium, self.page).wait_for_page_to_load()
             WebDriverWait(self.selenium, 30).until(
@@ -392,7 +392,7 @@ class Header(Region):
             @property
             def select(self):
                 self.root.click()
-                from pages.desktop.details import Detail
+                from pages.desktop.frontend.details import Detail
 
                 return Detail(self.selenium, self.page).wait_for_page_to_load()
 

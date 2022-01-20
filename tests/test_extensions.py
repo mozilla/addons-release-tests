@@ -2,8 +2,8 @@ import pytest
 
 from selenium.webdriver.support.select import Select
 
-from pages.desktop.extensions import Extensions
-from pages.desktop.search import Search
+from pages.desktop.frontend.extensions import Extensions
+from pages.desktop.frontend.search import Search
 
 
 @pytest.mark.parametrize(

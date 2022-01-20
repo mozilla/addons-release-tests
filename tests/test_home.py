@@ -2,8 +2,8 @@ import pytest
 
 from selenium.webdriver import ActionChains
 
-from pages.desktop.home import Home
-from pages.desktop.search import Search
+from pages.desktop.frontend.home import Home
+from pages.desktop.frontend.search import Search
 from scripts import reusables
 
 

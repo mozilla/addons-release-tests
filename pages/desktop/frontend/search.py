@@ -103,7 +103,7 @@ class Search(Page):
 
         def click_search_result(self, count):
             self.find_elements(*self._result_link_locator)[count].click()
-            from pages.desktop.details import Detail
+            from pages.desktop.frontend.details import Detail
 
             return Detail(self.selenium, self.page.base_url).wait_for_page_to_load()
 
@@ -120,7 +120,7 @@ class Search(Page):
 
             def link(self):
                 self.find_element(*self._search_item_name_locator).click()
-                from pages.desktop.details import Detail
+                from pages.desktop.frontend.details import Detail
 
                 detail_page = Detail(self.selenium, self.page.base_url)
                 return detail_page.wait_for_page_to_load()

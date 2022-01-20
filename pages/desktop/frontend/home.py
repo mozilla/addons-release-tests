@@ -6,7 +6,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 from scripts import custom_waits
 from pages.desktop.base import Base
-from pages.desktop.details import Detail
+from pages.desktop.frontend.details import Detail
 
 
 class Home(Base):
@@ -154,7 +154,7 @@ class Home(Base):
 
             def click(self):
                 self.root.click()
-                from pages.desktop.search import Search
+                from pages.desktop.frontend.search import Search
 
                 return Search(self.selenium, self.page.base_url)
 
@@ -170,7 +170,7 @@ class Home(Base):
 
         def browse_all(self):
             self.find_element(*self._browse_all_locator).click()
-            from pages.desktop.search import Search
+            from pages.desktop.frontend.search import Search
 
             search = Search(self.selenium, self.page.base_url)
             return search.wait_for_page_to_load()
@@ -195,7 +195,7 @@ class Home(Base):
 
         def browse_all(self):
             self.find_element(*self._browse_all_locator).click()
-            from pages.desktop.search import Search
+            from pages.desktop.frontend.search import Search
 
             search = Search(self.selenium, self.page.base_url)
             return search.wait_for_page_to_load()
@@ -217,7 +217,7 @@ class Home(Base):
 
         def click(self):
             self.find_element(*self._addon_link_locator).click()
-            from pages.desktop.extensions import Extensions
+            from pages.desktop.frontend.extensions import Extensions
 
             return Extensions(self.selenium, self.page.base_url)
 
@@ -290,7 +290,7 @@ class Home(Base):
 
         def see_all_extensions(self):
             self.find_element(*self._see_all_extensions_locator).click()
-            from pages.desktop.extensions import Extensions
+            from pages.desktop.frontend.extensions import Extensions
 
             return Extensions(self.selenium, self.page.base_url).wait_for_page_to_load()
 

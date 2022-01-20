@@ -6,9 +6,9 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.select import Select
 
-from pages.desktop.details import Detail
-from pages.desktop.home import Home
-from pages.desktop.search import Search
+from pages.desktop.frontend.details import Detail
+from pages.desktop.frontend.home import Home
+from pages.desktop.frontend.search import Search
 
 
 # Tests covering search suggestions (autocomplete)

@@ -8,10 +8,10 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as expected
 from selenium.webdriver.support.select import Select
 
-from pages.desktop.details import Detail
-from pages.desktop.search import Search
-from pages.desktop.users import User
-from pages.desktop.reviews import Reviews
+from pages.desktop.frontend.details import Detail
+from pages.desktop.frontend.search import Search
+from pages.desktop.frontend.users import User
+from pages.desktop.frontend.reviews import Reviews
 
 
 @pytest.mark.nondestructive

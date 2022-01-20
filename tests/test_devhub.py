@@ -2,7 +2,7 @@ import pytest
 
 from selenium.webdriver.support import expected_conditions as EC
 
-from pages.desktop.devhub import DevHub
+from pages.desktop.developers.devhub import DevHub
 from scripts import reusables
 
 

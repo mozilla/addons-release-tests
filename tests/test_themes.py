@@ -1,7 +1,7 @@
 import pytest
 
-from pages.desktop.search import Search
-from pages.desktop.themes import Themes
+from pages.desktop.frontend.search import Search
+from pages.desktop.frontend.themes import Themes
 
 from selenium.webdriver.support.select import Select
 

@@ -2,7 +2,7 @@ from pypom import Region
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as expected
 
-from .base import Base
+from pages.desktop.base import Base
 
 
 class Categories(Base):

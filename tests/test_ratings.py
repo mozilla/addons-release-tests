@@ -6,8 +6,8 @@ from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-from pages.desktop.details import Detail
-from pages.desktop.reviews import Reviews
+from pages.desktop.frontend.details import Detail
+from pages.desktop.frontend.reviews import Reviews
 
 
 @pytest.mark.serial

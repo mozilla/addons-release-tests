@@ -7,9 +7,9 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 from pages.desktop.base import Base
-from pages.desktop.home import Home
-from pages.desktop.reviews import Reviews
-from pages.desktop.search import Search
+from pages.desktop.frontend.home import Home
+from pages.desktop.frontend.reviews import Reviews
+from pages.desktop.frontend.search import Search
 
 
 class User(Base):

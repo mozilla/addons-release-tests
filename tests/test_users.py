@@ -3,12 +3,12 @@ import requests
 
 from selenium.common.exceptions import NoSuchElementException
 
-from pages.desktop.details import Detail
-from pages.desktop.home import Home
-from pages.desktop.login import Login
-from pages.desktop.search import Search
-from pages.desktop.static_pages import StaticPages
-from pages.desktop.users import User
+from pages.desktop.frontend.details import Detail
+from pages.desktop.frontend.home import Home
+from pages.desktop.frontend.login import Login
+from pages.desktop.frontend.search import Search
+from pages.desktop.frontend.static_pages import StaticPages
+from pages.desktop.frontend.users import User
 from scripts import custom_waits
 
 

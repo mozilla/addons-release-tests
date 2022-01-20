@@ -5,9 +5,9 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
 
-from pages.desktop.collections import Collections
-from pages.desktop.details import Detail
-from pages.desktop.search import Search
+from pages.desktop.frontend.collections import Collections
+from pages.desktop.frontend.details import Detail
+from pages.desktop.frontend.search import Search
 from scripts import reusables
 
 
@@ -387,7 +387,6 @@ def test_delete_collection(selenium, base_url, variables):
     assert collection_name not in [el.name for el in collections.list]
 
 
-@pytest.mark.skip(reason='Skipping test until a bug in the collection form is fixed')
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_create_collection_from_addon_detail_page(selenium, base_url, variables, wait):
