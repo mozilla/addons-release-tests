@@ -1,6 +1,6 @@
 import pytest
 
-from pages.desktop.details import Detail
+from pages.desktop.frontend.details import Detail
 
 
 @pytest.mark.nondestructive

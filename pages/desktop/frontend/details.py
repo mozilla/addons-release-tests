@@ -5,8 +5,8 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as expected
 
 from pages.desktop.base import Base
-from pages.desktop.reviews import Reviews
-from pages.desktop.versions import Versions
+from pages.desktop.frontend.reviews import Reviews
+from pages.desktop.frontend.versions import Versions
 
 
 class Detail(Base):

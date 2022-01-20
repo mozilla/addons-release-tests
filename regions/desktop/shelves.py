@@ -40,7 +40,7 @@ class Shelves(Region):
 
         def browse_all(self):
             self.find_element(*self._browse_all_locator).click()
-            from pages.desktop.search import Search
+            from pages.desktop.frontend.search import Search
 
             search = Search(self.selenium, self.page)
             return search.wait_for_page_to_load()

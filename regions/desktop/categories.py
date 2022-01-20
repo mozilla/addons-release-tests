@@ -26,6 +26,6 @@ class Categories(Region):
 
         def click(self):
             self.root.click()
-            from pages.desktop.search import Search
+            from pages.desktop.frontend.search import Search
 
             return Search(self.selenium, self.page)

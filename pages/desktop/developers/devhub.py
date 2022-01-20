@@ -108,7 +108,7 @@ class DevHub(Base):
 
     def click_header_login_button(self):
         self.find_element(*self._fxa_login_button_locator).click()
-        from pages.desktop.login import Login
+        from pages.desktop.frontend.login import Login
 
         return Login(self.selenium, self.base_url)
 
