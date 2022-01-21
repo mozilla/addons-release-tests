@@ -147,7 +147,7 @@ jobs:
           environment:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 4 --reruns 2
-          command: pytest tests\test_devhub.py --driver Firefox --variables stage.json --html=devhub-parallel-test-results.html --self-contained-html
+          command: pytest tests\test_devhub_home.py --driver Firefox --variables stage.json --html=devhub-parallel-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: devhub-parallel-test-results.html
