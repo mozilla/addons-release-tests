@@ -9,9 +9,10 @@ from selenium.webdriver.support.select import Select
 from selenium.webdriver.support import expected_conditions as EC
 
 from pages.desktop.base import Base
+from pages.desktop.developers.addons_manage import ManageAddons
 
 
-class DevHub(Base):
+class DevHubHome(Base):
     """AMO Developer Hub homepage"""
 
     URL_TEMPLATE = 'developers/'
@@ -22,14 +23,6 @@ class DevHub(Base):
     _support_link_locator = (By.LINK_TEXT, 'Support')
     _blog_link_locator = (By.LINK_TEXT, 'Blog')
     _fxa_login_button_locator = (By.CLASS_NAME, 'DevHub-Navigation-Register')
-    _sign_out_link_locator = (
-        By.CSS_SELECTOR,
-        '.DevHub-Navigation-SignOut a:nth-child(1)',
-    )
-    _user_logged_in_avatar_locator = (
-        By.CSS_SELECTOR,
-        '.DevHub-Navigation-SignOut a:nth-child(2)',
-    )
     _page_overview_title_locator = (By.CSS_SELECTOR, '.DevHub-Overview h1')
     _page_overview_summary_locator = (By.CSS_SELECTOR, '.DevHub-Overview p')
     _learn_how_button_locator = (By.CSS_SELECTOR, '.DevHub-Overview a')
@@ -65,6 +58,47 @@ class DevHub(Base):
     _footer_language_picker_locator = (By.ID, 'language')
     _footer_products_section_locator = (By.CSS_SELECTOR, '.Footer-products-links')
     _footer_links_locator = (By.CSS_SELECTOR, '.Footer-links li a')
+
+    # elements visible only to logged in users
+    _sign_out_link_locator = (
+        By.CSS_SELECTOR,
+        '.DevHub-Navigation-SignOut a:nth-child(1)',
+    )
+    _user_logged_in_avatar_locator = (
+        By.CSS_SELECTOR,
+        '.DevHub-Navigation-SignOut a:nth-child(2)',
+    )
+    _my_addons_header_link_locator = (By.LINK_TEXT, 'My Add-ons')
+    _user_profile_picture_locator = (
+        By.CSS_SELECTOR,
+        '.DevHub-Navigation-SignOut a img',
+    )
+    _logged_in_hero_banner_header_locator = (
+        By.CSS_SELECTOR,
+        '.DevHub-callout-box--banner h2',
+    )
+    _logged_in_hero_banner_text_locator = (
+        By.CSS_SELECTOR,
+        '.DevHub-callout-box--banner p',
+    )
+    _logged_in_hero_banner_link_locator = (
+        By.CSS_SELECTOR,
+        '.DevHub-callout-box--banner a',
+    )
+    _my_addons_section_header_locator = (By.CSS_SELECTOR, '.DevHub-MyAddons h2')
+    _my_addons_section_list_locator = (By.CSS_SELECTOR, '.DevHub-MyAddons-item')
+    _see_all_addons_link_locator = (
+        By.CSS_SELECTOR,
+        '.DevHub-MyAddons-item-buttons-all',
+    )
+    _submit_addon_button_locator = (
+        By.CSS_SELECTOR,
+        '.DevHub-MyAddons-item-buttons-submit a:nth-child(1)',
+    )
+    _submit_theme_button_locator = (
+        By.CSS_SELECTOR,
+        '.DevHub-MyAddons-item-buttons-submit a:nth-child(2)',
+    )
 
     def wait_for_page_to_load(self):
         self.wait.until(lambda _: self.find_element(*self._logo_locator).is_displayed())
@@ -184,6 +218,37 @@ class DevHub(Base):
 
     def click_content_login_link(self):
         self.find_element(*self._page_content_login_link_locator).click()
+
+    @property
+    def user_profile_icon(self):
+        # get the 'alt' attribute to determine if img is uploaded by the user and is not the default avatar
+        return self.find_element(*self._user_profile_picture_locator).get_attribute(
+            'alt'
+        )
+
+    def click_user_profile_picture(self):
+        icon = self.wait.until(
+            EC.element_to_be_clickable(self._user_profile_picture_locator)
+        )
+        icon.click()
+        from pages.desktop.frontend.users import User
+
+        return User(self.selenium, self.base_url)
+
+    def click_my_addons_header_link(self):
+        self.find_element(*self._my_addons_header_link_locator).click()
+        return ManageAddons(self.selenium, self.base_url)
+
+    @property
+    def logged_in_hero_banner_header(self):
+        return self.find_element(*self._logged_in_hero_banner_header_locator).text
+
+    @property
+    def logged_in_hero_banner_text(self):
+        return self.find_element(*self._logged_in_hero_banner_text_locator).text
+
+    def click_logged_in_hero_banner_extension_workshop_link(self):
+        self.find_element(*self._logged_in_hero_banner_link_locator).click()
 
     @property
     def connect(self):

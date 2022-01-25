@@ -2,13 +2,13 @@ import pytest
 
 from selenium.webdriver.support import expected_conditions as EC
 
-from pages.desktop.developers.devhub import DevHub
+from pages.desktop.developers.devhub_home import DevHubHome
 from scripts import reusables
 
 
 @pytest.mark.nondestructive
 def test_devhub_logo(selenium, base_url):
-    page = DevHub(selenium, base_url).open().wait_for_page_to_load()
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     # clicks on the page logo and verifies page is reloaded
     page.page_logo.click()
     assert page.page_logo.is_displayed()
@@ -16,7 +16,7 @@ def test_devhub_logo(selenium, base_url):
 
 @pytest.mark.nondestructive
 def test_click_extension_workshop(selenium, base_url):
-    page = DevHub(selenium, base_url).open().wait_for_page_to_load()
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     # clicks on EW in the header menu and checks page is loaded
     page.extension_workshop.click()
     page.extension_workshop_is_loaded()
@@ -24,14 +24,14 @@ def test_click_extension_workshop(selenium, base_url):
 
 @pytest.mark.nondestructive
 def test_click_documentation(selenium, base_url):
-    page = DevHub(selenium, base_url).open().wait_for_page_to_load()
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     # clicks on Documentation header menu and checks page is loaded
     page.click_documentation()
 
 
 @pytest.mark.nondestructive
 def test_click_support(selenium, base_url):
-    page = DevHub(selenium, base_url).open().wait_for_page_to_load()
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     # clicks on Support header menu and checks page is loaded
     page.click_support()
     page.wait_for_current_url('Add-ons#Get_in_touch')
@@ -39,14 +39,14 @@ def test_click_support(selenium, base_url):
 
 @pytest.mark.nondestructive
 def test_click_blog(selenium, base_url):
-    page = DevHub(selenium, base_url).open().wait_for_page_to_load()
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     # clicks on Blog header menu and checks page is loaded
     page.click_blog()
 
 
 @pytest.mark.nondestructive
 def test_devhub_login(selenium, base_url, wait):
-    page = DevHub(selenium, base_url).open().wait_for_page_to_load()
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     page.devhub_login('developer')
     # verifies that the user has been logged in by looking at the user icon
     wait.until(lambda _: page.user_avatar.is_displayed())
@@ -54,7 +54,7 @@ def test_devhub_login(selenium, base_url, wait):
 
 @pytest.mark.nondestructive
 def test_devhub_logout(selenium, base_url, wait):
-    page = DevHub(selenium, base_url).open().wait_for_page_to_load()
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     page.devhub_login('developer')
     page.click_sign_out()
     # confirms user is no longer logged in
@@ -63,7 +63,7 @@ def test_devhub_logout(selenium, base_url, wait):
 
 @pytest.mark.nondestructive
 def test_devhub_page_overview(selenium, base_url, variables):
-    page = DevHub(selenium, base_url).open().wait_for_page_to_load()
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     # checks the content in the page 'Overview' - main section
     assert variables['devhub_overview_header'] in page.devhub_overview_title
     assert variables['devhub_overview_summary'] in page.devhub_overview_summary
@@ -74,7 +74,7 @@ def test_devhub_page_overview(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 def test_devhub_page_content(selenium, base_url, variables):
-    page = DevHub(selenium, base_url).open().wait_for_page_to_load()
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     # checks the content in the page 'Content' - secondary section
     assert variables['devhub_content_header'] in page.devhub_content_title
     assert variables['devhub_content_summary'] in page.devhub_content_summary
@@ -83,7 +83,7 @@ def test_devhub_page_content(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 def test_devhub_content_login_link(selenium, base_url, variables):
-    page = DevHub(selenium, base_url).open().wait_for_page_to_load()
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     page.click_content_login_link()
     # verify that the link opens the FxA login page
     page.wait_for_current_url('accounts.firefox.com')
@@ -91,13 +91,48 @@ def test_devhub_content_login_link(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 def test_devhub_page_get_involved(selenium, base_url, variables):
-    page = DevHub(selenium, base_url).open().wait_for_page_to_load()
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     # checks the content in the page 'Get Involved' - secondary section
     assert variables['devhub_get_involved_header'] in page.devhub_get_involved_title
     assert variables['devhub_get_involved_summary'] in page.devhub_get_involved_summary
     assert page.devhub_get_involved_image.is_displayed()
     page.devhub_get_involved_link.click()
     page.wait_for_title_update('Add-ons/Contribute')
+
+
+@pytest.mark.nondestructive
+def test_devhub_click_my_addons_header_link(selenium, base_url, wait):
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    page.devhub_login('developer')
+    my_addons_page = page.click_my_addons_header_link()
+    # check that user is sent to the Manage addons page in devhub
+    wait.until(
+        lambda _: my_addons_page.my_addons_page_title.is_displayed(),
+        message='My addons page title was not displayed',
+    )
+
+
+@pytest.mark.nondestructive
+def test_devhub_click_header_profile_icon(selenium, base_url):
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    page.devhub_login('developer')
+    user_profile = page.click_user_profile_picture()
+    # verify that the user profile frontend page opens
+    user_profile.wait_for_user_to_load()
+
+
+@pytest.mark.nondestructive
+def test_devhub_logged_in_page_hero_banner(selenium, base_url, variables):
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    page.devhub_login('developer')
+    # verify the items present in the page logged in banner
+    assert (
+        variables['devhub_logged_in_banner_header'] in page.logged_in_hero_banner_header
+    )
+    assert variables['devhub_logged_in_banner_text'] in page.logged_in_hero_banner_text
+    page.click_logged_in_hero_banner_extension_workshop_link()
+    # verify that the Extension Workshop page is opened
+    page.extension_workshop_is_loaded()
 
 
 @pytest.mark.parametrize(
@@ -111,7 +146,7 @@ def test_devhub_page_get_involved(selenium, base_url, variables):
 )
 @pytest.mark.nondestructive
 def test_page_connect_footer_twitter(selenium, base_url, count, link):
-    page = DevHub(selenium, base_url).open().wait_for_page_to_load()
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     assert 'Connect with us' in page.connect.connect_footer_title
     assert 'Twitter' in page.connect.connect_twitter_title
     page.connect.twitter_links[count].click()
@@ -133,7 +168,7 @@ def test_page_connect_footer_twitter(selenium, base_url, count, link):
 )
 @pytest.mark.nondestructive
 def test_page_connect_footer_more_links(selenium, base_url, count, link):
-    page = DevHub(selenium, base_url).open().wait_for_page_to_load()
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     assert 'More' in page.connect.connect_more_title
     page.connect.more_connect_links[count].click()
     assert link in selenium.current_url
@@ -141,7 +176,7 @@ def test_page_connect_footer_more_links(selenium, base_url, count, link):
 
 @pytest.mark.nondestructive
 def test_connect_newsletter_section(selenium, base_url, variables):
-    page = DevHub(selenium, base_url).open().wait_for_page_to_load()
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     # verifies the elements of the Newsletter signup section
     assert (
         variables['devhub_newsletter_header'] in page.connect.newsletter_section_header
@@ -154,7 +189,7 @@ def test_connect_newsletter_section(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 def test_verify_newsletter_signup_confirmation(selenium, base_url, variables, wait):
-    page = DevHub(selenium, base_url).open().wait_for_page_to_load()
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     email = f'{reusables.get_random_string(10)}@restmail.net'
     # fill in the newsletter subscription form
     page.connect.newsletter_email_input_field(email)
@@ -177,7 +212,7 @@ def test_verify_newsletter_signup_confirmation(selenium, base_url, variables, wa
 
 @pytest.mark.nondestructive
 def test_devhub_mozilla_footer_link(base_url, selenium):
-    page = DevHub(selenium, base_url).open().wait_for_page_to_load()
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     page.footer.mozilla_link.click()
     assert 'mozilla.org' in selenium.current_url
 
@@ -211,7 +246,7 @@ def test_devhub_mozilla_footer_link(base_url, selenium):
 )
 @pytest.mark.nondestructive
 def test_devhub_addons_footer_links(base_url, selenium, count, link):
-    page = DevHub(selenium, base_url).open().wait_for_page_to_load()
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     page.footer.addon_links[count].click()
     page.wait_for_current_url(link)
 
@@ -235,7 +270,7 @@ def test_devhub_addons_footer_links(base_url, selenium, count, link):
 )
 @pytest.mark.nondestructive
 def test_devhub_browsers_footer_links(base_url, selenium, count, link):
-    page = DevHub(selenium, base_url).open().wait_for_page_to_load()
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     page.footer.browsers_links[count].click()
     page.wait_for_current_url(link)
 
@@ -261,7 +296,7 @@ def test_devhub_browsers_footer_links(base_url, selenium, count, link):
 )
 @pytest.mark.nondestructive
 def test_devhub_products_footer_links(base_url, selenium, count, link):
-    page = DevHub(selenium, base_url).open().wait_for_page_to_load()
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     page.products_links[count].click()
     page.wait_for_current_url(link)
 
@@ -283,7 +318,7 @@ def test_devhub_products_footer_links(base_url, selenium, count, link):
 )
 @pytest.mark.nondestructive
 def test_devhub_social_footer_links(base_url, selenium, count, link):
-    page = DevHub(selenium, base_url).open().wait_for_page_to_load()
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     page.footer.social_links[count].click()
     page.wait_for_current_url(link)
 
@@ -305,7 +340,7 @@ def test_devhub_social_footer_links(base_url, selenium, count, link):
 )
 @pytest.mark.nondestructive
 def test_devhub_legal_footer_links(base_url, selenium, count, link):
-    page = DevHub(selenium, base_url).open().wait_for_page_to_load()
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     page.footer.legal_links[count].click()
     page.wait_for_current_url(link)
 
@@ -329,7 +364,7 @@ def test_devhub_legal_footer_links(base_url, selenium, count, link):
 )
 @pytest.mark.nondestructive
 def test_change_devhub_language(base_url, selenium, language, locale, translation):
-    page = DevHub(selenium, base_url).open().wait_for_page_to_load()
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     page.footer_language_picker(language)
     assert f'{locale}/developers/' in selenium.current_url
     assert translation in page.page_logo.text
