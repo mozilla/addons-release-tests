@@ -11,6 +11,12 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Install python 3.9
+          command: choco install python --version=3.9.0
+      - run:
+          name: Check installed python verion
+          command: python --version
+      - run:
           name: Upgrade pip
           command: pip install --upgrade pip --user
       - run:
@@ -40,6 +46,12 @@ jobs:
     working_directory: ~/addons-release-tests/
     steps:
       - checkout
+      - run:
+          name: Install python 3.9
+          command: choco install python --version=3.9.0
+      - run:
+          name: Check installed python verion
+          command: python --version
       - run:
           name: Upgrade pip
           command: pip install --upgrade pip --user
@@ -71,6 +83,12 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Install python 3.9
+          command: choco install python --version=3.9.0
+      - run:
+          name: Check installed python verion
+          command: python --version
+      - run:
           name: Upgrade pip
           command: pip install --upgrade pip --user
       - run:
@@ -101,6 +119,12 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Install python 3.9
+          command: choco install python --version=3.9.0
+      - run:
+          name: Check installed python verion
+          command: python --version
+      - run:
           name: Upgrade pip
           command: pip install --upgrade pip --user
       - run:
@@ -130,6 +154,12 @@ jobs:
     working_directory: ~/addons-release-tests/
     steps:
       - checkout
+      - run:
+          name: Install python 3.9
+          command: choco install python --version=3.9.0
+      - run:
+          name: Check installed python verion
+          command: python --version
       - run:
           name: Upgrade pip
           command: pip install --upgrade pip --user
