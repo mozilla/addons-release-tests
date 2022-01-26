@@ -36,7 +36,7 @@ pycparser==2.21
 PyFxA==0.7.7
 PyJWT==2.3.0
 pylint==2.12.2
-pyparsing==3.0.6
+pyparsing==3.0.7
 PyPOM==2.2.3
 pytest==6.2.5
 pytest-base-url==1.4.2
@@ -51,7 +51,7 @@ pytest-rerunfailures==10.2
 pytest-selenium==2.0.1
 pytest-variables==1.9.0
 pytest-xdist==2.5.0
-regex==2021.11.10
+regex==2022.1.18
 requests==2.27.1
 selenium==4.1.0
 six==1.16.0
