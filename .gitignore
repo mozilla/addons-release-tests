@@ -1,0 +1,6 @@
+.pages/desktop/__pycache__/
+.pages/__pycache__/
+.idea/
+scripts/__pycache__/
+test-results.html
+tests/__pycache__/
