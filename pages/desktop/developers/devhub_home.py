@@ -4,12 +4,15 @@ import requests
 
 from pypom import Region
 
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support import expected_conditions as EC
 
 from pages.desktop.base import Base
 from pages.desktop.developers.addons_manage import ManageAddons
+from pages.desktop.developers.edit_addon import EditAddon
+from pages.desktop.developers.submit_addon import SubmitAddon
 
 
 class DevHubHome(Base):
@@ -250,6 +253,23 @@ class DevHubHome(Base):
     def click_logged_in_hero_banner_extension_workshop_link(self):
         self.find_element(*self._logged_in_hero_banner_link_locator).click()
 
+    def click_see_all_addons_link(self):
+        self.find_element(*self._see_all_addons_link_locator).click()
+        return ManageAddons(self.selenium, self.base_url)
+
+    def click_submit_addon_button(self):
+        self.find_element(*self._submit_addon_button_locator).click()
+        return SubmitAddon(self.selenium, self.base_url)
+
+    def click_submit_theme_button(self):
+        self.find_element(*self._submit_theme_button_locator).click()
+        return SubmitAddon(self.selenium, self.base_url)
+
+    @property
+    def my_addons_list(self):
+        items = self.find_elements(*self._my_addons_section_list_locator)
+        return [self.MyAddonsList(self, el) for el in items]
+
     @property
     def connect(self):
         return ConnectFooter(self)
@@ -262,6 +282,81 @@ class DevHubHome(Base):
     def products_links(self):
         element = self.find_element(*self._footer_products_section_locator)
         return element.find_elements(*self._footer_links_locator)
+
+    class MyAddonsList(Region):
+        _my_addon_icon_locator = (By.CSS_SELECTOR, '.DevHub-MyAddons-item-icon')
+        _my_addon_name_locator = (By.CSS_SELECTOR, '.DevHub-MyAddons-item-name')
+        _my_addon_edit_link_locator = (By.CSS_SELECTOR, '.DevHub-MyAddons-item-edit')
+        _my_addon_version_number_locator = (
+            By.CSS_SELECTOR,
+            '.DevHub-MyAddons-item-versions',
+        )
+        _my_addon_version_status_locator = (
+            By.CSS_SELECTOR,
+            '.DevHub-MyAddons-VersionStatus',
+        )
+        _my_addon_rating_placeholder_locator = (By.CSS_SELECTOR, '.rating b')
+        _my_addon_rating_stars_locator = (By.CSS_SELECTOR, '.stars')
+        _my_addon_last_modified_date_locator = (
+            By.CSS_SELECTOR,
+            '.DevHub-MyAddons-item-modified span:nth-of-type(2) span:nth-child(2)',
+        )
+
+        @property
+        def my_addon_icon(self):
+            return self.find_element(*self._my_addon_icon_locator)
+
+        @property
+        def my_addon_name(self):
+            return self.find_element(*self._my_addon_name_locator)
+
+        def click_my_addon_edit_link(self):
+            self.find_element(*self._my_addon_edit_link_locator).click()
+            return EditAddon(self.selenium, self.page.base_url)
+
+        @property
+        def my_addon_version_number(self):
+            return self.find_element(*self._my_addon_version_number_locator)
+
+        @property
+        def my_addon_version_status(self):
+            return self.find_element(*self._my_addon_version_status_locator)
+
+        @property
+        def my_addon_not_rated(self):
+            return self.find_element(*self._my_addon_rating_placeholder_locator)
+
+        @property
+        def my_addon_rating_stars(self):
+            return self.find_element(*self._my_addon_rating_stars_locator)
+
+        @property
+        def my_addon_last_modified_date(self):
+            return self.find_element(*self._my_addon_last_modified_date_locator)
+
+        def is_listed_addon(self):
+            """Checks the add-on listing visibility in DevHub homepage
+            by looking at its status in the Edit add-on page"""
+            status = self.click_my_addon_edit_link()
+            try:
+                # DevHub homepage will display only the Approved or Awaiting Review statuses, so we check these first
+                if (
+                    'Approved' in status.listed_addon_status
+                    or 'Awaiting Review' in status.listed_addon_status
+                ):
+                    return True
+                else:
+                    # addon is either in Incomplete or Disabled status,
+                    # so we won't see the status in DevHub homepage for such cases
+                    return False
+            except NoSuchElementException:
+                # if the add-on is unlisted, there is no status displayed, so the 'listed_addon_status'
+                # element is not present in the Edit Addon page, resulting in a 'NoSuchElementException'
+                return False
+            finally:
+                # we execute this regardless of the status in order to go back and select
+                # the next available addon in the Devhub Homepage, My Addons list
+                self.selenium.back()
 
 
 class ConnectFooter(Region):
