@@ -1,5 +1,6 @@
 import pytest
 
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.support import expected_conditions as EC
 
 from pages.desktop.developers.devhub_home import DevHubHome
@@ -133,6 +134,72 @@ def test_devhub_logged_in_page_hero_banner(selenium, base_url, variables):
     page.click_logged_in_hero_banner_extension_workshop_link()
     # verify that the Extension Workshop page is opened
     page.extension_workshop_is_loaded()
+
+
+@pytest.mark.nondestructive
+def test_devhub_my_addons_list_items(selenium, base_url, wait):
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    page.devhub_login('developer')
+    page.wait_for_page_to_load()
+    # check that logged in users can see up to 3 latest addons they've submitted
+    assert len(page.my_addons_list) in range(1, 4)
+    for addon in page.my_addons_list:
+        # verify that each addon in the list has the following items
+        assert addon.my_addon_icon.is_displayed()
+        assert addon.my_addon_name.is_displayed()
+        assert addon.my_addon_version_number.is_displayed()
+        assert addon.my_addon_last_modified_date.is_displayed()
+        # checks what we display if an addon was rated (rating stars) or not (placeholder text)
+        try:
+            assert 'Not yet rated' in addon.my_addon_not_rated.text
+        except NoSuchElementException:
+            assert addon.my_addon_rating_stars.is_displayed()
+
+
+@pytest.mark.nondestructive
+def test_devhub_my_addons_list_approval_status(selenium, base_url):
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    page.devhub_login('developer')
+    page.wait_for_page_to_load()
+    count = 0
+    while count < len(page.my_addons_list):
+        if page.my_addons_list[count].is_listed_addon():
+            # if the add-on is listed, we check that the current status is displayed in DevHub homepage
+            assert page.my_addons_list[count].my_addon_version_status.is_displayed()
+        count += 1
+
+
+@pytest.mark.nondestructive
+def test_devhub_click_see_all_addons_link(selenium, base_url, wait):
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    page.devhub_login('developer')
+    my_addons_page = page.click_see_all_addons_link()
+    wait.until(
+        lambda _: my_addons_page.my_addons_page_title.is_displayed(),
+        message='Manage addons page title was not displayed',
+    )
+
+
+@pytest.mark.nondestructive
+def test_devhub_click_submit_new_addon_button(selenium, base_url, wait):
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    page.devhub_login('developer')
+    distribution_page = page.click_submit_addon_button()
+    wait.until(
+        lambda _: distribution_page.submission_form_header.is_displayed(),
+        message='The addon distribution page header was not displayed',
+    )
+
+
+@pytest.mark.nondestructive
+def test_devhub_click_submit_new_theme_button(selenium, base_url, wait):
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    page.devhub_login('developer')
+    distribution_page = page.click_submit_theme_button()
+    wait.until(
+        lambda _: distribution_page.submission_form_header.is_displayed(),
+        message='The addon distribution page header as not displayed',
+    )
 
 
 @pytest.mark.parametrize(
