@@ -22,7 +22,7 @@ importlib-metadata==4.10.1
 iniconfig==1.1.1
 isort==5.10.1
 lazy-object-proxy==1.7.1
-mccabe==0.6.1
+mccabe==0.7.0
 more-itertools==8.12.0
 networkx==2.6.3
 numpy==1.22.1
@@ -36,7 +36,7 @@ pycparser==2.21
 PyFxA==0.7.7
 PyJWT==2.3.0
 pylint==2.12.2
-pyparsing==3.0.6
+pyparsing==3.0.7
 PyPOM==2.2.3
 pytest==6.2.5
 pytest-base-url==1.4.2
