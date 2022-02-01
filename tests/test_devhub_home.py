@@ -202,6 +202,96 @@ def test_devhub_click_submit_new_theme_button(selenium, base_url, wait):
     )
 
 
+@pytest.mark.nondestructive
+def test_devhub_resources_footer_documentation_links(selenium, base_url, variables):
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    page.devhub_login('developer')
+    assert 'Documentation' in page.resources.documentation_section_header
+    count = 0
+    # looping through the actual number of Documentation links present in the resources footer
+    while count in range(len(page.resources.documentation_section_links)):
+        link = page.resources.documentation_section_links[count]
+        link.click()
+        # checks that the expected page is opened when clicking on the link
+        page.wait_for_current_url(variables['devhub_resources_doc_links'][count])
+        # go back to devhub and select the next Documentation link
+        selenium.back()
+        count += 1
+
+
+@pytest.mark.nondestructive
+def test_devhub_resources_footer_tools_links(selenium, base_url, variables):
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    page.devhub_login('developer')
+    assert 'Tools' in page.resources.tools_section_header
+    count = 0
+    # looping through the actual number of Tools links present in the resources footer
+    while count in range(len(page.resources.tools_section_links)):
+        link = page.resources.tools_section_links[count]
+        link.click()
+        # checks that the expected page is opened when clicking on the link
+        page.wait_for_current_url(variables['devhub_resources_tools_links'][count])
+        # go back to devhub and select the next Tools link
+        selenium.back()
+        count += 1
+
+
+@pytest.mark.nondestructive
+def test_devhub_resources_footer_promote_links(selenium, base_url, variables):
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    page.devhub_login('developer')
+    assert 'Promote' in page.resources.promote_section_header
+    count = 0
+    # looping through the actual number of Promote links present in the resources footer
+    while count in range(len(page.resources.promote_section_links)):
+        link = page.resources.promote_section_links[count]
+        link.click()
+        # checks that the expected page is opened when clicking on the link
+        page.wait_for_current_url(variables['devhub_resources_promote_links'][count])
+        # go back to devhub and select the next Promote link
+        selenium.back()
+        count += 1
+
+
+@pytest.mark.nondestructive
+def test_devhub_resources_join_addon_review(selenium, base_url, variables):
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    page.devhub_login('developer')
+    assert 'Review Add-ons' in page.resources.review_addons_section_header
+    assert (
+        variables['devhub_resources_review_addons_text']
+        in page.resources.review_addons_section_info_text
+    )
+    page.resources.click_join_addon_review_link()
+    page.wait_for_current_url('/Add-ons/Reviewers')
+
+
+@pytest.mark.nondestructive
+def test_devhub_resources_write_some_code(selenium, base_url, variables):
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    page.devhub_login('developer')
+    assert 'Write Some Code' in page.resources.write_code_section_header
+    assert (
+        variables['devhub_resources_write_some_code_text']
+        in page.resources.write_code_section_info_text
+    )
+    page.resources.click_write_code_section_link()
+    page.wait_for_current_url('/Add-ons/Contribute/Code')
+
+
+@pytest.mark.nondestructive
+def test_devhub_resources_participate(selenium, base_url, variables):
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    page.devhub_login('developer')
+    assert 'More Ways to Participate' in page.resources.participate_section_header
+    assert (
+        variables['devhub_resources_participate_text']
+        in page.resources.participate_section_info_text
+    )
+    page.resources.click_participate_section_link()
+    page.wait_for_current_url('/Add-ons/Contribute')
+
+
 @pytest.mark.parametrize(
     'count, link',
     enumerate(

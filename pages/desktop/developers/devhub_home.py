@@ -274,6 +274,10 @@ class DevHubHome(Base):
     def connect(self):
         return ConnectFooter(self)
 
+    @property
+    def resources(self):
+        return ResourcesFooter(self)
+
     def footer_language_picker(self, value):
         select = Select(self.find_element(*self._footer_language_picker_locator))
         select.select_by_visible_text(value)
@@ -478,3 +482,127 @@ class ConnectFooter(Region):
                 time.sleep(2)
                 retry += 1
         return self
+
+
+class ResourcesFooter(Region):
+    _documentation_section_header_locator = (
+        By.CSS_SELECTOR,
+        '.DevHub-Footer-sections:nth-of-type(1) .DevHub-Footer-section:nth-of-type(1) h4',
+    )
+    _documentation_section_locator = (
+        By.CSS_SELECTOR,
+        '.DevHub-Footer-sections:nth-of-type(1) .DevHub-Footer-section:nth-of-type(1)',
+    )
+    _tools_section_header_locator = (
+        By.CSS_SELECTOR,
+        '.DevHub-Footer-sections:nth-of-type(1) .DevHub-Footer-section:nth-of-type(2) h4',
+    )
+    _tools_section_locator = (
+        By.CSS_SELECTOR,
+        '.DevHub-Footer-sections:nth-of-type(1) .DevHub-Footer-section:nth-of-type(2)',
+    )
+    _promote_section_header_locator = (
+        By.CSS_SELECTOR,
+        '.DevHub-Footer-sections:nth-of-type(1) .DevHub-Footer-section:nth-of-type(3) h4',
+    )
+    _promote_section_locator = (
+        By.CSS_SELECTOR,
+        '.DevHub-Footer-sections:nth-of-type(1) .DevHub-Footer-section:nth-of-type(3)',
+    )
+    _resources_footer_section_links = (By.CSS_SELECTOR, '.DevHub-Footer-sections li a')
+    _addon_review_section_header_locator = (
+        By.CSS_SELECTOR,
+        '.DevHub-Footer-sections:nth-of-type(2) .DevHub-Footer-section:nth-of-type(1) h4',
+    )
+    _addon_review_info_text_locator = (
+        By.CSS_SELECTOR,
+        '.DevHub-Footer-sections:nth-of-type(2) .DevHub-Footer-section:nth-of-type(1) p',
+    )
+    _addon_review_link_locator = (
+        By.CSS_SELECTOR,
+        '.DevHub-Footer-sections:nth-of-type(2) .DevHub-Footer-section:nth-of-type(1) a',
+    )
+    _write_code_section_header_locator = (
+        By.CSS_SELECTOR,
+        '.DevHub-Footer-sections:nth-of-type(2) .DevHub-Footer-section:nth-of-type(2) h4',
+    )
+    _write_code_info_text_locator = (
+        By.CSS_SELECTOR,
+        '.DevHub-Footer-sections:nth-of-type(2) .DevHub-Footer-section:nth-of-type(2) p',
+    )
+    _write_code_link_locator = (
+        By.CSS_SELECTOR,
+        '.DevHub-Footer-sections:nth-of-type(2) .DevHub-Footer-section:nth-of-type(2) a',
+    )
+    _participate_section_header_locator = (
+        By.CSS_SELECTOR,
+        '.DevHub-Footer-sections:nth-of-type(2) .DevHub-Footer-section:nth-of-type(3) h4',
+    )
+    _participate_info_text_locator = (
+        By.CSS_SELECTOR,
+        '.DevHub-Footer-sections:nth-of-type(2) .DevHub-Footer-section:nth-of-type(3) p',
+    )
+    _participate_link_locator = (
+        By.CSS_SELECTOR,
+        '.DevHub-Footer-sections:nth-of-type(2) .DevHub-Footer-section:nth-of-type(3) a',
+    )
+
+    @property
+    def documentation_section_header(self):
+        return self.find_element(*self._documentation_section_header_locator).text
+
+    @property
+    def documentation_section_links(self):
+        el = self.find_element(*self._documentation_section_locator)
+        return el.find_elements(*self._resources_footer_section_links)
+
+    @property
+    def tools_section_header(self):
+        return self.find_element(*self._tools_section_header_locator).text
+
+    @property
+    def tools_section_links(self):
+        el = self.find_element(*self._tools_section_locator)
+        return el.find_elements(*self._resources_footer_section_links)
+
+    @property
+    def promote_section_header(self):
+        return self.find_element(*self._promote_section_header_locator).text
+
+    @property
+    def promote_section_links(self):
+        el = self.find_element(*self._promote_section_locator)
+        return el.find_elements(*self._resources_footer_section_links)
+
+    @property
+    def review_addons_section_header(self):
+        return self.find_element(*self._addon_review_section_header_locator).text
+
+    @property
+    def review_addons_section_info_text(self):
+        return self.find_element(*self._addon_review_info_text_locator).text
+
+    def click_join_addon_review_link(self):
+        self.find_element(*self._addon_review_link_locator).click()
+
+    @property
+    def write_code_section_header(self):
+        return self.find_element(*self._write_code_section_header_locator).text
+
+    @property
+    def write_code_section_info_text(self):
+        return self.find_element(*self._write_code_info_text_locator).text
+
+    def click_write_code_section_link(self):
+        self.find_element(*self._write_code_link_locator).click()
+
+    @property
+    def participate_section_header(self):
+        return self.find_element(*self._participate_section_header_locator).text
+
+    @property
+    def participate_section_info_text(self):
+        return self.find_element(*self._participate_info_text_locator).text
+
+    def click_participate_section_link(self):
+        self.find_element(*self._participate_link_locator).click()
