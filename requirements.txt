@@ -38,7 +38,7 @@ PyJWT==2.3.0
 pylint==2.12.2
 pyparsing==3.0.7
 PyPOM==2.2.3
-pytest==6.2.5
+pytest==7.0.0
 pytest-base-url==1.4.2
 pytest-dependency==0.5.1
 pytest-firefox==0.1.1
@@ -60,7 +60,7 @@ toml==0.10.2
 typed-ast==1.5.2
 typing-extensions==4.0.1
 urllib3==1.26.8
-virtualenv==20.13.0
+virtualenv==20.13.1
 wcwidth==0.2.5
 WebOb==1.8.7
 wrapt==1.13.3
