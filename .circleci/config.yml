@@ -11,6 +11,9 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Check installed python verion
+          command: python --version
+      - run:
           name: Upgrade pip
           command: pip install --upgrade pip --user
       - run:
