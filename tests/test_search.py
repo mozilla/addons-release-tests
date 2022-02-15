@@ -21,8 +21,8 @@ from pages.desktop.frontend.search import Search
         'uBlock Origin',
         'Facebook Container',
         'Tree Style Tab',
-        'Two little birds'
-    ]
+        'Two little birds',
+    ],
 )
 def test_search_suggestion_term_is_higher(base_url, selenium, variables, term):
     page = Home(selenium, base_url).open()
