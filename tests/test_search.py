@@ -13,9 +13,19 @@ from pages.desktop.frontend.search import Search
 
 # Tests covering search suggestions (autocomplete)
 @pytest.mark.nondestructive
-def test_search_suggestion_term_is_higher(base_url, selenium, variables):
+@pytest.mark.parametrize(
+    'term',
+    [
+        'Flagfox',
+        'Ghostery - Privacy Ad Blocker',
+        'uBlock Origin',
+        'Facebook Container',
+        'Tree Style Tab',
+        'Two little birds'
+    ]
+)
+def test_search_suggestion_term_is_higher(base_url, selenium, variables, term):
     page = Home(selenium, base_url).open()
-    term = variables['search_term']
     suggestions = page.search.search_for(term, execute=False)
     assert suggestions[0].name == term
 
