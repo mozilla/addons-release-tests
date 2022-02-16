@@ -333,10 +333,26 @@ def test_legal_footer_links(base_url, selenium, count, links):
     page.wait_for_current_url(links)
 
 
+@pytest.mark.parametrize(
+    'language, locale, translation',
+    [
+        ('Français', 'fr', 'Extensions'),
+        ('Deutsch', 'de', 'Erweiterungen'),
+        ('中文 (简体)', 'zh-CN', '扩展'),
+        ('Русский', 'ru', 'Расширения'),
+        ('עברית', 'he', 'הרחבות'),
+    ],
+    ids=[
+        'HomePage French Translation',
+        'HomePage German Translation',
+        'HomePage Chinese Translation',
+        'HomePage Russian Translation',
+        'HomePage Hebrew Translation',
+    ],
+)
 @pytest.mark.nondestructive
-def test_change_language(base_url, selenium):
+def test_change_language(base_url, selenium, language, locale, translation):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
-    value = 'Deutsch'
-    page.footer.language_picker(value)
-    assert 'de/firefox' in selenium.current_url
-    assert 'Erweiterungen' in page.header.extensions_text
+    page.footer.language_picker(language)
+    assert f'{locale}/firefox' in selenium.current_url
+    assert translation in page.header.extensions_text
