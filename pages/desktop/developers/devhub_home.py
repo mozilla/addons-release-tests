@@ -299,11 +299,11 @@ class DevHubHome(Base):
             By.CSS_SELECTOR,
             '.DevHub-MyAddons-VersionStatus',
         )
-        _my_addon_rating_placeholder_locator = (By.CSS_SELECTOR, '.rating b')
+        _my_addon_rating_text_locator = (By.CSS_SELECTOR, '.addon-rating strong')
         _my_addon_rating_stars_locator = (By.CSS_SELECTOR, '.stars')
         _my_addon_last_modified_date_locator = (
             By.CSS_SELECTOR,
-            '.DevHub-MyAddons-item-modified span:nth-of-type(2) span:nth-child(2)',
+            '.DevHub-MyAddons-item-modified span:nth-of-type(2)',
         )
 
         @property
@@ -327,8 +327,8 @@ class DevHubHome(Base):
             return self.find_element(*self._my_addon_version_status_locator)
 
         @property
-        def my_addon_not_rated(self):
-            return self.find_element(*self._my_addon_rating_placeholder_locator)
+        def my_addon_rating_text(self):
+            return self.find_element(*self._my_addon_rating_text_locator)
 
         @property
         def my_addon_rating_stars(self):

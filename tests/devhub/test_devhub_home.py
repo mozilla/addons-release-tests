@@ -151,8 +151,9 @@ def test_devhub_my_addons_list_items(selenium, base_url, wait):
         assert addon.my_addon_last_modified_date.is_displayed()
         # checks what we display if an addon was rated (rating stars) or not (placeholder text)
         try:
-            assert 'Not yet rated' in addon.my_addon_not_rated.text
-        except NoSuchElementException:
+            assert 'Not yet rated' in addon.my_addon_rating_text.text
+        except AssertionError:
+            assert 'reviews' in addon.my_addon_rating_text.text
             assert addon.my_addon_rating_stars.is_displayed()
 
 
