@@ -2,6 +2,8 @@ import pytest
 import requests
 
 from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
 
 from pages.desktop.frontend.details import Detail
 from pages.desktop.frontend.home import Home
@@ -82,17 +84,20 @@ def test_user_menu_edit_profile(base_url, selenium):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-def test_user_menu_devhub_links(base_url, selenium):
+def test_user_menu_devhub_links(base_url, selenium, wait):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.login('developer')
     count = 3
-    landing_page = '.site-title.prominent'
+    landing_page = '.section header h2'
     # there are 3 links pointing to DevHub pages in the user menu;
     # clicking through each of those links and checking that the correct page opens
     while count < 6:
         page.header.click_user_menu_links(count, landing_page)
         # returning to the homepage to select the next link
-        selenium.back()
+        back_button = wait.until(
+            lambda _: selenium.find_element(By.CLASS_NAME, 'return')
+        )
+        back_button.click()
         # waiting for the homepage o reload
         page.wait_for_page_to_load()
         count += 1
