@@ -118,7 +118,7 @@ class Collections(Base):
             '.EditableCollectionAddon',
         )
 
-        _warning_text_locator = (By.CSS_SELECTOR, '.Notice-error > * > * >.Notice-text')
+        _warning_text_locator = (By.CSS_SELECTOR, '.Notice-error .Notice-text')
 
         def set_name(self, value):
             self.find_element(*self._name_input_locator).send_keys(value)
@@ -163,7 +163,9 @@ class Collections(Base):
 
         @property
         def warning_text(self):
-            self.wait.until(EC.visibility_of_element_located(self._warning_text_locator))
+            self.wait.until(
+                EC.visibility_of_element_located(self._warning_text_locator)
+            )
             return self.find_element(*self._warning_text_locator).text
 
         @property

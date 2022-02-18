@@ -489,7 +489,7 @@ def test_create_collection_with_empty_custom_url(selenium, base_url):
 
 
 @pytest.mark.nondestructive
-def test_create_collection_with_already_used_url(selenium, base_url):
+def test_create_collection_with_already_used_url(selenium, base_url, variables):
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
     collections.login('collection_user')
     collections.click_create_collection()
@@ -498,22 +498,25 @@ def test_create_collection_with_already_used_url(selenium, base_url):
     collections.create.set_slug('abc')
     collections.create.save_collection()
     collections.collection_detail.wait_for_details_to_load()
-
+    # go back and try to create another collection with different name, but same URL
     collections.driver.get('https://addons.allizom.org/en-US/firefox/collections/')
     collections.click_create_collection()
     collections.create.set_name('def')
     collections.create.slug_label_element.clear()
     collections.create.set_slug('abc')
     collections.create.save_collection()
-    assert 'This custom URL is already in use by another one of your collections.' in collections.create.warning_text
+    assert variables['collection_reused_url_warning'] in collections.create.warning_text
 
 
 @pytest.mark.nondestructive
-def test_create_collection_with_invalid_symbols_in_url(selenium, base_url):
+def test_create_collection_with_invalid_symbols_in_url(selenium, base_url, variables):
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
     collections.login('collection_user')
     collections.click_create_collection()
     collections.create.set_name('abc')
     collections.create.set_slug('^_^')
     collections.create.save_collection()
-    assert 'The custom URL must consist of letters, numbers, underscores or hyphens.' in collections.create.warning_text
+    assert (
+        variables['collection_invalid_custom_url_warning']
+        in collections.create.warning_text
+    )
