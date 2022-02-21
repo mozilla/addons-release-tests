@@ -1,4 +1,3 @@
-
 import pytest
 from selenium.webdriver.common.by import By
 
@@ -23,7 +22,7 @@ def test_articles_elements_are_displayed(base_url, selenium):
         assert article.image.is_displayed()
         assert article.title
         assert article.date
-        assert article.intro
+        assert article.intro_text
         assert article.read_more_link
 
 
@@ -33,7 +32,10 @@ def test_click_article_image(base_url, selenium):
     page = BlogHomepage(selenium, base_url).wait_for_page_to_load()
     article_title = page.articles[0].title.text
     page.articles[0].image.click()
-    assert article_title.lower() in page.find_element(By.CLASS_NAME, 'header-title').text.lower()
+    assert (
+        article_title.lower()
+        in page.find_element(By.CLASS_NAME, 'header-title').text.lower()
+    )
 
 
 @pytest.mark.nondesstructive
@@ -42,7 +44,10 @@ def test_click_article_title(base_url, selenium):
     page = BlogHomepage(selenium, base_url).wait_for_page_to_load()
     article_title = page.articles[0].title.text
     page.articles[0].title.click()
-    assert article_title.lower() in page.find_element(By.CLASS_NAME, 'header-title').text.lower()
+    assert (
+        article_title.lower()
+        in page.find_element(By.CLASS_NAME, 'header-title').text.lower()
+    )
 
 
 @pytest.mark.nondesstructive
@@ -51,4 +56,7 @@ def test_read_more_link(base_url, selenium):
     page = BlogHomepage(selenium, base_url).wait_for_page_to_load()
     article_title = page.articles[0].title.text
     page.articles[0].read_more_link.click()
-    assert article_title.lower() in page.find_element(By.CLASS_NAME, 'header-title').text.lower()
+    assert (
+        article_title.lower()
+        in page.find_element(By.CLASS_NAME, 'header-title').text.lower()
+    )
