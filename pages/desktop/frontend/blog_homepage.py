@@ -5,6 +5,7 @@ from pages.desktop.base import Base
 
 
 class BlogHomepage(Base):
+    URL_TEMPLATE = 'blog/'
 
     _articles_locator = (By.CSS_SELECTOR, '.blog-entry')
 
@@ -15,7 +16,7 @@ class BlogHomepage(Base):
 
     class ArticlesList(Region):
 
-        _image_locator = (By.TAG_NAME, 'img')
+        _image_locator = (By.CSS_SELECTOR, '.blog-entry-featured-image > img')
         _image_link_locator = (By.CSS_SELECTOR, '.blog-entry-featured-image')
         _title_locator = (By.CLASS_NAME, 'blog-entry-title')
         _date_locator = (By.CLASS_NAME, 'blog-entry-date')
