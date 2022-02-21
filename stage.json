@@ -69,6 +69,8 @@
   "collection_addon_note": "original note",
   "collection_addon_edited_note": " edited note",
   "public_collection_popularity": "https://addons.allizom.org/api/v5/accounts/account/4757633/collections/privacy-matters/addons/?page=1&sort=-popularity",
+  "collection_reused_url_warning": "This custom URL is already in use by another one of your collections.",
+  "collection_invalid_custom_url_warning": "The custom URL must consist of letters, numbers, underscores or hyphens.",
 
   "devhub_overview_header": "Customize Firefox",
   "devhub_overview_summary": "Whether you’re new to extension development, polishing up or porting an existing extension or theme, or creating a custom enterprise solution, we’ve got the resources to support you.",

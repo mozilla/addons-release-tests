@@ -457,3 +457,66 @@ def test_collection_sort_addons_by_popularity(selenium, base_url, variables):
     ]
     # finally, make sure that the list of addons from the frontend matches the list of addons returned by the api
     assert api_addon_name_list == frontend_addons_list
+
+
+@pytest.mark.nondestructive
+def test_create_collection_empty_name(selenium, base_url):
+    collections = Collections(selenium, base_url).open().wait_for_page_to_load()
+    collections.login('collection_user')
+    collections.click_create_collection()
+    assert collections.create.create_button_disabled.is_displayed()
+    collections.create.set_slug('abc')
+    assert collections.create.create_button_disabled.is_displayed()
+
+
+@pytest.mark.nondestructive
+def test_create_collection_with_only_symbols_name(selenium, base_url):
+    collections = Collections(selenium, base_url).open().wait_for_page_to_load()
+    collections.login('collection_user')
+    collections.click_create_collection()
+    collections.create.set_name('<<!§')
+    assert collections.create.create_button_disabled.is_displayed()
+
+
+@pytest.mark.nondestructive
+def test_create_collection_with_empty_custom_url(selenium, base_url):
+    collections = Collections(selenium, base_url).open().wait_for_page_to_load()
+    collections.login('collection_user')
+    collections.click_create_collection()
+    collections.create.set_name('collection name')
+    collections.create.slug_label_element.clear()
+    assert collections.create.create_button_disabled.is_displayed()
+
+
+@pytest.mark.nondestructive
+def test_create_collection_with_already_used_url(selenium, base_url, variables):
+    collections = Collections(selenium, base_url).open().wait_for_page_to_load()
+    collections.login('collection_user')
+    collections.click_create_collection()
+    collections.create.set_name('abc')
+    collections.create.slug_label_element.clear()
+    collections.create.set_slug('abc')
+    collections.create.save_collection()
+    collections.collection_detail.wait_for_details_to_load()
+    # go back and try to create another collection with different name, but same URL
+    collections.driver.get('https://addons.allizom.org/en-US/firefox/collections/')
+    collections.click_create_collection()
+    collections.create.set_name('def')
+    collections.create.slug_label_element.clear()
+    collections.create.set_slug('abc')
+    collections.create.save_collection()
+    assert variables['collection_reused_url_warning'] in collections.create.warning_text
+
+
+@pytest.mark.nondestructive
+def test_create_collection_with_invalid_symbols_in_url(selenium, base_url, variables):
+    collections = Collections(selenium, base_url).open().wait_for_page_to_load()
+    collections.login('collection_user')
+    collections.click_create_collection()
+    collections.create.set_name('abc')
+    collections.create.set_slug('^_^')
+    collections.create.save_collection()
+    assert (
+        variables['collection_invalid_custom_url_warning']
+        in collections.create.warning_text
+    )
