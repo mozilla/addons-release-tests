@@ -1,5 +1,3 @@
-import time
-
 import pytest
 from selenium.webdriver.common.by import By
 
@@ -12,7 +10,6 @@ def test_header_logo_button(base_url, selenium):
     page = BlogHomepage(selenium, base_url).open().wait_for_page_to_load()
     page.header.click_title()
     homepage = Home(selenium, base_url)
-    time.sleep(2)
     assert homepage.primary_hero.is_displayed()
 
 
