@@ -3,8 +3,7 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 
-from pages.desktop.frontend.blog_article import ArticlePage
-from pages.desktop.frontend.blog_homepage import BlogHomepage
+from pages.desktop.frontend.blog import BlogHomepage, ArticlePage
 from pages.desktop.frontend.home import Home
 
 
