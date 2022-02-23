@@ -1,6 +1,7 @@
 from pypom import Region
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
 
 from pages.desktop.base import Base
 
@@ -15,6 +16,12 @@ class ArticlePage(Base):
     _next_article_link_locator = (By.CSS_SELECTOR, '.blogpost-nav-next a p')
     _author_info_section_locator = (By.CLASS_NAME, 'blogpost-meta')
     _static_addon_card_locator = (By.CLASS_NAME, 'StaticAddonCard')
+
+    def wait_for_page_to_load(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._author_info_section_locator)
+        )
+        return self
 
     @property
     def header_logo(self):
@@ -103,7 +110,7 @@ class ArticlePage(Base):
 
         @property
         def rating(self):
-            return (
+            return float(
                 self.find_element(*self._rating_locator)
                 .get_attribute('title')
                 .split()[1]
@@ -111,9 +118,11 @@ class ArticlePage(Base):
 
         @property
         def users_number(self):
-            return self.find_element(*self._users_number_locator).text.split('Users: ')[
-                1
-            ]
+            return int(
+                self.find_element(*self._users_number_locator)
+                .text.split('Users: ')[1]
+                .replace(",", "")
+            )
 
         @property
         def add_to_firefox_button(self):

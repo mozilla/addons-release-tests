@@ -56,14 +56,14 @@ def test_open_article_by_clicking_read_more_link(base_url, selenium):
 
 @pytest.mark.nondestructive
 def test_article_page_loaded_correctly(base_url, selenium, variables):
-    selenium.get(f'{base_url}/blog/{variables["blog_article"]}/')
-    page = ArticlePage(selenium, base_url)
-    assert page.header_logo
-    assert page.title
-    assert page.author.name
-    assert page.author.picture
-    assert page.author.twitter_link
-    assert page.author.pocket_link
+    blog_homepage = BlogHomepage(selenium, base_url).open().wait_for_page_to_load()
+    page = blog_homepage.articles[0].click_read_more_link()
+    assert page.header_logo.is_displayed()
+    assert page.title.is_displayed()
+    assert page.author.name.is_displayed()
+    assert page.author.picture.is_displayed()
+    assert page.author.twitter_link.is_displayed()
+    assert page.author.pocket_link.is_displayed()
     for link in page.nav_bar_links:
         assert link.is_displayed()
     # verify that the article has at least one paragraph
@@ -77,8 +77,8 @@ def test_article_page_loaded_correctly(base_url, selenium, variables):
 
 @pytest.mark.nondestructive
 def test_article_page_header_logo_button(base_url, selenium, variables):
-    selenium.get(f'{base_url}/blog/{variables["blog_article"]}/')
-    page = ArticlePage(selenium, base_url)
+    blog_homepage = BlogHomepage(selenium, base_url).open().wait_for_page_to_load()
+    page = blog_homepage.articles[0].click_read_more_link()
     page.header_logo.click()
     homepage = Home(selenium, base_url)
     assert homepage.primary_hero.is_displayed()
@@ -86,8 +86,8 @@ def test_article_page_header_logo_button(base_url, selenium, variables):
 
 @pytest.mark.nondestructive
 def test_navbar_frontend_homepage_link(base_url, selenium, variables):
-    selenium.get(f'{base_url}/blog/{variables["blog_article"]}/')
-    page = ArticlePage(selenium, base_url)
+    blog_homepage = BlogHomepage(selenium, base_url).open().wait_for_page_to_load()
+    page = blog_homepage.articles[0].click_read_more_link()
     page.nav_bar_links[0].click()
     homepage = Home(selenium, base_url)
     assert homepage.primary_hero.is_displayed()
@@ -95,8 +95,8 @@ def test_navbar_frontend_homepage_link(base_url, selenium, variables):
 
 @pytest.mark.nondestructive
 def test_navbar_blog_homepage_link(base_url, selenium, variables):
-    selenium.get(f'{base_url}/blog/{variables["blog_article"]}/')
-    page = ArticlePage(selenium, base_url)
+    blog_homepage = BlogHomepage(selenium, base_url).open().wait_for_page_to_load()
+    page = blog_homepage.articles[0].click_read_more_link()
     page.nav_bar_links[1].click()
     blog_homepage = BlogHomepage(selenium, base_url)
     assert blog_homepage.articles[0].title.is_displayed()
@@ -104,26 +104,41 @@ def test_navbar_blog_homepage_link(base_url, selenium, variables):
 
 @pytest.mark.nondestructive
 def test_navbar_current_article_link(base_url, selenium, variables):
-    selenium.get(f'{base_url}/blog/{variables["blog_article"]}/')
-    page = ArticlePage(selenium, base_url)
+    blog_homepage = BlogHomepage(selenium, base_url).open().wait_for_page_to_load()
+    page = blog_homepage.articles[0].click_read_more_link()
+    initial_title = page.title.text
     page.nav_bar_links[2].click()
-    assert selenium.current_url in f'{base_url}/blog/{variables["blog_article"]}/'
+    assert initial_title in page.title.text
 
 
 @pytest.mark.nondestructive
 def test_next_and_previous_article_links(base_url, selenium, variables):
-    selenium.get(f'{base_url}/blog/{variables["blog_article"]}/')
-    page = ArticlePage(selenium, base_url)
+    blog_homepage = BlogHomepage(selenium, base_url).open().wait_for_page_to_load()
+    page = blog_homepage.articles[0].click_read_more_link()
     initial_title = page.title.text
     page.next_article.click()
+    assert initial_title not in page.title.text
     page.previous_article.click()
     assert initial_title in page.title.text
 
 
 @pytest.mark.nondestructive
+def test_addon_cards_loaded_correctly(base_url, selenium, variables):
+    blog_homepage = BlogHomepage(selenium, base_url).open().wait_for_page_to_load()
+    page = blog_homepage.articles[0].click_read_more_link()
+    for card in page.addon_cards:
+        assert card.title.is_displayed()
+        assert card.author.is_displayed()
+        assert len(card.summary) > 0
+        assert 0 <= card.rating <= 5
+        assert card.users_number >= 0
+        assert card.add_to_firefox_button.is_displayed()
+
+
+@pytest.mark.nondestructive
 def test_addon_card_recommendation_badge_link(base_url, selenium, variables):
-    selenium.get(f'{base_url}/blog/{variables["blog_article"]}/')
-    page = ArticlePage(selenium, base_url)
+    blog_homepage = BlogHomepage(selenium, base_url).open().wait_for_page_to_load()
+    page = blog_homepage.articles[0].click_read_more_link()
     for addon_card in page.addon_cards:
         if addon_card.is_recommended:
             addon_card.recommended_link.click()
