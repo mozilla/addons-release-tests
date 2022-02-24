@@ -184,13 +184,9 @@ workflows:
       - frontend_parallel_tests
       - devhub_parallel_tests
   scheduled_stage_release_run:
-    triggers:
-      - schedule:
-          # the workflow runs each Wednesday at 05:00 UTC
-          cron: "0 5 * * 3"
-          filters:
-            branches:
-              only: master
+    when:
+      and:
+        - equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
     jobs:
       - collections_serial_tests
       - ratings_serial_tests
