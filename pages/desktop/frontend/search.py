@@ -43,6 +43,10 @@ class Search(Page):
         )
 
     @property
+    def results_info(self):
+        return self.find_element(*self._context_card_locator)
+
+    @property
     def result_list(self):
         return self.SearchResultList(self)
 

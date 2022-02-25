@@ -12,6 +12,9 @@ from pages.desktop.frontend.search import Search
 
 
 # Tests covering search suggestions (autocomplete)
+from scripts.reusables import get_random_string
+
+
 @pytest.mark.nondestructive
 @pytest.mark.parametrize(
     'term',
@@ -34,7 +37,7 @@ def test_search_suggestion_term_is_higher(base_url, selenium, variables, term):
 def test_special_chars_dont_break_suggestions(base_url, selenium, variables):
     page = Home(selenium, base_url).open()
     term = variables['search_term']
-    special_chars_term = f'{term}%ç√®å'
+    special_chars_term = f'${term[:4]}ç{term[4:]}%ç√®å'
     suggestions = page.search.search_for(special_chars_term, execute=False)
     results = [item.name for item in suggestions]
     assert term in results
@@ -65,6 +68,17 @@ def test_esc_key_closes_suggestion_list(base_url, selenium, variables):
     action = ActionChains(selenium)
     # Send ESC key to browser
     action.send_keys(Keys.ESCAPE).perform()
+    with pytest.raises(NoSuchElementException):
+        selenium.find_element_by_css_selector('AutoSearchInput-suggestions-list')
+
+
+@pytest.mark.nondestructive
+def test_click_aside_closes_suggestion_list(base_url, selenium, variables):
+    page = Home(selenium, base_url).open()
+    term = variables['search_term']
+    page.search.search_for(term, execute=False)
+    action = ActionChains(selenium)
+    action.move_to_element(page.primary_hero).click().perform()
     with pytest.raises(NoSuchElementException):
         selenium.find_element_by_css_selector('AutoSearchInput-suggestions-list')
 
@@ -150,6 +164,24 @@ def test_selected_result_is_highlighted(base_url, selenium, variables):
     action = ActionChains(selenium)
     action.move_to_element(result).click_and_hold().perform()
     assert page.search.highlighted_suggestion
+
+
+@pytest.mark.nondestructive
+def test_search_box_character_limit(base_url, selenium, variables):
+    page = Home(selenium, base_url).open()
+    # put 100 characters into term
+    term = get_random_string(100)
+    search = page.search.search_for(term)
+    assert term in search.results_info.text.split('\"')[-2]
+    # make longer_term have 101 characters
+    longer_term = term + 'e'
+    page.search.search_field.send_keys(longer_term)
+    # verify that not all 101 characters were accepted
+    assert page.search.search_field.text != longer_term
+    page.search.search_field.clear()
+    search = page.search.search_for(longer_term)
+    # verify the search went for only the first 100 characters
+    assert search.results_info.text.split('\"')[-2] in term
 
 
 # Tests covering search results page"
