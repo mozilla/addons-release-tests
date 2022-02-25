@@ -283,6 +283,58 @@ def test_filter_extensions(base_url, selenium):
 
 
 @pytest.mark.nondestructive
+def test_filter_recommended_extensions_sort_by_users(base_url, selenium, variables):
+    page = Home(selenium, base_url).open()
+    term = 'fox'
+    sort = 'users'
+    addon_type = 'extension'
+    promoted = 'recommended'
+    selenium.get(f'{base_url}/search/?promoted={promoted}&q={term}&sort={sort}&type={addon_type}')
+    search_page = Search(selenium, base_url)
+    # verify if elements are correctly sorted by users
+    results = [getattr(result, sort) for result in search_page.result_list.extensions]
+    assert sorted(results, reverse=True) == results
+    # verify that no themes are showed
+    assert len(search_page.result_list.themes) == 0
+    # verify that only recommended add-ons are showed
+    results = search_page.result_list.extensions
+    for result in results:
+        assert promoted in result.promoted_badge_label.lower()
+
+    # search another term and run the same verifications
+    page.search.search_for(variables['search_term'])
+    results = [getattr(result, sort) for result in search_page.result_list.extensions]
+    assert sorted(results, reverse=True) == results
+    assert len(search_page.result_list.themes) == 0
+    results = search_page.result_list.extensions
+    for result in results:
+        assert promoted in result.promoted_badge_label.lower()
+
+
+@pytest.mark.nondestructive
+def test_filter_recommended_extensions_sort_by_users(base_url, selenium, variables):
+    page = Home(selenium, base_url).open()
+    search_page = page.search.search_for('')
+    sort = 'Most Users'
+    addon_type = 'Extension'
+    promoted = 'Recommended'
+    # apply filters and then search term
+    Select(search_page.filter_by_sort).select_by_visible_text(sort)
+    Select(search_page.filter_by_type).select_by_visible_text(addon_type)
+    Select(search_page.filter_by_badging).select_by_visible_text(promoted)
+    page.search.search_for(variables['search_term'])
+    # verify if elements are correctly sorted by users
+    results = [getattr(result, 'users') for result in search_page.result_list.extensions]
+    assert sorted(results, reverse=True) == results
+    # verify that no themes are showed
+    assert len(search_page.result_list.themes) == 0
+    # verify that only recommended add-ons are showed
+    results = search_page.result_list.extensions
+    for result in results:
+        assert promoted in result.promoted_badge_label
+
+
+@pytest.mark.nondestructive
 def test_filter_themes(base_url, selenium):
     page = Home(selenium, base_url).open()
     term = 'fox'
