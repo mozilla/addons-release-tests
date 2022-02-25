@@ -164,7 +164,7 @@ def test_selected_result_is_highlighted(base_url, selenium, variables):
 
 
 @pytest.mark.nondestructive
-def test_selected_result_is_highlighted(base_url, selenium, variables):
+def test_search_box_character_limit(base_url, selenium, variables):
     page = Home(selenium, base_url).open()
     term = ''
     # put 100 characters into term
