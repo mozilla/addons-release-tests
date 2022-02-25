@@ -12,6 +12,9 @@ from pages.desktop.frontend.search import Search
 
 
 # Tests covering search suggestions (autocomplete)
+from scripts.reusables import get_random_string
+
+
 @pytest.mark.nondestructive
 @pytest.mark.parametrize(
     'term',
@@ -34,7 +37,7 @@ def test_search_suggestion_term_is_higher(base_url, selenium, variables, term):
 def test_special_chars_dont_break_suggestions(base_url, selenium, variables):
     page = Home(selenium, base_url).open()
     term = variables['search_term']
-    special_chars_term = '$' + term[:4] + 'ç' + term[4:] + '%ç√®å'
+    special_chars_term = f'${term[:4]}ç{term[4:]}%ç√®å'
     suggestions = page.search.search_for(special_chars_term, execute=False)
     results = [item.name for item in suggestions]
     assert term in results
@@ -166,16 +169,19 @@ def test_selected_result_is_highlighted(base_url, selenium, variables):
 @pytest.mark.nondestructive
 def test_search_box_character_limit(base_url, selenium, variables):
     page = Home(selenium, base_url).open()
-    term = ''
     # put 100 characters into term
-    for i in range(10):
-        term += '0123456789'
+    term = get_random_string(100)
     search = page.search.search_for(term)
     assert term in search.results_info.text.split('\"')[-2]
-    # make term have 101 characters
-    term += 'e'
-    search = page.search.search_for(term)
-    assert term not in search.results_info.text.split('\"')[-2]
+    # make longer_term have 101 characters
+    longer_term = term + 'e'
+    page.search.search_field.send_keys(longer_term)
+    # verify that not all 101 characters were accepted
+    assert page.search.search_field.text != longer_term
+    page.search.search_field.clear()
+    search = page.search.search_for(longer_term)
+    # verify the search went for only the first 100 characters
+    assert search.results_info.text.split('\"')[-2] in term
 
 
 # Tests covering search results page"
