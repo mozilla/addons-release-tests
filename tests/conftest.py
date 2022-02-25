@@ -39,11 +39,11 @@ def firefox_options(firefox_options, request):
 
     """
     # for prod installation tests, we do not need to set special prefs,
-    # so I've added a custom marker to which will allow the Firefox
+    # so I've added a custom marker which will allow the Firefox
     # driver to run a clean profile for prod tests, when necessary
     marker = request.node.get_closest_marker('firefox_release')
     if marker:
-        firefox_options.add_argument('-foreground')
+        firefox_options.add_argument('-headless')
         firefox_options.log.level = 'trace'
     else:
         firefox_options.set_preference('extensions.install.requireBuiltInCerts', False)
@@ -65,7 +65,7 @@ def firefox_notifications(notifications):
 @pytest.fixture(
     scope='function',
     params=[DESKTOP],
-    ids=[''],
+    ids=['Desktop'],
 )
 def selenium(selenium, request):
     """Fixture to set a custom resolution for tests running on Desktop."""
