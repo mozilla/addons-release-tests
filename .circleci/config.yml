@@ -271,7 +271,11 @@ workflows:
         - equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
         - equal: [ "scheduled_prod_sanity_run", << pipeline.schedule.name >> ]
     jobs:
-      - sanity_parallel_tests
-      - sanity_serial_tests
       - hold: # this job needs to be started manually once all the push duty tasks have been completed by AMO ops
           type: approval
+      - sanity_parallel_tests:
+          requires:
+            - hold
+      - sanity_serial_tests:
+          requires:
+            - hold
