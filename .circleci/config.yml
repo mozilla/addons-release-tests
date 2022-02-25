@@ -245,6 +245,9 @@ jobs:
 
 workflows:
   commit_workflow:
+    when:
+      not:
+        equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
     jobs:
       - collections_serial_tests
       - ratings_serial_tests
@@ -255,6 +258,7 @@ workflows:
     when:
       and:
         - equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
+        - equal: [ "scheduled_stage_release_run", << pipeline.schedule.name >> ]
     jobs:
       - collections_serial_tests
       - ratings_serial_tests
@@ -265,6 +269,7 @@ workflows:
     when:
       and:
         - equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
+        - equal: [ "scheduled_prod_sanity_run", << pipeline.schedule.name >> ]
     jobs:
       - sanity_parallel_tests
       - sanity_serial_tests
