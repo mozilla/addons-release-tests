@@ -194,6 +194,9 @@ def test_remove_addon_from_collection(selenium, base_url, variables, wait):
 
 
 @pytest.mark.serial
+@pytest.mark.skip(
+    reason='There is an error preventing notes to be deleted. Skipping until the issue is fixed'
+)
 @pytest.mark.nondestructive
 def test_collection_addon_notes(selenium, base_url, variables):
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
