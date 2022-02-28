@@ -72,6 +72,10 @@
   "collection_reused_url_warning": "This custom URL is already in use by another one of your collections.",
   "collection_invalid_custom_url_warning": "The custom URL must consist of letters, numbers, underscores or hyphens.",
 
+  "language_tools_page_header": "Dictionaries and Language Packs",
+  "language_packs_info": "Language packs change your browser's interface language, including menu options and settings.",
+  "dictionaries_info": "Installing a dictionary add-on will add a new language option to your spell-checker, which checks your spelling as you type in Firefox.",
+
   "devhub_overview_header": "Customize Firefox",
   "devhub_overview_summary": "Whether you’re new to extension development, polishing up or porting an existing extension or theme, or creating a custom enterprise solution, we’ve got the resources to support you.",
   "devhub_content_header": "Ready to submit or manage your extension?",

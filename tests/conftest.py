@@ -22,7 +22,7 @@ def sensitive_url(request, base_url):
 
 
 @pytest.fixture
-def firefox_options(firefox_options):
+def firefox_options(firefox_options, request):
     """Firefox options.
 
     These options configure firefox to allow for addon installation,
@@ -38,14 +38,22 @@ def firefox_options(firefox_options):
     '-headless': Firefox will run headless
 
     """
-    firefox_options.set_preference('extensions.install.requireBuiltInCerts', False)
-    firefox_options.set_preference('xpinstall.signatures.required', False)
-    firefox_options.set_preference('xpinstall.signatures.dev-root', True)
-    firefox_options.set_preference('extensions.webapi.testing', True)
-    firefox_options.set_preference('ui.popup.disable_autohide', True)
-    firefox_options.set_preference('devtools.console.stdout.content', True)
-    firefox_options.add_argument('-headless')
-    firefox_options.log.level = 'trace'
+    # for prod installation tests, we do not need to set special prefs,
+    # so I've added a custom marker which will allow the Firefox
+    # driver to run a clean profile for prod tests, when necessary
+    marker = request.node.get_closest_marker('firefox_release')
+    if marker:
+        firefox_options.add_argument('-headless')
+        firefox_options.log.level = 'trace'
+    else:
+        firefox_options.set_preference('extensions.install.requireBuiltInCerts', False)
+        firefox_options.set_preference('xpinstall.signatures.required', False)
+        firefox_options.set_preference('xpinstall.signatures.dev-root', True)
+        firefox_options.set_preference('extensions.webapi.testing', True)
+        firefox_options.set_preference('ui.popup.disable_autohide', True)
+        firefox_options.set_preference('devtools.console.stdout.content', True)
+        firefox_options.add_argument('-headless')
+        firefox_options.log.level = 'trace'
     return firefox_options
 
 
@@ -57,7 +65,7 @@ def firefox_notifications(notifications):
 @pytest.fixture(
     scope='function',
     params=[DESKTOP],
-    ids=['Resolution: 1920x1080'],
+    ids=['Desktop'],
 )
 def selenium(selenium, request):
     """Fixture to set a custom resolution for tests running on Desktop."""

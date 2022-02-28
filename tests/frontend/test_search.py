@@ -294,7 +294,7 @@ def test_filter_extensions(base_url, selenium):
 def test_sort_rating_combinations(base_url, selenium, variables, addon_type, badge):
     page = Home(selenium, base_url).open()
     search_page = page.search.search_for(variables['search_term'])
-    # apply filters and then search term
+    # apply filters and then search again
     Select(search_page.filter_by_sort).select_by_visible_text('Top Rated')
     Select(search_page.filter_by_type).select_by_visible_text(addon_type)
     Select(search_page.filter_by_badging).select_by_visible_text(badge)
