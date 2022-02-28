@@ -191,12 +191,11 @@ def test_remove_addon_from_collection(selenium, base_url, variables, wait):
     )
     # checks that the addon we added at the beginning of the test was removed
     assert addon_name not in collections.create.edit_addons_list[0].edit_list_addon_name
-    
+
 
 @pytest.mark.skip(
     reason='There is an error preventing notes to be deleted. Skipping until the issue is fixed'
 )
-@pytest.mark.serial
 @pytest.mark.nondestructive
 def test_collection_addon_notes(selenium, base_url, variables):
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
