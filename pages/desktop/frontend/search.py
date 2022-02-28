@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from pypom import Page, Region
 
 from selenium.webdriver.common.by import By
@@ -111,6 +113,14 @@ class Search(Page):
 
             return Detail(self.selenium, self.page.base_url).wait_for_page_to_load()
 
+        def validate_filter_sort_by_rating(self):
+            for result in self.extensions:
+                assert getattr(result, 'rating') > 4
+
+        def validate_filter_sort_by_users(self):
+            results = [getattr(result, 'users') for result in self.extensions]
+            assert sorted(results, reverse=True) == results
+
         class ResultListItems(Region):
             _rating_locator = (By.CSS_SELECTOR, '.Rating--small')
             _search_item_name_locator = (By.CSS_SELECTOR, '.SearchResult-link')
@@ -123,10 +133,13 @@ class Search(Page):
                 return self.find_element(*self._search_item_name_locator).text
 
             def link(self):
+                self.wait.until(
+                    EC.element_to_be_clickable(self._search_item_name_locator)
+                )
                 self.find_element(*self._search_item_name_locator).click()
                 from pages.desktop.frontend.details import Detail
 
-                detail_page = Detail(self.selenium, self.page.base_url)
+                detail_page = Detail(self.selenium, self.page.page.base_url)
                 return detail_page.wait_for_page_to_load()
 
             @property
