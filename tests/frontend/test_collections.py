@@ -12,6 +12,7 @@ from scripts import reusables
 
 
 @pytest.mark.serial
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_collection_meta_card(selenium, base_url, variables):
     public_collection = variables['public_collection']

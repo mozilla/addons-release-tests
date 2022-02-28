@@ -1,3 +1,13 @@
 {
-  "base_url": "https://addons.mozilla.org/"
+  "base_url": "https://addons.mozilla.org/",
+
+  "install_extension": "ghostery",
+  "install_theme": "matte-black-red",
+
+  "public_collection": "/4757633/privacy-matters/",
+  "public_collection_name": "Privacy Matters",
+
+  "language_tools_page_header": "Dictionaries and Language Packs",
+  "language_packs_info": "Language packs change your browser's interface language, including menu options and settings.",
+  "dictionaries_info": "Installing a dictionary add-on will add a new language option to your spell-checker, which checks your spelling as you type in Firefox."
 }
