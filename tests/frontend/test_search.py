@@ -282,79 +282,107 @@ def test_filter_extensions(base_url, selenium):
     assert len(search_page.result_list.themes) == 0
 
 
-@pytest.mark.parametrize(
-    'addon_type, badge',
-    [
-        ('All', 'Recommended'),
-        ('Extension', 'Recommended'),
-        ('Theme', 'Recommended'),
-    ],
-)
 @pytest.mark.nondestructive
-def test_sort_rating_combinations(base_url, selenium, variables, addon_type, badge):
+def test_top_rated_recommended_addons(base_url, selenium, variables):
     page = Home(selenium, base_url).open()
     search_page = page.search.search_for(variables['search_term'])
     # apply filters and then search again
     Select(search_page.filter_by_sort).select_by_visible_text('Top Rated')
-    Select(search_page.filter_by_type).select_by_visible_text(addon_type)
-    Select(search_page.filter_by_badging).select_by_visible_text(badge)
+    Select(search_page.filter_by_type).select_by_visible_text('All')
+    Select(search_page.filter_by_badging).select_by_visible_text('Recommended')
     page.search.search_field.clear()
     page.search.search_for('')
-    # verify if elements are correctly sorted
-    search_page.result_list.validate_filter_sort_by_rating()
-    # verify that only the wanted add-on type is showed
-    if addon_type == 'Extension':
-        # verify that no themes are displayed
-        assert len(search_page.result_list.themes) == 0
-    elif addon_type == 'Theme':
-        # verify that all elements displayed are themes
-        assert len(search_page.result_list.themes) == len(
-            search_page.result_list.extensions
-        )
+    # verify if sort filter applied correctly
+    for result in search_page.result_list.extensions:
+        assert getattr(result, 'rating') > 4
     # verify badge type
     results = search_page.result_list.extensions
     for result in results:
-        assert badge in result.promoted_badge_label
+        assert 'Recommended' in result.promoted_badge_label
 
 
-@pytest.mark.parametrize(
-    'addon_type, badge',
-    [
-        ('All', 'Recommended'),
-        ('All', 'By Firefox'),
-        ('Extension', 'Recommended'),
-        ('Extension', 'By Firefox'),
-        ('Extension', 'Any'),
-        ('Theme', 'Recommended'),
-        ('Theme', 'By Firefox'),
-        ('Theme', 'Any'),
-    ],
-)
 @pytest.mark.nondestructive
-def test_sort_users_combinations(base_url, selenium, variables, addon_type, badge):
+def test_top_rated_recommended_extensions(base_url, selenium, variables):
+    page = Home(selenium, base_url).open()
+    search_page = page.search.search_for(variables['search_term'])
+    # apply filters and then search again
+    Select(search_page.filter_by_sort).select_by_visible_text('Top Rated')
+    Select(search_page.filter_by_type).select_by_visible_text('Extension')
+    Select(search_page.filter_by_badging).select_by_visible_text('Recommended')
+    page.search.search_field.clear()
+    page.search.search_for('')
+    # verify if sort filter applied correctly
+    for result in search_page.result_list.extensions:
+        assert getattr(result, 'rating') > 4
+    # verify that no themes are displayed
+    assert len(search_page.result_list.themes) == 0
+    # verify badge type
+    results = search_page.result_list.extensions
+    for result in results:
+        assert 'Recommended' in result.promoted_badge_label
+
+
+@pytest.mark.nondestructive
+def test_top_rated_recommended_themes(base_url, selenium, variables):
+    page = Home(selenium, base_url).open()
+    search_page = page.search.search_for(variables['search_term'])
+    # apply filters and then search again
+    Select(search_page.filter_by_sort).select_by_visible_text('Top Rated')
+    Select(search_page.filter_by_type).select_by_visible_text('Theme')
+    Select(search_page.filter_by_badging).select_by_visible_text('Recommended')
+    page.search.search_field.clear()
+    page.search.search_for('')
+    # verify if sort filter applied correctly
+    for result in search_page.result_list.extensions:
+        assert getattr(result, 'rating') > 4
+    # verify that all elements are themes
+    assert len(search_page.result_list.themes) == len(
+        search_page.result_list.extensions
+    )
+    # verify badge type
+    results = search_page.result_list.extensions
+    for result in results:
+        assert 'Recommended' in result.promoted_badge_label
+
+
+@pytest.mark.nondestructive
+def test_most_users_recommended_addons(base_url, selenium, variables):
     page = Home(selenium, base_url).open()
     search_page = page.search.search_for('')
     # apply filters and then search term
     Select(search_page.filter_by_sort).select_by_visible_text('Most Users')
-    Select(search_page.filter_by_type).select_by_visible_text(addon_type)
-    Select(search_page.filter_by_badging).select_by_visible_text(badge)
+    Select(search_page.filter_by_type).select_by_visible_text('All')
+    Select(search_page.filter_by_badging).select_by_visible_text('Recommended')
     page.search.search_for(variables['search_term'])
     # verify if elements are correctly sorted
-    search_page.result_list.validate_filter_sort_by_users()
-    # verify that only the wanted add-on type is showed
-    if addon_type == 'Extension':
-        # verify that no themes are displayed
-        assert len(search_page.result_list.themes) == 0
-    elif addon_type == 'Theme':
-        # verify that all elements displayed are themes
-        assert len(search_page.result_list.themes) == len(
-            search_page.result_list.extensions
-        )
+    results = [
+        getattr(result, 'users') for result in search_page.result_list.extensions
+    ]
+    assert sorted(results, reverse=True) == results
     # verify badge type
     results = search_page.result_list.extensions
-    if badge != 'Any':
-        for result in results:
-            assert badge in result.promoted_badge_label
+    for result in results:
+        assert 'Recommended' in result.promoted_badge_label
+
+
+@pytest.mark.nondestructive
+def test_most_users_by_firefox_addons(base_url, selenium, variables):
+    page = Home(selenium, base_url).open()
+    search_page = page.search.search_for('')
+    # apply filters and then search term
+    Select(search_page.filter_by_sort).select_by_visible_text('Most Users')
+    Select(search_page.filter_by_type).select_by_visible_text('All')
+    Select(search_page.filter_by_badging).select_by_visible_text('By Firefox')
+    page.search.search_for(variables['search_term'])
+    # verify if elements are correctly sorted
+    results = [
+        getattr(result, 'users') for result in search_page.result_list.extensions
+    ]
+    assert sorted(results, reverse=True) == results
+    # verify badge type
+    results = search_page.result_list.extensions
+    for result in results:
+        assert 'By Firefox' in result.promoted_badge_label
 
 
 @pytest.mark.nondestructive
