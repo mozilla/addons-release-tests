@@ -1,5 +1,7 @@
+import pytest
 from pypom import Region
 
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
@@ -305,14 +307,21 @@ class Collections(Base):
 
             def click_delete_note(self):
                 self.find_element(*self._delete_addon_note_button_locator).click()
-                # waits for the collection addon list to be reloaded after the note is removed
-                addon_list = Collections(
-                    self.selenium, self.page
-                ).create.edit_addons_list
-                self.wait.until(
-                    lambda _: len(addon_list) > 0,
-                    message='The edit collection addons list could not be loaded',
-                )
+                # waiting for the comment textarea to be closed after the note is deleted
+                try:
+                    self.wait.until(
+                        EC.invisibility_of_element_located(
+                            self._add_note_textarea_locator
+                        ),
+                        message='The collection note could not be deleted',
+                    )
+                # if the note could not be deleted because of a field error,
+                # we need to catch that error and force the test to fail
+                except TimeoutException:
+                    error = self.selenium.find_element(
+                        By.CSS_SELECTOR, '.ErrorList p'
+                    ).text
+                    pytest.fail(error)
 
             def remove_addon(self):
                 self.find_element(*self._remove_addon_button_locator).click()
