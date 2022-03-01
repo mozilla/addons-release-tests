@@ -251,7 +251,6 @@ def test_mozilla_footer_link(base_url, selenium):
             'discourse',
             'Contact_us',
             'review_guide',
-            'mozilla.org',  # temporary
         ]
     ),
 )
