@@ -35,7 +35,8 @@ class Reviews(Base):
     @property
     def reviews_title_count(self):
         count = self.reviews_page_title
-        return int(count.split()[0].replace(' reviews', ''))
+        review_count = count.split()[0].replace(' reviews', '')
+        return int(review_count.replace(',', ''))
 
     @property
     def filter_by_score(self):

@@ -40,6 +40,7 @@ def test_extensions_categories(base_url, selenium, count, category):
     assert 'Most Users' in select.first_selected_option.text
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_extension_landing_header(base_url, selenium):
     extensions = Extensions(selenium, base_url).open()
@@ -49,6 +50,7 @@ def test_extension_landing_header(base_url, selenium):
     assert 'Explore powerful tools and features' in extensions.header_summary
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_recommended_extensions_shelf(base_url, selenium):
     extensions = Extensions(selenium, base_url).open()
@@ -63,6 +65,7 @@ def test_recommended_extensions_shelf(base_url, selenium):
         assert item.addon_users_preview.is_displayed()
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_browse_more_recommended_extensions(base_url, selenium):
     extensions = Extensions(selenium, base_url).open()
@@ -89,6 +92,7 @@ def test_top_rated_extensions(base_url, selenium):
         assert item.addon_users_preview.is_displayed()
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_browse_more_top_rated_extensions(base_url, selenium):
     extensions = Extensions(selenium, base_url).open()
@@ -120,6 +124,7 @@ def test_trending_extensions(base_url, selenium):
         assert item.addon_users_preview.is_displayed()
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_browse_more_trending_extensions(base_url, selenium):
     extensions = Extensions(selenium, base_url).open()

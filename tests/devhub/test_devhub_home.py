@@ -1,6 +1,5 @@
 import pytest
 
-from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.support import expected_conditions as EC
 
 from pages.desktop.developers.devhub_home import DevHubHome
@@ -15,6 +14,7 @@ def test_devhub_logo(selenium, base_url):
     assert page.page_logo.is_displayed()
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_click_extension_workshop(selenium, base_url):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
@@ -23,6 +23,7 @@ def test_click_extension_workshop(selenium, base_url):
     page.extension_workshop_is_loaded()
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_click_documentation(selenium, base_url):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
@@ -30,6 +31,7 @@ def test_click_documentation(selenium, base_url):
     page.click_documentation()
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_click_support(selenium, base_url):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
@@ -45,6 +47,7 @@ def test_click_blog(selenium, base_url):
     page.click_blog()
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_devhub_login(selenium, base_url, wait):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
@@ -53,6 +56,7 @@ def test_devhub_login(selenium, base_url, wait):
     wait.until(lambda _: page.user_avatar.is_displayed())
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_devhub_logout(selenium, base_url, wait):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
@@ -62,6 +66,7 @@ def test_devhub_logout(selenium, base_url, wait):
     wait.until(lambda _: page.header_login_button.is_displayed())
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_devhub_page_overview(selenium, base_url, variables):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
@@ -73,6 +78,7 @@ def test_devhub_page_overview(selenium, base_url, variables):
     page.extension_workshop_is_loaded()
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_devhub_page_content(selenium, base_url, variables):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
@@ -82,6 +88,7 @@ def test_devhub_page_content(selenium, base_url, variables):
     assert page.devhub_content_image.is_displayed()
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_devhub_content_login_link(selenium, base_url, variables):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
@@ -90,6 +97,7 @@ def test_devhub_content_login_link(selenium, base_url, variables):
     page.wait_for_current_url('accounts.firefox.com')
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_devhub_page_get_involved(selenium, base_url, variables):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()

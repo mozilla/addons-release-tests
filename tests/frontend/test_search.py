@@ -15,12 +15,13 @@ from pages.desktop.frontend.search import Search
 from scripts.reusables import get_random_string
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 @pytest.mark.parametrize(
     'term',
     [
         'Flagfox',
-        'Ghostery - Privacy Ad Blocker',
+        'Video DownloadHelper',
         'uBlock Origin',
         'Facebook Container',
         'Tree Style Tab',
@@ -72,6 +73,7 @@ def test_esc_key_closes_suggestion_list(base_url, selenium, variables):
         selenium.find_element_by_css_selector('AutoSearchInput-suggestions-list')
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_click_aside_closes_suggestion_list(base_url, selenium, variables):
     page = Home(selenium, base_url).open()
@@ -124,6 +126,7 @@ def test_select_result_with_enter_key(base_url, selenium, variables):
     assert term in detail.name
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_select_result_with_click(base_url, selenium, variables):
     page = Home(selenium, base_url).open()
@@ -195,6 +198,7 @@ def test_search_loads_and_navigates_to_correct_page(base_url, selenium):
     assert search_name in search.result_list.extensions[0].name
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_search_loads_correct_results(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
@@ -203,6 +207,7 @@ def test_search_loads_correct_results(base_url, selenium):
     assert addon_name in items.result_list.extensions[0].name
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_blank_search_loads_results(base_url, selenium):
     page = Home(selenium, base_url).open()
@@ -241,6 +246,7 @@ def test_filter_default(base_url, selenium, variables):
     assert select.first_selected_option.text == 'Any'
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_filter_by_users(base_url, selenium):
     Home(selenium, base_url).open()
@@ -252,6 +258,7 @@ def test_filter_by_users(base_url, selenium):
     assert sorted(results, reverse=True) == results
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 @pytest.mark.parametrize(
     'category, sort_attr', [['Top Rated', 'rating'], ['Trending', 'hotness']]
@@ -270,6 +277,7 @@ def test_filter_by_rating_and_hotness(base_url, selenium, category, sort_attr):
         assert len(results) == 25
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_filter_extensions(base_url, selenium):
     page = Home(selenium, base_url).open()
@@ -282,6 +290,7 @@ def test_filter_extensions(base_url, selenium):
     assert len(search_page.result_list.themes) == 0
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_filter_themes(base_url, selenium):
     page = Home(selenium, base_url).open()
@@ -294,6 +303,7 @@ def test_filter_themes(base_url, selenium):
     assert len(search_page.result_list.themes) == 25
 
 
+@pytest.mark.sanity
 @pytest.mark.parametrize(
     'sort_attr, title',
     [

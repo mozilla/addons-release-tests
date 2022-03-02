@@ -14,6 +14,7 @@ from pages.desktop.frontend.users import User
 from pages.desktop.frontend.reviews import Reviews
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_extension_meta_card(selenium, base_url, variables):
     # Checks addon essential data (name, icon, author name, summary)
@@ -26,6 +27,7 @@ def test_extension_meta_card(selenium, base_url, variables):
     assert addon.summary.is_displayed()
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_detail_author_links(selenium, base_url, variables):
     extension = variables['detail_extension_slug']
@@ -39,6 +41,7 @@ def test_detail_author_links(selenium, base_url, variables):
     assert author in user.user_display_name.text
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_addon_detail_recommended_badge(selenium, base_url, variables):
     extension = variables['detail_extension_slug']
@@ -146,6 +149,7 @@ def test_addon_without_stats_summary(selenium, base_url, variables):
     assert 'Not rated yet' in addon.stats.no_star_ratings
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_stats_reviews_summary_click(selenium, base_url, variables):
     extension = variables['addon_with_stats']
@@ -172,6 +176,7 @@ def test_stats_rating_bars_summary(selenium, base_url, variables):
     assert len(addon.stats.bar_rating_counts) == 5
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_click_stats_rating_bar(selenium, base_url, variables):
     extension = variables['addon_with_stats']
@@ -224,6 +229,7 @@ def test_stats_rating_counts_compare(selenium, base_url, variables):
     assert bar_count == stats_count
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_contribute_button(selenium, base_url, variables):
     extension = variables['detail_extension_slug']
@@ -262,6 +268,7 @@ def test_more_info_card_header(selenium, base_url, variables):
     assert 'More information' in addon.more_info.more_info_card_header
 
 
+@pytest.mark.sanity
 @pytest.mark.parametrize(
     'count, link', enumerate(['Homepage', 'Support site', 'Support Email'])
 )
@@ -276,9 +283,10 @@ def test_more_info_support_links(selenium, base_url, variables, count, link):
     if count != 2:
         addon.more_info.addon_support_links[count].click()
         # opens the homepage/support page provided by the developer
-        addon.wait_for_current_url('ghostery.com')
+        addon.wait_for_current_url(variables['support_site_link'])
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_more_info_version_number(selenium, base_url, variables):
     extension = variables['detail_extension_slug']
@@ -287,6 +295,7 @@ def test_more_info_version_number(selenium, base_url, variables):
     assert addon.more_info.addon_version_number.is_displayed()
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_more_info_addon_size(selenium, base_url, variables):
     extension = variables['detail_extension_slug']
@@ -295,15 +304,14 @@ def test_more_info_addon_size(selenium, base_url, variables):
     assert addon.more_info.addon_size.is_displayed()
     more_info_size = addon.more_info.addon_size.text.split()[0].replace(' MB', '')
     # get the file URL and read its size - conversion from bytes to Mb is required
-    file = urllib.request.urlopen(
-        'https://addons.allizom.org/firefox/downloads/file/1097275/ghostery_privacy_ad_blocker-8.5.6-an+fx.xpi'
-    )
+    file = urllib.request.urlopen(addon.addon_xpi)
     size = file.length / (1024 * 1024)
     # transforming the file size in two decimal format and comparing
     # with the size number displayed in the more info card
     assert '%.2f' % size == more_info_size
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_more_info_addon_last_update(selenium, base_url, variables):
     extension = variables['detail_extension_slug']
@@ -312,6 +320,7 @@ def test_more_info_addon_last_update(selenium, base_url, variables):
     assert addon.more_info.addon_last_update_date.is_displayed()
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_more_info_related_categories(selenium, base_url, variables):
     extension = variables['detail_extension_slug']
@@ -334,9 +343,10 @@ def test_more_info_related_categories(selenium, base_url, variables):
         count += 1
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_more_info_external_license(selenium, base_url, variables):
-    extension = variables['addon_without_stats']
+    extension = variables['addon_with_stats']
     selenium.get(f'{base_url}/addon/{extension}')
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     addon.more_info.addon_external_license()
@@ -456,6 +466,7 @@ def test_more_info_addon_tags(selenium, base_url, variables):
         count += 1
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_screenshot_viewer(selenium, base_url, variables):
     extension = variables['detail_extension_slug']
@@ -552,6 +563,7 @@ def test_click_addon_in_more_addons_by_author(selenium, base_url, variables):
     assert result_name in addon.name
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_addon_description(selenium, base_url, variables):
     extension = variables['detail_extension_slug']
@@ -561,6 +573,7 @@ def test_addon_description(selenium, base_url, variables):
     assert addon.description.addon_description_text.is_displayed()
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_addon_ratings_card(selenium, base_url, variables):
     extension = variables['detail_extension_slug']
@@ -568,7 +581,7 @@ def test_addon_ratings_card(selenium, base_url, variables):
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     assert 'Rate your experience' in addon.ratings.ratings_card_header
     assert (
-        'How are you enjoying Ghostery - Privacy Ad Blocker'
+        variables['ratings_card_summary']
         in addon.ratings.ratings_card_summary
     )
     # checks that the login button is present in the ratings card
@@ -576,6 +589,7 @@ def test_addon_ratings_card(selenium, base_url, variables):
     addon.ratings.rating_login_button.is_displayed()
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_addon_recommendations(selenium, base_url, variables):
     extension = variables['detail_extension_slug']
@@ -586,6 +600,7 @@ def test_addon_recommendations(selenium, base_url, variables):
     assert len(recommendations) <= 4
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_click_addon_recommendations(selenium, base_url, variables):
     extension = variables['detail_extension_slug']
@@ -598,6 +613,7 @@ def test_click_addon_recommendations(selenium, base_url, variables):
     assert recommendation_name in addon.name
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_theme_detail_page(selenium, base_url, variables):
     extension = variables['theme_detail_page']

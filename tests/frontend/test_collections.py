@@ -99,6 +99,7 @@ def test_select_collection_from_list(selenium, base_url, wait):
     )
 
 
+@pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_create_collection(selenium, base_url, variables, wait):
@@ -121,6 +122,7 @@ def test_create_collection(selenium, base_url, variables, wait):
     assert description == collections.collection_detail.collection_description.text
 
 
+@pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_add_addons_to_collection(selenium, base_url, variables, wait):
@@ -294,6 +296,7 @@ def test_collection_edit_metadata(selenium, base_url, variables, wait):
     )
 
 
+@pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_add_to_collection_in_addon_detail_page(selenium, base_url, variables, wait):
@@ -336,6 +339,7 @@ def test_add_to_collection_in_addon_detail_page(selenium, base_url, variables, w
     assert addon_name in addons_list.result_list.extensions[0].name
 
 
+@pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_delete_collection(selenium, base_url, variables):

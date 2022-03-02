@@ -1,4 +1,5 @@
 import pytest
+
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
@@ -7,6 +8,7 @@ from pages.desktop.frontend.blog import BlogHomepage, ArticlePage
 from pages.desktop.frontend.home import Home
 
 
+@pytest.mark.sanity
 @pytest.mark.nondesstructive
 def test_blog_homepage_header_logo_button(base_url, selenium):
     page = BlogHomepage(selenium, base_url).open().wait_for_page_to_load()
@@ -15,6 +17,7 @@ def test_blog_homepage_header_logo_button(base_url, selenium):
     assert homepage.primary_hero.is_displayed()
 
 
+@pytest.mark.sanity
 @pytest.mark.nondesstructive
 def test_articles_elements_are_displayed(base_url, selenium):
     page = BlogHomepage(selenium, base_url).open().wait_for_page_to_load()
@@ -26,6 +29,7 @@ def test_articles_elements_are_displayed(base_url, selenium):
         assert article.read_more_link.is_displayed()
 
 
+@pytest.mark.sanity
 @pytest.mark.nondesstructive
 def test_open_article_by_clicking_article_image(base_url, selenium):
     page = BlogHomepage(selenium, base_url).open().wait_for_page_to_load()
@@ -35,6 +39,7 @@ def test_open_article_by_clicking_article_image(base_url, selenium):
     assert article_title.lower() in article_page.title.text.lower()
 
 
+@pytest.mark.sanity
 @pytest.mark.nondesstructive
 def test_open_article_by_clicking_article_title(base_url, selenium):
     page = BlogHomepage(selenium, base_url).open().wait_for_page_to_load()
@@ -53,6 +58,7 @@ def test_open_article_by_clicking_read_more_link(base_url, selenium):
     assert article_title.lower() in article_page.title.text.lower()
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_article_page_loaded_correctly(base_url, selenium, variables):
     blog_homepage = BlogHomepage(selenium, base_url).open().wait_for_page_to_load()
@@ -74,6 +80,7 @@ def test_article_page_loaded_correctly(base_url, selenium, variables):
         page.previous_article.is_displayed()
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_article_page_header_logo_button(base_url, selenium, variables):
     blog_homepage = BlogHomepage(selenium, base_url).open().wait_for_page_to_load()
@@ -83,6 +90,7 @@ def test_article_page_header_logo_button(base_url, selenium, variables):
     assert homepage.primary_hero.is_displayed()
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_navbar_frontend_homepage_link(base_url, selenium, variables):
     blog_homepage = BlogHomepage(selenium, base_url).open().wait_for_page_to_load()
@@ -92,6 +100,7 @@ def test_navbar_frontend_homepage_link(base_url, selenium, variables):
     assert homepage.primary_hero.is_displayed()
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_navbar_blog_homepage_link(base_url, selenium, variables):
     blog_homepage = BlogHomepage(selenium, base_url).open().wait_for_page_to_load()
@@ -101,6 +110,7 @@ def test_navbar_blog_homepage_link(base_url, selenium, variables):
     assert blog_homepage.articles[0].title.is_displayed()
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_navbar_current_article_link(base_url, selenium, variables):
     blog_homepage = BlogHomepage(selenium, base_url).open().wait_for_page_to_load()
@@ -110,6 +120,7 @@ def test_navbar_current_article_link(base_url, selenium, variables):
     assert initial_title in page.title.text
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_next_and_previous_article_links(base_url, selenium, variables):
     blog_homepage = BlogHomepage(selenium, base_url).open().wait_for_page_to_load()
@@ -121,6 +132,7 @@ def test_next_and_previous_article_links(base_url, selenium, variables):
     assert initial_title in page.title.text
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_addon_cards_loaded_correctly(base_url, selenium, variables):
     blog_homepage = BlogHomepage(selenium, base_url).open().wait_for_page_to_load()
@@ -134,6 +146,7 @@ def test_addon_cards_loaded_correctly(base_url, selenium, variables):
         assert card.add_to_firefox_button.is_displayed()
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_addon_card_recommendation_badge_link(base_url, selenium, variables):
     blog_homepage = BlogHomepage(selenium, base_url).open().wait_for_page_to_load()
