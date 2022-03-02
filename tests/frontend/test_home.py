@@ -180,11 +180,15 @@ def test_home_popular_themes_shelf(base_url, selenium):
     assert "Popular themes" in page.popular_themes.card_header
     shelf_items = page.popular_themes.list
     # verifies that each shelf themes has the necessary components
+    users_list = []
     assert len(shelf_items) == 3
     for item in shelf_items:
         assert item.name.is_displayed()
         assert item.addon_icon_preview.is_displayed()
         assert item.addon_users_preview.is_displayed()
+        users_list.append(item.addon_users_preview.text.split()[0].replace(',', ''))
+    # verifies that themes are correctly ordered in shelf (by users)
+    assert users_list == sorted(users_list, reverse=True)
 
 
 @pytest.mark.sanity
