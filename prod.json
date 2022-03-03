@@ -1,13 +1,42 @@
 {
   "base_url": "https://addons.mozilla.org/",
 
+  "search_term": "Flagfox",
+
   "install_extension": "ghostery",
   "install_theme": "matte-black-red",
+  "detail_extension_slug": "privacy-badger17",
+  "detail_extension_name": "Privacy Badger",
+  "theme_detail_page": "flag-of-mexico",
+  "addon_with_stats": "ublock-origin",
+  "non_recommended_addon": "adblock-plus",
+  "support_site_link": "privacybadger.org",
+  "ratings_card_summary": "How are you enjoying Privacy Badger?",
+  "contribute_card_summary": "The developer of this extension asks that you help support its continued development by making a small contribution.",
+  "contribute_utm_param": "utm_content=product-page-contribute&utm_medium=referral&utm_source=addons.mozilla.org",
+
+  "all_scores_addon": "ublock-origin",
+  "initial_text_input": "original text",
 
   "public_collection": "/4757633/privacy-matters/",
   "public_collection_name": "Privacy Matters",
+  "collection_description": "A short collection description.",
+
+  "display_name": "reusable_user",
+  "homepage": "https://mozilla.org/",
+  "location": "Neverland",
+  "occupation": "scientist",
+  "biography": "I am the very model of a scientist salarian",
 
   "language_tools_page_header": "Dictionaries and Language Packs",
   "language_packs_info": "Language packs change your browser's interface language, including menu options and settings.",
-  "dictionaries_info": "Installing a dictionary add-on will add a new language option to your spell-checker, which checks your spelling as you type in Firefox."
+  "dictionaries_info": "Installing a dictionary add-on will add a new language option to your spell-checker, which checks your spelling as you type in Firefox.",
+
+  "devhub_overview_header": "Customize Firefox",
+  "devhub_overview_summary": "Whether you’re new to extension development, polishing up or porting an existing extension or theme, or creating a custom enterprise solution, we’ve got the resources to support you.",
+  "devhub_content_header": "Ready to submit or manage your extension?",
+  "devhub_content_summary": "Sign in to the Developer Hub to submit or manage extensions and themes",
+  "devhub_get_involved_header": "Get involved",
+  "devhub_get_involved_summary": "Connect with thousands of developers and discover more ways you can contribute to the extension ecosystem."
 }
+

@@ -10,6 +10,7 @@ from pages.desktop.frontend.details import Detail
 from pages.desktop.frontend.reviews import Reviews
 
 
+@pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_rating_with_text(selenium, base_url, variables):
@@ -89,6 +90,7 @@ def test_cancel_delete_review(selenium, base_url, variables):
     assert addon.ratings.written_review.is_displayed()
 
 
+@pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_delete_review(selenium, base_url, variables):

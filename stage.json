@@ -19,6 +19,8 @@
   "install_warning_message": "This add-on is not actively monitored for security by Mozilla. Make sure you trust it before installing.",
   "contribute_utm_param": "utm_content=product-page-contribute&utm_medium=referral&utm_source=addons.mozilla.org",
   "contribute_card_summary": "The developer of this extension asks that you help support its continued development by making a small contribution.",
+  "support_site_link": "ghostery.com",
+  "ratings_card_summary": "How are you enjoying Ghostery - Privacy Ad Blocker",
 
   "secondary_hero_title": "Extensions are like apps for Firefox.",
   "secondary_hero_summary": "They add features to Firefox to make browsing faster, safer, or just plain fun",

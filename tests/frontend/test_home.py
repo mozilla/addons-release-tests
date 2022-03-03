@@ -8,6 +8,7 @@ from scripts import reusables
 
 
 # Tests covering the homepage header
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_click_header_extensions(base_url, selenium):
     page = Home(selenium, base_url).open()
@@ -15,6 +16,7 @@ def test_click_header_extensions(base_url, selenium):
     assert 'Extensions' in ext_page.title
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_click_header_themes(base_url, selenium):
     page = Home(selenium, base_url).open()
@@ -22,6 +24,7 @@ def test_click_header_themes(base_url, selenium):
     assert 'Themes' in themes_page.text
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_logo_routes_to_home(base_url, selenium):
     page = Home(selenium, base_url).open()
@@ -29,6 +32,7 @@ def test_logo_routes_to_home(base_url, selenium):
     assert home.primary_hero.is_displayed()
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_firefox_addons_blog_link(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
@@ -36,6 +40,7 @@ def test_firefox_addons_blog_link(base_url, selenium):
     page.wait_for_current_url('/blog/')
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_developer_hub_link(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
@@ -43,6 +48,7 @@ def test_developer_hub_link(base_url, selenium):
     assert '/developers/' in selenium.current_url
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_extension_workshop_link(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
@@ -50,6 +56,7 @@ def test_extension_workshop_link(base_url, selenium):
     assert 'extensionworkshop' in selenium.current_url
 
 
+@pytest.mark.sanity
 @pytest.mark.parametrize(
     'count, title',
     enumerate(
@@ -68,12 +75,17 @@ def test_more_dropdown_navigates_correctly(base_url, selenium, count, title):
 
 
 # Tests covering the homepage primary and secondary heroes
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_primary_hero(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     # several assertions that validate the presence of elements in the primary hero
     assert page.hero_banner.primary_hero_image.is_displayed()
-    assert 'Recommended'.upper() in page.hero_banner.primary_hero_title
+    # we have either Recommended, either By Firefox add-ons in the primary hero
+    try:
+        assert 'Recommended'.upper() in page.hero_banner.primary_hero_title
+    except AssertionError:
+        assert 'By Firefox'.upper() in page.hero_banner.primary_hero_title
     hero_extension = page.hero_banner.primary_hero_extension_name
     assert page.hero_banner.primary_hero_extension_summary.is_displayed()
     # clicks on the Get extension button and checks that the correct detail page opens
@@ -96,6 +108,7 @@ def test_secondary_hero_message(base_url, selenium, variables):
     assert 'Extensions' in extensions.title
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_secondary_hero_modules(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
@@ -115,6 +128,7 @@ def test_secondary_hero_modules(base_url, selenium):
         ]
     ),
 )
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_click_module_link(base_url, selenium, count, module):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
@@ -124,6 +138,7 @@ def test_click_module_link(base_url, selenium, count, module):
 
 
 # Tests covering promo shelves
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_browse_all_recommended_extensions(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
@@ -134,6 +149,7 @@ def test_browse_all_recommended_extensions(base_url, selenium):
         assert result.promoted_badge
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_home_recommended_extensions_shelf(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
@@ -175,6 +191,7 @@ def test_home_popular_themes_shelf(base_url, selenium):
     assert users_list == sorted(users_list, reverse=True)
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_home_see_more_recommended_themes(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
@@ -197,6 +214,7 @@ def test_home_shelf_item_rating(base_url, selenium):
     assert page.recommended_extensions.list[0].addon_rating_preview.is_displayed()
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_home_see_more_links(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
@@ -220,6 +238,7 @@ def test_home_see_more_links(base_url, selenium):
         ]
     ),
 )
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_theme_categories_shelf(base_url, selenium, count, category):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
@@ -235,6 +254,7 @@ def test_theme_categories_shelf(base_url, selenium, count, category):
 
 
 # Tests covering the homepage footer
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_mozilla_footer_link(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
@@ -258,6 +278,7 @@ def test_mozilla_footer_link(base_url, selenium):
         ]
     ),
 )
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_addons_footer_links(base_url, selenium, count, link):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
@@ -277,6 +298,7 @@ def test_addons_footer_links(base_url, selenium, count, link):
     ),
 )
 @pytest.mark.nondestructive
+@pytest.mark.sanity
 def test_browsers_footer_links(base_url, selenium, count, links):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.footer.browsers_links[count].click()
@@ -295,6 +317,7 @@ def test_browsers_footer_links(base_url, selenium, count, links):
         ]
     ),
 )
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_products_footer_links(base_url, selenium, count, links):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
@@ -312,6 +335,7 @@ def test_products_footer_links(base_url, selenium, count, links):
         ]
     ),
 )
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_social_footer_links(base_url, selenium, count, links):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
@@ -329,6 +353,7 @@ def test_social_footer_links(base_url, selenium, count, links):
         ]
     ),
 )
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_legal_footer_links(base_url, selenium, count, links):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
@@ -353,6 +378,7 @@ def test_legal_footer_links(base_url, selenium, count, links):
         'HomePage Hebrew Translation',
     ],
 )
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_change_language(base_url, selenium, language, locale, translation):
     page = Home(selenium, base_url).open().wait_for_page_to_load()

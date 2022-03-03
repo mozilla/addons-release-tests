@@ -80,6 +80,11 @@ class Detail(Base):
         return self.find_element(*self._install_button_locator).text
 
     @property
+    def addon_xpi(self):
+        """Gets the add-on .xpi mapped to the install button"""
+        return self.find_element(*self._install_button_locator).get_attribute('href')
+
+    @property
     def button_state_disabled(self):
         # checking that an inactive install button has a 'disabled' attribute
         return self.find_element(*self._install_button_state_locator).get_attribute(
@@ -219,7 +224,7 @@ class Detail(Base):
         @property
         def stats_reviews_count(self):
             count = self.addon_reviews_stats
-            return int(count.find_element(By.CSS_SELECTOR, 'dd').text)
+            return int(count.find_element(By.CSS_SELECTOR, 'dd').text.replace(',', ''))
 
         def stats_reviews_link(self):
             self.addon_reviews_stats.find_element(By.CSS_SELECTOR, 'dt a').click()
