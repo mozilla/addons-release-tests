@@ -3,7 +3,6 @@ import requests
 
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
 
 from pages.desktop.frontend.details import Detail
 from pages.desktop.frontend.home import Home
@@ -14,6 +13,7 @@ from pages.desktop.frontend.users import User
 from scripts import custom_waits
 
 
+@pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_login(selenium, base_url, wait):
@@ -27,6 +27,7 @@ def test_login(selenium, base_url, wait):
     username.header.user_header_display_name(user)
 
 
+@pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_logout(base_url, selenium):
@@ -37,6 +38,7 @@ def test_logout(base_url, selenium):
     page.logout()
 
 
+@pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_register(base_url, selenium, wait):
@@ -48,6 +50,7 @@ def test_register(base_url, selenium, wait):
     username.header.user_header_display_name('Firefox user')
 
 
+@pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_user_menu_collections_link(base_url, selenium):
@@ -60,6 +63,7 @@ def test_user_menu_collections_link(base_url, selenium):
     page.header.click_user_menu_links(count, landing_page)
 
 
+@pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_user_menu_view_profile(base_url, selenium):
@@ -71,6 +75,7 @@ def test_user_menu_view_profile(base_url, selenium):
     page.header.click_user_menu_links(count, landing_page)
 
 
+@pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_user_menu_edit_profile(base_url, selenium):
@@ -103,6 +108,7 @@ def test_user_menu_devhub_links(base_url, selenium, wait):
         count += 1
 
 
+@pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_user_edit_profile(base_url, selenium, variables):
@@ -124,6 +130,7 @@ def test_user_edit_profile(base_url, selenium, variables):
     user.header.user_header_display_name(variables['display_name'])
 
 
+@pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_user_view_profile(base_url, selenium, variables):
@@ -222,6 +229,7 @@ def test_user_regular_notifications(base_url, selenium, variables):
         count += 1
 
 
+@pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_user_delete_profile(base_url, selenium):
@@ -239,6 +247,7 @@ def test_user_delete_profile(base_url, selenium):
     assert user.header.login_button.is_displayed()
 
 
+@pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_user_data_for_deleted_profile(base_url, selenium):

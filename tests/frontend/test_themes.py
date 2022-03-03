@@ -40,6 +40,7 @@ def test_themes_categories(base_url, selenium, count, category):
     assert 'Most Users' in select.first_selected_option.text
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_themes_landing_header(base_url, selenium):
     themes = Themes(selenium, base_url).open()
@@ -49,6 +50,7 @@ def test_themes_landing_header(base_url, selenium):
     assert "Change your browser's appearance" in themes.header_summary
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_recommended_themes(base_url, selenium):
     themes = Themes(selenium, base_url).open()
@@ -63,6 +65,7 @@ def test_recommended_themes(base_url, selenium):
         assert item.addon_users_preview.is_displayed()
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_browse_more_recommended_themes(base_url, selenium):
     themes = Themes(selenium, base_url).open()
@@ -89,6 +92,7 @@ def test_top_rated_themes(base_url, selenium):
         assert item.addon_users_preview.is_displayed()
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_browse_more_top_rated_themes(base_url, selenium):
     themes = Themes(selenium, base_url).open()
@@ -114,6 +118,7 @@ def test_trending_themes(base_url, selenium):
         assert item.addon_users_preview.is_displayed()
 
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_browse_more_trending_themes(base_url, selenium):
     themes = Themes(selenium, base_url).open()
