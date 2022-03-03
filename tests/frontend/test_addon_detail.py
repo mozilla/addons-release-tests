@@ -41,7 +41,6 @@ def test_detail_author_links(selenium, base_url, variables):
     assert author in user.user_display_name.text
 
 
-@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_addon_detail_recommended_badge(selenium, base_url, variables):
     extension = variables['detail_extension_slug']
