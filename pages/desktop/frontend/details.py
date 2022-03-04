@@ -180,6 +180,10 @@ class Detail(Base):
         return self.AddonDescription(self)
 
     @property
+    def developer_comments(self):
+        return self.DeveloperComments(self)
+
+    @property
     def recommendations(self):
         return self.AddonRecommendations(self)
 
@@ -593,6 +597,18 @@ class Detail(Base):
         def recommendations_results_item(self):
             return self.find_elements(*self._recommendations_name_locator)
 
+    class DeveloperComments(Region):
+        _header_locator = (By.CSS_SELECTOR, '.Addon-developer-comments > header > div')
+        _content_locator = (By.CSS_SELECTOR, '.Addon-developer-comments-contents')
+
+        @property
+        def header(self):
+            return self.find_element(*self._header_locator)
+
+        @property
+        def content(self):
+            return self.find_element(*self._content_locator)
+
     class Theme(Region):
         _theme_preview_locator = (By.CSS_SELECTOR, '.ThemeImage-image')
         _same_author_theme_previews_locator = (By.CSS_SELECTOR, '.SearchResult-icon')
@@ -772,6 +788,10 @@ class Detail(Base):
             )
             return self.find_element(*self._review_permalink_locator)
 
+        @property
+        def all_reviews_link(self):
+            return self.find_element(*self._all_reviews_link_locator)
+
         def click_all_reviews_link(self):
             self.find_element(*self._all_reviews_link_locator).click()
             return Reviews(self.selenium, self.page.base_url).wait_for_page_to_load()
@@ -780,6 +800,10 @@ class Detail(Base):
         def all_reviews_link_rating_count(self):
             count = self.find_element(*self._all_reviews_link_locator).text
             return int(count.split()[2])
+
+        @property
+        def report_abuse_button(self):
+            return self.find_element(*self._report_abuse_button_locator)
 
         def click_report_abuse(self):
             self.find_element(*self._report_abuse_button_locator).click()

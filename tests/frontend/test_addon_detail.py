@@ -574,6 +574,15 @@ def test_addon_description(selenium, base_url, variables):
 
 @pytest.mark.sanity
 @pytest.mark.nondestructive
+def test_developer_comments(selenium, base_url, variables):
+    extension = variables['detail_extension_slug']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    assert 'Developer comments' in addon.developer_comments.header.text
+    assert addon.developer_comments.content.is_displayed()
+
+
+@pytest.mark.nondestructive
 def test_addon_ratings_card(selenium, base_url, variables):
     extension = variables['detail_extension_slug']
     selenium.get(f'{base_url}/addon/{extension}')
@@ -585,7 +594,10 @@ def test_addon_ratings_card(selenium, base_url, variables):
     )
     # checks that the login button is present in the ratings card
     # when the add-on detail page is viewed by unauthenticated users
-    addon.ratings.rating_login_button.is_displayed()
+    assert addon.ratings.rating_login_button.is_displayed()
+    # checks that all reviews link and report button are displayed
+    assert addon.ratings.all_reviews_link.is_displayed()
+    assert addon.ratings.report_abuse_button.is_displayed()
 
 
 @pytest.mark.sanity
