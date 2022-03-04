@@ -1,4 +1,5 @@
 from pypom import Region
+
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
@@ -48,7 +49,7 @@ class BlogHomepage(Base):
 
         def click_read_more_link(self):
             self.read_more_link.click()
-            return ArticlePage(self.driver, self.page.base_url)
+            return ArticlePage(self.driver, self.page.base_url).wait_for_page_to_load()
 
 
 class ArticlePage(Base):
