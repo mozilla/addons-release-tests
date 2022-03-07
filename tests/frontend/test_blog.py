@@ -5,7 +5,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 
 from pages.desktop.frontend.blog import BlogHomepage, ArticlePage
+from pages.desktop.frontend.details import Detail
 from pages.desktop.frontend.home import Home
+from pages.desktop.frontend.users import User
 
 
 @pytest.mark.sanity
@@ -165,3 +167,56 @@ def test_addon_card_recommendation_badge_link(base_url, selenium, variables):
                 in page.driver.find_element(By.CLASS_NAME, 'sumo-page-heading').text
             )
             page.driver.switch_to.window(initial_window)
+
+
+@pytest.mark.firefox_release
+@pytest.mark.prod_only
+@pytest.mark.nondestructive
+def test_blog_install_addon(
+    base_url, selenium, variables, firefox, firefox_notifications, wait
+):
+    blog = BlogHomepage(selenium, base_url).open().wait_for_page_to_load()
+    article = blog.articles[0].click_read_more_link()
+    # install add-on from a blog article
+    addon_name = article.addon_cards[0].title.text
+    article.addon_cards[0].add_to_firefox_button.click()
+    firefox.browser.wait_for_notification(
+        firefox_notifications.AddOnInstallConfirmation
+    ).install()
+    # verify about:addons to make sure the add-on was installed;
+    selenium.get('about:addons')
+    selenium.find_element(By.CSS_SELECTOR, 'button[name = "extension"]').click()
+    wait.until(
+        lambda _: addon_name
+        in selenium.find_element(By.CSS_SELECTOR, '.addon-name a').text
+    )
+
+
+@pytest.mark.firefox_release
+@pytest.mark.prod_only
+@pytest.mark.nondestructive
+def test_addon_link_in_article_addon_cards(base_url, selenium):
+    blog = BlogHomepage(selenium, base_url).open().wait_for_page_to_load()
+    article = blog.articles[0].click_read_more_link()
+    # make a note of the add-on name in the article card
+    addon_name = article.addon_cards[0].title.text
+    # click om the add-on name to open the detail page on AMO
+    article.addon_cards[0].title.click()
+    addon_detail = Detail(selenium, base_url).wait_for_page_to_load()
+    # check that the addon from the article and the one in the detail page are matching
+    assert addon_name == addon_detail.name
+
+
+@pytest.mark.firefox_release
+@pytest.mark.prod_only
+@pytest.mark.nondestructive
+def test_author_link_in_article_addon_cards(base_url, selenium):
+    blog = BlogHomepage(selenium, base_url).open().wait_for_page_to_load()
+    article = blog.articles[0].click_read_more_link()
+    # make a note of the addon author in the article card
+    addon_author = article.addon_cards[0].author.text
+    # click on the author name to open the user profile page on AMO
+    article.addon_cards[0].author.click()
+    user_name = User(selenium, base_url).wait_for_page_to_load()
+    # check that the author from the article and the one in the profile page are matching
+    assert addon_author == user_name.user_display_name.text
