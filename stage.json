@@ -36,9 +36,11 @@
 
   "display_name": "reusable_user",
   "homepage": "https://mozilla.org/",
+  "invalid_url_error": "Enter a valid URL.",
   "location": "Neverland",
   "occupation": "scientist",
   "biography": "I am the very model of a scientist salarian",
+  "biography_extra": "\nI've studied species turian, asari, and batarian",
   "email_field_help_text": "You can change your email address on Firefox Accounts.",
   "notifications": [
     "an add-on developer replies to my review",
@@ -58,6 +60,7 @@
   "non_developer_user": "11686961",
   "user_abuse_initial_form_header": "Report this user for abuse",
   "user_abuse_form_initial_help_text": "If you think this user is violating Mozilla's Add-on Policies, please report this user to Mozilla.",
+  "user_abuse_form_additional_help_text": "Please don't use this form to report bugs or contact this user; your report will only be sent to Mozilla and not to this user.",
   "user_abuse_input_text": "Submitting a user abuse report",
   "user_abuse_confirmed_form_header": "You reported this user for abuse",
   "user_abuse_form_confirmed_help_text": "We have received your report. Thanks for letting us know about your concerns with this user.",

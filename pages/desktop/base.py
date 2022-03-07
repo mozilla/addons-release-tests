@@ -18,9 +18,7 @@ class Base(Page):
     _amo_header = (By.CLASS_NAME, 'Header')
 
     def __init__(self, selenium, base_url, **kwargs):
-        super(Base, self).__init__(
-            selenium, base_url, timeout=30, **kwargs
-        )
+        super(Base, self).__init__(selenium, base_url, timeout=30, **kwargs)
 
     def wait_for_page_to_load(self):
         self.wait.until(
@@ -209,9 +207,6 @@ class Header(Region):
                 action.pause(3)
                 # assigning the webelement to a variable before initializing the action chains can lead
                 # to stale element errors since the dropdown state changes when we hover over it
-                action.move_to_element(
-                    self.find_element(*self._account_dropdown_locator)
-                )
                 action.move_to_element(self.find_element(*self._logout_locator))
                 action.pause(3)
                 action.click()
