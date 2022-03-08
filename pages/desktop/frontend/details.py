@@ -200,6 +200,10 @@ class Detail(Base):
         _stats_users_locator = (By.CSS_SELECTOR, '.AddonMeta dl:nth-child(1)')
         _stats_reviews_locator = (By.CSS_SELECTOR, '.AddonMeta dl:nth-child(2)')
         _stats_ratings_locator = (By.CSS_SELECTOR, '.AddonMeta dl:nth-child(3)')
+        _rating_score_title_locator = (
+            By.CSS_SELECTOR,
+            '.AddonMeta-rating-content .Rating--small',
+        )
         _grouped_ratings_locator = (By.CSS_SELECTOR, '.RatingsByStar-star')
         _rating_bar_locator = (By.CSS_SELECTOR, '.RatingsByStar-barContainer')
         _rating_bar_count_locator = (By.CSS_SELECTOR, '.RatingsByStar-count')
@@ -237,6 +241,12 @@ class Detail(Base):
         @property
         def addon_star_rating_stats(self):
             return self.find_element(*self._stats_ratings_locator)
+
+        @property
+        def rating_score_tile(self):
+            return self.find_element(*self._rating_score_title_locator).get_attribute(
+                'title'
+            )
 
         @property
         def no_star_ratings(self):

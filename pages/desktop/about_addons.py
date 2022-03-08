@@ -1,0 +1,166 @@
+from pypom import Page, Region
+
+from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support import expected_conditions as EC
+
+
+class AboutAddons(Page):
+
+    _addon_cards_locator = (By.CLASS_NAME, 'card.addon')
+    _search_box_locator = (By.CSS_SELECTOR, '.main-search search-textbox')
+    _extension_tab_button_locator = (By.CSS_SELECTOR, 'button[name = "extension"]')
+    _theme_tab_button_locator = (By.CSS_SELECTOR, 'button[name = "theme"]')
+    _enabled_theme_status_locator = (By.CLASS_NAME, 'card.addon')
+    _enabled_theme_image_locator = (By.CLASS_NAME, 'card-heading-image')
+    _installed_addon_name_locator = (By.CSS_SELECTOR, '.addon-name a')
+    _find_more_addons_button_locator = (By.CLASS_NAME, 'primary')
+
+    def wait_for_page_to_load(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._find_more_addons_button_locator)
+        )
+        return self
+
+    def search_box(self, value):
+        search_field = self.find_element(*self._search_box_locator)
+        search_field.send_keys(value)
+        # send Enter to initiate search redirection to AMO
+        search_field.send_keys(Keys.ENTER)
+        # AMO search results open in a new tab, so we need to switch windows
+        self.wait.until(
+            EC.number_of_windows_to_be(2),
+            message=f'Number of windows was {len(self.selenium.window_handles)}, expected 2',
+        )
+        self.selenium.switch_to.window(self.selenium.window_handles[1])
+        from pages.desktop.frontend.search import Search
+
+        return Search(self.selenium, self.base_url).wait_for_page_to_load()
+
+    def click_extensions_side_button(self):
+        self.find_element(*self._extension_tab_button_locator).click()
+        self.wait.until(
+            EC.text_to_be_present_in_element(
+                (By.CLASS_NAME, 'list-section-heading'), 'Enabled'
+            )
+        )
+
+    def click_themes_side_button(self):
+        self.find_element(*self._theme_tab_button_locator).click()
+        self.wait.until(
+            EC.text_to_be_present_in_element(
+                (By.CLASS_NAME, 'list-section-heading'), 'Enabled'
+            )
+        )
+
+    @property
+    def installed_addon_name(self):
+        return self.find_elements(*self._installed_addon_name_locator)
+
+    @property
+    def enabled_theme_active_status(self):
+        """Verifies if a theme is enabled"""
+        el = self.find_elements(*self._enabled_theme_status_locator)
+        return el[0].get_attribute('active')
+
+    @property
+    def enabled_theme_image(self):
+        return self.find_elements(*self._enabled_theme_image_locator)[0].get_attribute(
+            'src'
+        )
+
+    @property
+    def addon_cards_items(self):
+        items = self.find_elements(*self._addon_cards_locator)
+        return [self.AddonCards(self, el) for el in items]
+
+    def click_find_more_addons(self):
+        self.find_element(*self._find_more_addons_button_locator).click()
+        # this button opens AMO homepage in a new tab
+        self.wait.until(
+            EC.number_of_windows_to_be(2),
+            message=f'Number of windows was {len(self.selenium.window_handles)}, expected 2',
+        )
+        self.selenium.switch_to.window(self.selenium.window_handles[1])
+        from pages.desktop.frontend.home import Home
+
+        return Home(self.selenium, self.base_url).wait_for_page_to_load()
+
+    class AddonCards(Region):
+        _theme_image_locator = (By.CLASS_NAME, 'card-heading-image')
+        _extension_icon_locator = (By.CLASS_NAME, 'card-heading-icon')
+        _disco_addon_name_locator = (By.CLASS_NAME, 'disco-addon-name')
+        _disco_addon_author_locator = (By.CSS_SELECTOR, '.disco-addon-author a')
+        _extension_summary_locator = (By.CLASS_NAME, 'disco-description-main')
+        _extension_rating_locator = (
+            By.CSS_SELECTOR,
+            '.disco-description-statistics five-star-rating',
+        )
+        _extension_users_count_locator = (By.CLASS_NAME, 'disco-user-count')
+        _addon_install_button_locator = (
+            By.CSS_SELECTOR,
+            'button[action="install-addon"]',
+        )
+
+        def is_extension_card(self):
+            """Determines if we have an extension of a theme card.
+            If it is a Theme, we return false"""
+            try:
+                # this statement returns true if the card has an extension
+                return self.disco_extension_rating.is_displayed()
+            except NoSuchElementException:
+                return False
+
+        @property
+        def theme_image(self):
+            return self.find_element(*self._theme_image_locator)
+
+        @property
+        def extension_image(self):
+            return self.find_element(*self._extension_icon_locator)
+
+        @property
+        def disco_addon_name(self):
+            return self.find_element(*self._disco_addon_name_locator)
+
+        @property
+        def disco_addon_author(self):
+            return self.find_element(*self._disco_addon_author_locator)
+
+        def click_disco_addon_author(self):
+            self.disco_addon_author.click()
+            self.wait.until(
+                EC.number_of_windows_to_be(2),
+                message=f'Number of windows was {len(self.selenium.window_handles)}, expected 2',
+            )
+            self.selenium.switch_to.window(self.selenium.window_handles[1])
+            from pages.desktop.frontend.details import Detail
+
+            return Detail(self.selenium, self.page.base_url)
+
+        @property
+        def disco_extension_summary(self):
+            return self.find_element(*self._extension_summary_locator).text
+
+        @property
+        def disco_extension_rating(self):
+            return self.find_element(*self._extension_rating_locator)
+
+        @property
+        def rating_score(self):
+            return self.disco_extension_rating.get_attribute('title')
+
+        @property
+        def disco_extension_users(self):
+            return self.find_element(*self._extension_users_count_locator)
+
+        @property
+        def user_count(self):
+            return int(
+                self.disco_extension_users.text.replace('Users: ', '').replace(',', '')
+            )
+
+        @property
+        def install_button(self):
+            return self.find_element(*self._addon_install_button_locator)

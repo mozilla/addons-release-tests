@@ -38,7 +38,7 @@ class Search(Page):
         """method used when we need to check that the search results list
         contains a certain number of items"""
         self.wait.until(
-            lambda _: len(self.result_list.extensions) > count,
+            lambda _: len(self.result_list.extensions) >= count,
             message=f'Expected search results to be {count} but the list returned {len(self.result_list.extensions)}',
         )
 
