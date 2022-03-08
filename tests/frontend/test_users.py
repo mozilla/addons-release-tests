@@ -245,14 +245,12 @@ def test_user_update_profile(base_url, selenium, variables):
     user.edit.location_field.clear()
     # append to field text
     user.edit.biography(variables['biography_extra'])
-
     user.edit.submit_changes()
-    user.wait.until(
-        EC.visibility_of_element_located((By.CLASS_NAME, 'UserProfile-name'))
-    )
+    user.wait_for_user_to_load()
     assert updated_name in user.user_display_name.text
+    # check that location field is not displayed
     with pytest.raises(NoSuchElementException):
-        assert '' in user.view.user_location
+        selenium.find_element_by_css_selector('.UserProfile-location')
     biography_text = variables['biography'] + variables['biography_extra']
     assert biography_text in user.view.user_biography
 
@@ -263,7 +261,6 @@ def test_user_update_url(base_url, selenium, variables):
     user = User(selenium, base_url).open().wait_for_page_to_load()
     user.login('reusable_user')
     initial_page_url = selenium.current_url
-
     # test not a URL, this should not pass the client validation
     # it should not submit, red error message should not be displayed
     user.edit.homepage_link_field.clear()
@@ -426,6 +423,7 @@ def test_user_regular_has_no_role(base_url, selenium):
     # check that we do not display role badges for regular users
     with pytest.raises(NoSuchElementException):
         selenium.find_element_by_css_selector('.UserProfile-developer')
+    with pytest.raises(NoSuchElementException):
         selenium.find_element_by_css_selector('.UserProfile-artist')
 
 
