@@ -116,12 +116,12 @@ def test_about_addons_search(selenium, base_url):
 
 @pytest.mark.prod_only
 @pytest.mark.firefox_release
-def test_about_addons_find_more_addons(selenium, base_url):
+def test_about_addons_find_more_addons(selenium, base_url, wait):
     selenium.get('about:addons')
     about_addons = AboutAddons(selenium).wait_for_page_to_load()
     amo_home = about_addons.click_find_more_addons()
     # checks that the button redirects correctly to AMO homepage
-    assert amo_home.primary_hero.is_displayed()
+    wait.until(lambda _: amo_home.primary_hero.is_displayed())
 
 
 @pytest.mark.prod_only
