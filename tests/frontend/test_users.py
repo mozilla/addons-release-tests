@@ -3,6 +3,7 @@ import requests
 
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
 
 from pages.desktop.frontend.details import Detail
 from pages.desktop.frontend.home import Home
@@ -118,6 +119,8 @@ def test_user_edit_profile(base_url, selenium, variables):
     assert user.edit.submit_changes_button_disabled.is_displayed()
     # fill in the Edit profile form fields
     user.edit.display_name(variables['display_name'])
+    with pytest.raises(NoSuchElementException):
+        user.edit.submit_changes_button_disabled.is_displayed()
     user.edit.homepage_link(variables['homepage'])
     user.edit.location(variables['location'])
     user.edit.occupation(variables['occupation'])
@@ -229,6 +232,61 @@ def test_user_regular_notifications(base_url, selenium, variables):
         count += 1
 
 
+@pytest.mark.serial
+@pytest.mark.nondestructive
+def test_user_update_profile(base_url, selenium, variables):
+    user = User(selenium, base_url).open().wait_for_page_to_load()
+    user.login('reusable_user')
+    updated_name = 'new_display_name'
+    # update field
+    user.edit.display_name_field.clear()
+    user.edit.display_name_field.send_keys(updated_name)
+    # clear field
+    user.edit.location_field.clear()
+    # append to field text
+    user.edit.biography(variables['biography_extra'])
+    user.edit.submit_changes()
+    user.wait_for_user_to_load()
+    assert updated_name in user.user_display_name.text
+    # check that location field is not displayed
+    with pytest.raises(NoSuchElementException):
+        selenium.find_element_by_css_selector('.UserProfile-location')
+    biography_text = variables['biography'] + variables['biography_extra']
+    assert biography_text in user.view.user_biography
+
+
+@pytest.mark.serial
+@pytest.mark.nondestructive
+def test_user_update_url(base_url, selenium, variables):
+    user = User(selenium, base_url).open().wait_for_page_to_load()
+    user.login('reusable_user')
+    initial_page_url = selenium.current_url
+    # test not a URL, this should not pass the client validation
+    # it should not submit, red error message should not be displayed
+    user.edit.homepage_link_field.clear()
+    user.edit.homepage_link_field.send_keys('invalid.com')
+    user.edit.submit_changes()
+    assert initial_page_url in selenium.current_url
+    with pytest.raises(NoSuchElementException):
+        selenium.find_element_by_css_selector('.Notice-error .Notice-text')
+
+    # test invalid URL, this should not pass the API validation
+    # it should not submit, red error message should be displayed
+    user.edit.homepage_link_field.clear()
+    user.edit.homepage_link_field.send_keys('https://invalid,com')
+    user.edit.submit_changes()
+    user.wait.until(
+        EC.visibility_of_element_located(
+            (
+                By.CSS_SELECTOR,
+                '.Notice-error .Notice-text',
+            )
+        )
+    )
+    assert initial_page_url in selenium.current_url
+    assert variables['invalid_url_error'] in user.edit.invalid_url_error_text
+
+
 @pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.nondestructive
@@ -318,7 +376,7 @@ def test_user_mandatory_notifications(base_url, selenium):
     user.view.click_edit_profile_button()
     # checks that the mandatory notification checkboxes are still selected
     for checkbox in user.edit.notifications_checkbox[4:7]:
-        checkbox.is_selected()
+        assert checkbox.is_selected()
 
 
 @pytest.mark.serial
@@ -365,6 +423,8 @@ def test_user_regular_has_no_role(base_url, selenium):
     # check that we do not display role badges for regular users
     with pytest.raises(NoSuchElementException):
         selenium.find_element_by_css_selector('.UserProfile-developer')
+    with pytest.raises(NoSuchElementException):
+        selenium.find_element_by_css_selector('.UserProfile-artist')
 
 
 @pytest.mark.serial
@@ -548,6 +608,10 @@ def test_user_abuse_report(base_url, selenium, variables, wait):
     assert (
         variables['user_abuse_form_initial_help_text']
         in user.view.abuse_report_form_help_text
+    )
+    assert (
+        variables['user_abuse_form_additional_help_text']
+        in user.view.abuse_report_form_additional_help_text
     )
     # click on Cancel to close the form
     user.view.cancel_abuse_report_form()

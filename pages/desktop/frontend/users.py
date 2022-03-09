@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 from pypom import Region
 from selenium.webdriver.common.by import By
@@ -100,6 +101,10 @@ class User(Base):
         _abuse_report_form_help_text = (
             By.CSS_SELECTOR,
             '.ReportUserAbuse-form p:nth-child(2)',
+        )
+        _abuse_report_form_additional_help_text = (
+            By.CSS_SELECTOR,
+            '.ReportUserAbuse-form p:nth-child(3)',
         )
         _abuse_report_textarea_locator = (
             By.CSS_SELECTOR,
@@ -258,6 +263,10 @@ class User(Base):
         def abuse_report_form_help_text(self):
             return self.find_element(*self._abuse_report_form_help_text).text
 
+        @property
+        def abuse_report_form_additional_help_text(self):
+            return self.find_element(*self._abuse_report_form_additional_help_text).text
+
         def user_abuse_report_input_text(self, value):
             self.find_element(*self._abuse_report_textarea_locator).send_keys(value)
 
@@ -362,6 +371,10 @@ class User(Base):
             By.CSS_SELECTOR,
             '.UserProfileEdit-deletion-modal .UserProfileEdit-confirm-button',
         )
+        _invalid_url_error_text_locator = (
+            By.CSS_SELECTOR,
+            '.Notice-error .Notice-text',
+        )
 
         def click_view_profile_link(self):
             link = WebDriverWait(
@@ -399,11 +412,23 @@ class User(Base):
         def display_name(self, value):
             self.find_element(*self._edit_display_name_locator).send_keys(value)
 
+        @property
+        def display_name_field(self):
+            return self.find_element(*self._edit_display_name_locator)
+
         def homepage_link(self, value):
             self.find_element(*self._edit_homepage_locator).send_keys(value)
 
+        @property
+        def homepage_link_field(self):
+            return self.find_element(*self._edit_homepage_locator)
+
         def location(self, value):
             self.find_element(*self._edit_location_locator).send_keys(value)
+
+        @property
+        def location_field(self):
+            return self.find_element(*self._edit_location_locator)
 
         def occupation(self, value):
             self.find_element(*self._edit_occupation_locator).send_keys(value)
@@ -414,8 +439,8 @@ class User(Base):
 
         def upload_picture(self, image):
             button = self.find_element(*self._upload_picture_button_locator)
-            path = os.getcwd()
-            img = f'{path}\img\{image}'
+            path = Path(os.getcwd())
+            img = str(path / "img" / image)
             button.send_keys(img)
 
         def profile_picture_is_displayed(self):
@@ -510,3 +535,7 @@ class User(Base):
         def confirm_delete_account(self):
             self.find_element(*self._confirm_delete_profile_button_locator).click()
             return Home(self.selenium, self.page.base_url).wait_for_page_to_load()
+
+        @property
+        def invalid_url_error_text(self):
+            return self.find_element(*self._invalid_url_error_text_locator).text
