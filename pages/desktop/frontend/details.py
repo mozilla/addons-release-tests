@@ -675,6 +675,11 @@ class Detail(Base):
         _review_permalink_locator = (By.CSS_SELECTOR, '.UserReview-byLine a')
         _report_abuse_button_locator = (By.CLASS_NAME, 'ReportAbuseButton-show-more')
         _all_reviews_link_locator = (By.CLASS_NAME, 'Addon-all-reviews-link')
+        _throttled_request_error_locator = (By.CSS_SELECTOR, '.Notice-error')
+
+        @property
+        def throttled_request_error(self):
+            return self.find_element(*self._throttled_request_error_locator)
 
         @property
         def ratings_card_header(self):
@@ -690,11 +695,15 @@ class Detail(Base):
 
         @property
         def rating_stars(self):
-            # waits for the ratings stars to be fully loaded and editable
+            # waits for the rating stars to be loaded
             self.wait.until(
                 expected.invisibility_of_element_located(
                     self._loaded_rating_stars_locator
                 )
+            )
+            # waits for the rating stars to be editable
+            self.wait.until(
+                expected.element_to_be_clickable(self._rating_stars_locator)
             )
             return self.find_elements(*self._rating_stars_locator)
 
@@ -718,6 +727,10 @@ class Detail(Base):
             )
             return self.find_element(*self._delete_rating_link_locator)
 
+        @property
+        def delete_confirm_button(self):
+            return self.find_element(*self._delete_confirm_button_locator)
+
         def click_delete_confirm_button(self):
             self.find_element(*self._delete_confirm_button_locator).click()
             self.wait.until(
@@ -731,6 +744,13 @@ class Detail(Base):
         def wait_for_rating_form(self):
             self.wait.until(
                 expected.element_to_be_clickable(self._write_review_button_locator)
+            )
+
+        def wait_for_delete_link(self):
+            self.wait.until(
+                expected.visibility_of_element_located(
+                    (By.CSS_SELECTOR, '.AddonReviewCard-delete')
+                )
             )
 
         def review_text_input(self, value):
@@ -775,7 +795,7 @@ class Detail(Base):
             return self.find_element(*self._delete_review_link_locator)
 
         @property
-        def keep_review(self):
+        def keep_review_button(self):
             return self.find_element(*self._keep_review_button_locator)
 
         @property

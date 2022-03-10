@@ -10,6 +10,84 @@ from pages.desktop.frontend.details import Detail
 from pages.desktop.frontend.reviews import Reviews
 
 
+@pytest.mark.serial
+@pytest.mark.nondestructive
+def test_rating_term(selenium, base_url, variables):
+    # this test checks that if the rating has no text, the term used in messages is 'rating'
+    extension = variables['detail_extension_slug']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    addon.login('rating_user')
+    addon.ratings.rating_stars[3].click()
+    addon.ratings.wait_for_delete_link()
+    assert 'rating' in addon.ratings.delete_rating_link.text
+    addon.ratings.delete_rating_link.click()
+    assert 'rating' in addon.ratings.ratings_card_summary
+    assert 'rating' in addon.ratings.delete_confirm_button.text
+    assert 'rating' in addon.ratings.keep_review_button.text
+
+
+@pytest.mark.serial
+@pytest.mark.nondestructive
+def test_review_term(selenium, base_url, variables):
+    # this test checks that if the rating has text, the term used in messages is 'review'
+    extension = variables['detail_extension_slug']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    addon.login('rating_user')
+    # write text to rating from previous test
+    addon.ratings.write_a_review.click()
+    addon.ratings.review_text_input('nice add-on')
+    addon.ratings.submit_review()
+    assert 'review' in addon.ratings.delete_rating_link.text
+    addon.ratings.delete_rating_link.click()
+    assert 'review' in addon.ratings.ratings_card_summary
+    assert 'review' in addon.ratings.delete_confirm_button.text
+    assert 'review' in addon.ratings.keep_review_button.text
+    addon.ratings.click_delete_confirm_button()
+
+
+@pytest.mark.serial
+@pytest.mark.nondestructive
+def test_throttled_request_create_rating_spam(selenium, base_url, variables):
+    # this test checks that creating a rating, deleting and trying
+    # to create another rating immediately after will raise throttled request error
+    extension = variables['detail_extension_slug']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    addon.login('collection_user')
+    # create rating
+    addon.ratings.rating_stars[3].click()
+    # delete rating
+    addon.ratings.wait_for_delete_link()
+    addon.ratings.delete_rating_link.click()
+    addon.ratings.click_delete_confirm_button()
+    # try to create another rating
+    addon.ratings.rating_stars[3].click()
+    # check if error is displayed
+    addon.wait.until(
+        EC.visibility_of_element_located((By.CSS_SELECTOR, '.Notice-error'))
+    )
+    assert addon.ratings.throttled_request_error.is_displayed()
+
+
+@pytest.mark.serial
+@pytest.mark.nondestructive
+def test_throttled_request_update_rating_spam(selenium, base_url, variables):
+    # this test checks that repeatedly modifying the rating score will raise throttled request error
+    extension = variables['detail_extension_slug']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    addon.login('regular_user')
+    # click ten times on rating star
+    for i in range(10):
+        addon.ratings.rating_stars[3].click()
+    addon.wait.until(
+        EC.visibility_of_element_located((By.CSS_SELECTOR, '.Notice-error'))
+    )
+    assert addon.ratings.throttled_request_error.is_displayed()
+
+
 @pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.nondestructive
@@ -86,7 +164,7 @@ def test_cancel_delete_review(selenium, base_url, variables):
     addon.ratings.delete_review.click()
     # opt for the option to keep the review instead confirming to delete it
     # and verify that the review body is still displayed after that
-    addon.ratings.keep_review.click()
+    addon.ratings.keep_review_button.click()
     assert addon.ratings.written_review.is_displayed()
 
 
@@ -321,6 +399,28 @@ def test_flag_review_menu_options(selenium, base_url, variables):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
+def test_click_on_review_posting_time_link(selenium, base_url, variables):
+    # this test checks that if we go to all reviews page and clik on a review's posting time link (ex: 2 months ago)
+    # it displays the review in a different section from the others
+    extension = variables['detail_extension_slug']
+    selenium.get(f'{base_url}/addon/{extension}/reviews')
+    reviews = Reviews(selenium, base_url).wait_for_page_to_load()
+    # save the review info
+    review_rating = reviews.review_items[0].rating_stars.get_attribute('title')
+    review_author = reviews.review_items[0].rating_user.text
+    review_body = reviews.review_items[0].review_body
+    # click on posting time link
+    reviews.review_items[0].posting_date.click()
+    # check that the featured review is the same one
+    assert review_rating in reviews.featured_review_section.rating_stars.get_attribute(
+        'title'
+    )
+    assert review_author in reviews.featured_review_section.author.text
+    assert review_body in reviews.featured_review_section.body.text
+
+
+@pytest.mark.serial
+@pytest.mark.nondestructive
 def test_write_review_in_all_reviews_page(selenium, base_url, variables):
     extension = variables['detail_extension_slug']
     selenium.get(f'{base_url}/addon/{extension}')
@@ -332,6 +432,10 @@ def test_write_review_in_all_reviews_page(selenium, base_url, variables):
     addon.ratings.wait_for_rating_form()
     # navigate to the All reviews page to write your review
     reviews = addon.ratings.click_all_reviews_link()
+    addon.ratings.write_a_review.click()
+    # cancel writing review
+    addon.ratings.cancel_review.click()
+    # write your review
     addon.ratings.write_a_review.click()
     review_text = variables['initial_text_input']
     addon.ratings.review_text_input(review_text)
