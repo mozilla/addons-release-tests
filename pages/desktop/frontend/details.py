@@ -725,6 +725,10 @@ class Detail(Base):
                     self._loaded_rating_stars_locator
                 )
             )
+            # waits for delete link to be displayed
+            self.wait.until(
+                expected.visibility_of_element_located(self._delete_rating_link_locator)
+            )
             return self.find_element(*self._delete_rating_link_locator)
 
         @property
@@ -744,13 +748,6 @@ class Detail(Base):
         def wait_for_rating_form(self):
             self.wait.until(
                 expected.element_to_be_clickable(self._write_review_button_locator)
-            )
-
-        def wait_for_delete_link(self):
-            self.wait.until(
-                expected.visibility_of_element_located(
-                    (By.CSS_SELECTOR, '.AddonReviewCard-delete')
-                )
             )
 
         def review_text_input(self, value):

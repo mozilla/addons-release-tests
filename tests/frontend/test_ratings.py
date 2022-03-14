@@ -12,43 +12,6 @@ from pages.desktop.frontend.reviews import Reviews
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-def test_rating_term(selenium, base_url, variables):
-    # this test checks that if the rating has no text, the term used in messages is 'rating'
-    extension = variables['detail_extension_slug']
-    selenium.get(f'{base_url}/addon/{extension}')
-    addon = Detail(selenium, base_url).wait_for_page_to_load()
-    addon.login('rating_user')
-    addon.ratings.rating_stars[3].click()
-    addon.ratings.wait_for_delete_link()
-    assert 'rating' in addon.ratings.delete_rating_link.text
-    addon.ratings.delete_rating_link.click()
-    assert 'rating' in addon.ratings.ratings_card_summary
-    assert 'rating' in addon.ratings.delete_confirm_button.text
-    assert 'rating' in addon.ratings.keep_review_button.text
-
-
-@pytest.mark.serial
-@pytest.mark.nondestructive
-def test_review_term(selenium, base_url, variables):
-    # this test checks that if the rating has text, the term used in messages is 'review'
-    extension = variables['detail_extension_slug']
-    selenium.get(f'{base_url}/addon/{extension}')
-    addon = Detail(selenium, base_url).wait_for_page_to_load()
-    addon.login('rating_user')
-    # write text to rating from previous test
-    addon.ratings.write_a_review.click()
-    addon.ratings.review_text_input('nice add-on')
-    addon.ratings.submit_review()
-    assert 'review' in addon.ratings.delete_rating_link.text
-    addon.ratings.delete_rating_link.click()
-    assert 'review' in addon.ratings.ratings_card_summary
-    assert 'review' in addon.ratings.delete_confirm_button.text
-    assert 'review' in addon.ratings.keep_review_button.text
-    addon.ratings.click_delete_confirm_button()
-
-
-@pytest.mark.serial
-@pytest.mark.nondestructive
 def test_throttled_request_create_rating_spam(selenium, base_url, variables):
     # this test checks that creating a rating, deleting and trying
     # to create another rating immediately after will raise throttled request error
@@ -59,7 +22,6 @@ def test_throttled_request_create_rating_spam(selenium, base_url, variables):
     # create rating
     addon.ratings.rating_stars[3].click()
     # delete rating
-    addon.ratings.wait_for_delete_link()
     addon.ratings.delete_rating_link.click()
     addon.ratings.click_delete_confirm_button()
     # try to create another rating
@@ -103,6 +65,7 @@ def test_rating_with_text(selenium, base_url, variables):
     review_text = variables['initial_text_input']
     addon.ratings.review_text_input(review_text)
     addon.ratings.submit_review()
+    assert 'review' in addon.ratings.delete_rating_link.text
     # verifies that the input review text was saved
     assert addon.ratings.written_review.text == review_text
     # checks that the review posting time is recorded
@@ -177,6 +140,9 @@ def test_delete_review(selenium, base_url, variables):
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     addon.login('rating_user')
     addon.ratings.delete_review.click()
+    assert 'review' in addon.ratings.ratings_card_summary
+    assert 'review' in addon.ratings.delete_confirm_button.text
+    assert 'review' in addon.ratings.keep_review_button.text
     addon.ratings.click_delete_confirm_button()
     # checks that the review text is no longer displayed
     with pytest.raises(NoSuchElementException):
@@ -196,6 +162,7 @@ def test_rating_without_text(selenium, base_url, variables):
     prior_bar_rating_count = int(addon.stats.bar_rating_counts[0].text)
     # post a 5 star rating score and check that 5 stars are highlighted
     addon.ratings.rating_stars[4].click()
+    assert 'rating' in addon.ratings.delete_rating_link.text
     assert len(addon.ratings.selected_star_highlight) == 5
     addon.ratings.wait_for_rating_form()
     # number of reviews in stats card after leaving a rating
@@ -241,6 +208,9 @@ def test_delete_rating(selenium, base_url, variables):
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     addon.login('rating_user')
     addon.ratings.delete_rating_link.click()
+    assert 'rating' in addon.ratings.ratings_card_summary
+    assert 'rating' in addon.ratings.delete_confirm_button.text
+    assert 'rating' in addon.ratings.keep_review_button.text
     addon.ratings.click_delete_confirm_button()
     # verifies that rating stars are no longer full after deleting the rating
     WebDriverWait(selenium, 10).until(
