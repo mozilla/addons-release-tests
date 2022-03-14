@@ -88,6 +88,41 @@ def wait():
 
 
 @pytest.fixture
+def set_session_cookie(selenium, base_url, request):
+    """Fixture used when we want to open an AMO page with a sessionid
+    cookie (i.e. a logged-in user) already set"""
+    # the user file is passed in the test as a marker argument
+    marker = request.node.get_closest_marker('user_data')
+    user_file = marker.args[0]
+    with open(f'{user_file}.txt', 'r') as file:
+        cookie_value = str(file.read())
+    # need to set the url context if we want to apply a cookie
+    # in order to avoid InvalidCookieDomainException error
+    selenium.get(base_url)
+    # set the sessionid cookie
+    create_session = selenium.add_cookie(
+        {
+            "name": "sessionid",
+            "value": cookie_value,
+        }
+    )
+    return create_session
+
+
+@pytest.fixture
+def destroy_file(request):
+    """Fixture to delete user files created for a test suite"""
+    marker = request.node.get_closest_marker('user_data')
+    user_file = marker.args[0]
+    import os
+
+    if os.path.exists(f'{user_file}.txt'):
+        os.remove(f'{user_file}.txt')
+    else:
+        print("The file does not exist")
+
+
+@pytest.fixture
 def fxa_account(request):
     """Fxa account to use during tests that need to login.
 

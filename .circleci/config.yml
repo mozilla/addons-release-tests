@@ -175,6 +175,40 @@ jobs:
       - store_artifacts:
           path: devhub-parallel-test-results.html
 
+  # tests covering addon submissions through DevHub
+  addon_submissions_tests:
+    executor:
+      name: win/default
+      version: "previous"
+      size: "medium"
+    working_directory: ~/addons-release-tests/
+    steps:
+      - checkout
+      - run:
+          name: Install python 3.9
+          command: choco install python --version=3.9.0
+      - run:
+          name: Upgrade pip
+          command: pip install --upgrade pip --user
+      - run:
+          name: Install requirements
+          command: pip install --no-deps -r ./requirements.txt
+      - run:
+          name: Install geckodriver
+          command: choco install selenium-gecko-driver
+      - run:
+          name: Install Firefox
+          command: choco install firefox-nightly --pre
+      - run:
+          name: Run addon submissions tests
+          environment:
+            MOZ_HEADLESS: 1
+            PYTEST_ADDOPTS: -n 1 --reruns 2
+          command: pytest tests\devhub\test_addon_submissions.py --driver Firefox --variables stage.json --html=submissions-test-results.html --self-contained-html
+          no_output_timeout: 30m
+      - store_artifacts:
+          path: submissions-test-results.html
+
   # parallel tests run on production after the AMO push
   sanity_parallel_tests:
     executor:
@@ -254,6 +288,7 @@ workflows:
       - user_serial_tests
       - frontend_parallel_tests
       - devhub_parallel_tests
+      - addon_submissions_tests
   # scheduled in CircleCI Project settings to run each Wednesdays at 05:00 UTC
   scheduled_stage_release_run:
     when:
@@ -266,6 +301,7 @@ workflows:
       - user_serial_tests
       - frontend_parallel_tests
       - devhub_parallel_tests
+      - addon_submissions_tests
   # scheduled in CircleCI Project settings to start each Thursdays at 17:00 UTC
   scheduled_prod_sanity_run:
     when:
