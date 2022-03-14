@@ -45,6 +45,11 @@ def firefox_options(firefox_options, request):
     if marker:
         firefox_options.add_argument('-headless')
         firefox_options.log.level = 'trace'
+        firefox_options.set_preference(
+            'extensions.getAddons.discovery.api_url',
+            'https://services.addons.mozilla.org/api/v4/discovery/?lang=%LOCALE%&edition=%DISTRIBUTION%',
+        )
+        firefox_options.set_preference('extensions.getAddons.cache.enabled', True)
     else:
         firefox_options.set_preference('extensions.install.requireBuiltInCerts', False)
         firefox_options.set_preference('xpinstall.signatures.required', False)
@@ -77,7 +82,9 @@ def selenium(selenium, request):
 def wait():
     """A preset wait to be used in test methods. Removes the necessity to declare a
     WebDriverWait whenever we need to wait for certain conditions to happen in a test"""
-    return WebDriverWait(selenium, 10, ignored_exceptions=StaleElementReferenceException)
+    return WebDriverWait(
+        selenium, 10, ignored_exceptions=StaleElementReferenceException
+    )
 
 
 @pytest.fixture
