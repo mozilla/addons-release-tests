@@ -11,6 +11,7 @@ class Reviews(Base):
     _filter_by_score_locator = (By.CLASS_NAME, 'AddonReviewList-filterByScoreSelector')
     _user_review_permalink_locator = (By.CSS_SELECTOR, '.FeaturedAddonReview header')
     _addon_summary_card_locator = (By.CLASS_NAME, 'AddonSummaryCard')
+    _featured_review_card_locator = (By.CSS_SELECTOR, '.FeaturedAddonReview-card')
     _reviews_list_locator = (By.CSS_SELECTOR, '.AddonReviewList-reviews-listing li')
     _editable_rating_stars_locator = (By.CSS_SELECTOR, '.Rating--editable button')
     _score_star_highlight_locator = (
@@ -69,6 +70,28 @@ class Reviews(Base):
     @property
     def bar_rating_score(self):
         return self.find_elements(*self._bar_rating_score_locator)
+
+    @property
+    def featured_review_section(self):
+        el = self.find_element(*self._featured_review_card_locator)
+        return self.FeaturedReview(self, el)
+
+    class FeaturedReview(Region):
+        _author_locator = (By.CSS_SELECTOR, '.AddonReviewCard-authorByLine')
+        _body_locator = (By.CSS_SELECTOR, '.ShowMoreCard-contents > div')
+        _rating_stars_locator = (By.CSS_SELECTOR, '.Rating--small')
+
+        @property
+        def author(self):
+            return self.find_element(*self._author_locator)
+
+        @property
+        def body(self):
+            return self.find_element(*self._body_locator)
+
+        @property
+        def rating_stars(self):
+            return self.find_element(*self._rating_stars_locator)
 
     @property
     def review_items(self):

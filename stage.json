@@ -29,6 +29,7 @@
   "dev_reply_review": "dev-reply-review",
   "initial_text_input": "original text",
   "edited_text_input": " edited text",
+  "confirm_delete_message": "Are you sure you want to delete",
   "review_flag_spam": "This is spam",
   "review_flagged_for_spam": "Flagged as spam",
   "review_flag_language": "This contains inappropriate language",
