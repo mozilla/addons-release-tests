@@ -175,6 +175,7 @@ class Collections(Base):
             return self.AddonSearch(self)
 
         class AddonSearch(Region):
+            _header_locator = (By.CSS_SELECTOR, '.AutoSearchInput-label')
             _root_locator = (By.CSS_SELECTOR, '.CollectionAddAddon')
             _search_field_locator = (By.ID, 'AutoSearchInput-collection-addon-query')
             _search_list_locator = (
@@ -185,6 +186,10 @@ class Collections(Base):
                 By.CSS_SELECTOR,
                 '.AutoSearchInput-suggestions-item',
             )
+
+            @property
+            def header(self):
+                return self.find_element(*self._header_locator)
 
             def search(self, term):
                 textbox = self.find_element(*self._search_field_locator)
@@ -356,6 +361,10 @@ class Collections(Base):
             '.CollectionManager-cancel',
         )
         _delete_button_locator = (By.CLASS_NAME, 'Collection-delete-button')
+        _confirm_delete_dialog_locator = (
+            By.CSS_SELECTOR,
+            '.ConfirmationDialog-message',
+        )
         _cancel_delete_button_locator = (
             By.CSS_SELECTOR,
             '.ConfirmationDialog-cancel-button',
@@ -439,12 +448,24 @@ class Collections(Base):
                 message='The delete collection confirmation section was not displayed',
             )
 
+        @property
+        def confirm_delete_dialog_message(self):
+            return self.find_element(*self._confirm_delete_dialog_locator)
+
+        @property
+        def cancel_delete_collection_button(self):
+            return self.find_element(*self._cancel_delete_button_locator)
+
         def cancel_delete_collection(self):
             self.find_element(*self._cancel_delete_button_locator).click()
             self.wait.until(
                 EC.element_to_be_clickable(self._delete_button_locator),
                 message='The delete collection confirmation section could not be closed',
             )
+
+        @property
+        def confirm_delete_collection_button(self):
+            return self.find_element(*self._confirm_delete_button_locator)
 
         def confirm_delete_collection(self):
             self.find_element(*self._confirm_delete_button_locator).click()
