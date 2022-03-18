@@ -49,7 +49,9 @@ def test_collection_creator_and_modified_date(selenium, base_url, variables, wai
     collections.login('collection_user')
     collections.select_collection(0)
     # checks that the display name of the logged in user is present in the meta card
-    assert 'collection_user' in collections.collection_detail.collection_stats[1].text
+    collections.header.user_header_display_name(
+        collections.collection_detail.collection_stats[1].text
+    )
     # making a small edit to trigger a modified date change in the collection
     collections.collection_detail.click_edit_collection_button()
     collections.collection_detail.click_edit_collection_meta()
@@ -130,6 +132,8 @@ def test_add_addons_to_collection(selenium, base_url, variables, wait):
     collections.login('collection_user')
     collections.select_collection(0)
     collections.collection_detail.click_edit_collection_button()
+    assert collections.create.addon_search.header.is_displayed()
+    assert collections.collection_detail.collection_stats[0].text == '0'
     search_addon = collections.create.addon_search.search(variables['search_term'])
     # make a note of the first suggestion name
     suggestion_name = search_addon[0].name.text
@@ -138,7 +142,7 @@ def test_add_addons_to_collection(selenium, base_url, variables, wait):
     assert 'Added to collection' in collections.create.addon_add_confirmation
     # waits for the addons list to be updated
     wait.until(
-        lambda _: len(collections.create.edit_addons_list) > 0,
+        lambda _: len(collections.create.edit_addons_list) == 1,
         message=f'Edit collection addon list had {len(collections.create.edit_addons_list)} addons',
     )
     # verifies that the suggestion selected was added to the collection
@@ -195,9 +199,7 @@ def test_remove_addon_from_collection(selenium, base_url, variables, wait):
     assert addon_name not in collections.create.edit_addons_list[0].edit_list_addon_name
 
 
-@pytest.mark.skip(
-    reason='There is an error preventing notes to be deleted. Skipping until the issue is fixed'
-)
+@pytest.mark.serial
 @pytest.mark.nondestructive
 def test_collection_addon_notes(selenium, base_url, variables):
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
@@ -337,6 +339,40 @@ def test_add_to_collection_in_addon_detail_page(selenium, base_url, variables, w
     collections.select_collection(0)
     addons_list = Search(selenium, base_url).wait_for_page_to_load()
     assert addon_name in addons_list.result_list.extensions[0].name
+
+
+@pytest.mark.serial
+@pytest.mark.nondestructive
+def test_confirm_delete_dialog(selenium, base_url, variables):
+    collections = Collections(selenium, base_url).open().wait_for_page_to_load()
+    collections.login('collection_user')
+    collections.select_collection(0)
+    collections.collection_detail.delete_collection()
+    # verify that the confirm delete dialog elements are displayed
+    assert collections.collection_detail.confirm_delete_dialog_message.is_displayed()
+    assert collections.collection_detail.cancel_delete_collection_button.is_displayed()
+    assert collections.collection_detail.confirm_delete_collection_button.is_displayed()
+    # click on edit collection button
+    collections.collection_detail.click_edit_collection_button()
+    # verify that the confirm delete dialog elements are not displayed
+    with pytest.raises(NoSuchElementException):
+        selenium.find_element_by_css_selector('.ConfirmationDialog-message')
+    with pytest.raises(NoSuchElementException):
+        selenium.find_element_by_css_selector('.ConfirmationDialog-cancel-button')
+    with pytest.raises(NoSuchElementException):
+        selenium.find_element_by_css_selector('.ConfirmationDialog-confirm-button')
+    # click on the second delete collection button
+    collections.collection_detail.delete_collection()
+    # verify that the confirm delete dialog elements are displayed
+    assert collections.collection_detail.confirm_delete_dialog_message.is_displayed()
+    assert collections.collection_detail.cancel_delete_collection_button.is_displayed()
+    assert collections.collection_detail.confirm_delete_collection_button.is_displayed()
+    # click on edit collection details button
+    collections.collection_detail.click_edit_collection_meta()
+    # verify that the confirm delete dialog elements are still displayed
+    assert collections.collection_detail.confirm_delete_dialog_message.is_displayed()
+    assert collections.collection_detail.cancel_delete_collection_button.is_displayed()
+    assert collections.collection_detail.confirm_delete_collection_button.is_displayed()
 
 
 @pytest.mark.sanity
