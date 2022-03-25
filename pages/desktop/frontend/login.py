@@ -33,6 +33,9 @@ class Login(Base):
     # 6. user used for collections tests
     COLLECTION_USER_EMAIL = os.environ.get('COLLECTION_USER_EMAIL')
     COLLECTION_USER_PASSWORD = os.environ.get('COLLECTION_USER_PASSWORD')
+    # 7. user used for add-on submissions
+    SUBMISSIONS_USER_EMAIL = os.environ.get('SUBMISSIONS_USER_EMAIL')
+    SUBMISSIONS_USER_PASSWORD = os.environ.get('SUBMISSIONS_USER_PASSWORD')
 
     _email_locator = (By.NAME, 'email')
     _continue_locator = (By.CSS_SELECTOR, '.button-row button')
@@ -54,6 +57,8 @@ class Login(Base):
             self.fxa_login(self.RATING_USER_EMAIL, self.RATING_USER_PASSWORD)
         elif user == 'collection_user':
             self.fxa_login(self.COLLECTION_USER_EMAIL, self.COLLECTION_USER_PASSWORD)
+        elif user == 'submissions_user':
+            self.fxa_login(self.SUBMISSIONS_USER_EMAIL, self.SUBMISSIONS_USER_PASSWORD)
         else:
             self.fxa_login(self.REGULAR_USER_EMAIL, self.REGULAR_USER_PASSWORD)
 
@@ -141,22 +146,3 @@ class Login(Base):
                 requests.get(f'https://restmail.net/mail/{mail}', timeout=10)
                 print('Restmail did not receive an email from FxA')
         return self
-
-    def get_session_cookie(self, user):
-        """A method that reads the sessionid cookie generated after a successful login"""
-        page = Base(self.selenium, self.base_url)
-        page.header.click_login()
-        self.wait.until(
-            EC.visibility_of_element_located((By.NAME, 'email')),
-            message=f'FxA email input field was not displayed in {self.selenium.current_url}',
-        )
-        self.account(user)
-        self.wait.until(
-            EC.url_contains('addons'),
-            message=f'AMO could not be loaded in {self.selenium.current_url}',
-        )
-        session_cookie = self.selenium.get_cookie('sessionid')
-        # store cookie in a dynamic file created only at runtime based on a specific user;
-        # this file is destroyed (via a fixture) once the tests that needed it were run
-        with open(f'{user}.txt', 'w') as file:
-            file.write(session_cookie['value'])

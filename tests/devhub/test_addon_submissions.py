@@ -1,36 +1,36 @@
 import pytest
 
-from pages.desktop.frontend.home import Home
-from pages.desktop.frontend.login import Login
+from pages.desktop.developers.devhub_home import DevHubHome
 
 
 @pytest.mark.sanity
 @pytest.mark.serial
-def test_create_submissions_user_session(selenium, base_url):
-    """Create a user session to be used in subsequent tests"""
-    Home(selenium, base_url).open().wait_for_page_to_load()
-    login = Login(selenium, base_url)
-    login.get_session_cookie('submissions_user')
-
-
-# TODO: tests covering addon submissions will be added here
-
-
-# These last parts handle the session cookie invalidation and user file deletion
-@pytest.mark.sanity
-@pytest.mark.serial
-@pytest.mark.user_data('submissions_user')
-def test_clear_submission_session(base_url, selenium, set_session_cookie):
-    """Logout to invalidate session cookie"""
-    page = Home(selenium, base_url).open().wait_for_page_to_load()
-    page.logout()
+# The first test starts the browser with a normal login in order to store de session cookie
+@pytest.mark.login('submissions_user')
+def test_submit_listed_addon(selenium, base_url, variables, wait):
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    # TODO: add steps for submitting listed addon
 
 
 @pytest.mark.sanity
 @pytest.mark.serial
-@pytest.mark.user_data('submissions_user')
-def test_destroy_file(destroy_file):
-    """Destroy user session file and verify that it was deleted"""
+@pytest.mark.create_session(
+    'submissions_user'
+)  # starts the browser with an active session (no login needed)
+def test_submit_mixed_addon_versions(selenium, base_url, variables, wait):
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    # TODO: add steps for submitting addon new version
+
+
+# TODO: more tests that use @pytest.mark.create_session go here
+
+
+# This last part handles the session cookie invalidation and user file deletion
+@pytest.mark.sanity
+@pytest.mark.serial
+@pytest.mark.create_session('submissions_user')
+@pytest.mark.clear_session
+def test_clear_session(selenium, base_url):
     with pytest.raises(FileNotFoundError):
         with open('submissions_user.txt', 'r') as file:
             file.read()
