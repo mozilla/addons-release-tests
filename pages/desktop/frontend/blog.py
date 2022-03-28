@@ -156,11 +156,10 @@ class ArticlePage(Base):
 
         @property
         def rating(self):
-            return float(
-                self.find_element(*self._rating_locator)
-                .get_attribute('title')
-                .split()[1]
-            )
+            rating = self.find_element(*self._rating_locator).get_attribute('title')
+            if 'There are no ratings yet' in rating:
+                return 0
+            return float(rating.split()[1])
 
         @property
         def users_number(self):
