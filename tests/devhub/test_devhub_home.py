@@ -145,6 +145,19 @@ def test_devhub_logged_in_page_hero_banner(selenium, base_url, variables):
 
 
 @pytest.mark.nondestructive
+def test_devhub_my_addons_section(selenium, base_url, variables):
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    page.devhub_login('regular_user')
+    page.wait_for_page_to_load()
+    assert 'My Add-ons' in page.my_addons_section_header.text
+    # if the current account has no add-ons submitted, this paragraph will be displayed
+    assert (
+        variables['devhub_my_addons_section_paragraph']
+        in page.my_addons_section_paragraph.text
+    )
+
+
+@pytest.mark.nondestructive
 def test_devhub_my_addons_list_items(selenium, base_url, wait):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     page.devhub_login('developer')
@@ -209,6 +222,46 @@ def test_devhub_click_submit_new_theme_button(selenium, base_url, wait):
         lambda _: distribution_page.submission_form_header.is_displayed(),
         message='The addon distribution page header as not displayed',
     )
+
+
+@pytest.mark.nondestructive
+def test_devhub_click_first_addon_button(selenium, base_url, variables):
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    # an account with no add-ons submitted is used
+    page.devhub_login('regular_user')
+    page.wait_for_page_to_load()
+    distribution_page = page.click_submit_addon_button()
+    # if this user never accepted the distribution agreement, it should be displayed in the page, otherwise not
+    try:
+        assert (
+            variables['devhub_submit_addon_agreement_header']
+            in distribution_page.distribution_header.text
+        )
+    except AssertionError:
+        assert (
+            variables['devhub_submit_addon_distribution_header']
+            in distribution_page.distribution_header.text
+        )
+
+
+@pytest.mark.nondestructive
+def test_devhub_click_first_theme_button(selenium, base_url, variables):
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    # an account with no add-ons submitted is used
+    page.devhub_login('regular_user')
+    page.wait_for_page_to_load()
+    distribution_page = page.click_submit_theme_button()
+    # if this user never accepted the distribution agreement, it should be displayed in the page, otherwise not
+    try:
+        assert (
+            variables['devhub_submit_addon_agreement_header']
+            in distribution_page.distribution_header.text
+        )
+    except AssertionError:
+        assert (
+            variables['devhub_submit_addon_distribution_header']
+            in distribution_page.distribution_header.text
+        )
 
 
 @pytest.mark.nondestructive
@@ -534,3 +587,15 @@ def test_change_devhub_language(base_url, selenium, language, locale, translatio
     page.footer_language_picker(language)
     assert f'{locale}/developers/' in selenium.current_url
     assert translation in page.page_logo.text
+
+
+@pytest.mark.nondestructive
+def test_devhub_footer_copyright_message(base_url, selenium):
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    assert page.footer.copyright_message.is_displayed()
+    page.footer.noted_link.click()
+    assert '/about/legal' in selenium.current_url
+    page.driver.back()
+    page.wait_for_page_to_load()
+    page.footer.license_link.click()
+    assert 'creativecommons.org/licenses' in selenium.current_url
