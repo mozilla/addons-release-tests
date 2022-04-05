@@ -60,10 +60,10 @@ toml==0.10.2
 typed-ast==1.5.2
 typing-extensions==4.1.1
 urllib3==1.26.9
-virtualenv==20.13.3
+virtualenv==20.14.0
 wcwidth==0.2.5
 WebOb==1.8.7
-wrapt==1.13.3
+wrapt==1.14.0
 zipp==3.7.0
 zope.component==5.0.1
 zope.deferredimport==4.4
