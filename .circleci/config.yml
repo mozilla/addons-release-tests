@@ -6,14 +6,10 @@ jobs:
   collections_serial_tests:
     executor:
       name: win/default
-      version: "previous"
       size: "medium"
     working_directory:  ~/addons-release-tests/
     steps:
       - checkout
-      - run:
-          name: Install python 3.9
-          command: choco install python --version=3.9.0
       - run:
           name: Check installed python verion
           command: python --version
@@ -43,14 +39,13 @@ jobs:
   ratings_serial_tests:
     executor:
       name: win/default
-      version: "previous"
       size: "medium"
     working_directory: ~/addons-release-tests/
     steps:
       - checkout
       - run:
-          name: Install python 3.9
-          command: choco install python --version=3.9.0
+          name: Install python 3.10
+          command: choco install python --version=3.10.0
       - run:
           name: Upgrade pip
           command: pip install --upgrade pip --user
@@ -77,14 +72,13 @@ jobs:
   user_serial_tests:
     executor:
       name: win/default
-      version: "previous"
       size: "medium"
     working_directory: ~/addons-release-tests/
     steps:
       - checkout
       - run:
-          name: Install python 3.9
-          command: choco install python --version=3.9.0
+          name: Install python 3.10
+          command: choco install python --version=3.10.0
       - run:
           name: Upgrade pip
           command: pip install --upgrade pip --user
@@ -111,14 +105,13 @@ jobs:
   frontend_parallel_tests:
     executor:
       name: win/default
-      version: "previous"
       size: "medium"
     working_directory: ~/addons-release-tests/
     steps:
       - checkout
       - run:
-          name: Install python 3.9
-          command: choco install python --version=3.9.0
+          name: Install python 3.10
+          command: choco install python --version=3.10.0
       - run:
           name: Upgrade pip
           command: pip install --upgrade pip --user
@@ -151,8 +144,8 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install python 3.9
-          command: choco install python --version=3.9.0
+          name: Install python 3.10
+          command: choco install python --version=3.10.0
       - run:
           name: Upgrade pip
           command: pip install --upgrade pip --user
@@ -179,14 +172,13 @@ jobs:
   sanity_parallel_tests:
     executor:
       name: win/default
-      version: "previous"
       size: "medium"
     working_directory: ~/addons-release-tests/
     steps:
       - checkout
       - run:
-          name: Install python 3.9
-          command: choco install python --version=3.9.0
+          name: Install python 3.10
+          command: choco install python --version=3.10.0
       - run:
           name: Upgrade pip
           command: pip install --upgrade pip --user
@@ -213,14 +205,13 @@ jobs:
   sanity_serial_tests:
     executor:
       name: win/default
-      version: "previous"
       size: "medium"
     working_directory: ~/addons-release-tests/
     steps:
       - checkout
       - run:
-          name: Install python 3.9
-          command: choco install python --version=3.9.0
+          name: Install python 3.10
+          command: choco install python --version=3.10.0
       - run:
           name: Upgrade pip
           command: pip install --upgrade pip --user
