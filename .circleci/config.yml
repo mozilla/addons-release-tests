@@ -11,6 +11,9 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Install python 3.10
+          command: choco install python --version=3.10.0
+      - run:
           name: Check installed python verion
           command: python --version
       - run:
