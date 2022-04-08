@@ -11,17 +11,11 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install python 3.10
-          command: choco install python --version=3.10.0
-      - run:
-          name: Check installed python verion
-          command: python --version
-      - run:
           name: Upgrade pip
-          command: pip install --upgrade pip --user
+          command: py -3.9 -m pip install --upgrade pip --user
       - run:
           name: Install requirements
-          command: pip install --no-deps -r ./requirements.txt
+          command: py -3.9 -m pip install --no-deps -r ./requirements.txt
       - run:
           name: Install geckodriver
           command: choco install selenium-gecko-driver
@@ -33,7 +27,7 @@ jobs:
           environment:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 1 --reruns 2
-          command: pytest tests\frontend\test_collections.py --driver Firefox --variables stage.json --html=collections-test-results.html --self-contained-html
+          command: py -3.9 -m pytest tests\frontend\test_collections.py --driver Firefox --variables stage.json --html=collections-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: collections-test-results.html
@@ -47,14 +41,11 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install python 3.10
-          command: choco install python --version=3.10.0
-      - run:
           name: Upgrade pip
-          command: pip install --upgrade pip --user
+          command: py -3.9 -m pip install --upgrade pip --user
       - run:
           name: Install requirements
-          command: pip install --no-deps -r ./requirements.txt
+          command: py -3.9 -m pip install --no-deps -r ./requirements.txt
       - run:
           name: Install geckodriver
           command: choco install selenium-gecko-driver
@@ -66,7 +57,7 @@ jobs:
           environment:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 1 --reruns 2
-          command: pytest tests\frontend\test_ratings.py --driver Firefox --variables stage.json --html=ratings-test-results.html --self-contained-html
+          command: py -3.9 -m pytest tests\frontend\test_ratings.py --driver Firefox --variables stage.json --html=ratings-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: ratings-test-results.html
@@ -80,14 +71,11 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install python 3.10
-          command: choco install python --version=3.10.0
-      - run:
           name: Upgrade pip
-          command: pip install --upgrade pip --user
+          command: py -3.9 -m pip install --upgrade pip --user
       - run:
           name: Install requirements
-          command: pip install --no-deps -r ./requirements.txt
+          command: py -3.9 -m pip install --no-deps -r ./requirements.txt
       - run:
           name: Install geckodriver
           command: choco install selenium-gecko-driver
@@ -99,7 +87,7 @@ jobs:
           environment:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 1 --reruns 2
-          command: pytest tests\frontend\test_users.py --driver Firefox --variables stage.json --html=user-test-results.html --self-contained-html
+          command: py -3.9 -m pytest tests\frontend\test_users.py --driver Firefox --variables stage.json --html=user-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: user-test-results.html
@@ -113,14 +101,11 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install python 3.10
-          command: choco install python --version=3.10.0
-      - run:
           name: Upgrade pip
-          command: pip install --upgrade pip --user
+          command: py -3.9 -m pip install --upgrade pip --user
       - run:
           name: Install requirements
-          command: pip install --no-deps -r ./requirements.txt
+          command: py -3.9 -m pip install --no-deps -r ./requirements.txt
       - run:
           name: Install geckodriver
           command: choco install selenium-gecko-driver
@@ -132,7 +117,7 @@ jobs:
           environment:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 4 --reruns 2
-          command: pytest tests\frontend -m "not serial and not prod_only" --driver Firefox --variables stage.json --html=frontend-parallel-test-results.html --self-contained-html
+          command: py -3.9 -m pytest tests\frontend -m "not serial and not prod_only" --driver Firefox --variables stage.json --html=frontend-parallel-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: frontend-parallel-test-results.html
@@ -147,14 +132,11 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install python 3.10
-          command: choco install python --version=3.10.0
-      - run:
           name: Upgrade pip
-          command: pip install --upgrade pip --user
+          command: py -3.9 -m pip install --upgrade pip --user
       - run:
           name: Install requirements
-          command: pip install --no-deps -r ./requirements.txt
+          command: py -3.9 -m pip install --no-deps -r ./requirements.txt
       - run:
           name: Install geckodriver
           command: choco install selenium-gecko-driver
@@ -166,7 +148,7 @@ jobs:
           environment:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 4 --reruns 2
-          command: pytest tests\devhub\test_devhub_home.py --driver Firefox --variables stage.json --html=devhub-parallel-test-results.html --self-contained-html
+          command: py -3.9 -m pytest tests\devhub\test_devhub_home.py --driver Firefox --variables stage.json --html=devhub-parallel-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: devhub-parallel-test-results.html
@@ -180,14 +162,11 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install python 3.10
-          command: choco install python --version=3.10.0
-      - run:
           name: Upgrade pip
-          command: pip install --upgrade pip --user
+          command: py -3.9 -m pip install --upgrade pip --user
       - run:
           name: Install requirements
-          command: pip install --no-deps -r ./requirements.txt
+          command: py -3.9 -m pip install --no-deps -r ./requirements.txt
       - run:
           name: Install geckodriver
           command: choco install selenium-gecko-driver
@@ -199,7 +178,7 @@ jobs:
           environment:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 4 --reruns 2
-          command: pytest -m "prod_only or sanity and not serial" --driver Firefox --variables prod.json --html=sanity-parallel-test-results.html --self-contained-html
+          command: py -3.9 -m pytest -m "prod_only or sanity and not serial" --driver Firefox --variables prod.json --html=sanity-parallel-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: sanity-parallel-test-results.html
@@ -213,14 +192,11 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install python 3.10
-          command: choco install python --version=3.10.0
-      - run:
           name: Upgrade pip
-          command: pip install --upgrade pip --user
+          command: py -3.9 -m pip install --upgrade pip --user
       - run:
           name: Install requirements
-          command: pip install --no-deps -r ./requirements.txt
+          command: py -3.9 -m pip install --no-deps -r ./requirements.txt
       - run:
           name: Install geckodriver
           command: choco install selenium-gecko-driver
@@ -232,7 +208,7 @@ jobs:
           environment:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 1 --reruns 2
-          command: pytest -m "sanity and serial" --driver Firefox --variables prod.json --html=sanity-serial-test-results.html --self-contained-html
+          command: py -3.9 -m pytest -m "sanity and serial" --driver Firefox --variables prod.json --html=sanity-serial-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: sanity-serial-test-results.html
