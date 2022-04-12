@@ -1,6 +1,6 @@
 import pytest
 
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -179,6 +179,7 @@ def test_blog_install_addon(
     article = blog.articles[0].click_read_more_link()
     # install add-on from a blog article
     addon_name = article.addon_cards[0].title.text
+    addon_summary = article.addon_cards[0].summary
     article.addon_cards[0].add_to_firefox_button.click()
     firefox.browser.wait_for_notification(
         firefox_notifications.AddOnInstallConfirmation
@@ -186,10 +187,21 @@ def test_blog_install_addon(
     # verify about:addons to make sure the add-on was installed;
     selenium.get('about:addons')
     selenium.find_element(By.CSS_SELECTOR, 'button[name = "extension"]').click()
-    wait.until(
-        lambda _: addon_name
-        in selenium.find_element(By.CSS_SELECTOR, '.addon-name a').text
-    )
+    try:
+        wait.until(
+            lambda _: addon_name
+            in selenium.find_element(By.CSS_SELECTOR, '.addon-name a').text,
+            message='The addon names did not match; checking summary next',
+        )
+    # there is an inconsistency between AMO and about:addons concerning addon names;
+    # while on AMO the add-on name can be modified in DevHub, about:addons takes the
+    # name from the manifest, resulting in possible mismatches; in such cases,
+    # an alternative check for the add-on summary might help identify the addon correctly
+    except TimeoutException:
+        assert (
+            addon_summary
+            in selenium.find_element(By.CLASS_NAME, 'addon-description').text
+        )
 
 
 @pytest.mark.firefox_release

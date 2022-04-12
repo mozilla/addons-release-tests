@@ -89,6 +89,7 @@ class DevHubHome(Base):
         '.DevHub-callout-box--banner a',
     )
     _my_addons_section_header_locator = (By.CSS_SELECTOR, '.DevHub-MyAddons h2')
+    _my_addons_section_paragraph_locator = (By.CSS_SELECTOR, '.DevHub-MyAddons-copy')
     _my_addons_section_list_locator = (By.CSS_SELECTOR, '.DevHub-MyAddons-item')
     _see_all_addons_link_locator = (
         By.CSS_SELECTOR,
@@ -96,11 +97,11 @@ class DevHubHome(Base):
     )
     _submit_addon_button_locator = (
         By.CSS_SELECTOR,
-        '.DevHub-MyAddons-item-buttons-submit a:nth-child(1)',
+        '.DevHub-MyAddons .Button:nth-of-type(1)',
     )
     _submit_theme_button_locator = (
         By.CSS_SELECTOR,
-        '.DevHub-MyAddons-item-buttons-submit a:nth-child(2)',
+        '.DevHub-MyAddons .Button:nth-of-type(2)',
     )
 
     def wait_for_page_to_load(self):
@@ -245,6 +246,14 @@ class DevHubHome(Base):
     @property
     def logged_in_hero_banner_header(self):
         return self.find_element(*self._logged_in_hero_banner_header_locator).text
+
+    @property
+    def my_addons_section_header(self):
+        return self.find_element(*self._my_addons_section_header_locator)
+
+    @property
+    def my_addons_section_paragraph(self):
+        return self.find_element(*self._my_addons_section_paragraph_locator)
 
     @property
     def logged_in_hero_banner_text(self):
