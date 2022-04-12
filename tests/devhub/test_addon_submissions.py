@@ -25,12 +25,15 @@ def test_submit_mixed_addon_versions(selenium, base_url, variables, wait):
 # TODO: more tests that use @pytest.mark.create_session go here
 
 
-# This last part handles the session cookie invalidation and user file deletion
+# This will be the last test in the suite where we also use the clean-up part from the selenium fixture
 @pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.create_session('submissions_user')
 @pytest.mark.clear_session
-def test_clear_session(selenium, base_url):
-    with pytest.raises(FileNotFoundError):
-        with open('submissions_user.txt', 'r') as file:
-            file.read()
+def test_delete_all_extensions(selenium, base_url):
+    """This test will delete all the extensions submitted above to make sure
+    we can start over with this user in the following runs and also for
+    verifying that the addon deletion process functions correctly"""
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    # TODO: add steps for deleting the user addons
+    # once the test steps are complete, the 'clear_session' fixture will handle the clean-up part

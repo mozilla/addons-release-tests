@@ -115,21 +115,21 @@ def selenium(selenium, base_url, session_auth, request):
         session_cookie = selenium.get_cookie('sessionid')
         with open(user + '.txt', 'w') as file:
             file.write(session_cookie['value'])
+    yield selenium
+
     # delete the user session and files created for a test suite;
-    # this is normally used as the last step in a test suite
+    # this is normally used in the last test of a suite to handle the clean-up part
     if clear_session:
         # clear session
         home = Home(selenium, base_url).open().wait_for_page_to_load()
         home.header.click_logout()
         # delete the file
         user_file = create_session.args[0]
-        import os
-
         if os.path.exists(f'{user_file}.txt'):
             os.remove(f'{user_file}.txt')
         else:
-            print("The file does not exist")
-    return selenium
+            # fail if the file does not exist
+            raise FileNotFoundError("The file does not exist")
 
 
 @pytest.fixture(scope='function')
