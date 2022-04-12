@@ -1,6 +1,7 @@
 import os
 
 import pytest
+import requests
 
 from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.common.by import By
@@ -120,10 +121,26 @@ def selenium(selenium, base_url, session_auth, request):
     # delete the user session and files created for a test suite;
     # this is normally used in the last test of a suite to handle the clean-up part
     if clear_session:
-        # clear session
-        home = Home(selenium, base_url).open().wait_for_page_to_load()
-        home.header.click_logout()
-        # delete the file
+        # clear session by calling the DELETE session API
+        delete_session = requests.delete(
+            url=f'{base_url}/api/v5/accounts/session/',
+            headers={'Authorization': f'Session {session_auth}'},
+        )
+        assert (
+            delete_session.status_code == 200
+        ), f'Actual status code was {delete_session.status_code}'
+        # test that session was invalidated correctly by trying to access the account with the deleted session
+        get_user = requests.get(
+            url=f'{base_url}/api/v5/accounts/profile/',
+            headers={'Authorization': f'Session {session_auth}'},
+        )
+        assert (
+            get_user.status_code == 401
+        ), f'Actual status code was {get_user.status_code}'
+        assert (
+            'Valid user session not found matching the provided session key.'
+            in get_user.text
+        ), f'Actual response message was {get_user.text}'
         user_file = create_session.args[0]
         if os.path.exists(f'{user_file}.txt'):
             os.remove(f'{user_file}.txt')

@@ -157,20 +157,16 @@ jobs:
   addon_submissions_tests:
     executor:
       name: win/default
-      version: "previous"
       size: "medium"
     working_directory: ~/addons-release-tests/
     steps:
       - checkout
       - run:
-          name: Install python 3.9
-          command: choco install python --version=3.9.0
-      - run:
           name: Upgrade pip
-          command: pip install --upgrade pip --user
+          command: py -3.9 -m pip install --upgrade pip --user
       - run:
           name: Install requirements
-          command: pip install --no-deps -r ./requirements.txt
+          command: py -3.9 -m pip install --no-deps -r ./requirements.txt
       - run:
           name: Install geckodriver
           command: choco install selenium-gecko-driver
@@ -182,7 +178,7 @@ jobs:
           environment:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 1 --reruns 2
-          command: pytest tests\devhub\test_addon_submissions.py --driver Firefox --variables stage.json --html=submissions-test-results.html --self-contained-html
+          command: py -3.9 -m pytest tests\devhub\test_addon_submissions.py --driver Firefox --variables stage.json --html=submissions-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: submissions-test-results.html
