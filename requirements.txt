@@ -36,7 +36,7 @@ pycparser==2.21
 PyFxA==0.7.7
 PyJWT==2.3.0
 pylint==2.13.5
-pyparsing==3.0.7
+pyparsing==3.0.8
 PyPOM==2.2.3
 pytest==7.1.1
 pytest-base-url==2.0.0
