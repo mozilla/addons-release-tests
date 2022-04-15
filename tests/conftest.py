@@ -127,7 +127,7 @@ def selenium(selenium, base_url, session_auth, request):
             headers={'Authorization': f'Session {session_auth}'},
         )
         assert (
-            delete_session.status_code == 200
+            delete_session.status_code == 400
         ), f'Actual status code was {delete_session.status_code}'
         # test that session was invalidated correctly by trying to access the account with the deleted session
         get_user = requests.get(
