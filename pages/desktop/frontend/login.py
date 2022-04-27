@@ -33,6 +33,9 @@ class Login(Base):
     # 6. user used for collections tests
     COLLECTION_USER_EMAIL = os.environ.get('COLLECTION_USER_EMAIL')
     COLLECTION_USER_PASSWORD = os.environ.get('COLLECTION_USER_PASSWORD')
+    # 7. user used for add-on submissions
+    SUBMISSIONS_USER_EMAIL = os.environ.get('SUBMISSIONS_USER_EMAIL')
+    SUBMISSIONS_USER_PASSWORD = os.environ.get('SUBMISSIONS_USER_PASSWORD')
 
     _email_locator = (By.NAME, 'email')
     _continue_locator = (By.CSS_SELECTOR, '.button-row button')
@@ -54,6 +57,8 @@ class Login(Base):
             self.fxa_login(self.RATING_USER_EMAIL, self.RATING_USER_PASSWORD)
         elif user == 'collection_user':
             self.fxa_login(self.COLLECTION_USER_EMAIL, self.COLLECTION_USER_PASSWORD)
+        elif user == 'submissions_user':
+            self.fxa_login(self.SUBMISSIONS_USER_EMAIL, self.SUBMISSIONS_USER_PASSWORD)
         else:
             self.fxa_login(self.REGULAR_USER_EMAIL, self.REGULAR_USER_PASSWORD)
 

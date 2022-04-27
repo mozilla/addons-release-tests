@@ -1,12 +1,17 @@
 import os
 
 import pytest
+import requests
 
+from selenium.common.exceptions import StaleElementReferenceException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+from pages.desktop.frontend.home import Home
+from pages.desktop.frontend.login import Login
 
 # Window resolutions
-from selenium.common.exceptions import StaleElementReferenceException
-from selenium.webdriver.support.wait import WebDriverWait
-
 DESKTOP = (1920, 1080)
 
 
@@ -72,10 +77,91 @@ def firefox_notifications(notifications):
     params=[DESKTOP],
     ids=['Desktop'],
 )
-def selenium(selenium, request):
-    """Fixture to set a custom resolution for tests running on Desktop."""
+def selenium(selenium, base_url, session_auth, request):
+    """Fixture to set a custom resolution for tests running on Desktop
+    and handle browser sessions when needed"""
     selenium.set_window_size(*request.param)
-    return selenium
+    # establishing actions  based on markers
+    create_session = request.node.get_closest_marker('create_session')
+    login = request.node.get_closest_marker('login')
+    clear_session = request.node.get_closest_marker('clear_session')
+    # this is used when we want to open an AMO page with a sessionid
+    # cookie (i.e. a logged-in user) already set
+    if create_session:
+        # need to set the url context if we want to apply a cookie
+        # in order to avoid InvalidCookieDomainException error
+        selenium.get(base_url)
+        # set the sessionid cookie
+        selenium.add_cookie(
+            {
+                "name": "sessionid",
+                "value": session_auth,
+            }
+        )
+    # this is used when we want to start the browser with a normal login
+    # mostly used for the scope of getting the session cookie and storing it for later use
+    if login:
+        home = Home(selenium, base_url).open().wait_for_page_to_load()
+        home.header.click_login()
+        home.wait.until(
+            EC.visibility_of_element_located((By.NAME, 'email')),
+            message=f'FxA email input field was not displayed in {selenium.current_url}',
+        )
+        user = login.args[0]
+        Login(selenium, base_url).account(user)
+        home.wait.until(
+            EC.url_contains('addons'),
+            message=f'AMO could not be loaded in {selenium.current_url}',
+        )
+        session_cookie = selenium.get_cookie('sessionid')
+        with open(user + '.txt', 'w') as file:
+            file.write(session_cookie['value'])
+    yield selenium
+
+    # delete the user session and files created for a test suite;
+    # this is normally used in the last test of a suite to handle the clean-up part
+    if clear_session:
+        # clear session by calling the DELETE session API
+        delete_session = requests.delete(
+            url=f'{base_url}/api/v5/accounts/session/',
+            headers={'Authorization': f'Session {session_auth}'},
+        )
+        assert (
+            delete_session.status_code == 200
+        ), f'Actual status code was {delete_session.status_code}'
+        # test that session was invalidated correctly by trying to access the account with the deleted session
+        get_user = requests.get(
+            url=f'{base_url}/api/v5/accounts/profile/',
+            headers={'Authorization': f'Session {session_auth}'},
+        )
+        assert (
+            get_user.status_code == 401
+        ), f'Actual status code was {get_user.status_code}'
+        assert (
+            'Valid user session not found matching the provided session key.'
+            in get_user.text
+        ), f'Actual response message was {get_user.text}'
+        user_file = create_session.args[0]
+        if os.path.exists(f'{user_file}.txt'):
+            os.remove(f'{user_file}.txt')
+        else:
+            # fail if the file does not exist
+            raise FileNotFoundError("The file does not exist")
+
+
+@pytest.fixture(scope='function')
+def session_auth(request):
+    """Fixture that reads and returns the sessionid cookie; to be used as a
+    standalone fixture for in API tests that require authentication and
+    also complements the selenium fixture  when we want to start
+    the browser with an active user session"""
+    marker = request.node.get_closest_marker('create_session')
+    # the user file is passed in the test as a marker argument
+    if marker:
+        user_file = marker.args[0]
+        with open(f'{user_file}.txt', 'r') as file:
+            sessionid = str(file.read())
+        return sessionid
 
 
 @pytest.fixture
