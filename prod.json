@@ -37,6 +37,9 @@
   "devhub_content_header": "Ready to submit or manage your extension?",
   "devhub_content_summary": "Sign in to the Developer Hub to submit or manage extensions and themes",
   "devhub_get_involved_header": "Get involved",
-  "devhub_get_involved_summary": "Connect with thousands of developers and discover more ways you can contribute to the extension ecosystem."
+  "devhub_get_involved_summary": "Connect with thousands of developers and discover more ways you can contribute to the extension ecosystem.",
+
+  "unlisted_submission_confirmation": "You’re done! ✨ You will be notified by email when the signed file is ready to be downloaded from the Developer Hub. If you do not see an email after 24 hours, please check your spam folder.",
+  "listed_submission_confirmation": "You’re done! ✨ You will receive a confirmation email when this version is published on addons.allizom.org. Note that it may take up to 24 hours before publication occurs, or longer if your add-on is selected for manual review. If you do not see an email after 24 hours, please check your spam folder."
 }
 

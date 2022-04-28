@@ -114,5 +114,8 @@
   "devhub_resources_write_some_code_text": "Help make add-ons better by contributing your coding skills.",
   "devhub_resources_participate_text": "You don't need coding skills to help keep Firefox the most customizable browser available!",
   "devhub_submit_addon_agreement_header": "Add-on Distribution Agreement",
-  "devhub_submit_addon_distribution_header": "How to Distribute this Version"
+  "devhub_submit_addon_distribution_header": "How to Distribute this Version",
+
+  "unlisted_submission_confirmation": "You’re done! ✨ You will be notified by email when the signed file is ready to be downloaded from the Developer Hub. If you do not see an email after 24 hours, please check your spam folder.",
+  "listed_submission_confirmation": "You’re done! ✨ You will receive a confirmation email when this version is published on addons.allizom.org. Note that it may take up to 24 hours before publication occurs, or longer if your add-on is selected for manual review. If you do not see an email after 24 hours, please check your spam folder."
 }
