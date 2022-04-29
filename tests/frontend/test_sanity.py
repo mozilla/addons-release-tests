@@ -1,3 +1,5 @@
+import time
+
 import pytest
 import random
 
@@ -202,19 +204,29 @@ def test_about_addons_install_extension(
         lambda _: len([el.install_button for el in about_addons.addon_cards_items]) >= 8
     )
     disco_addon_name = about_addons.addon_cards_items[1].disco_addon_name.text
+    disco_addon_author = about_addons.addon_cards_items[1].disco_addon_author.text
     # install the recommended extension
     about_addons.addon_cards_items[1].install_button.click()
     firefox.browser.wait_for_notification(
         firefox_notifications.AddOnInstallConfirmation
     ).install()
+    time.sleep(2)
     # some addons will open support pages in new tabs after installation;
     # we need to return to the first (about:addons) tab if that happens
     if len(selenium.window_handles) > 1:
         selenium.switch_to.window(selenium.window_handles[0])
     # open the manage Extensions page to verify that the addon was installed correctly
     about_addons.click_extensions_side_button()
-    # verify that the extension installed is present in manage Extensions
-    assert disco_addon_name in [el.text for el in about_addons.installed_addon_name]
+    # verify that the extension installed is present in manage Extensions; if the names
+    # don't match (which happens sometimes due to differences between AMO names and manifest
+    # names), check that the add-on author is the same as an alternative check;
+    try:
+        assert disco_addon_name in [el.text for el in about_addons.installed_addon_name]
+    except AssertionError:
+        about_addons.installed_addon_cards[0].click()
+        wait.until(
+            lambda _: disco_addon_author == about_addons.installed_addon_author_name
+        )
 
 
 @pytest.mark.prod_only
