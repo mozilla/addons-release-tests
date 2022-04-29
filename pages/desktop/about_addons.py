@@ -13,8 +13,10 @@ class AboutAddons(Page):
     _extension_tab_button_locator = (By.CSS_SELECTOR, 'button[name = "extension"]')
     _theme_tab_button_locator = (By.CSS_SELECTOR, 'button[name = "theme"]')
     _enabled_theme_status_locator = (By.CLASS_NAME, 'card.addon')
+    _installed_addon_cards_locator = (By.CSS_SELECTOR, '.card.addon')
     _enabled_theme_image_locator = (By.CLASS_NAME, 'card-heading-image')
     _installed_addon_name_locator = (By.CSS_SELECTOR, '.addon-name a')
+    _installed_addon_author_locator = (By.CSS_SELECTOR, '.addon-detail-row-author a')
     _find_more_addons_button_locator = (By.CLASS_NAME, 'primary')
 
     def wait_for_page_to_load(self):
@@ -55,8 +57,16 @@ class AboutAddons(Page):
         )
 
     @property
+    def installed_addon_cards(self):
+        return self.find_elements(*self._installed_addon_cards_locator)
+
+    @property
     def installed_addon_name(self):
         return self.find_elements(*self._installed_addon_name_locator)
+
+    @property
+    def installed_addon_author_name(self):
+        return self.find_element(*self._installed_addon_author_locator).text
 
     @property
     def enabled_theme_active_status(self):
