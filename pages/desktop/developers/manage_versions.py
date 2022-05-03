@@ -28,13 +28,13 @@ class ManageVersions(Page):
         _root_locator = (By.ID, 'modal-delete')
         _delete_confirmation_string_locator = (
             By.CSS_SELECTOR,
-            '#modal-delete p:nth-of-type(2) > label',
+            'p:nth-of-type(2) > label',
         )
         _delete_confirmation_text_input_locator = (
             By.CSS_SELECTOR,
             'input[name="slug"]',
         )
-        _delete_button_locator = (By.CSS_SELECTOR, '#modal-delete .delete-button')
+        _delete_button_locator = (By.CSS_SELECTOR, '.delete-button')
 
         def wait_for_region_to_load(self):
             self.wait.until(EC.visibility_of_element_located(self._root_locator))
