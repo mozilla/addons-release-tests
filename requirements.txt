@@ -35,7 +35,7 @@ PyBrowserID==0.14.0
 pycparser==2.21
 PyFxA==0.7.7
 PyJWT==2.3.0
-pylint==2.13.7
+pylint==2.13.8
 pyparsing==3.0.8
 PyPOM==2.2.3
 pytest==7.1.2
@@ -63,7 +63,7 @@ urllib3==1.26.9
 virtualenv==20.14.1
 wcwidth==0.2.5
 WebOb==1.8.7
-wrapt==1.14.0
+wrapt==1.14.1
 zipp==3.8.0
 zope.component==5.0.1
 zope.deferredimport==4.4
