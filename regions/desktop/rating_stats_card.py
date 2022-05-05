@@ -37,7 +37,7 @@ class RatingStats(Region):
         return [i.text for i in self.find_elements(*self._addon_author_locator)]
 
     def click_author_name(self, index=0):
-        self.find_elements(*self._addon_image_locator)[index].click()
+        self.find_elements(*self._addon_author_locator)[index].click()
         from pages.desktop.frontend.users import User
 
         return User(self.selenium, self.page).view
@@ -51,18 +51,11 @@ class RatingStats(Region):
         rating = self.find_element(*self._addon_rating_locator).text.split()[0]
         return float(rating)
 
-    def click_see_all_reviews_with_x_stars(self, x):
-        self.find_elements(*self._rating_by_star_locator)[5 - x].click()
+    def click_see_all_reviews_with_specific_stars(self, count):
+        self.find_elements(*self._rating_by_star_locator)[count].click()
         from pages.desktop.frontend.reviews import Reviews
 
         return Reviews(self.selenium, self.page)
 
-    def number_of_reviews_with_x_stars(self, x):
-        return int(self.find_elements(*self._number_of_reviews_locator)[5 - x].text)
-
-    @property
-    def reviews_number(self):
-        total = 0
-        for i in range(1, 6):
-            total += self.number_of_reviews_with_x_stars(i)
-        return total
+    def number_of_reviews_with_specific_stars(self, count):
+        return int(self.find_elements(*self._number_of_reviews_locator)[count].text)

@@ -11,7 +11,10 @@ class Versions(Base):
     _versions_page_header_locator = (By.CSS_SELECTOR, '.AddonVersions-versions header')
     _latest_version_locator = (By.CSS_SELECTOR, '.Card-contents li:nth-child(2) h2')
     _versions_list_locator = (By.CSS_SELECTOR, '.AddonVersionCard')
-    _notice_message_locator = (By.CSS_SELECTOR, '.Card-contents .Notice-text')
+    _notice_message_locator = (
+        By.CSS_SELECTOR,
+        '.Card-contents .Notice-warning .Notice-text',
+    )
     _notice_message_text_locator = (By.CSS_SELECTOR, '.AddonVersions-warning-text')
     _rating_card_locator = (By.CSS_SELECTOR, '.AddonSummaryCard')
 
@@ -33,13 +36,7 @@ class Versions(Base):
 
     @property
     def notice_message(self):
-        return self.find_elements(*self._notice_message_locator)[0]
-
-    @property
-    def notice_message_text(self):
-        text = self.find_elements(*self._notice_message_text_locator)[0].text
-        text += self.find_elements(*self._notice_message_text_locator)[1].text
-        return text
+        return self.find_element(*self._notice_message_locator)
 
     @property
     def rating_card(self):
@@ -76,7 +73,7 @@ class Versions(Base):
 
         @property
         def version_number(self):
-            return self.find_element(*self._version_number_locator).text[8:]
+            return self.find_element(*self._version_number_locator).text.split()[1]
 
         @property
         def released_date(self):
