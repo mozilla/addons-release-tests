@@ -305,7 +305,6 @@ def test_user_delete_profile(base_url, selenium):
     assert user.header.login_button.is_displayed()
 
 
-@pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_user_data_for_deleted_profile(base_url, selenium):
