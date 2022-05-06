@@ -249,6 +249,7 @@ class Header(Region):
                 )
                 action.pause(2)
                 action.click()
+                action.pause(2)
                 action.perform()
                 # waits for the landing page to open
                 self.wait.until(
