@@ -244,6 +244,7 @@ class Header(Region):
                 action.move_to_element(
                     self.find_element(*self._account_dropdown_locator)
                 )
+                action.pause(2)
                 action.move_to_element(
                     self.find_elements(*self._user_menu_links_locator)[count]
                 )
