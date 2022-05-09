@@ -1,10 +1,8 @@
 import requests
+
 from pypom import Page, Region
 
-from selenium.common.exceptions import (
-    StaleElementReferenceException,
-    WebDriverException,
-)
+from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
@@ -194,34 +192,31 @@ class Header(Region):
             EC.element_to_be_clickable(
                 (
                     By.CSS_SELECTOR,
-                    '.Header-user-and-external-links \
-            .DropdownMenu-button-text',
+                    '.Header-authenticate-button',
                 )
             )
         )
-        loop = 0
-        while loop < 3:
-            try:
-                action = ActionChains(self.selenium)
-                action.move_to_element(user)
-                action.pause(3)
-                # assigning the webelement to a variable before initializing the action chains can lead
-                # to stale element errors since the dropdown state changes when we hover over it
-                action.move_to_element(self.find_element(*self._logout_locator))
-                action.pause(3)
-                action.click()
-                action.pause(3)
-                action.perform()
-                self.wait.until(
-                    lambda s: self.is_element_displayed(*self._login_locator),
-                    message='The login button was not displayed after logout',
-                )
-                break
-            # the "WebDriverException: Message: TypeError: can't access property "x", rect is undefined" has
-            # popped out again recently; I'm trying to catch this exception here and rerun the action chains
-            except (StaleElementReferenceException, WebDriverException) as error:
-                print(f'{error} Retry action chains')
-            loop += 1
+        action = ActionChains(self.selenium)
+        action.move_to_element(user)
+        action.pause(3)
+        action.perform()
+        # assigning the webelement to a variable before initializing the action chains can lead
+        # to stale element errors since the dropdown state changes when we hover over it
+        logout = WebDriverWait(
+            self.selenium, 20, ignored_exceptions=StaleElementReferenceException
+        ).until(EC.element_to_be_clickable(self._logout_locator))
+        action.move_to_element(logout)
+        action.pause(3)
+        action.click()
+        action.pause(3)
+        action.perform()
+        self.wait.until(
+            lambda s: self.is_element_displayed(*self._login_locator),
+            message='The login button was not displayed after logout',
+        )
+
+    def user_menu_link(self, count):
+        return self.find_elements(*self._user_menu_links_locator)[count]
 
     def click_user_menu_links(self, count, landing_page):
         user = WebDriverWait(
@@ -230,37 +225,26 @@ class Header(Region):
             EC.element_to_be_clickable(
                 (
                     By.CSS_SELECTOR,
-                    '.Header-user-and-external-links \
-            .DropdownMenu-button-text',
+                    '.Header-authenticate-button',
                 )
             )
         )
-        loop = 0
-        while loop < 3:
-            try:
-                action = ActionChains(self.selenium)
-                action.move_to_element(user)
-                action.pause(2)
-                action.move_to_element(
-                    self.find_element(*self._account_dropdown_locator)
-                )
-                action.pause(2)
-                action.move_to_element(
-                    self.find_elements(*self._user_menu_links_locator)[count]
-                )
-                action.pause(2)
-                action.click()
-                action.pause(2)
-                action.perform()
-                # waits for the landing page to open
-                self.wait.until(
-                    EC.visibility_of_element_located((By.CSS_SELECTOR, landing_page)),
-                    message=f'Expected page not loaded; page was {self.selenium.current_url}',
-                )
-                break
-            except (StaleElementReferenceException, WebDriverException) as error:
-                print(f'{error} Retrying action chains')
-            loop += 1
+        action = ActionChains(self.selenium)
+        action.move_to_element(user)
+        action.pause(2)
+        action.perform()
+        link = WebDriverWait(
+            self.selenium, 20, ignored_exceptions=StaleElementReferenceException
+        ).until(EC.element_to_be_clickable(self.user_menu_link(count)))
+        action.move_to_element(link)
+        action.pause(2)
+        action.click()
+        action.perform()
+        # waits for the landing page to open
+        self.wait.until(
+            EC.visibility_of_element_located((By.CSS_SELECTOR, landing_page)),
+            message=f'Expected page not loaded; page was {self.selenium.current_url}',
+        )
 
     def more_menu(self, item=None):
         menu = self.find_element(*self._more_menu_locator)
