@@ -387,10 +387,9 @@ class Footer(Region):
     _footer_social_locator = (By.CSS_SELECTOR, '.Footer-links-social')
     _footer_links_locator = (By.CSS_SELECTOR, '.Footer-links li a')
     _footer_legal_locator = (By.CSS_SELECTOR, '.Footer-legal-links ')
-    _language_picker_locator = (By.ID, 'lang-picker')
+    _footer_copyright_links_locator = (By.CSS_SELECTOR, '.Footer-copyright a')
     _copyright_message_locator = (By.CSS_SELECTOR, '.Footer-copyright')
-    _noted_link_locator = (By.CSS_SELECTOR, '.Footer-copyright > a:nth-child(1)')
-    _license_link_locator = (By.CSS_SELECTOR, '.Footer-copyright > a:nth-child(2)')
+    _language_picker_locator = (By.ID, 'lang-picker')
 
     @property
     def addon_links(self):
@@ -421,18 +420,14 @@ class Footer(Region):
         element = self.find_element(*self._footer_legal_locator)
         return element.find_elements(By.CSS_SELECTOR, 'li a')
 
-    def language_picker(self, value):
-        select = Select(self.find_element(*self._language_picker_locator))
-        select.select_by_visible_text(value)
+    @property
+    def copyright_links(self):
+        return self.find_elements(*self._footer_copyright_links_locator)
 
     @property
     def copyright_message(self):
         return self.find_element(*self._copyright_message_locator)
 
-    @property
-    def noted_link(self):
-        return self.find_element(*self._noted_link_locator)
-
-    @property
-    def license_link(self):
-        return self.find_element(*self._license_link_locator)
+    def language_picker(self, value):
+        select = Select(self.find_element(*self._language_picker_locator))
+        select.select_by_visible_text(value)
