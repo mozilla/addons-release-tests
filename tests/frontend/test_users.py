@@ -90,23 +90,32 @@ def test_user_menu_edit_profile(base_url, selenium):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-def test_user_menu_devhub_links(base_url, selenium, wait):
+def test_user_menu_click_submit_new_addon(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.login('developer')
     count = 3
     landing_page = '.section header h2'
-    # there are 3 links pointing to DevHub pages in the user menu;
-    # clicking through each of those links and checking that the correct page opens
-    while count < 6:
-        page.header.click_user_menu_links(count, landing_page)
-        # returning to the homepage to select the next link
-        back_button = wait.until(
-            lambda _: selenium.find_element(By.CLASS_NAME, 'return')
-        )
-        back_button.click()
-        # waiting for the homepage o reload
-        page.wait_for_page_to_load()
-        count += 1
+    page.header.click_user_menu_links(count, landing_page)
+
+
+@pytest.mark.serial
+@pytest.mark.nondestructive
+def test_user_menu_click_submit_new_theme(base_url, selenium):
+    page = Home(selenium, base_url).open().wait_for_page_to_load()
+    page.login('developer')
+    count = 4
+    landing_page = '.section header h2'
+    page.header.click_user_menu_links(count, landing_page)
+
+
+@pytest.mark.serial
+@pytest.mark.nondestructive
+def test_user_menu_click_manage_submissions(base_url, selenium):
+    page = Home(selenium, base_url).open().wait_for_page_to_load()
+    page.login('developer')
+    count = 5
+    landing_page = '.submission-type-tabs a:nth-child(1)'
+    page.header.click_user_menu_links(count, landing_page)
 
 
 @pytest.mark.sanity
