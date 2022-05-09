@@ -192,8 +192,7 @@ class Header(Region):
             EC.element_to_be_clickable(
                 (
                     By.CSS_SELECTOR,
-                    '.Header-user-and-external-links \
-            .DropdownMenu-button-text',
+                    '.Header-authenticate-button',
                 )
             )
         )
@@ -226,8 +225,7 @@ class Header(Region):
             EC.element_to_be_clickable(
                 (
                     By.CSS_SELECTOR,
-                    '.Header-user-and-external-links \
-            .DropdownMenu-button-text',
+                    '.Header-authenticate-button',
                 )
             )
         )
