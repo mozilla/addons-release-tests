@@ -44,12 +44,6 @@ class Versions(Base):
         return RatingStats(self, el)
 
     @property
-    def latest_version(self):
-        return self.VersionCard(
-            self, self.find_elements(*self._versions_list_locator)[0]
-        )
-
-    @property
     def versions_list(self):
         items = self.find_elements(*self._versions_list_locator)
         return [self.VersionCard(self, el) for el in items]
