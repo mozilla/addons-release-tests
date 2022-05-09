@@ -42,7 +42,8 @@ def test_notice_message(selenium, base_url, variables):
 def test_ratings_card(selenium, base_url, variables):
     selenium.get(f'{base_url}{ADDON_VERSION_PAGE}')
     page = Versions(selenium, base_url)
-    assert page.rating_card.is_displayed()
+    # verify if ratings card is present
+    assert page.rating_card
 
 
 @pytest.mark.nondestructive
@@ -51,26 +52,34 @@ def test_license_link(selenium, base_url):
     page = Versions(selenium, base_url)
 
     for i in range(len(page.versions_list)):
-        # if link is 'Custom License'
-        if page.versions_list[i].license_link.text == 'Custom License':
-            page.versions_list[i].license_link.click()
-            page.wait.until(
-                EC.visibility_of_element_located((By.CLASS_NAME, 'AddonInfo-info-html'))
-            )
-        # if link is not 'Custom License'
-        else:
-            expected_link = page.versions_list[i].license_link.get_attribute('href')
-            if 'http' or 'https' in expected_link:
-                # full url example-> https://example.com/something/something
-                # turn into-> example.com/something/something
-                expected_link = expected_link.split('//')[1]
-            # turn into-> example.com
-            expected_link = expected_link.split('/')[0]
-            page.versions_list[i].license_link.click()
-            assert expected_link in selenium.current_url
-        # in both cases, we go back
-        page.driver.back()
-        page.driver.refresh()
+        if page.versions_list[i].license_link is not False:  # if link exists
+
+            if (
+                page.versions_list[i].license_link.text == 'Custom License'
+            ):  # if link exists and is 'Custom License'
+                page.versions_list[i].license_link.click()
+                page.wait.until(
+                    EC.visibility_of_element_located(
+                        (By.CLASS_NAME, 'AddonInfo-info-html')
+                    )
+                )
+
+            else:  # if link exists and is not 'Custom License'
+                expected_link = page.versions_list[i].license_link.get_attribute('href')
+                if 'http' or 'https' in expected_link:
+                    # full url example-> https://example.com/something/something
+                    # turn into-> example.com/something/something
+                    expected_link = expected_link.split('//')[1]
+                    # turn into-> example.com
+                expected_link = expected_link.split('/')[0]
+                page.versions_list[i].license_link.click()
+                assert expected_link in selenium.current_url
+
+            # in both cases, we go back
+            page.driver.back()
+            page.driver.refresh()
+        else:  # if link does not exist
+            assert 'All Rights Reserved' in page.versions_list[i].license_text
 
 
 @pytest.mark.nondestructive

@@ -88,7 +88,10 @@ class Versions(Base):
 
         @property
         def license_link(self):
-            return self.find_element(*self._license_link_locator)
+            try:
+                return self.find_element(*self._license_link_locator)
+            except NoSuchElementException:
+                return False
 
         @property
         def license_text(self):
