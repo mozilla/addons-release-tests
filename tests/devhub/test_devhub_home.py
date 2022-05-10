@@ -1,5 +1,6 @@
 import pytest
 
+from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 
 from pages.desktop.developers.devhub_home import DevHubHome
@@ -589,13 +590,26 @@ def test_change_devhub_language(base_url, selenium, language, locale, translatio
     assert translation in page.page_logo.text
 
 
+@pytest.mark.parametrize(
+    'count, link',
+    enumerate(
+        [
+            ['/about/legal/', '.mzp-c-article-title'],
+            ['/licenses/by-sa/3.0/', '.cc-license-title'],
+        ]
+    ),
+    ids=[
+        'Legal',
+        'Creative Commons License',
+    ],
+)
 @pytest.mark.nondestructive
-def test_devhub_footer_copyright_message(base_url, selenium):
+def test_devhub_footer_copyright_message(base_url, selenium, count, link):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     assert page.footer.copyright_message.is_displayed()
-    page.footer.noted_link.click()
-    assert '/about/legal' in selenium.current_url
-    page.driver.back()
-    page.wait_for_page_to_load()
-    page.footer.license_link.click()
-    assert 'creativecommons.org/licenses' in selenium.current_url
+    page.footer.copyright_links[count].click()
+    page.wait_for_current_url(link[0])
+    page.wait.until(
+        EC.visibility_of_element_located((By.CSS_SELECTOR, link[1])),
+        message=f'The chosen element "{link[1]}" could not be loaded on the "{link[0]}" webpage',
+    )
