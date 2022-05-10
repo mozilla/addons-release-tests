@@ -88,6 +88,8 @@ class Versions(Base):
 
         @property
         def license_link(self):
+            # there is a case where no license link is present
+            # instead, a 'All Rights Reserved' text is displayed
             try:
                 return self.find_element(*self._license_link_locator)
             except NoSuchElementException:

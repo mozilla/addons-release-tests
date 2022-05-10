@@ -1,19 +1,17 @@
-import time
 from datetime import datetime
 
 import pytest
 import requests
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 
 from pages.desktop.frontend.versions import Versions
 
-ADDON_VERSION_PAGE = '/addon/devhub-listed-ext-07-30/versions/'
-
 
 @pytest.mark.nondestructive
-def test_addon_name_in_header(selenium, base_url):
-    selenium.get(f'{base_url}{ADDON_VERSION_PAGE}')
+def test_addon_name_in_header(selenium, base_url, variables):
+    selenium.get(variables['addon_version_page_url'])
     page = Versions(selenium, base_url)
     addon_name = page.versions_page_header.text.split()[0]
     addon_detail_page = page.rating_card.click_addon_title()
@@ -21,8 +19,10 @@ def test_addon_name_in_header(selenium, base_url):
 
 
 @pytest.mark.nondestructive
-def test_versions_counter(selenium, base_url):
-    selenium.get(f'{base_url}{ADDON_VERSION_PAGE}')
+def test_versions_counter(selenium, base_url, variables):
+    # this test verifies that the number of versions displayed
+    # in the header is the same as the number of elements in the version list
+    selenium.get(variables['addon_version_page_url'])
     page = Versions(selenium, base_url)
     text = page.versions_page_header.text
     text = text.split('-')[-1][1:]
@@ -32,7 +32,7 @@ def test_versions_counter(selenium, base_url):
 
 @pytest.mark.nondestructive
 def test_notice_message(selenium, base_url, variables):
-    selenium.get(f'{base_url}{ADDON_VERSION_PAGE}')
+    selenium.get(variables['addon_version_page_url'])
     page = Versions(selenium, base_url)
     assert page.notice_message.is_displayed()
     assert variables['version_page_notice_message'] in page.notice_message.text
@@ -40,15 +40,15 @@ def test_notice_message(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 def test_ratings_card(selenium, base_url, variables):
-    selenium.get(f'{base_url}{ADDON_VERSION_PAGE}')
+    selenium.get(variables['addon_version_page_url'])
     page = Versions(selenium, base_url)
     # verify if ratings card is present
-    assert page.rating_card
+    assert page.rating_card.root.is_displayed()
 
 
 @pytest.mark.nondestructive
-def test_license_link(selenium, base_url):
-    selenium.get(f'{base_url}{ADDON_VERSION_PAGE}')
+def test_license_link(selenium, base_url, variables):
+    selenium.get(variables['addon_version_page_url'])
     page = Versions(selenium, base_url)
 
     for i in range(len(page.versions_list)):
@@ -83,7 +83,7 @@ def test_license_link(selenium, base_url):
 
 
 @pytest.mark.nondestructive
-def test_current_version(selenium, base_url):
+def test_current_version(selenium, base_url, variables):
     addon_url = 'addon/devhub-listed-ext-07-30/'
     # get info from api
     response = requests.get(f'{base_url}/api/v5/addons/{addon_url}')
@@ -95,14 +95,11 @@ def test_current_version(selenium, base_url):
     api_creation_date = datetime.strptime(api_date, '%Y-%m-%d')
     # verify info displayed in page
     page = Versions(selenium, base_url)
-    selenium.get(f'{base_url}{ADDON_VERSION_PAGE}')
+    selenium.get(variables['addon_version_page_url'])
     assert page.versions_list[0].version_number == addon_version
     assert addon_size_kb == page.versions_list[0].version_size
     frontend_date = page.versions_list[0].released_date
-    # Special case: if date is 'Dec 9, 2021' it should be 'Dec 09, 2021', so we must add that '0'
-    if frontend_date[5] is ',':
-        frontend_date = frontend_date[:4] + '0' + frontend_date[4:]
-    frontend_creation_date = datetime.strptime(frontend_date, '%b %d, %Y')
+    frontend_creation_date = datetime.strptime(frontend_date, '%b %#d, %Y')
     assert frontend_creation_date == api_creation_date
 
 
@@ -121,8 +118,10 @@ def test_version_install_warning(selenium, base_url, variables):
 
 
 @pytest.mark.nondestructive
-def test_add_to_firefox_button(selenium, base_url, firefox, firefox_notifications):
-    selenium.get(f'{base_url}/en-US/firefox/addon/donkey-kong/versions/')
+def test_add_to_firefox_button(
+    selenium, base_url, variables, firefox, firefox_notifications
+):
+    selenium.get(variables['addon_version_page_url'])
     page = Versions(selenium, base_url)
     page.versions_list[0].add_to_firefox_button.click()
     firefox.browser.wait_for_notification(
