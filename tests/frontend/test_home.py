@@ -1,6 +1,8 @@
 import pytest
 
 from selenium.webdriver import ActionChains
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
 
 from pages.desktop.frontend.home import Home
 from pages.desktop.frontend.search import Search
@@ -260,73 +262,115 @@ def test_mozilla_footer_link(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.footer.mozilla_link.click()
     assert 'mozilla.org' in selenium.current_url
+    page.wait.until(
+        EC.visibility_of_element_located(
+            (By.CSS_SELECTOR, '.fx100-hero-cta-container .mzp-c-button')
+        ),
+        message='The chosen element could not be loaded on the Mozilla webpage',
+    )
 
 
 @pytest.mark.parametrize(
     'count, link',
     enumerate(
         [
-            'about',
-            'blog',
-            'extensionworkshop',
-            'developers',
-            'add-on-policies',
-            'blog.mozilla.org',
-            'discourse',
-            'Contact_us',
-            'review_guide',
+            ['about', '#about'],
+            ['blog', '.blog-entries'],
+            ['extensionworkshop', '.grid-container h1'],
+            ['developers', '.DevHub-Navigation-Logo'],
+            ['add-on-policies', '.page-hero-description h1'],
+            ['blog.mozilla.org', '.featured-posts'],
+            ['discourse', '.category-list'],
+            ['Contact_us', '.main-page-content'],
+            ['review_guide', '#review-guide'],
         ]
     ),
+    ids=[
+        'About',
+        'Firefox Add-ons Blog',
+        'Extension Workshop',
+        'Developer Hub',
+        'Developer Policies',
+        'Community Blog',
+        'Forum',
+        'Report a bug',
+        'Review Guide',
+    ],
 )
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_addons_footer_links(base_url, selenium, count, link):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.footer.addon_links[count].click()
-    page.wait_for_current_url(link)
+    page.wait_for_current_url(link[0])
+    page.wait.until(
+        EC.visibility_of_element_located((By.CSS_SELECTOR, link[1])),
+        message=f'The chosen element "{link[1]}" could not be loaded on the "{link[0]}" webpage',
+    )
 
 
 @pytest.mark.parametrize(
-    'count, links',
+    'count, link',
     enumerate(
         [
-            'firefox/new',
-            'firefox/browsers/mobile/',
-            'mixedreality.mozilla.org',
-            'firefox/enterprise/',
+            ['firefox/new', '#download-button-thanks'],
+            ['firefox/browsers/mobile/', '#android-download'],
+            ['mixedreality.mozilla.org', '.featured__logo'],
+            ['firefox/enterprise/', '#primary-download-button'],
         ]
     ),
+    ids=[
+        'Firefox Desktop',
+        'Firefox Mobile',
+        'Firefox Reality',
+        'Firefox Enterprise',
+    ],
 )
 @pytest.mark.nondestructive
 @pytest.mark.sanity
-def test_browsers_footer_links(base_url, selenium, count, links):
+def test_browsers_footer_links(base_url, selenium, count, link):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.footer.browsers_links[count].click()
-    page.wait_for_current_url(links)
+    page.wait_for_current_url(link[0])
+    page.wait.until(
+        EC.visibility_of_element_located((By.CSS_SELECTOR, link[1])),
+        message=f'The chosen element "{link[1]}" could not be loaded on the "{link[0]}" webpage',
+    )
 
 
 @pytest.mark.parametrize(
-    'count, links',
+    'count, link',
     enumerate(
         [
-            'firefox/browsers/',
-            'products/vpn/',
-            'relay.firefox.com/',
-            'monitor.firefox',
-            'getpocket.com',
+            ['firefox/browsers/', '.mzp-c-split-body h1'],
+            ['products/vpn/', '.vpn-hero-heading'],
+            ['relay.firefox.com/', '.Button_button__oJAQ2'],
+            ['monitor.firefox', '.fx-monitor-logotype'],
+            ['getpocket.com', '.mzp-t-product-pocket'],
         ]
     ),
+    ids=[
+        'Browsers',
+        'VPN',
+        'Relay',
+        'Monitor',
+        'Pocket',
+    ],
 )
 @pytest.mark.sanity
 @pytest.mark.nondestructive
-def test_products_footer_links(base_url, selenium, count, links):
+def test_products_footer_links(base_url, selenium, count, link):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.footer.products_links[count].click()
-    page.wait_for_current_url(links)
+    page.wait_for_current_url(link[0])
+    page.wait.until(
+        EC.visibility_of_element_located((By.CSS_SELECTOR, link[1])),
+        message=f'The chosen element "{link[1]}" could not be loaded on the "{link[0]}" webpage',
+    )
 
 
 @pytest.mark.parametrize(
-    'count, links',
+    'count, link',
     enumerate(
         [
             'twitter.com',
@@ -334,31 +378,71 @@ def test_products_footer_links(base_url, selenium, count, links):
             'youtube.com',
         ]
     ),
+    ids=[
+        'Firefox on Twitter',
+        'Firefox on Instagram',
+        'Firefox on YouTube',
+    ],
 )
 @pytest.mark.sanity
 @pytest.mark.nondestructive
-def test_social_footer_links(base_url, selenium, count, links):
+def test_social_footer_links(base_url, selenium, count, link):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.footer.social_links[count].click()
-    page.wait_for_current_url(links)
+    page.wait_for_current_url(link)
 
 
 @pytest.mark.parametrize(
-    'count, links',
+    'count, link',
     enumerate(
         [
-            'privacy/websites/',
-            'privacy/websites/',
-            'legal/terms/mozilla',
+            ['privacy/websites/', '.privacy-title'],
+            ['privacy/websites/', '.privacy-title'],
+            ['legal/terms/mozilla', '#websites-communications-terms-of-use'],
         ]
     ),
+    ids=[
+        'Privacy',
+        'Cookies',
+        'Legal',
+    ],
 )
 @pytest.mark.sanity
 @pytest.mark.nondestructive
-def test_legal_footer_links(base_url, selenium, count, links):
+def test_legal_footer_links(base_url, selenium, count, link):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.footer.legal_links[count].click()
-    page.wait_for_current_url(links)
+    page.wait_for_current_url(link[0])
+    page.wait.until(
+        EC.visibility_of_element_located((By.CSS_SELECTOR, link[1])),
+        message=f'The chosen element "{link[1]}" could not be loaded on the "{link[0]}" webpage',
+    )
+
+
+@pytest.mark.parametrize(
+    'count, link',
+    enumerate(
+        [
+            ['/about/legal/', '.mzp-c-article-title'],
+            ['/licenses/by-sa/3.0/', '.cc-license-title'],
+        ]
+    ),
+    ids=[
+        'Legal',
+        'Creative Commons License',
+    ],
+)
+@pytest.mark.sanity
+@pytest.mark.nondestructive
+def test_copyright_footer_links(base_url, selenium, count, link):
+    page = Home(selenium, base_url).open().wait_for_page_to_load()
+    assert page.footer.copyright_message.is_displayed()
+    page.footer.copyright_links[count].click()
+    page.wait_for_current_url(link[0])
+    page.wait.until(
+        EC.visibility_of_element_located((By.CSS_SELECTOR, link[1])),
+        message=f'The chosen element "{link[1]}" could not be loaded on the "{link[0]}" webpage',
+    )
 
 
 @pytest.mark.parametrize(
