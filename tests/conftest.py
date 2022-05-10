@@ -171,22 +171,3 @@ def wait():
     return WebDriverWait(
         selenium, 10, ignored_exceptions=StaleElementReferenceException
     )
-
-
-@pytest.fixture
-def fxa_account(request):
-    """Fxa account to use during tests that need to login.
-
-    Returns the email and password of the fxa account set in Makefile-docker.
-
-    """
-    try:
-        fxa_account.email = os.environ['UITEST_FXA_EMAIL']
-        fxa_account.password = os.environ['UITEST_FXA_PASSWORD']
-    except KeyError:
-        if request.node.get_closest_marker('fxa_login'):
-            pytest.skip(
-                'Skipping test because no fxa account was found.'
-                ' Are FXA_EMAIL and FXA_PASSWORD environment variables set?'
-            )
-    return fxa_account
