@@ -92,15 +92,15 @@ def test_current_version(selenium, base_url, variables):
         str(round(response.json()['current_version']['file']['size'] / 1024, 2)) + ' KB'
     )
     api_date = response.json()['current_version']['file']['created'][:10]
-    api_creation_date = datetime.strptime(api_date, '%Y-%m-%d')
+    # process the date to have the same format as in frontend
+    api_date = datetime.strptime(api_date, '%Y-%m-%d')
+    api_processed_date = datetime.strftime(api_date, "%b %#d, %Y")
     # verify info displayed in page
     page = Versions(selenium, base_url)
     selenium.get(variables['addon_version_page_url'])
     assert page.versions_list[0].version_number == addon_version
     assert addon_size_kb == page.versions_list[0].version_size
-    frontend_date = page.versions_list[0].released_date
-    frontend_creation_date = datetime.strptime(frontend_date, '%b %#d, %Y')
-    assert frontend_creation_date == api_creation_date
+    assert page.versions_list[0].released_date == api_processed_date
 
 
 @pytest.mark.nondestructive
