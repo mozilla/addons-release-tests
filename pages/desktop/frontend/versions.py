@@ -44,12 +44,6 @@ class Versions(Base):
         return RatingStats(self, el)
 
     @property
-    def latest_version(self):
-        return self.VersionCard(
-            self, self.find_elements(*self._versions_list_locator)[0]
-        )
-
-    @property
     def versions_list(self):
         items = self.find_elements(*self._versions_list_locator)
         return [self.VersionCard(self, el) for el in items]
@@ -94,7 +88,12 @@ class Versions(Base):
 
         @property
         def license_link(self):
-            return self.find_element(*self._license_link_locator)
+            # there is a case where no license link is present
+            # instead, a 'All Rights Reserved' text is displayed
+            try:
+                return self.find_element(*self._license_link_locator)
+            except NoSuchElementException:
+                return False
 
         @property
         def license_text(self):

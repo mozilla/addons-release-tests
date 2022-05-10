@@ -17,6 +17,8 @@
   "experimental_addon": "experimental",
   "theme_detail_page": "flag-of-mexico",
   "install_warning_message": "This add-on is not actively monitored for security by Mozilla. Make sure you trust it before installing.",
+  "addon_version_page_url": "https://addons.allizom.org/en-US/firefox/addon/devhub-listed-ext-07-30/versions/",
+  "version_page_notice_message": "Be careful with old versions! These versions are displayed for testing and reference purposes.\nYou should always use the latest version of an add-on.",
   "contribute_utm_param": "utm_content=product-page-contribute&utm_medium=referral&utm_source=addons.mozilla.org",
   "contribute_card_summary": "The developer of this extension asks that you help support its continued development by making a small contribution.",
   "support_site_link": "ghostery.com",
