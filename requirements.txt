@@ -1,4 +1,4 @@
-﻿apipkg==2.1.0
+﻿apipkg==2.1.1
 appdirs==1.4.4
 astroid==2.11.5
 atomicwrites==1.4.0
@@ -23,7 +23,7 @@ iniconfig==1.1.1
 isort==5.10.1
 lazy-object-proxy==1.7.1
 mccabe==0.7.0
-more-itertools==8.12.0
+more-itertools==8.13.0
 networkx==2.8
 numpy==1.22.3
 packaging==21.3
