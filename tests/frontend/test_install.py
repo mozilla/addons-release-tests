@@ -9,7 +9,7 @@ from pages.desktop.frontend.details import Detail
 @pytest.mark.parametrize(
     'addon_type, name_type',
     [
-        ['weather-stage', 'Weather Stage'],
+        ['weather-stage', 'Weather'],
         ['japanese-tattoo', 'Japanese Tattoo'],
         ['release-langpack', 'Release Langpack'],
         ['release_dictionary', 'Release Dictionary'],
