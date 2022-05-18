@@ -2,6 +2,7 @@ import time
 import pytest
 import urllib.request
 import urllib.parse
+import requests
 
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.support.wait import WebDriverWait
@@ -86,6 +87,48 @@ def test_experimental_addon(selenium, base_url, variables):
     selenium.get(f'{base_url}/addon/{extension}')
     addon = Detail(selenium, base_url)
     assert addon.experimental_badge.is_displayed()
+
+
+@pytest.mark.nondestructive
+def test_access_addon_by_guid(selenium, base_url, variables):
+    """Access an addon detail page by its guid"""
+    extension = variables['addon_detail_guid']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    # making sure that the page doesn't return a 404
+    response = requests.get(selenium.current_url)
+    assert (
+        response.status_code == 200
+    ), f'Actual status code for "{selenium.current_url}" was "{response.status_code}"'
+    assert addon.summary.is_displayed()
+
+
+@pytest.mark.nondestructive
+def test_access_addon_by_id(selenium, base_url, variables):
+    """Access an addon detail page by its internal AMO id"""
+    extension = variables['addon_detail_id']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    # making sure that the page doesn't return a 404
+    response = requests.get(selenium.current_url)
+    assert (
+        response.status_code == 200
+    ), f'Actual status code for "{selenium.current_url}" was "{response.status_code}"'
+    assert addon.summary.is_displayed()
+
+
+@pytest.mark.nondestructive
+def test_access_addon_by_unicode_slug(selenium, base_url, variables):
+    """Access an addon detail page with a unicode slug"""
+    extension = variables['addon_unicode_slug']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    # making sure that the page doesn't return a 404
+    response = requests.get(selenium.current_url)
+    assert (
+        response.status_code == 200
+    ), f'Actual status code for "{selenium.current_url}" was "{response.status_code}"'
+    assert addon.summary.is_displayed()
 
 
 @pytest.mark.nondestructive
@@ -588,10 +631,7 @@ def test_addon_ratings_card(selenium, base_url, variables):
     selenium.get(f'{base_url}/addon/{extension}')
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     assert 'Rate your experience' in addon.ratings.ratings_card_header
-    assert (
-        variables['ratings_card_summary']
-        in addon.ratings.ratings_card_summary
-    )
+    assert variables['ratings_card_summary'] in addon.ratings.ratings_card_summary
     # checks that the login button is present in the ratings card
     # when the add-on detail page is viewed by unauthenticated users
     assert addon.ratings.rating_login_button.is_displayed()
