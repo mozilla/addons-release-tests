@@ -1,3 +1,4 @@
+import math
 import pytest
 
 from selenium.common.exceptions import NoSuchElementException
@@ -8,6 +9,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 from pages.desktop.frontend.details import Detail
 from pages.desktop.frontend.reviews import Reviews
+from pages.desktop.frontend.versions import Versions
 
 
 @pytest.mark.serial
@@ -502,3 +504,151 @@ def test_delete_developer_reply_to_review(selenium, base_url, variables):
             (By.CSS_SELECTOR, '.AddonReviewCard-reply .ShowMoreCard-contents > div')
         )
     )
+
+
+@pytest.mark.nondestructive
+def test_rating_card_loaded_correctly(selenium, base_url, variables):
+    selenium.get(variables["addon_version_page_url"])
+    page = Versions(selenium, base_url)
+    rating_card = page.rating_card
+    assert rating_card.addon_image.is_displayed()
+    assert rating_card.addon_title.is_displayed()
+    assert len(rating_card.addon_author_names) >= 1
+    for star in rating_card.rating_stars:
+        assert star.is_displayed()
+    assert rating_card.rating in range(6)
+    for i in range(5):
+        assert page.rating_card.number_of_reviews_with_specific_stars(i) >= 0
+    for rating_bar in rating_card.rating_bars:
+        assert rating_bar.is_displayed
+
+
+@pytest.mark.nondestructive
+def test_rating_card_title(selenium, base_url, variables):
+    selenium.get(variables["addon_version_page_url"])
+    page = Versions(selenium, base_url)
+    # get title from rating card
+    addon_title_from_card = page.rating_card.addon_title.text
+    # go to addon detail page
+    addon_detail_name = page.rating_card.click_addon_title()
+    # verify if title matches
+    assert addon_title_from_card == addon_detail_name.name
+
+
+@pytest.mark.nondestructive
+def test_rating_card_authors(selenium, base_url, variables):
+    selenium.get(f'{base_url}/addon/{variables["addon_with_stats"]}/versions/')
+    page = Versions(selenium, base_url)
+    addon_title = page.rating_card.addon_title.text
+    # iterate through the authors
+    for i in range(len(page.rating_card.addon_author_names)):
+        # go to author's page
+        user_page = page.rating_card.click_author_name(i)
+        # make a list of author's extensions
+        extensions = []
+        for item in user_page.user_extensions.result_list.extensions:
+            extensions.append(item.name)
+        # verify if the current add-on is in the list
+        assert addon_title in extensions
+        # go back for testing the next author
+        page.driver.back()
+
+
+@pytest.mark.nondestructive
+@pytest.mark.parametrize(
+    'addon_slug',
+    ('tabliss', 'facebook-container', 'bitwarden-password-manager', 'unloadtabs'),
+    ids=(
+        '5 stars rating add-on',
+        '4.3 stars rating add-on',
+        '4 stars rating add-on',
+        '3.5 stars rating add-on',
+    ),
+)
+def test_rating_card_filled_stars(selenium, base_url, variables, addon_slug):
+    selenium.get(f'{base_url}/en-US/firefox/addon/{addon_slug}/versions/')
+    page = Versions(selenium, base_url)
+    # verify the number of filled stars
+    assert page.rating_card.number_of_filled_stars == math.floor(
+        page.rating_card.rating
+    )
+    # verify the number of half filled stars
+    if page.rating_card.rating > math.floor(page.rating_card.rating):
+        assert page.rating_card.number_of_half_filled_stars == 1
+    # verify the number of unfilled stars
+    assert page.rating_card.number_of_unfilled_stars == 5 - math.ceil(
+        page.rating_card.rating
+    )
+
+
+@pytest.mark.nondestructive
+def test_rating_card_rating_bars(selenium, base_url, variables):
+    selenium.get(variables["addon_version_page_url"])
+    page = Versions(selenium, base_url)
+    # iterate through the rating bars
+    for count in range(5):
+        # click to see all reviews with specific number of stars
+        review_page = page.rating_card.click_see_all_reviews_with_specific_stars(count)
+        page.wait_for_page_to_load()
+        # if there are reviews
+        if page.rating_card.number_of_reviews_with_specific_stars(count) > 0:
+            # verify that each review in the list has the wanted number of stars
+            for review in review_page.review_items:
+                rating = int(review.rating_stars.text.split()[1])
+                assert 5 - count == rating
+
+
+@pytest.mark.nondestructive
+def test_rating_card_bar_review_counter(selenium, base_url, variables):
+    # this test verifies that the counter for each bar is correct
+    selenium.get(variables["addon_version_page_url"])
+    page = Versions(selenium, base_url)
+    for i in range(5):
+        counter_from_card = page.rating_card.number_of_reviews_with_specific_stars(i)
+        review_page = page.rating_card.click_see_all_reviews_with_specific_stars(i)
+        page.wait_for_page_to_load()
+        assert len(review_page.review_items) == counter_from_card
+        page.driver.back()
+
+
+@pytest.mark.nondestructive
+def test_rating_card_average_stars(selenium, base_url, variables):
+    # this test calculates the rating average and verifies that the displayed average is correct
+    selenium.get(variables["addon_version_page_url"])
+    page = Versions(selenium, base_url)
+    total_reviews_number = 0
+    total_stars_number = 0
+    for i in range(5):
+        total_reviews_number += page.rating_card.number_of_reviews_with_specific_stars(
+            i
+        )
+        # multiply the number of reviews with the star value of the reviews and add it to the total
+        total_stars_number += page.rating_card.number_of_reviews_with_specific_stars(
+            i
+        ) * (5 - i)
+    assert total_stars_number / total_reviews_number == page.rating_card.rating
+
+
+@pytest.mark.nondestructive
+def test_meta_card_loaded_correctly(selenium, base_url, variables):
+    selenium.get(f'{base_url}/addon/{variables["addon_with_stats"]}')
+    page = Detail(selenium, base_url)
+    meta_card = page.stats
+    assert meta_card.addon_user_stats.is_displayed()
+    assert meta_card.addon_reviews_stats.is_displayed()
+    assert meta_card.addon_star_rating_stats.is_displayed()
+    for i in range(5):
+        assert meta_card.bar_grouped_ratings[i].is_displayed()
+        assert meta_card.rating_bars[i].is_displayed()
+        assert meta_card.bar_rating_counts[i].is_displayed()
+
+
+@pytest.mark.nondestructive
+def test_meta_card_reviews_counter(selenium, base_url, variables):
+    # this test verifies that the total number of reviews is equal to the sum of one-star to five-star reviews
+    selenium.get(f'{base_url}/addon/{variables["addon_with_stats"]}')
+    page = Detail(selenium, base_url)
+    reviews_sum = 0
+    for el in page.stats.bar_rating_counts:
+        reviews_sum += int(el.text.split()[0])
+    assert int(page.stats.addon_reviews_stats.text.split()[0]) == reviews_sum
