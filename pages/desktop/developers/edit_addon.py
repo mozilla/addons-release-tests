@@ -8,12 +8,12 @@ class EditAddon(Base):
 
     _root_locator = (By.CLASS_NAME, 'section')
     _edit_addon_navbar_locator = (By.CLASS_NAME, 'edit-addon-nav')
-    _addon_name_locator = (
-        By.CSS_SELECTOR,
-        '#main-wrapper > div:nth-child(1) >\
-                           header:nth-child(2) > h2:nth-child(2)',
-    )
+    _addon_name_locator = (By.CSS_SELECTOR, '.section header h2')
     _listed_addon_status_locator = (By.CSS_SELECTOR, '.addon-listed-status a')
+    _manage_versions_link_locator = (
+        By.CSS_SELECTOR,
+        '#edit-addon-nav ul:nth-child(1) li:nth-child(3)',
+    )
 
     def wait_for_page_to_load(self):
         self.wait.until(lambda _: self.is_element_displayed(*self._addon_name_locator))
@@ -26,3 +26,9 @@ class EditAddon(Base):
     @property
     def listed_addon_status(self):
         return self.find_element(*self._listed_addon_status_locator).text
+
+    def click_manage_versions_link(self):
+        self.find_element(*self._manage_versions_link_locator).click()
+        from pages.desktop.developers.manage_versions import ManageVersions
+
+        return ManageVersions(self.selenium, self.base_url).wait_for_page_to_load()
