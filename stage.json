@@ -122,5 +122,9 @@
   "devhub_submit_addon_distribution_header": "How to Distribute this Version",
 
   "unlisted_submission_confirmation": "You’re done! ✨ You will be notified by email when the signed file is ready to be downloaded from the Developer Hub. If you do not see an email after 24 hours, please check your spam folder.",
-  "listed_submission_confirmation": "You’re done! ✨ You will receive a confirmation email when this version is published on addons.allizom.org. Note that it may take up to 24 hours before publication occurs, or longer if your add-on is selected for manual review. If you do not see an email after 24 hours, please check your spam folder."
+  "listed_submission_confirmation": "You’re done! ✨ You will receive a confirmation email when this version is published on addons.allizom.org. Note that it may take up to 24 hours before publication occurs, or longer if your add-on is selected for manual review. If you do not see an email after 24 hours, please check your spam folder.",
+  "listed_addon_summary_en": "Listed add-on summary set at add-on creation time",
+  "listed_addon_description_en": "Listed add-on description set at add-on creation time",
+  "listed_addon_privacy_policy_en": "Listed add-on privacy policy",
+  "listed_addon_reviewer_notes": "TEST ADDON: Reviewer notes set by the developer"
 }

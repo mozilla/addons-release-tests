@@ -1,3 +1,6 @@
+import time
+
+import pytest
 from pypom import Region, Page
 
 from selenium.webdriver.common.by import By
@@ -19,6 +22,27 @@ class ManageVersions(Page):
     @property
     def version_approval_status(self):
         return self.find_element(*self._version_approval_status_locator)
+
+    def wait_for_version_autoapproval(self, value):
+        """Method that verifies if auto-approval occurs within a set time"""
+        timeout_start = time.time()
+        # auto-approvals should normally take ~5 minutes;
+        # set a loop to verify if approval occurs within this interval
+        while time.time() < timeout_start + 300:
+            # refresh the page to check if the status has changed
+            self.selenium.refresh()
+            if value not in self.version_approval_status.text:
+                # wait 30 seconds before we refresh again
+                time.sleep(30)
+            # break the loop of the status changed to the expected value within set time
+            else:
+                break
+        # if auto-approval took longer than normal, we want to fail the test and capture the final status
+        if time.time() > timeout_start + 300:
+            pytest.fail(
+                f'Autoapproval took longer than normal; '
+                f'Addon final status was "{self.version_approval_status.text}" instead of "{value}"'
+            )
 
     def delete_addon(self):
         self.find_element(*self._delete_addon_button_locator).click()
