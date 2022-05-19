@@ -559,23 +559,15 @@ def test_rating_card_filled_stars(base_url, selenium, variables):
     selenium.get(variables["addon_version_page_url"])
     page = Versions(selenium, base_url)
     rating = page.rating_card.rating
-    # if the rating has its sub unitary part smaller than 0.2
-    # no half-filled star should be displayed
-    if rating - math.floor(rating) <= 0.2:
+    sub_unitary_part = round(rating - math.floor(rating), 2)
+    # if the sub unitary part is between 0.2 and 0.8, a half-filled star should be displayed
+    # and the number of whole stars should be floor(rating)
+    if 0.2 < sub_unitary_part < 0.8:
         assert page.rating_card.number_of_filled_stars == math.floor(rating)
-        assert page.rating_card.number_of_half_filled_stars == 0
+        assert page.rating_card.number_of_half_filled_stars == 1
     else:
-        # if the rating has its sub unitary part between 0.2 and 0.8
-        # a half-filled star should be displayed
-        if rating - math.floor(rating) < 0.8:
-            assert page.rating_card.number_of_filled_stars == math.floor(rating)
-            assert page.rating_card.number_of_half_filled_stars == 1
-        else:
-            # if the rating has its sub unitary part bigger than 0.8
-            # no half-filled star should be displayed
-            # the approximation used for whole stars should be ceil
-            assert page.rating_card.number_of_filled_stars == math.ceil(rating)
-            assert page.rating_card.number_of_half_filled_stars == 0
+        assert page.rating_card.number_of_filled_stars == round(rating)
+        assert page.rating_card.number_of_half_filled_stars == 0
 
 
 @pytest.mark.nondestructive
