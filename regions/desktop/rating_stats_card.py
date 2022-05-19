@@ -9,8 +9,14 @@ class RatingStats(Region):
     _addon_author_locator = (By.CSS_SELECTOR, '.AddonTitle-author > a')
     _addon_rating_locator = (By.CSS_SELECTOR, '.AddonSummaryCard-addonAverage')
     _number_of_reviews_locator = (By.CLASS_NAME, 'RatingsByStar-count')
-    _rating_stars_locator = (By.CSS_SELECTOR, '.Rating-star')
+    _rating_stars_locator = (By.CSS_SELECTOR, '.AddonSummaryCard .Rating-star')
+    _filled_stars_locator = (By.CSS_SELECTOR, '.AddonSummaryCard .Rating-selected-star')
+    _half_filled_stars_locator = (
+        By.CSS_SELECTOR,
+        '.AddonSummaryCard .Rating-half-star',
+    )
     _rating_by_star_locator = (By.CSS_SELECTOR, '.RatingsByStar-graph > a')
+    _rating_bars_locator = (By.CSS_SELECTOR, '.RatingsByStar-barFrame')
 
     @property
     def addon_title(self):
@@ -44,12 +50,16 @@ class RatingStats(Region):
 
     @property
     def rating_stars(self):
-        return self.find_element(*self._rating_stars_locator)
+        return self.find_elements(*self._rating_stars_locator)
 
     @property
     def rating(self):
         rating = self.find_element(*self._addon_rating_locator).text.split()[0]
         return float(rating)
+
+    @property
+    def rating_bars(self):
+        return self.find_elements(*self._rating_bars_locator)
 
     def click_see_all_reviews_with_specific_stars(self, count):
         self.find_elements(*self._rating_by_star_locator)[count].click()
@@ -59,3 +69,15 @@ class RatingStats(Region):
 
     def number_of_reviews_with_specific_stars(self, count):
         return int(self.find_elements(*self._number_of_reviews_locator)[count].text)
+
+    @property
+    def number_of_filled_stars(self):
+        return len(self.find_elements(*self._filled_stars_locator))
+
+    @property
+    def number_of_half_filled_stars(self):
+        return len(self.find_elements(*self._half_filled_stars_locator))
+
+    @property
+    def number_of_unfilled_stars(self):
+        return 5 - (self.number_of_filled_stars + self.number_of_half_filled_stars)
