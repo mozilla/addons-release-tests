@@ -516,6 +516,7 @@ def test_rating_card_loaded_correctly(selenium, base_url, variables):
     assert len(rating_card.addon_author_names) >= 1
     for star in rating_card.rating_stars:
         assert star.is_displayed()
+    # verify that the rating value is in the [0, 5] interval
     assert rating_card.rating in range(6)
     for i in range(5):
         assert page.rating_card.number_of_reviews_with_specific_stars(i) >= 0
@@ -524,7 +525,7 @@ def test_rating_card_loaded_correctly(selenium, base_url, variables):
 
 
 @pytest.mark.nondestructive
-def test_rating_card_title(selenium, base_url, variables):
+def test_rating_card_addon_name(selenium, base_url, variables):
     selenium.get(variables["addon_version_page_url"])
     page = Versions(selenium, base_url)
     # get title from rating card
@@ -554,31 +555,27 @@ def test_rating_card_authors(selenium, base_url, variables):
         page.driver.back()
 
 
-@pytest.mark.nondestructive
-@pytest.mark.parametrize(
-    'addon_slug',
-    ('tabliss', 'facebook-container', 'bitwarden-password-manager', 'unloadtabs'),
-    ids=(
-        '5 stars rating add-on',
-        '4.3 stars rating add-on',
-        '4 stars rating add-on',
-        '3.5 stars rating add-on',
-    ),
-)
-def test_rating_card_filled_stars(selenium, base_url, variables, addon_slug):
-    selenium.get(f'{base_url}/en-US/firefox/addon/{addon_slug}/versions/')
+def test_rating_card_filled_stars(base_url, selenium, variables):
+    selenium.get(variables["addon_version_page_url"])
     page = Versions(selenium, base_url)
-    # verify the number of filled stars
-    assert page.rating_card.number_of_filled_stars == math.floor(
-        page.rating_card.rating
-    )
-    # verify the number of half filled stars
-    if page.rating_card.rating > math.floor(page.rating_card.rating):
-        assert page.rating_card.number_of_half_filled_stars == 1
-    # verify the number of unfilled stars
-    assert page.rating_card.number_of_unfilled_stars == 5 - math.ceil(
-        page.rating_card.rating
-    )
+    rating = page.rating_card.rating
+    # if the rating has its sub unitary part smaller than 0.2
+    # no half-filled star should be displayed
+    if rating - math.floor(rating) <= 0.2:
+        assert page.rating_card.number_of_filled_stars == math.floor(rating)
+        assert page.rating_card.number_of_half_filled_stars == 0
+    else:
+        # if the rating has its sub unitary part between 0.2 and 0.8
+        # a half-filled star should be displayed
+        if rating - math.floor(rating) < 0.8:
+            assert page.rating_card.number_of_filled_stars == math.floor(rating)
+            assert page.rating_card.number_of_half_filled_stars == 1
+        else:
+            # if the rating has its sub unitary part bigger than 0.8
+            # no half-filled star should be displayed
+            # the approximation used for whole stars should be ceil
+            assert page.rating_card.number_of_filled_stars == math.ceil(rating)
+            assert page.rating_card.number_of_half_filled_stars == 0
 
 
 @pytest.mark.nondestructive
@@ -627,28 +624,3 @@ def test_rating_card_average_stars(selenium, base_url, variables):
             i
         ) * (5 - i)
     assert total_stars_number / total_reviews_number == page.rating_card.rating
-
-
-@pytest.mark.nondestructive
-def test_meta_card_loaded_correctly(selenium, base_url, variables):
-    selenium.get(f'{base_url}/addon/{variables["addon_with_stats"]}')
-    page = Detail(selenium, base_url)
-    meta_card = page.stats
-    assert meta_card.addon_user_stats.is_displayed()
-    assert meta_card.addon_reviews_stats.is_displayed()
-    assert meta_card.addon_star_rating_stats.is_displayed()
-    for i in range(5):
-        assert meta_card.bar_grouped_ratings[i].is_displayed()
-        assert meta_card.rating_bars[i].is_displayed()
-        assert meta_card.bar_rating_counts[i].is_displayed()
-
-
-@pytest.mark.nondestructive
-def test_meta_card_reviews_counter(selenium, base_url, variables):
-    # this test verifies that the total number of reviews is equal to the sum of one-star to five-star reviews
-    selenium.get(f'{base_url}/addon/{variables["addon_with_stats"]}')
-    page = Detail(selenium, base_url)
-    reviews_sum = 0
-    for el in page.stats.bar_rating_counts:
-        reviews_sum += int(el.text.split()[0])
-    assert int(page.stats.addon_reviews_stats.text.split()[0]) == reviews_sum

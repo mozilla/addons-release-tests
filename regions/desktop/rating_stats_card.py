@@ -1,10 +1,5 @@
-import time
-
 from pypom import Region
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.wait import WebDriverWait
 
 
 class RatingStats(Region):
