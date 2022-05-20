@@ -116,15 +116,43 @@ def test_addon_last_modified_date(selenium, base_url):
 
 @pytest.mark.sanity
 @pytest.mark.serial
-@pytest.mark.create_session(
-    'submissions_user'
-)  # starts the browser with an active session (no login needed)
-def test_submit_mixed_addon_versions(selenium, base_url, variables, wait):
+@pytest.mark.create_session('submissions_user')
+def test_submit_listed_wizard_theme(selenium, base_url, variables, wait):
+    """A test that checks a straight-forward theme submission with the devhub wizard"""
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    # TODO: add steps for submitting addon new version
-
-
-# TODO: more tests that use @pytest.mark.create_session go here
+    submit_addon = page.click_submit_theme_button()
+    # start the upload for a listed theme
+    submit_addon.select_listed_option()
+    submit_addon.click_continue()
+    # checking that the Firefox compatibility checkbox is selected by default
+    wait.until(lambda _: submit_addon.firefox_compat_checkbox.is_selected())
+    create_theme = submit_addon.click_create_theme_button()
+    theme_name = f'wizard_theme_{reusables.get_random_string(5)}'
+    create_theme.set_theme_name(theme_name)
+    create_theme.upload_theme_header('theme_header.png')
+    wait.until(lambda _: create_theme.uploaded_image_preview.is_displayed())
+    # make a note of the image source uploaded as the theme header
+    uploaded_img_source = create_theme.uploaded_image_source
+    # verify that the uploaded image is applied in the browser preview
+    assert uploaded_img_source == create_theme.browser_preview_image
+    theme_details = create_theme.submit_theme()
+    # check that the name set earlier carried over
+    assert theme_name in theme_details.addon_name_field.get_attribute('value')
+    theme_details.set_addon_summary('Theme summary')
+    # select a category for the theme
+    theme_details.select_theme_categories(0)
+    # set up a license for the theme based on 'Yes'[0]/'No'[1] options
+    theme_details.select_theme_licence_sharing_rights(1)
+    theme_details.select_theme_license_commercial_use(1)
+    theme_details.select_theme_license_creation_rights(1)
+    # check that the resulted license is 'All Rights Reserved'
+    assert 'All Rights Reserved' in theme_details.generated_theme_license.text
+    confirmation_page = theme_details.submit_addon()
+    # verify that the theme preview has been generated after submission
+    wait.until(lambda _: confirmation_page.generated_theme_preview.is_displayed())
+    manage_themes = confirmation_page.click_manage_listing_button()
+    # check that the submitted theme appears in the user's themes list
+    assert theme_name in manage_themes.addon_list[0].name
 
 
 @pytest.mark.sanity
