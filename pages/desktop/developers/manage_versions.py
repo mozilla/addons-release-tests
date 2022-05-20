@@ -38,7 +38,7 @@ class ManageVersions(Page):
             else:
                 break
         # if auto-approval took longer than normal, we want to fail the test and capture the final status
-        if time.time() > timeout_start + 300:
+        else:
             pytest.fail(
                 f'Autoapproval took longer than normal; '
                 f'Addon final status was "{self.version_approval_status.text}" instead of "{value}"'
