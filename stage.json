@@ -30,6 +30,11 @@
   "secondary_hero_title": "Extensions are like apps for Firefox.",
   "secondary_hero_summary": "They add features to Firefox to make browsing faster, safer, or just plain fun",
 
+  "static_page_review_guidelines": "https://addons.allizom.org/en-US/review_guide",
+  "static_page_about_firefox_addons": "https://addons.allizom.org/en-US/about",
+  "static_page_blocked_addon": "https://addons.allizom.org/en-US/firefox/blocked-addon/adio-guid@1user.com/",
+  "static_page_login_expired_text": "Login authentication has expired. Reload the page to continue without authentication, or login again using the Log In link at the top of the page.",
+
   "all_scores_addon": "all-scores",
   "dev_reply_review": "dev-reply-review",
   "initial_text_input": "original text",
