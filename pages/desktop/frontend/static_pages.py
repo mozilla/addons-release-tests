@@ -10,7 +10,7 @@ class StaticPages(Base):
     and other pages that have only an informative scope"""
 
     _notice_text_locator = (By.CSS_SELECTOR, '.Notice-warning')
-    page_header_locator = (By.CSS_SELECTOR, '.Card-header-text')
+    _page_header_locator = (By.CSS_SELECTOR, '.Card-header-text')
     _content_locator = (By.CSS_SELECTOR, '.Card-contents')
     _content_card_links_locator = (By.CSS_SELECTOR, '.Card-contents a')
     # ------- Review Guidelines page
@@ -42,7 +42,7 @@ class StaticPages(Base):
 
     @property
     def page_header(self):
-        return self.find_element(*self.page_header_locator).text
+        return self.find_element(*self._page_header_locator).text
 
     @property
     def content(self):

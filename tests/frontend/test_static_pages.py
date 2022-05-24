@@ -7,8 +7,8 @@ from pages.desktop.frontend.static_pages import StaticPages
 
 
 @pytest.mark.nondestructive
-def test_review_guidelines_page_loaded_correctly(base_url, selenium, variables):
-    selenium.get(variables["static_page_review_guidelines"])
+def test_review_guidelines_page_loaded_correctly(base_url, selenium):
+    selenium.get(f'{base_url}/review_guide')
     page = StaticPages(selenium, base_url)
     # verify the tab title
     assert 'Review Guidelines – Add-ons for Firefox' in page.driver.title
@@ -23,7 +23,7 @@ def test_review_guidelines_page_loaded_correctly(base_url, selenium, variables):
 
 @pytest.mark.nondestructive
 def test_about_firefox_addons_page_loaded_correctly(base_url, selenium, variables):
-    selenium.get(variables['static_page_about_firefox_addons'])
+    selenium.get(f'{base_url}/about')
     page = StaticPages(selenium, base_url)
     # verify the tab title
     assert 'About Firefox Add-ons – Add-ons for Firefox' in page.driver.title
@@ -51,11 +51,14 @@ def test_blocked_addon_page_loaded_correctly(base_url, selenium, variables):
     page = StaticPages(selenium, base_url)
     # verify the tab title
     assert (
-        'Reused guid-23 has been blocked for your protection. – Add-ons for Firefox'
+        f'{variables["blocked_addon_name"]} has been blocked for your protection. – Add-ons for Firefox'
         in page.driver.title
     )
     # verify the header
-    assert 'Reused guid-23 has been blocked for your protection.' in page.page_header
+    assert (
+        f'{variables["blocked_addon_name"]} has been blocked for your protection.'
+        in page.page_header
+    )
     # verify the paragraphs
     assert 'Why was it blocked?' in page.content.text
     assert 'What does this mean?' in page.content.text
@@ -75,7 +78,7 @@ def test_blocked_addon_page_does_not_have_login_button(base_url, selenium, varia
 
 @pytest.mark.nondestructive
 def test_review_guidelines_page_links(base_url, selenium, variables):
-    selenium.get(variables["static_page_review_guidelines"])
+    selenium.get(f'{base_url}/review_guide')
     page = StaticPages(selenium, base_url)
     link_domain = page.forum_link.get_attribute('href').split('/')[2].split('.')[0]
     page.forum_link.click()
@@ -84,7 +87,7 @@ def test_review_guidelines_page_links(base_url, selenium, variables):
 
 @pytest.mark.nondestructive
 def test_about_firefox_addons_page_links(base_url, selenium, variables):
-    selenium.get(variables['static_page_about_firefox_addons'])
+    selenium.get(f'{base_url}/about')
     page = StaticPages(selenium, base_url)
     for count in range(len(page.page_links)):
         link = page.page_links[count]
