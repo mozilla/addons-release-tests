@@ -4,6 +4,7 @@ from pypom import Page
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.wait import WebDriverWait
 
 from pages.desktop.developers.manage_versions import ManageVersions
 
@@ -99,10 +100,12 @@ class UploadSource(Page):
     )
     _yes_submit_source_radio_button_locator = (By.ID, 'id_has_source_0')
     _no_submit_source_radio_button_locator = (By.ID, 'id_has_source_1')
+    _choose_source_file_button_locator = (By.ID, 'id_source')
     _continue_button_locator = (
         By.CSS_SELECTOR,
         '.submission-buttons button:nth-child(1)',
     )
+    _upload_source_error_message_locator = (By.CSS_SELECTOR, '.errorlist li')
 
     @property
     def submit_source_page_header(self):
@@ -114,11 +117,159 @@ class UploadSource(Page):
     def select_no_to_omit_source(self):
         self.find_element(*self._no_submit_source_radio_button_locator).click()
 
+    def choose_source(self, file):
+        button = self.find_element(*self._choose_source_file_button_locator)
+        archive = Path(f'{os.getcwd()}/sample-addons/{file}')
+        button.send_keys(str(archive))
+
     def continue_unlisted_submission(self):
         self.find_element(*self._continue_button_locator).click()
         return SubmissionConfirmationPage(
             self.selenium, self.base_url
         ).wait_for_page_to_load()
+
+    def continue_listed_submission(self):
+        self.find_element(*self._continue_button_locator).click()
+        return ListedAddonSubmissionForm(
+            self.selenium, self.base_url
+        ).wait_for_page_to_load()
+
+    @property
+    def source_upload_fail_message(self):
+        return self.find_element(*self._upload_source_error_message_locator).text
+
+
+class ListedAddonSubmissionForm(Page):
+    _addon_name_field_locator = (By.CSS_SELECTOR, '#trans-name input:nth-child(1)')
+    _edit_addon_slug_link_locator = (By.ID, 'edit_slug')
+    _edit_addon_slug_field_locator = (By.ID, 'id_slug')
+    _addon_summary_field_locator = (By.ID, 'id_summary_0')
+    _addon_detail_fields_info_text_locator = (By.CSS_SELECTOR, '.edit-addon-details')
+    _summary_character_count_locator = (
+        By.CSS_SELECTOR,
+        ".char-count[data-for-startswith='id_summary_'] > b",
+    )
+    _addon_description_field_locator = (By.ID, 'id_description_0')
+    _is_experimental_checkbox_locator = (By.ID, 'id_is_experimental')
+    _requires_payment_checkbox_locator = (By.ID, 'id_requires_payment')
+    _categories_section_locator = (By.ID, 'addon-categories-edit')
+    _firefox_categories_locator = (
+        By.CSS_SELECTOR,
+        '.addon-app-cats:nth-of-type(1) > ul input',
+    )
+    _android_categories_locator = (
+        By.CSS_SELECTOR,
+        '.addon-app-cats:nth-of-type(2) > ul input',
+    )
+    _email_input_field_locator = (By.ID, 'id_support_email_0')
+    _support_site_input_field_locator = (By.ID, 'id_support_url_0')
+    _license_options_locator = (By.CLASS_NAME, 'license')
+    _license_details_link_locator = (By.CSS_SELECTOR, '.xx.extra')
+    _custom_license_name_locator = (By.ID, 'id_license-name')
+    _custom_license_text_locator = (By.ID, 'id_license-text')
+    _privacy_policy_checkbox_locator = (By.ID, 'id_has_priv')
+    _privacy_policy_textarea_locator = (By.ID, 'id_privacy_policy_0')
+    _reviewer_notes_textarea_locator = (By.ID, 'id_approval_notes')
+    _submit_addon_button_locator = (
+        By.CSS_SELECTOR,
+        '.submission-buttons button:nth-child(1)',
+    )
+    _cancel_addon_submission_button_locator = (
+        By.CSS_SELECTOR,
+        '.submission-buttons button:nth-child(2)',
+    )
+
+    def wait_for_page_to_load(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._addon_summary_field_locator)
+        )
+        return self
+
+    def set_addon_name(self, value):
+        self.find_element(*self._addon_name_field_locator).send_keys(value)
+
+    @property
+    def addon_name_field(self):
+        return self.find_element(*self._addon_name_field_locator)
+
+    def edit_addon_slug(self, value):
+        self.find_element(*self._edit_addon_slug_link_locator).click()
+        edit_field = WebDriverWait(self.selenium, 10).until(
+            EC.visibility_of_element_located(self._edit_addon_slug_field_locator)
+        )
+        edit_field.send_keys(value)
+
+    def set_addon_summary(self, value):
+        self.find_element(*self._addon_summary_field_locator).send_keys(value)
+
+    def addon_detail_fields_info_text(self):
+        self.find_elements(*self._addon_detail_fields_info_text_locator)
+
+    @property
+    def summary_character_count(self):
+        return self.find_element(*self._summary_character_count_locator).text
+
+    def set_addon_description(self, value):
+        self.find_element(*self._addon_description_field_locator).send_keys(value)
+
+    @property
+    def is_experimental(self):
+        return self.find_element(*self._is_experimental_checkbox_locator)
+
+    @property
+    def requires_payment(self):
+        return self.find_element(*self._requires_payment_checkbox_locator)
+
+    @property
+    def categories_section(self):
+        return self.find_element(*self._categories_section_locator)
+
+    def select_firefox_categories(self, count):
+        self.find_elements(*self._firefox_categories_locator)[count].click()
+
+    def select_android_categories(self, count):
+        self.find_elements(*self._android_categories_locator)[count].click()
+
+    def email_input_field(self, value):
+        self.find_element(*self._email_input_field_locator).send_keys(value)
+
+    def support_site_input_field(self, value):
+        self.find_element(*self._support_site_input_field_locator).send_keys(value)
+
+    @property
+    def select_license_options(self):
+        return self.find_elements(*self._license_options_locator)
+
+    def license_option_names(self, count, value):
+        return self.select_license_options[count].get_attribute(value)
+
+    def license_details_link(self):
+        self.find_element(*self._license_details_link_locator).click()
+
+    def set_custom_license_name(self, value):
+        self.find_element(*self._custom_license_name_locator).send_keys(value)
+
+    def set_custom_license_text(self, value):
+        self.find_element(*self._custom_license_text_locator).send_keys(value)
+
+    def set_privacy_policy(self, value):
+        self.find_element(*self._privacy_policy_checkbox_locator).click()
+        self.find_element(*self._privacy_policy_textarea_locator).send_keys(value)
+
+    def set_reviewer_notes(self, value):
+        self.find_element(*self._reviewer_notes_textarea_locator).send_keys(value)
+
+    def submit_addon(self):
+        self.find_element(*self._submit_addon_button_locator).click()
+        return SubmissionConfirmationPage(
+            self.selenium, self.base_url
+        ).wait_for_page_to_load()
+
+    def cancel_submission(self):
+        self.find_element(*self._cancel_addon_submission_button_locator).click()
+        from pages.desktop.developers.edit_addon import EditAddon
+
+        return EditAddon(self.selenium, self.base_url).wait_for_page_to_load()
 
 
 class SubmissionConfirmationPage(Page):

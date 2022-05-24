@@ -347,6 +347,11 @@ class DevHubHome(Base):
         def my_addon_last_modified_date(self):
             return self.find_element(*self._my_addon_last_modified_date_locator)
 
+        @property
+        def my_addon_modified_date_text(self):
+            """Get the date string from the Last Update date section and format it"""
+            return self.my_addon_last_modified_date.text.replace('.', '')
+
         def is_listed_addon(self):
             """Checks the add-on listing visibility in DevHub homepage
             by looking at its status in the Edit add-on page"""
