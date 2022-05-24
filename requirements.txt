@@ -3,7 +3,7 @@ appdirs==1.4.4
 astroid==2.11.5
 atomicwrites==1.4.0
 attrs==21.4.0
-certifi==2022.5.18
+certifi==2022.5.18.1
 cffi==1.15.0
 chardet==4.0.0
 click==8.1.3
@@ -29,7 +29,7 @@ numpy==1.22.3
 packaging==21.3
 pathspec==0.9.0
 pluggy==1.0.0
-psutil==5.9.0
+psutil==5.9.1
 py==1.11.0
 PyBrowserID==0.14.0
 pycparser==2.21
