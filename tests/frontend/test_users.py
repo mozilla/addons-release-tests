@@ -443,7 +443,7 @@ def test_non_developer_user_profile_is_not_public(base_url, selenium, variables)
     non_developer_user = variables['non_developer_user']
     selenium.get(f'{base_url}/user/{non_developer_user}')
     page = StaticPages(selenium, base_url).wait_for_page_to_load()
-    assert variables['not_found_page_title'] in page.not_found_page_header
+    assert variables['not_found_page_title'] in page.page_header
     response = requests.head(selenium.current_url)
     assert (
         response.status_code == 404
