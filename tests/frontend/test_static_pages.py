@@ -1,4 +1,5 @@
 import pytest
+import requests
 
 from selenium.common.exceptions import NoSuchElementException
 
@@ -145,3 +146,24 @@ def test_login_expired_page(base_url, selenium, variables):
     page = page.click_reload_page_link
     # verify that an add-on detail page is displayed
     assert page.addon_icon.is_displayed()
+
+
+@pytest.mark.nondestructive
+def test_not_found_page(base_url, selenium, variables):
+    # go to an addon detail page that does not exist
+    selenium.get(f'{base_url}/addon/§§/')
+    page = StaticPages(selenium, base_url)
+    assert 'Oops! We can’t find that page' in page.page_header
+    for count in range(len(page.page_links)):
+        link = page.page_links[count]
+        # get the link's domain
+        link_domain = link.get_attribute('href').split('/')[2].split('.')[0]
+        # click the link
+        link.click()
+        # verify that the page was found (status code != 404)
+        r = requests.get(selenium.current_url)
+        r.raise_for_status()
+        # verify if the opened page link contains the correct domain
+        assert link_domain in selenium.current_url
+        # go back to test the next link
+        page.driver.back()
