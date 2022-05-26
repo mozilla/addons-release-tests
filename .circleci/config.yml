@@ -243,6 +243,36 @@ jobs:
       - store_artifacts:
           path: sanity-serial-test-results.html
 
+  # api addon submission tests covering uploads, edits, authors; the tests are run on -dev to avoid the API throttling
+  api_submission_tests:
+    executor:
+      name: win/default
+      size: "medium"
+    working_directory: ~/addons-release-tests/
+    steps:
+      - checkout
+      - run:
+          name: Upgrade pip
+          command: py -3.9 -m pip install --upgrade pip --user
+      - run:
+          name: Install requirements
+          command: py -3.9 -m pip install --no-deps -r ./requirements.txt
+      - run:
+          name: Install geckodriver
+          command: choco install selenium-gecko-driver
+      - run:
+          name: Install Firefox
+          command: choco install firefox
+      - run:
+          name: API submission tests
+          environment:
+            MOZ_HEADLESS: 1
+            PYTEST_ADDOPTS: -n 1 --reruns 2
+          command: py -3.9 -m pytest tests\devhub\test_addon_submissions.py --driver Firefox --variables dev.json --html=api_submission_tests.html --self-contained-html
+          no_output_timeout: 30m
+      - store_artifacts:
+          path: api_submission_tests.html
+
 workflows:
   commit_workflow:
     when:
@@ -255,6 +285,7 @@ workflows:
       - frontend_parallel_tests
       - devhub_parallel_tests
       - addon_submissions_tests
+      - api_submission_tests
   # scheduled in CircleCI Project settings to run each Wednesdays at 05:00 UTC
   scheduled_stage_release_run:
     when:
@@ -268,6 +299,7 @@ workflows:
       - frontend_parallel_tests
       - devhub_parallel_tests
       - addon_submissions_tests
+      - api_submission_tests
   # scheduled in CircleCI Project settings to start each Thursdays at 17:00 UTC
   scheduled_prod_sanity_run:
     when:
