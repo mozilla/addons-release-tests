@@ -1,0 +1,151 @@
+{
+  "base_url": "https://addons.allizom.org",
+  "it": {
+    "header": {
+      "blog_link": "Blog sui componenti aggiuntivi per Firefox",
+      "extension_workshop_link": "Laboratorio estensioni",
+      "developer_hub_link": "Centro di sviluppo",
+      "login_link": "Accedi",
+      "extensions_link": "Estensioni",
+      "themes_link": "Temi",
+      "more_link": "Altro…",
+      "more_dropdown_for_firefox_section": "per Firefox",
+      "more_dropdown_dictionaries_link": "Dizionari e language pack",
+      "more_dropdown_other_browsers_section": "Altri siti",
+      "more_dropdown_addons_for_android_link": "Componenti aggiuntivi per Android"
+    },
+    "home_page": {
+      "shelf_title_recommended_extensions": "Estensioni consigliate",
+      "shelf_title_popular_themes": "Temi più popolari",
+      "shelf_title_recommended_themes": "Temi consigliati",
+      "shelf_title_theme_categories": "Modifica l’aspetto di Firefox con i temi."
+    },
+    "extensions_page": {
+      "page_header": "Estensioni",
+      "page_summary": "Scandaglia il sito alla ricerca di strumenti avanzati e funzioni uniche per rendere Firefox veramente personale.",
+      "shelf_title_categories": "Categorie",
+      "shelf_title_recommended_extensions": "Estensioni consigliate",
+      "shelf_title_top_rated_extensions": "Estensioni più votate",
+      "shelf_title_trending_extensions": "Ultime tendenze tra le estensioni"
+    },
+    "themes_page": {
+      "page_header": "Temi",
+      "page_summary": "Modifica l'aspetto del tuo browser: scegli tra migliaia di temi per dare a Firefox un tocco personale.",
+      "shelf_title_categories": "Categorie",
+      "shelf_title_recommended_themes": "Temi consigliati",
+      "shelf_title_top_rated_themes": "Temi più votati",
+      "shelf_title_trending_themes": "Ultime tendenze tra i temi"
+    }
+  },
+  "es": {
+    "header": {
+      "blog_link": "Firefox Add-ons Blog",
+      "extension_workshop_link": "Taller de extensiones",
+      "developer_hub_link": "Central del desarrollador",
+      "login_link": "Log in",
+      "extensions_link": "Extensiones",
+      "themes_link": "Temas",
+      "more_link": "Más...",
+      "more_dropdown_for_firefox_section": "para Firefox",
+      "more_dropdown_dictionaries_link": "Diccionarios y paquetes de idiomas",
+      "more_dropdown_other_browsers_section": "Otros sitios de navegadores",
+      "more_dropdown_addons_for_android_link": "Complementos para Android"
+    },
+    "home_page": {
+      "shelf_title_recommended_extensions": "Extensiones recomendadas",
+      "shelf_title_popular_themes": "Temas populares",
+      "shelf_title_recommended_themes": "Temas recomendados",
+      "shelf_title_theme_categories": "Cambia la apariencia de Firefox con los temas."
+    },
+    "extensions_page": {
+      "page_header": "Extensiones",
+      "page_summary": "Descubre potentes herramientas y funciones para personalizar Firefox y hacer tuyo tu navegador.",
+      "shelf_title_categories": "Categorías",
+      "shelf_title_recommended_extensions": "Extensiones recomendadas",
+      "shelf_title_top_rated_extensions": "Extensiones más valoradas",
+      "shelf_title_trending_extensions": "Extensiones más populares"
+    },
+    "themes_page": {
+      "page_header": "Temas",
+      "page_summary": "Cambia la apariencia de tu navegador. Elije entre miles de temas y dale a Firefox la apariencia que desees.",
+      "shelf_title_categories": "Categorías",
+      "shelf_title_recommended_themes": "Temas recomendados",
+      "shelf_title_top_rated_themes": "Temas más valorados",
+      "shelf_title_trending_themes": "Temas más populares"
+    }
+  },
+  "de": {
+    "header": {
+      "blog_link": "Firefox-Add-ons-Blog",
+      "extension_workshop_link": "Erweiterungs-Workshop",
+      "developer_hub_link": "Entwickler-Zentrum",
+      "login_link": "Anmelden",
+      "extensions_link": "Erweiterungen",
+      "themes_link": "Themes",
+      "more_link": "Mehr…",
+      "more_dropdown_for_firefox_section": "für Firefox",
+      "more_dropdown_dictionaries_link": "Wörterbücher & Sprachpakete",
+      "more_dropdown_other_browsers_section": "Andere Browser-Seiten",
+      "more_dropdown_addons_for_android_link": "Add-ons für Android"
+    },
+    "home_page": {
+      "shelf_title_recommended_extensions": "Empfohlene Erweiterungen",
+      "shelf_title_popular_themes": "Beliebte Themes",
+      "shelf_title_recommended_themes": "Empfohlene Themes",
+      "shelf_title_theme_categories": "Ändern Sie das Erscheinungsbild von Firefox mit Themes."
+    },
+    "extensions_page": {
+      "page_header": "Erweiterungen",
+      "page_summary": "Entdecken Sie umfangreiche Werkzeuge und Funktionen, um Firefox an Ihre Bedürfnisse anzupassen.",
+      "shelf_title_categories": "Kategorien",
+      "shelf_title_recommended_extensions": "Empfohlene Erweiterungen",
+      "shelf_title_top_rated_extensions": "Höchstbewertete Erweiterungen",
+      "shelf_title_trending_extensions": "Aktuell beliebte Erweiterungen"
+    },
+    "themes_page": {
+      "page_header": "Themes",
+      "page_summary": "Ändern Sie das Erscheinungsbild Ihres Browsers. Wählen Sie aus Tausenden von Themes, um das Aussehen von Firefox an Ihre Wünsche anzupassen.",
+      "shelf_title_categories": "Kategorien",
+      "shelf_title_recommended_themes": "Empfohlene Themes",
+      "shelf_title_top_rated_themes": "Höchstbewertete Themes",
+      "shelf_title_trending_themes": "Aktuell beliebte Themes"
+    }
+  },
+  "fr": {
+    "header": {
+      "blog_link": "Blog des modules complémentaires Firefox",
+      "extension_workshop_link": "Atelier sur les extensions",
+      "developer_hub_link": "Pôle développeur",
+      "login_link": "Connexion",
+      "extensions_link": "Extensions",
+      "themes_link": "Thèmes",
+      "more_link": "Plus…",
+      "more_dropdown_for_firefox_section": "pour Firefox",
+      "more_dropdown_dictionaries_link": "Dictionnaires et paquetages linguistiques",
+      "more_dropdown_other_browsers_section": "Sites pour les autres navigateurs",
+      "more_dropdown_addons_for_android_link": "Modules pour Android"
+    },
+    "home_page": {
+      "shelf_title_recommended_extensions": "Extensions recommandées",
+      "shelf_title_popular_themes": "Thèmes populaires",
+      "shelf_title_recommended_themes": "Thèmes recommandés",
+      "shelf_title_theme_categories": "Changez le style de Firefox à l’aide de thèmes."
+    },
+    "extensions_page": {
+      "page_header": "Extensions",
+      "page_summary": "Découvrez d’impressionnants outils et fonctionnalités pour personnaliser Firefox comme vous le souhaitez.",
+      "shelf_title_categories": "Catégories",
+      "shelf_title_recommended_extensions": "Extensions recommandées",
+      "shelf_title_top_rated_extensions": "Extensions les mieux notées",
+      "shelf_title_trending_extensions": "Modules vedettes"
+    },
+    "themes_page": {
+      "page_header": "Thèmes",
+      "page_summary": "Modifiez l’apparence de votre navigateur. Personnalisez-le en choisissant un thème. Il y en a des milliers !",
+      "shelf_title_categories": "Catégories",
+      "shelf_title_recommended_themes": "Thèmes recommandés",
+      "shelf_title_top_rated_themes": "Thèmes les mieux notés",
+      "shelf_title_trending_themes": "Thèmes vedettes"
+    }
+  }
+}

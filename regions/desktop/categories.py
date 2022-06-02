@@ -7,10 +7,15 @@ class Categories(Region):
 
     _root_locator = (By.CLASS_NAME, 'Categories')
     _categories_locator = (By.CLASS_NAME, 'Categories-item')
+    _card_header_locator = (By.CLASS_NAME, 'Card-header-text')
 
     def wait_for_categories_to_load(self):
         self.wait.until(lambda _: self.is_element_displayed(*self._categories_locator))
         return self
+
+    @property
+    def card_header(self):
+        return self.find_element(*self._card_header_locator).text
 
     @property
     def category_list(self):
