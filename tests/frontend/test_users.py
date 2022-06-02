@@ -163,22 +163,6 @@ def test_user_view_profile(base_url, selenium, variables):
 
 @pytest.mark.serial
 @pytest.mark.create_session('reusable_user')
-def test_user_account_manage_section(base_url, selenium, variables):
-    user = User(selenium, base_url).open().wait_for_page_to_load()
-    email = Login(selenium, base_url)
-    # verifies if the correct email is displayed in the email field
-    assert email.REUSABLE_USER_EMAIL in user.edit.email_field
-    # checks that the email filed shows a help text and a link to a sumo page
-    assert variables['email_field_help_text'] in user.edit.email_field_help_text
-    user.edit.email_field_help_link()
-    selenium.back()
-    user.wait_for_page_to_load()
-    # verifies that the Manage account link opens the FxA account page
-    user.edit.link_to_fxa_account()
-
-
-@pytest.mark.serial
-@pytest.mark.create_session('reusable_user')
 def test_user_change_profile_picture(base_url, selenium, wait):
     user = User(selenium, base_url).open().wait_for_page_to_load()
     # opens the View profile page
@@ -293,6 +277,22 @@ def test_user_delete_profile(base_url, selenium):
 
 @pytest.mark.serial
 @pytest.mark.login('reusable_user')
+def test_user_account_manage_section(base_url, selenium, variables):
+    user = User(selenium, base_url).open().wait_for_page_to_load()
+    email = Login(selenium, base_url)
+    # verifies if the correct email is displayed in the email field
+    assert email.REUSABLE_USER_EMAIL in user.edit.email_field
+    # checks that the email filed shows a help text and a link to a sumo page
+    assert variables['email_field_help_text'] in user.edit.email_field_help_text
+    user.edit.email_field_help_link()
+    selenium.back()
+    user.wait_for_page_to_load()
+    # verifies that the Manage account link opens the FxA account page
+    user.edit.link_to_fxa_account()
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('reusable_user')
 def test_user_data_for_deleted_profile(base_url, selenium):
     """When a profile is deleted from AMO, the user data is deleted.
     However, the FxA account for that user still exists, so they can log into AMO
