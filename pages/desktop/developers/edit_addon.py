@@ -31,11 +31,15 @@ class EditAddon(Base):
     @property
     def last_modified_date(self):
         """Get the date string from the Last Update date section and format it"""
-        return (
+        site_date = (
             self.find_element(*self._last_modified_date_locator)
             .text.split('Last Updated: ')[1]
             .replace('.', '')
         )
+        month = site_date.split()[0]
+        # get only the first three letters in the month to have a uniform date structure
+        final_date = site_date.replace(month, month[0:3])
+        return final_date
 
     def click_manage_versions_link(self):
         self.find_element(*self._manage_versions_link_locator).click()
