@@ -92,7 +92,7 @@ jobs:
       - store_artifacts:
           path: user-test-results.html
 
-  # tests that do not require login; they include homepage, addon detail, search, addon landing pages, install and other misc tests
+  # tests that do not require login; they include homepage, addon detail, search, addon landing pages, translations, install and other misc tests
   frontend_parallel_tests:
     executor:
       name: win/default
@@ -117,7 +117,7 @@ jobs:
           environment:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 4 --reruns 2
-          command: py -3.9 -m pytest tests\frontend -m "not serial and not prod_only" --driver Firefox --variables stage.json --html=frontend-parallel-test-results.html --self-contained-html
+          command: py -3.9 -m pytest tests\frontend -m "not serial and not prod_only" --driver Firefox --variables translations.json --variables stage.json --html=frontend-parallel-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: frontend-parallel-test-results.html

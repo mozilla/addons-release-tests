@@ -21,6 +21,7 @@ class Home(Base):
     _themes_category_locator = (By.CLASS_NAME, 'Home-CuratedThemes')
     _toprated_themes_locator = (By.CLASS_NAME, 'Home-TopRatedThemes')
     _featured_collections_locator = (By.CLASS_NAME, 'Home-FeaturedCollection')
+    _shelves_titles_locator = (By.CSS_SELECTOR, '.CardList .Card-header-text')
     _shelves_see_more_links_locator = (
         By.CSS_SELECTOR,
         '.Card-shelf-footer-in-header a',
@@ -41,6 +42,12 @@ class Home(Base):
     def hero_banner(self):
         el = self.find_element(*self._hero_locator)
         return self.PrimaryHero(self, el)
+
+    @property
+    def addon_shelf_titles(self):
+        return [
+            title.text for title in self.find_elements(*self._shelves_titles_locator)
+        ]
 
     @property
     def popular_extensions(self):
