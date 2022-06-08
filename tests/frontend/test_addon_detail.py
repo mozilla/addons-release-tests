@@ -152,7 +152,7 @@ def test_higher_firefox_incompatibility(selenium, base_url, variables):
         'You need an updated version of Firefox for this extension'
         in addon.compatibility_banner.text
     )
-    assert 'Download Firefox' in addon.get_firefox_button.text
+    assert 'Download the new Firefox and get the extension' in addon.get_firefox_button.text
     # clicks on the Download button and checks that the download Firefox page opens
     addon.get_firefox_button.click()
     addon.wait_for_current_url('/firefox/download/thanks/')
