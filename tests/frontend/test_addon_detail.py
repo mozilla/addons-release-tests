@@ -517,7 +517,7 @@ def test_screenshot_viewer(selenium, base_url, variables):
     # clicks through each screenshot and verifies that the screenshot full size viewer is opened
     for preview in addon.screenshots.screenshot_preview:
         preview.click()
-        time.sleep(2)
+        time.sleep(1)
         # checks that the screenshot viewer has opened
         addon.screenshots.screenshot_full_view_displayed()
         addon.screenshots.close_screenshot_view()
