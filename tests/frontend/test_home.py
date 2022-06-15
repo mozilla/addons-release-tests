@@ -315,14 +315,12 @@ def test_addons_footer_links(base_url, selenium, count, link):
         [
             ['firefox/new', '#download-button-thanks'],
             ['firefox/browsers/mobile/', '#android-download'],
-            ['mixedreality.mozilla.org', '.featured__logo'],
             ['firefox/enterprise/', '#primary-download-button'],
         ]
     ),
     ids=[
         'Firefox Desktop',
         'Firefox Mobile',
-        'Firefox Reality',
         'Firefox Enterprise',
     ],
 )
