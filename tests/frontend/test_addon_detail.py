@@ -520,7 +520,7 @@ def test_screenshot_viewer(selenium, base_url, variables):
         time.sleep(1)
         # checks that the screenshot viewer has opened
         addon.screenshots.screenshot_full_view_displayed()
-        addon.screenshots.close_screenshot_view()
+        addon.screenshots.esc_to_close_screenshot_viewer()
 
 
 @pytest.mark.nondestructive

@@ -421,7 +421,7 @@ class Detail(Base):
         _previous_preview_locator = (By.CSS_SELECTOR, '.pswp__button--arrow--left')
         _image_view_close_button_locator = (
             By.CSS_SELECTOR,
-            '.pswp--open .pswp__button--close',
+            '.pswp__button--close',
         )
         _screenshot_counter_location = (By.CSS_SELECTOR, '.pswp__counter')
 

@@ -103,10 +103,9 @@ def test_select_collection_from_list(selenium, base_url, wait):
 
 @pytest.mark.sanity
 @pytest.mark.serial
-@pytest.mark.nondestructive
+@pytest.mark.login('collection_user')
 def test_create_collection(selenium, base_url, variables, wait):
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
-    collections.login('collection_user')
     collections.click_create_collection()
     # using random strings to make sure we're always getting a unique URL,
     # which is constructed from the name of the collection
@@ -126,10 +125,9 @@ def test_create_collection(selenium, base_url, variables, wait):
 
 @pytest.mark.sanity
 @pytest.mark.serial
-@pytest.mark.nondestructive
+@pytest.mark.create_session('collection_user')
 def test_add_addons_to_collection(selenium, base_url, variables, wait):
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
-    collections.login('collection_user')
     collections.select_collection(0)
     collections.collection_detail.click_edit_collection_button()
     assert collections.create.addon_search.header.is_displayed()
@@ -152,10 +150,9 @@ def test_add_addons_to_collection(selenium, base_url, variables, wait):
 
 
 @pytest.mark.serial
-@pytest.mark.nondestructive
+@pytest.mark.create_session('collection_user')
 def test_collection_add_duplicate_addons_error(selenium, base_url, variables):
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
-    collections.login('collection_user')
     collections.select_collection(0)
     collections.collection_detail.click_edit_collection_button()
     # adds an add-on that already belongs to this collection and
@@ -169,10 +166,9 @@ def test_collection_add_duplicate_addons_error(selenium, base_url, variables):
 
 
 @pytest.mark.serial
-@pytest.mark.nondestructive
+@pytest.mark.create_session('collection_user')
 def test_remove_addon_from_collection(selenium, base_url, variables, wait):
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
-    collections.login('collection_user')
     collections.select_collection(0)
     collections.collection_detail.click_edit_collection_button()
     addons_list = len(collections.create.edit_addons_list)
@@ -200,10 +196,9 @@ def test_remove_addon_from_collection(selenium, base_url, variables, wait):
 
 
 @pytest.mark.serial
-@pytest.mark.nondestructive
+@pytest.mark.create_session('collection_user')
 def test_collection_addon_notes(selenium, base_url, variables):
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
-    collections.login('collection_user')
     collections.select_collection(0)
     collections.collection_detail.click_edit_collection_button()
     # writing a note for an addon in the collection list
@@ -236,10 +231,9 @@ def test_collection_addon_notes(selenium, base_url, variables):
 
 
 @pytest.mark.serial
-@pytest.mark.nondestructive
+@pytest.mark.create_session('collection_user')
 def test_collection_sort_addons_by_date_added(selenium, base_url, variables, wait):
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
-    collections.login('collection_user')
     collections.select_collection(0)
     collections.collection_detail.click_edit_collection_button()
     # adding one more addon to the collection
@@ -267,10 +261,9 @@ def test_collection_sort_addons_by_date_added(selenium, base_url, variables, wai
 
 
 @pytest.mark.serial
-@pytest.mark.nondestructive
+@pytest.mark.create_session('collection_user')
 def test_collection_edit_metadata(selenium, base_url, variables, wait):
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
-    collections.login('collection_user')
     collections.select_collection(0)
     collections.collection_detail.click_edit_collection_button()
     # open the edit collection meta form
@@ -300,10 +293,9 @@ def test_collection_edit_metadata(selenium, base_url, variables, wait):
 
 @pytest.mark.sanity
 @pytest.mark.serial
-@pytest.mark.nondestructive
+@pytest.mark.create_session('collection_user')
 def test_add_to_collection_in_addon_detail_page(selenium, base_url, variables, wait):
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
-    collections.login('collection_user')
     # make a note of the collection name to be used for this test
     collection_name = collections.list[0].name.text
     # make a note of the collections present in My Collections page
@@ -342,10 +334,9 @@ def test_add_to_collection_in_addon_detail_page(selenium, base_url, variables, w
 
 
 @pytest.mark.serial
-@pytest.mark.nondestructive
+@pytest.mark.create_session('collection_user')
 def test_confirm_delete_dialog(selenium, base_url, variables):
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
-    collections.login('collection_user')
     collections.select_collection(0)
     collections.collection_detail.delete_collection()
     # verify that the confirm delete dialog elements are displayed
@@ -377,10 +368,10 @@ def test_confirm_delete_dialog(selenium, base_url, variables):
 
 @pytest.mark.sanity
 @pytest.mark.serial
-@pytest.mark.nondestructive
+@pytest.mark.create_session('collection_user')
+@pytest.mark.clear_session
 def test_delete_collection(selenium, base_url, variables):
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
-    collections.login('collection_user')
     # make a note of the collection name in My Collections list
     collection_name = collections.list[0].name
     collections.select_collection(0)
@@ -421,6 +412,7 @@ def test_create_collection_from_addon_detail_page(selenium, base_url, variables,
     collections.collection_detail.confirm_delete_collection()
 
 
+@pytest.mark.serial
 @pytest.mark.nondestructive
 def test_collection_sort_addons_by_name(selenium, base_url, variables):
     public_collection = variables['public_collection']
@@ -437,6 +429,7 @@ def test_collection_sort_addons_by_name(selenium, base_url, variables):
     assert addons_list == sorted(addons_list)
 
 
+@pytest.mark.serial
 @pytest.mark.nondestructive
 def test_collection_sort_addons_by_popularity(selenium, base_url, variables):
     public_collection = variables['public_collection']
@@ -466,6 +459,7 @@ def test_collection_sort_addons_by_popularity(selenium, base_url, variables):
     assert api_addon_name_list == frontend_addons_list
 
 
+@pytest.mark.serial
 @pytest.mark.nondestructive
 def test_create_collection_empty_name(selenium, base_url):
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
@@ -476,6 +470,7 @@ def test_create_collection_empty_name(selenium, base_url):
     assert collections.create.create_button_disabled.is_displayed()
 
 
+@pytest.mark.serial
 @pytest.mark.nondestructive
 def test_create_collection_with_only_symbols_name(selenium, base_url):
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
@@ -485,6 +480,7 @@ def test_create_collection_with_only_symbols_name(selenium, base_url):
     assert collections.create.create_button_disabled.is_displayed()
 
 
+@pytest.mark.serial
 @pytest.mark.nondestructive
 def test_create_collection_with_empty_custom_url(selenium, base_url):
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
@@ -495,6 +491,7 @@ def test_create_collection_with_empty_custom_url(selenium, base_url):
     assert collections.create.create_button_disabled.is_displayed()
 
 
+@pytest.mark.serial
 @pytest.mark.nondestructive
 def test_create_collection_with_already_used_url(selenium, base_url, variables):
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
@@ -515,6 +512,7 @@ def test_create_collection_with_already_used_url(selenium, base_url, variables):
     assert variables['collection_reused_url_warning'] in collections.create.warning_text
 
 
+@pytest.mark.serial
 @pytest.mark.nondestructive
 def test_create_collection_with_invalid_symbols_in_url(selenium, base_url, variables):
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
