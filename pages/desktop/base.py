@@ -134,7 +134,8 @@ class Header(Region):
         By.CSS_SELECTOR,
         '.SectionLinks-dropdown .DropdownMenu-items',
     )
-    _more_dropdown_link_locator = (By.CSS_SELECTOR, '.DropdownMenuItem a')
+    _more_dropdown_sections_locator = (By.CSS_SELECTOR, '.DropdownMenuItem-section')
+    _more_dropdown_links_locator = (By.CSS_SELECTOR, '.DropdownMenuItem a')
     _themes_locator = (
         By.CSS_SELECTOR,
         '.SectionLinks > li:nth-child(2) > \
@@ -154,6 +155,10 @@ class Header(Region):
     @property
     def extensions_text(self):
         return self.find_element(*self._extensions_locator).text
+
+    @property
+    def themes_link(self):
+        return self.find_element(*self._themes_locator)
 
     def click_themes(self):
         self.find_element(*self._themes_locator).click()
@@ -246,10 +251,22 @@ class Header(Region):
             message=f'Expected page not loaded; page was {self.selenium.current_url}',
         )
 
+    @property
+    def more_menu_link(self):
+        return self.find_element(*self._more_menu_locator)
+
+    @property
+    def more_menu_dropdown_sections(self):
+        return self.find_elements(*self._more_dropdown_sections_locator)
+
+    @property
+    def more_menu_dropdown_links(self):
+        return self.find_elements(*self._more_dropdown_links_locator)
+
     def more_menu(self, item=None):
         menu = self.find_element(*self._more_menu_locator)
         dropdown = self.find_element(*self._more_dropdown_locator)
-        link = menu.find_elements(*self._more_dropdown_link_locator)
+        link = menu.find_elements(*self._more_dropdown_links_locator)
         # Create an action chain clicking on the elements of the dropdown more menu
         action = ActionChains(self.selenium)
         action.move_to_element(menu)
@@ -259,6 +276,10 @@ class Header(Region):
         action.click(link[item])
         action.pause(2)
         action.perform()
+
+    @property
+    def developer_hub_link(self):
+        return self.find_element(*self._devhub_locator)
 
     def click_developer_hub(self):
         self.find_element(*self._devhub_locator).click()
@@ -273,6 +294,10 @@ class Header(Region):
             message=f'DevHub homepage not loaded; page was {self.selenium.current_url}',
         )
 
+    @property
+    def extension_workshop_link(self):
+        return self.find_element(*self._extension_workshop_locator)
+
     def click_extension_workshop(self):
         self.find_element(*self._extension_workshop_locator).click()
         self.wait.until(
@@ -285,6 +310,10 @@ class Header(Region):
             EC.visibility_of_element_located((By.CLASS_NAME, 'logo')),
             message=f'Extension Workshop not loaded; page was {self.selenium.current_url}',
         )
+
+    @property
+    def firefox_addons_blog_link(self):
+        return self.find_element(*self._blog_link_locator)
 
     def click_firefox_addons_blog(self):
         self.find_element(*self._blog_link_locator).click()

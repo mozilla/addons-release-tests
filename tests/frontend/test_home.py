@@ -264,7 +264,7 @@ def test_mozilla_footer_link(base_url, selenium):
     assert 'mozilla.org' in selenium.current_url
     page.wait.until(
         EC.visibility_of_element_located(
-            (By.CSS_SELECTOR, '.fx100-hero-cta-container .mzp-c-button')
+            (By.CSS_SELECTOR, '.c-navigation-logo-image')
         ),
         message='The chosen element could not be loaded on the Mozilla webpage',
     )
@@ -315,14 +315,12 @@ def test_addons_footer_links(base_url, selenium, count, link):
         [
             ['firefox/new', '#download-button-thanks'],
             ['firefox/browsers/mobile/', '#android-download'],
-            ['mixedreality.mozilla.org', '.featured__logo'],
             ['firefox/enterprise/', '#primary-download-button'],
         ]
     ),
     ids=[
         'Firefox Desktop',
         'Firefox Mobile',
-        'Firefox Reality',
         'Firefox Enterprise',
     ],
 )

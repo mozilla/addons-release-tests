@@ -120,10 +120,9 @@ def test_user_menu_click_manage_submissions(base_url, selenium):
 
 @pytest.mark.sanity
 @pytest.mark.serial
-@pytest.mark.nondestructive
+@pytest.mark.login('reusable_user')
 def test_user_edit_profile(base_url, selenium, variables):
     user = User(selenium, base_url).open().wait_for_page_to_load()
-    user.login('reusable_user')
     # make sure that the submit changes button is disabled if display_name is not filled in
     assert user.edit.submit_changes_button_disabled.is_displayed()
     # fill in the Edit profile form fields
@@ -144,10 +143,9 @@ def test_user_edit_profile(base_url, selenium, variables):
 
 @pytest.mark.sanity
 @pytest.mark.serial
-@pytest.mark.nondestructive
+@pytest.mark.create_session('reusable_user')
 def test_user_view_profile(base_url, selenium, variables):
     user = User(selenium, base_url).open().wait_for_page_to_load()
-    user.login('reusable_user')
     # opens the View profile page
     user.edit.click_view_profile_link()
     # checks that the information provided in the user_edit_profile test
@@ -164,27 +162,9 @@ def test_user_view_profile(base_url, selenium, variables):
 
 
 @pytest.mark.serial
-@pytest.mark.nondestructive
-def test_user_account_manage_section(base_url, selenium, variables):
-    user = User(selenium, base_url).open().wait_for_page_to_load()
-    user.login('reusable_user')
-    email = Login(selenium, base_url)
-    # verifies if the correct email is displayed in the email field
-    assert email.REUSABLE_USER_EMAIL in user.edit.email_field
-    # checks that the email filed shows a help text and a link to a sumo page
-    assert variables['email_field_help_text'] in user.edit.email_field_help_text
-    user.edit.email_field_help_link()
-    selenium.back()
-    user.wait_for_page_to_load()
-    # verifies that the Manage account link opens the FxA account page
-    user.edit.link_to_fxa_account()
-
-
-@pytest.mark.serial
-@pytest.mark.nondestructive
+@pytest.mark.create_session('reusable_user')
 def test_user_change_profile_picture(base_url, selenium, wait):
     user = User(selenium, base_url).open().wait_for_page_to_load()
-    user.login('reusable_user')
     # opens the View profile page
     user.edit.click_view_profile_link()
     # stores the source of the old profile picture in View profile
@@ -209,10 +189,9 @@ def test_user_change_profile_picture(base_url, selenium, wait):
 
 
 @pytest.mark.serial
-@pytest.mark.nondestructive
+@pytest.mark.create_session('reusable_user')
 def test_user_delete_profile_picture(base_url, selenium):
     user = User(selenium, base_url).open().wait_for_page_to_load()
-    user.login('reusable_user')
     user.edit.delete_profile_picture()
     # cancel and then click on delete picture again
     user.edit.cancel_delete_picture()
@@ -227,25 +206,9 @@ def test_user_delete_profile_picture(base_url, selenium):
 
 
 @pytest.mark.serial
-@pytest.mark.nondestructive
-def test_user_regular_notifications(base_url, selenium, variables):
-    user = User(selenium, base_url).open().wait_for_page_to_load()
-    user.login('reusable_user')
-    # regular users can only opt in/out for 2 notifications
-    assert len(user.edit.notification_text) == 2
-    count = 0
-    while count < len(user.edit.notification_text):
-        assert (
-            variables['notifications'][count] in user.edit.notification_text[count].text
-        )
-        count += 1
-
-
-@pytest.mark.serial
-@pytest.mark.nondestructive
+@pytest.mark.create_session('reusable_user')
 def test_user_update_profile(base_url, selenium, variables):
     user = User(selenium, base_url).open().wait_for_page_to_load()
-    user.login('reusable_user')
     updated_name = 'new_display_name'
     # update field
     user.edit.display_name_field.clear()
@@ -265,10 +228,9 @@ def test_user_update_profile(base_url, selenium, variables):
 
 
 @pytest.mark.serial
-@pytest.mark.nondestructive
+@pytest.mark.create_session('reusable_user')
 def test_user_update_url(base_url, selenium, variables):
     user = User(selenium, base_url).open().wait_for_page_to_load()
-    user.login('reusable_user')
     initial_page_url = selenium.current_url
     # test not a URL, this should not pass the client validation
     # it should not submit, red error message should not be displayed
@@ -298,10 +260,9 @@ def test_user_update_url(base_url, selenium, variables):
 
 @pytest.mark.sanity
 @pytest.mark.serial
-@pytest.mark.nondestructive
+@pytest.mark.create_session('reusable_user')
 def test_user_delete_profile(base_url, selenium):
     user = User(selenium, base_url).open().wait_for_page_to_load()
-    user.login('reusable_user')
     user.edit.delete_account()
     # click cancel to close the delete profile overlay
     user.edit.cancel_delete_account()
@@ -315,17 +276,47 @@ def test_user_delete_profile(base_url, selenium):
 
 
 @pytest.mark.serial
-@pytest.mark.nondestructive
+@pytest.mark.login('reusable_user')
+def test_user_account_manage_section(base_url, selenium, variables):
+    user = User(selenium, base_url).open().wait_for_page_to_load()
+    email = Login(selenium, base_url)
+    # verifies if the correct email is displayed in the email field
+    assert email.REUSABLE_USER_EMAIL in user.edit.email_field
+    # checks that the email filed shows a help text and a link to a sumo page
+    assert variables['email_field_help_text'] in user.edit.email_field_help_text
+    user.edit.email_field_help_link()
+    selenium.back()
+    user.wait_for_page_to_load()
+    # verifies that the Manage account link opens the FxA account page
+    user.edit.link_to_fxa_account()
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('reusable_user')
 def test_user_data_for_deleted_profile(base_url, selenium):
     """When a profile is deleted from AMO, the user data is deleted.
     However, the FxA account for that user still exists, so they can log into AMO
     with the same email and a new entry in the database is created for them"""
     user = User(selenium, base_url).open().wait_for_page_to_load()
-    user.login('reusable_user')
     user.edit.click_view_profile_link()
     # checks that the default icon and display name are present for the deleted user
     assert user.view.user_profile_icon_placeholder.is_displayed
     assert 'Firefox user' in user.user_display_name.text
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('reusable_user')
+@pytest.mark.clear_session
+def test_user_regular_notifications(base_url, selenium, variables):
+    user = User(selenium, base_url).open().wait_for_page_to_load()
+    # regular users can only opt in/out for 2 notifications
+    assert len(user.edit.notification_text) == 2
+    count = 0
+    while count < len(user.edit.notification_text):
+        assert (
+            variables['notifications'][count] in user.edit.notification_text[count].text
+        )
+        count += 1
 
 
 @pytest.mark.serial
