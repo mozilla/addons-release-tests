@@ -90,7 +90,6 @@ def test_experimental_addon(selenium, base_url, variables):
 
 
 @pytest.mark.nondestructive
-@pytest.mark.skip(reason='Waiting for AMO bug to be fixed')
 def test_access_addon_by_guid(selenium, base_url, variables):
     """Access an addon detail page by its guid"""
     extension = variables['addon_detail_guid']
