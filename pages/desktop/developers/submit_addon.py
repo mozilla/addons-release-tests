@@ -71,6 +71,10 @@ class SubmitAddon(Page):
     def android_compat_checkbox(self):
         return self.find_element(*self._android_compat_checkbox_locator)
 
+    def click_create_theme_button(self):
+        self.find_element(*self._create_theme_button_locator).click()
+        return ThemeWizard(self.selenium, self.base_url).wait_for_page_to_load()
+
     def is_validation_successful(self):
         """Wait for addon validation to complete; if not successful, the test will fail"""
         self.wait.until(
@@ -178,6 +182,22 @@ class ListedAddonSubmissionForm(Page):
         By.CSS_SELECTOR,
         '.submission-buttons button:nth-child(2)',
     )
+    _theme_categories_locator = (By.CSS_SELECTOR, '#addon-categories-edit > ul input')
+    _theme_licence_sharing_rights_locator = (
+        By.CSS_SELECTOR,
+        '#cc-chooser ul:nth-of-type(1) input',
+    )
+    _theme_license_commercial_use_locator = (
+        By.CSS_SELECTOR,
+        '#cc-chooser ul:nth-of-type(2) input',
+    )
+    _theme_license_creation_rights_locator = (
+        By.CSS_SELECTOR,
+        '#cc-chooser ul:nth-of-type(3) input',
+    )
+    _selected_theme_license_locator = (By.CSS_SELECTOR, '#cc-license')
+    _open_theme_licenses_list_locator = (By.CLASS_NAME, 'select-license')
+    _theme_licenses_list_locator = (By.CSS_SELECTOR, '#id_license-builtin input')
 
     def wait_for_page_to_load(self):
         self.wait.until(
@@ -230,6 +250,9 @@ class ListedAddonSubmissionForm(Page):
     def select_android_categories(self, count):
         self.find_elements(*self._android_categories_locator)[count].click()
 
+    def select_theme_categories(self, count):
+        self.find_elements(*self._theme_categories_locator)[count].click()
+
     def email_input_field(self, value):
         self.find_element(*self._email_input_field_locator).send_keys(value)
 
@@ -252,6 +275,25 @@ class ListedAddonSubmissionForm(Page):
     def set_custom_license_text(self, value):
         self.find_element(*self._custom_license_text_locator).send_keys(value)
 
+    def select_theme_licence_sharing_rights(self, count):
+        self.find_elements(*self._theme_licence_sharing_rights_locator)[count].click()
+
+    def select_theme_license_commercial_use(self, count):
+        self.find_elements(*self._theme_license_commercial_use_locator)[count].click()
+
+    def select_theme_license_creation_rights(self, count):
+        self.find_elements(*self._theme_license_creation_rights_locator)[count].click()
+
+    @property
+    def generated_theme_license(self):
+        return self.find_element(*self._selected_theme_license_locator)
+
+    def open_theme_licenses_list(self):
+        self.find_element(*self._open_theme_licenses_list_locator).click()
+
+    def select_theme_license_from_list(self):
+        self.find_elements(*self._theme_licenses_list_locator)
+
     def set_privacy_policy(self, value):
         self.find_element(*self._privacy_policy_checkbox_locator).click()
         self.find_element(*self._privacy_policy_textarea_locator).send_keys(value)
@@ -270,6 +312,67 @@ class ListedAddonSubmissionForm(Page):
         from pages.desktop.developers.edit_addon import EditAddon
 
         return EditAddon(self.selenium, self.base_url).wait_for_page_to_load()
+
+
+class ThemeWizard(Page):
+    _wizard_header_locator = (By.CSS_SELECTOR, '.addon-submission-process > h3')
+    _theme_name_input_field = (By.ID, 'theme-name')
+    _upload_theme_image_button_locator = (By.ID, 'header-img')
+    _uploaded_image_preview_locator = (By.CLASS_NAME, 'preview.loaded')
+    _change_image_button_locator = (By.CLASS_NAME, 'reset')
+    _browser_preview_locator = (By.ID, 'preview-svg-root')
+    _browser_preview_header_image_locator = (By.ID, 'svg-header-img')
+    _submit_theme_button_locator = (By.CLASS_NAME, 'button.upload')
+    _cancel_submission_button_locator = (
+        By.CSS_SELECTOR,
+        '.submission-buttons .delete-button',
+    )
+
+    def wait_for_page_to_load(self):
+        self.wait.until(EC.visibility_of_element_located((By.ID, 'theme-header')))
+        return self
+
+    @property
+    def wizard_header(self):
+        return self.find_element(*self._wizard_header_locator).text
+
+    def set_theme_name(self, value):
+        self.find_element(*self._theme_name_input_field).send_keys(value)
+
+    def upload_theme_header(self, img):
+        button = self.find_element(*self._upload_theme_image_button_locator)
+        header_img = Path(f'{os.getcwd()}/img/{img}')
+        button.send_keys(str(header_img))
+
+    @property
+    def uploaded_image_preview(self):
+        return self.find_element(*self._uploaded_image_preview_locator)
+
+    @property
+    def uploaded_image_source(self):
+        """Fetch the source of the uploaded theme image"""
+        return self.uploaded_image_preview.get_attribute('src')
+
+    @property
+    def browser_preview(self):
+        return self.find_element(*self._browser_preview_locator)
+
+    @property
+    def browser_preview_image(self):
+        """Fetch the source of tha generated theme preview image"""
+        return self.find_element(
+            *self._browser_preview_header_image_locator
+        ).get_attribute('href')
+
+    def submit_theme(self):
+        self.find_element(*self._submit_theme_button_locator).click()
+        return ListedAddonSubmissionForm(
+            self.selenium, self.base_url
+        ).wait_for_page_to_load()
+
+    def cancel_submission(self):
+        self.find_element(*self._cancel_submission_button_locator).click()
+        return SubmitAddon(self.selenium, self.base_url).wait_for_page_to_load()
 
 
 class SubmissionConfirmationPage(Page):
