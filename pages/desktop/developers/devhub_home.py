@@ -350,7 +350,11 @@ class DevHubHome(Base):
         @property
         def my_addon_modified_date_text(self):
             """Get the date string from the Last Update date section and format it"""
-            return self.my_addon_last_modified_date.text.replace('.', '')
+            site_date = self.my_addon_last_modified_date.text
+            month = site_date.split()[0]
+            # get only the first three letters in the month to have a uniform date structure
+            final_date = site_date.replace(month, month[0:3])
+            return final_date
 
         def is_listed_addon(self):
             """Checks the add-on listing visibility in DevHub homepage
