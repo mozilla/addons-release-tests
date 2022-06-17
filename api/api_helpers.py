@@ -18,6 +18,15 @@ def verify_addon_response_details(payload, response, request):
     assert payload['requires_payment'] == response['requires_payment']
     assert payload['tags'] == response['tags']
     if request != 'edit':
-        assert payload['version']['license'] == response['current_version']['license']['slug']
-        assert payload['version']['compatibility'] == response['current_version']['compatibility']
-        assert payload['version']['release_notes'] == response['current_version']['release_notes']
+        assert (
+            payload['version']['license']
+            == response['current_version']['license']['slug']
+        )
+        assert (
+            payload['version']['compatibility']
+            == response['current_version']['compatibility']
+        )
+        assert (
+            payload['version']['release_notes']
+            == response['current_version']['release_notes']
+        )
