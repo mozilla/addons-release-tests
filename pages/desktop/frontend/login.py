@@ -86,10 +86,9 @@ class Login(Base):
             pass
         print('The "click continue button" event occurred.')
         self.wait.until(
-            EC.text_to_be_present_in_element(
-                self._login_card_header_locator, 'Sign in'
-            ),
-            message=f'FxA card header was {self.find_element(*self._login_card_header_locator).text}',
+            EC.element_to_be_clickable(self._password_locator),
+            message=f'Password input field not displayed; '
+            f'FxA card header was {self.find_element(*self._login_card_header_locator).text}',
         )
         print(
             f'The script should be on the password input screen here. We should see "Sign in" in the header.'
