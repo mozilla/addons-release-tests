@@ -42,7 +42,7 @@ def test_logout(base_url, selenium):
 @pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.nondestructive
-def test_register(base_url, selenium, wait):
+def test_register_new_account(base_url, selenium, wait):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.register()
     # reassign AMO homepage it to another variable because 'page' can become stale at this point
