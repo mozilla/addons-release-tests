@@ -118,10 +118,9 @@ class Login(Base):
             pass
         # verify that the fxa register form was opened
         self.wait.until(
-            EC.text_to_be_present_in_element(
-                self._login_card_header_locator, 'Create a Firefox Account'
-            ),
-            message=f'FxA card header was {self.find_element(*self._login_card_header_locator).text}',
+            EC.element_to_be_clickable(self._password_locator),
+            message=f'Password input field not displayed; '
+                    f'FxA card header was {self.find_element(*self._login_card_header_locator).text}',
         )
         self.find_element(*self._password_locator).send_keys(password)
         self.find_element(*self._repeat_password_locator).send_keys(password)
