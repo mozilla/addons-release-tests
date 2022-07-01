@@ -131,10 +131,10 @@ def test_about_addons_find_more_addons(selenium, base_url, wait):
 def test_about_addons_addon_cards(selenium, base_url, wait):
     selenium.get('about:addons')
     about_addons = AboutAddons(selenium)
-    # waits for the list of addon cards to be loaded
+    # waits for the list of addon cards to be loaded (currently we have minimum 7 cards)
     wait.until(
         lambda _: len([el.disco_addon_name for el in about_addons.addon_cards_items])
-        >= 8
+        >= 7
     )
     # theme images are slower to load, so we need to wait for them to be visible too
     wait.until(lambda _: about_addons.addon_cards_items[0].theme_image.is_displayed())
@@ -162,7 +162,7 @@ def test_about_addons_addon_cards_author_link(selenium, base_url, wait):
     # waiting for the addon cards data to be retrieved (the author names in this case)
     wait.until(
         lambda _: len([el.disco_addon_author for el in about_addons.addon_cards_items])
-        >= 8
+        >= 7
     )
     disco_addon_name = about_addons.addon_cards_items[0].disco_addon_name.text
     # clicking on the author link should open the addon detail page on AMO
@@ -179,7 +179,7 @@ def test_about_addons_addon_stats_match_amo(selenium, base_url, wait):
     # waiting for the addon cards data to be retrieved (the author names in this case)
     wait.until(
         lambda _: len([el.disco_addon_author for el in about_addons.addon_cards_items])
-        >= 8
+        >= 7
     )
     disco_addon_name = about_addons.addon_cards_items[1].disco_addon_name.text
     disco_rating_score = about_addons.addon_cards_items[1].rating_score
@@ -201,7 +201,7 @@ def test_about_addons_install_extension(
     about_addons = AboutAddons(selenium)
     # waiting for the addon cards data to be retrieved (the install buttons in this case)
     wait.until(
-        lambda _: len([el.install_button for el in about_addons.addon_cards_items]) >= 8
+        lambda _: len([el.install_button for el in about_addons.addon_cards_items]) >= 7
     )
     disco_addon_name = about_addons.addon_cards_items[1].disco_addon_name.text
     disco_addon_author = about_addons.addon_cards_items[1].disco_addon_author.text
@@ -238,7 +238,7 @@ def test_about_addons_install_theme(
     about_addons = AboutAddons(selenium)
     # waiting for the addon cards data to be retrieved (the install buttons in this case)
     wait.until(
-        lambda _: len([el.install_button for el in about_addons.addon_cards_items]) >= 8
+        lambda _: len([el.install_button for el in about_addons.addon_cards_items]) >= 7
     )
     disco_theme_name = about_addons.addon_cards_items[0].disco_addon_name.text
     # make a note of the image source of the theme we are about to install
