@@ -4,7 +4,7 @@ astroid==2.11.6
 atomicwrites==1.4.0
 attrs==21.4.0
 certifi==2022.6.15
-cffi==1.15.0
+cffi==1.15.1
 chardet==5.0.0
 click==8.1.3
 colorama==0.4.5
@@ -35,7 +35,7 @@ PyBrowserID==0.14.0
 pycparser==2.21
 PyFxA==0.7.7
 PyJWT==2.4.0
-pylint==2.14.3
+pylint==2.14.4
 pyparsing==3.0.9
 PyPOM==2.2.3
 pytest==7.1.2
@@ -52,13 +52,13 @@ pytest-selenium==3.0.0
 pytest-variables==2.0.0
 pytest-xdist==2.5.0
 regex==2022.6.2
-requests==2.28.0
+requests==2.28.1
 selenium==4.2.0
 six==1.16.0
 tenacity==8.0.1
 toml==0.10.2
 typed-ast==1.5.4
-typing-extensions==4.2.0
+typing-extensions==4.3.0
 urllib3==1.26.9
 virtualenv==20.15.1
 wcwidth==0.2.5
