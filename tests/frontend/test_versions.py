@@ -55,7 +55,7 @@ def test_license_link(selenium, base_url, variables):
         if page.versions_list[i].license_link is not False:  # if link exists
 
             if (
-                page.versions_list[i].license_link.text == 'Custom License'
+                    page.versions_list[i].license_link.text == 'Custom License'
             ):  # if link exists and is 'Custom License'
                 page.versions_list[i].license_link.click()
                 page.wait.until(
@@ -89,7 +89,7 @@ def test_current_version(selenium, base_url, variables):
     response = requests.get(f'{base_url}/api/v5/addons/{addon_url}')
     addon_version = response.json()['current_version']['version']
     addon_size_kb = (
-        str(round(response.json()['current_version']['file']['size'] / 1024, 2)) + ' KB'
+            str(round(response.json()['current_version']['file']['size'] / 1024, 2)) + ' KB'
     )
     api_date = response.json()['current_version']['file']['created'][:10]
     # process the date to have the same format as in frontend
@@ -119,7 +119,7 @@ def test_version_install_warning(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 def test_add_to_firefox_button(
-    selenium, base_url, variables, firefox, firefox_notifications
+        selenium, base_url, variables, firefox, firefox_notifications
 ):
     selenium.get(variables['addon_version_page_url'])
     page = Versions(selenium, base_url)
@@ -136,3 +136,27 @@ def test_add_to_firefox_button(
     page.versions_list[0].add_to_firefox_button.click()
     # check if remove button changed back into add button
     assert 'Add' in page.versions_list[0].add_to_firefox_button.text
+
+
+@pytest.mark.nondestructive
+def test_version_download_file(
+        selenium, base_url, variables, firefox, firefox_notifications
+):
+    """In Firefox, Download File for older versions will trigger an installation"""
+    selenium.get(f'{base_url}/addon/{variables["addon_version_install"]}/versions/')
+    page = Versions(selenium, base_url).wait_for_page_to_load()
+    page.versions_list[1].click_download_link()
+    firefox.browser.wait_for_notification(
+        firefox_notifications.AddOnInstallConfirmation
+    ).install()
+    firefox.browser.wait_for_notification(
+        firefox_notifications.AddOnInstallComplete
+    ).close()
+    # go to the addon detail page and check that the button states have changed
+    addon_detail = page.rating_card.click_addon_title()
+    # check if add button changed into remove button
+    assert 'Remove' in addon_detail.button_text
+    # click Remove button (i s the same as the install button)
+    addon_detail.install()
+    # check if remove button changed back into add button
+    assert 'Add to Firefox' in addon_detail.button_text

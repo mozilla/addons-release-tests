@@ -79,8 +79,8 @@ class Versions(Base):
         @property
         def version_size(self):  # memory size, ex: 7.35 KB
             return self.find_element(*self._released_date_locator).text.split('-')[1][
-                1:
-            ]
+                   1:
+                   ]
 
         @property
         def version_release_notes(self):
@@ -114,6 +114,5 @@ class Versions(Base):
         def add_to_firefox_button(self):
             return self.find_element(*self._add_to_firefox_button_locator)
 
-        @property
-        def download_link(self):
-            return self.find_element(*self._download_link_locator)
+        def click_download_link(self):
+            self.find_element(*self._download_link_locator).click()
