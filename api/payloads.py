@@ -1,5 +1,26 @@
 """Payload data used in the API addon submission tests"""
 
+minimal_manifest = {
+    'manifest_version': 2,
+    'version': '1.0',
+}
+
+
+def listed_addon_minimal(uuid):
+    """This holds only the strictly necessary properties required for successful submissions"""
+    body = {
+        'categories': {
+            'android': ['photos-media', 'shopping'],
+            'firefox': ['appearance', 'download-management'],
+        },
+        'version': {
+            'license': 'all-rights-reserved',
+            'upload': uuid,
+            'compatibility': ['android', 'firefox'],
+        },
+    }
+    return body
+
 
 def listed_addon_details(uuid):
     body = {

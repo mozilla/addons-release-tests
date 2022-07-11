@@ -163,6 +163,112 @@ def test_submit_extension_with_incorrect_uuid(base_url, session_auth):
         ), f'Actual response was {create_addon.text}'
 
 
+@pytest.mark.parametrize(
+    'trademark_name',
+    [
+        'Firefox in addon name',
+        'Mozilla in addon name',
+    ],
+)
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_submit_xpi_with_trademark_restricted_user(
+    base_url, session_auth, trademark_name
+):
+    """Upload an addon that includes the 'Firefox' or 'Mozilla' names;
+    regular users are not allowed to submit such addons"""
+    # create a minimal manifest with a trademark name
+    manifest = {**payloads.minimal_manifest, 'name': trademark_name}
+    api_helpers.make_addon(manifest)
+    with open('sample-addons/make-addon.zip', 'rb') as file:
+        upload = requests.post(
+            url=f'{base_url}{_upload}',
+            headers={"Authorization": f"Session {session_auth}"},
+            files={'upload': file},
+            data={"channel": "listed"},
+        )
+    upload.raise_for_status()
+    resp = upload.json()
+    # sleep to allow the upload  request to be processed
+    time.sleep(3)
+    uuid = resp['uuid']
+    payload = payloads.listed_addon_minimal(uuid)
+    create_addon = requests.post(
+        url=f'{base_url}{_addon_create}',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            "Content-Type": "application/json",
+        },
+        data=json.dumps(payload),
+    )
+    assert (
+        create_addon.status_code == 400
+    ), f'Actual status code was {create_addon.status_code}'
+    assert (
+        'Add-on names cannot contain the Mozilla or Firefox trademarks.'
+        in create_addon.text
+    ), f'Actual response was {create_addon.text}'
+
+
+@pytest.mark.parametrize(
+    'guid',
+    [
+        'reserved_guid@mozilla.com',
+        'reserved_guid@mozilla.org',
+        'reserved_guid@pioneer.mozilla.org',
+        'reserved_guid@search.mozilla.org',
+        'reserved_guid@shield.mozilla.com',
+        'reserved_guid@shield.mozilla.org',
+        'reserved_guid@mozillaonline.com',
+        'reserved_guid@mozillafoundation.org',
+        'reserved_guid@rally.mozilla.org',
+        'reserved_guid@temporary-addon',
+    ],
+)
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_submit_addon_with_reserved_guid(base_url, session_auth, guid):
+    """Upload an addon that has a reserved guid suffix, unavailable for regular users"""
+    manifest = {
+        **payloads.minimal_manifest,
+        'name': 'Reserved guid',
+        'browser_specific_settings': {"gecko": {"id": guid}},
+    }
+    api_helpers.make_addon(manifest)
+    with open('sample-addons/make-addon.zip', 'rb') as file:
+        upload = requests.post(
+            url=f'{base_url}{_upload}',
+            headers={"Authorization": f"Session {session_auth}"},
+            files={'upload': file},
+            data={"channel": "listed"},
+        )
+    upload.raise_for_status()
+    # sleep to allow the upload  request to be processed
+    time.sleep(3)
+    resp = upload.json()
+    print(resp)
+    uuid = resp['uuid']
+    payload = payloads.listed_addon_minimal(uuid)
+    create_addon = requests.post(
+        url=f'{base_url}{_addon_create}',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            "Content-Type": "application/json",
+        },
+        data=json.dumps(payload),
+    )
+    print(
+        f'For guid "{guid}": response status was {create_addon.status_code}, {create_addon.text}'
+    )
+    assert (
+        create_addon.status_code == 400
+    ), f'Actual status code was {create_addon.status_code}'
+    assert (
+        'You cannot submit an add-on using an ID ending with this suffix'
+        in create_addon.text
+    ), f'Actual response was {create_addon.text}'
+
+
 @pytest.mark.serial
 @pytest.mark.create_session('api_user')
 def test_upload_listed_extension(base_url, session_auth):
@@ -194,6 +300,51 @@ def test_upload_listed_extension(base_url, session_auth):
     print(json.dumps(response, indent=2))
     # verify that the data we sent has been registered correctly in the response we get
     api_helpers.verify_addon_response_details(payload, response, 'create')
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_upload_extension_with_duplicate_guid(base_url, session_auth):
+    # get the guid of the addon submitted previously
+    get_upload_details = requests.get(
+        url=f'{base_url}{_addon_create}my_sluggish_slug/',
+        headers={"Authorization": f"Session {session_auth}"},
+    )
+    guid = get_upload_details.json()['guid']
+    # make an add-on with an already existing guid
+    manifest = {
+        **payloads.minimal_manifest,
+        'name': 'Duplicate guid',
+        'browser_specific_settings': {"gecko": {"id": guid}},
+    }
+    api_helpers.make_addon(manifest)
+    with open('sample-addons/make-addon.zip', 'rb') as file:
+        upload = requests.post(
+            url=f'{base_url}{_upload}',
+            headers={"Authorization": f"Session {session_auth}"},
+            files={'upload': file},
+            data={"channel": "listed"},
+        )
+    upload.raise_for_status()
+    # sleep to allow the first request to be processed
+    time.sleep(3)
+    resp = upload.json()
+    uuid = resp['uuid']
+    payload = payloads.listed_addon_minimal(uuid)
+    create_addon = requests.post(
+        url=f'{base_url}{_addon_create}',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            "Content-Type": "application/json",
+        },
+        data=json.dumps(payload),
+    )
+    assert (
+        create_addon.status_code == 400
+    ), f'Actual status code was {create_addon.status_code}'
+    assert (
+        'Duplicate add-on ID found.' in create_addon.text
+    ), f'Actual message was {create_addon.text}'
 
 
 @pytest.mark.serial
