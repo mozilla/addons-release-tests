@@ -305,6 +305,7 @@ def test_upload_listed_extension(base_url, session_auth):
 @pytest.mark.serial
 @pytest.mark.create_session('api_user')
 def test_upload_extension_with_duplicate_guid(base_url, session_auth):
+    """Addon guids are unique and cannot be re-used for new addon submissions"""
     # get the guid of the addon submitted previously
     get_upload_details = requests.get(
         url=f'{base_url}{_addon_create}my_sluggish_slug/',
