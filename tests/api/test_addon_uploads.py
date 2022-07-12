@@ -393,7 +393,7 @@ def test_upload_extension_without_name_in_manifest(base_url, session_auth):
     )
     assert (
         create_addon.status_code == 400
-    ), f'Actual status coe was {create_addon.status_code}'
+    ), f'Actual status code was {create_addon.status_code}'
 
 
 @pytest.mark.serial
@@ -429,7 +429,7 @@ def test_upload_extension_without_summary(base_url, session_auth):
     )
     assert (
         create_addon.status_code == 400
-    ), f'Actual status coe was {create_addon.status_code}'
+    ), f'Actual status code was {create_addon.status_code}'
     assert (
         '{"summary":["This field is required for add-ons with listed versions."]}'
         in create_addon.text
@@ -483,7 +483,7 @@ def test_upload_extension_with_incorrect_version_number(base_url, session_auth):
     )
     assert (
         create_addon.status_code == 400
-    ), f'Actual status coe was {create_addon.status_code}'
+    ), f'Actual status code was {create_addon.status_code}'
 
 
 @pytest.mark.serial
