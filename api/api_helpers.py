@@ -1,4 +1,20 @@
 """File holding some reusable methods used in the API addon submission tests"""
+import json
+import zipfile
+
+
+def make_addon(manifest_data):
+    """Dynamically create a simple extension with minimal manifest properties"""
+    with open('sample-addons/manifest.json', 'w') as f:
+        # the contents of the manifest will be defined in tests based on the scenario we want to verify
+        json.dump(manifest_data, f)
+        print(f'Manifest content: {manifest_data}')
+    # add the manifest to the addon zip we want to upload - this will always be the 'make-addon.zip' file
+    # if the zip files contains a manifest already, it will be overwritten by the new manifest
+    with zipfile.ZipFile('sample-addons/make-addon.zip', 'w') as zipf:
+        manifest = 'sample-addons/manifest.json'
+        destination = 'manifest.json'
+        zipf.write(manifest, destination)
 
 
 def verify_addon_response_details(payload, response, request):
