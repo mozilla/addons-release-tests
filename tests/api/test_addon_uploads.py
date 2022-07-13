@@ -350,6 +350,144 @@ def test_upload_extension_with_duplicate_guid(base_url, session_auth):
 
 @pytest.mark.serial
 @pytest.mark.create_session('api_user')
+def test_upload_extension_without_name_in_manifest(base_url, session_auth):
+    """The 'name' key is mandatory for successful submissions; uploading an
+    addon with a manifest that misses a 'name' key should fail"""
+    # create a manifest that doesn't include the mandatory 'name' key
+    manifest = {**payloads.minimal_manifest}
+    api_helpers.make_addon(manifest)
+    with open('sample-addons/make-addon.zip', 'rb') as file:
+        upload = requests.post(
+            url=f'{base_url}{_upload}',
+            headers={'Authorization': f'Session {session_auth}'},
+            files={'upload': file},
+            data={'channel': 'listed'},
+        )
+    upload.raise_for_status()
+    # sleep to allow the first request to be processed
+    time.sleep(3)
+    resp = upload.json()
+    print(resp)
+    uuid = resp['uuid']
+    # we need to inspect the validation results returned by the linter
+    # to check if the 'name' field has produced a validation error
+    get_upload_details = requests.get(
+        url=f'{base_url}{_upload}{uuid}/',
+        headers={'Authorization': f'Session {session_auth}'},
+    )
+    error = get_upload_details.json()
+    # pull the validation messages and check the 'name' field error
+    assert (
+        'must have required property \'name\''
+        in error['validation']['messages'][0]['message']
+    )
+    payload = payloads.listed_addon_minimal(uuid)
+    # try to upload the add-on without a name anyway; it should fail
+    create_addon = requests.post(
+        url=f'{base_url}{_addon_create}',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            'Content-Type': 'application/json',
+        },
+        data=json.dumps(payload),
+    )
+    assert (
+        create_addon.status_code == 400
+    ), f'Actual status code was {create_addon.status_code}'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_upload_extension_without_summary(base_url, session_auth):
+    """An addon summary is mandatory for successful submissions; uploading an addon without a
+    'description' key and no 'summary' included in the JSON payload should fail"""
+    # create a minimal manifest, without adding a 'description' field
+    manifest = {**payloads.minimal_manifest, 'name': 'Addon without Summary'}
+    api_helpers.make_addon(manifest)
+    with open('sample-addons/make-addon.zip', 'rb') as file:
+        upload = requests.post(
+            url=f'{base_url}{_upload}',
+            headers={'Authorization': f'Session {session_auth}'},
+            files={'upload': file},
+            data={'channel': 'listed'},
+        )
+    upload.raise_for_status()
+    # sleep to allow the first request to be processed
+    time.sleep(3)
+    resp = upload.json()
+    print(resp)
+    uuid = resp['uuid']
+    payload = payloads.listed_addon_minimal(uuid)
+    # try to upload the addon without a summary anyway; it should fail
+    create_addon = requests.post(
+        url=f'{base_url}{_addon_create}',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            'Content-Type': 'application/json',
+        },
+        data=json.dumps(payload),
+    )
+    assert (
+        create_addon.status_code == 400
+    ), f'Actual status code was {create_addon.status_code}'
+    assert (
+        '{"summary":["This field is required for add-ons with listed versions."]}'
+        in create_addon.text
+    ), f'Actual message was {create_addon.text}'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_upload_extension_with_incorrect_version_number(base_url, session_auth):
+    """The addon version number is defined in the manifest and needs to follow some naming rules"""
+    # create a minimal manifest, with an invalid 'version'
+    manifest = {
+        **payloads.minimal_manifest,
+        'name': 'Addon with invalid version',
+        'version': '1abc.1.1a#c',
+    }
+    api_helpers.make_addon(manifest)
+    with open('sample-addons/make-addon.zip', 'rb') as file:
+        upload = requests.post(
+            url=f'{base_url}{_upload}',
+            headers={'Authorization': f'Session {session_auth}'},
+            files={'upload': file},
+            data={'channel': 'listed'},
+        )
+    upload.raise_for_status()
+    # sleep to allow the first request to be processed
+    time.sleep(3)
+    resp = upload.json()
+    uuid = resp['uuid']
+    # we need to inspect the validation results returned by the linter
+    # to check if the 'version' field has produced a validation error
+    get_upload_details = requests.get(
+        url=f'{base_url}{_upload}{uuid}/',
+        headers={'Authorization': f'Session {session_auth}'},
+    )
+    error = get_upload_details.json()
+    # check the upload validation results for 'version' field errors
+    assert (
+        '"/version" must match format "versionString"'
+        in error['validation']['messages'][0]['message']
+    )
+    payload = payloads.listed_addon_minimal(uuid)
+    # try to upload the add-on with the invalid version; it should fail
+    create_addon = requests.post(
+        url=f'{base_url}{_addon_create}',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            'Content-Type': 'application/json',
+        },
+        data=json.dumps(payload),
+    )
+    assert (
+        create_addon.status_code == 400
+    ), f'Actual status code was {create_addon.status_code}'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
 def test_edit_listed_addon_details(base_url, session_auth):
     payload = payloads.edit_addon_details
     edit_addon = requests.patch(
