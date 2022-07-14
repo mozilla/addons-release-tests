@@ -6,6 +6,7 @@ import requests
 
 from api import payloads, api_helpers
 from pages.desktop.frontend.home import Home
+from scripts import reusables
 
 # endpoints used in the upload tests
 _upload = '/api/v5/addons/upload/'
@@ -483,6 +484,223 @@ def test_upload_extension_with_incorrect_version_number(base_url, session_auth):
     )
     assert (
         create_addon.status_code == 400
+    ), f'Actual status code was {create_addon.status_code}'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_upload_extension_with_put_method(base_url, session_auth):
+    """Use the PUT method to create a new addon; unlike POST,
+    PUT requires the addon guid to be specified in the request"""
+    guid = f'random-guid@{reusables.get_random_string(6)}'
+    name = (
+        f'PUT-create-addon-{reusables.get_random_string(6)}-{reusables.current_date()}'
+    )
+    # create the addon manifest to be uploaded
+    manifest = {
+        **payloads.minimal_manifest,
+        'name': name,
+        'browser_specific_settings': {'gecko': {'id': guid}},
+    }
+    api_helpers.make_addon(manifest)
+    with open('sample-addons/make-addon.zip', 'rb') as file:
+        upload = requests.post(
+            url=f'{base_url}{_upload}',
+            headers={'Authorization': f'Session {session_auth}'},
+            files={'upload': file},
+            data={'channel': 'listed'},
+        )
+    upload.raise_for_status()
+    # sleep to allow the first request to be processed
+    time.sleep(3)
+    resp = upload.json()
+    print(resp)
+    uuid = resp['uuid']
+    payload = {
+        **payloads.listed_addon_minimal(uuid),
+        'summary': {'en-US': 'Addon summary'},
+    }
+    create_addon = requests.put(
+        url=f'{base_url}{_addon_create}{guid}/',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            'Content-Type': 'application/json',
+        },
+        data=json.dumps(payload),
+    )
+    response = create_addon.json()
+    print(json.dumps(response, indent=2))
+    # check that the addon was created with the guid set
+    assert response['guid'] == guid
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_upload_extension_with_put_guid_mismatch(base_url, session_auth):
+    """The PUT method requires the same guid to be specified in the manifest and in the request url;
+    this test verifies that the submission fails if there is a guid mismatch between the two"""
+    guid = f'random-guid@{reusables.get_random_string(6)}'
+    # create the addon manifest to be uploaded
+    manifest = {
+        **payloads.minimal_manifest,
+        'name': 'PUT-guid-mismatch',
+        'browser_specific_settings': {'gecko': {'id': guid}},
+    }
+    api_helpers.make_addon(manifest)
+    with open('sample-addons/make-addon.zip', 'rb') as file:
+        upload = requests.post(
+            url=f'{base_url}{_upload}',
+            headers={'Authorization': f'Session {session_auth}'},
+            files={'upload': file},
+            data={'channel': 'listed'},
+        )
+    upload.raise_for_status()
+    # sleep to allow the first request to be processed
+    time.sleep(3)
+    resp = upload.json()
+    print(resp)
+    uuid = resp['uuid']
+    payload = payloads.listed_addon_minimal(uuid)
+    create_addon = requests.put(
+        url=f'{base_url}{_addon_create}mismatch-guid@foobar/',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            'Content-Type': 'application/json',
+        },
+        data=json.dumps(payload),
+    )
+    assert (
+        create_addon.status_code == 400
+    ), f'Actual status code was {create_addon.status_code}'
+    assert (
+        'GUID mismatch between the URL and manifest.' in create_addon.text
+    ), f'Actual message was {create_addon.text}'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_upload_extension_with_put_no_guid_in_manifest(base_url, session_auth):
+    """The PUT method requires a guid to be specified in the manifest;
+    if no guid is specified, the request should fail"""
+    with open('sample-addons/listed-addon.zip', 'rb') as file:
+        upload = requests.post(
+            url=f'{base_url}{_upload}',
+            headers={'Authorization': f'Session {session_auth}'},
+            files={'upload': file},
+            data={'channel': 'listed'},
+        )
+    upload.raise_for_status()
+    # sleep to allow the first request to be processed
+    time.sleep(3)
+    resp = upload.json()
+    print(resp)
+    uuid = resp['uuid']
+    payload = payloads.listed_addon_minimal(uuid)
+    create_addon = requests.put(
+        url=f'{base_url}{_addon_create}manifest-no-guid@foobar/',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            'Content-Type': 'application/json',
+        },
+        data=json.dumps(payload),
+    )
+    assert (
+        create_addon.status_code == 400
+    ), f'Actual status code was {create_addon.status_code}'
+    assert (
+        'A GUID must be specified in the manifest.' in create_addon.text
+    ), f'Actual message was {create_addon.text}'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_upload_extension_with_put_no_guid_in_request(base_url, session_auth):
+    """The PUT method requires a guid to be specified in the request;
+    if no guid is specified in the url, the request should fail"""
+    guid = f'random-guid@{reusables.get_random_string(6)}'
+    # create the addon manifest to be uploaded
+    manifest = {
+        **payloads.minimal_manifest,
+        'name': 'PUT-no-guid-in-request-url',
+        'browser_specific_settings': {'gecko': {'id': guid}},
+    }
+    api_helpers.make_addon(manifest)
+    with open('sample-addons/make-addon.zip', 'rb') as file:
+        upload = requests.post(
+            url=f'{base_url}{_upload}',
+            headers={'Authorization': f'Session {session_auth}'},
+            files={'upload': file},
+            data={'channel': 'listed'},
+        )
+    upload.raise_for_status()
+    # sleep to allow the first request to be processed
+    time.sleep(3)
+    resp = upload.json()
+    uuid = resp['uuid']
+    payload = payloads.listed_addon_minimal(uuid)
+    create_addon = requests.put(
+        url=f'{base_url}{_addon_create}',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            'Content-Type': 'application/json',
+        },
+        data=json.dumps(payload),
+    )
+    # the request sent is valid with a POST request; with PUT is not accepted
+    assert (
+        create_addon.status_code == 405
+    ), f'Actual status code was {create_addon.status_code}'
+    assert (
+        'Method \\"PUT\\" not allowed.' in create_addon.text
+    ), f'Actual message was {create_addon.text}'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_upload_extension_with_put_invalid_guid_format(base_url, session_auth):
+    """Uploading an addon with an invalid guid format should fail the PUT request"""
+    guid = f'invalid-{reusables.get_random_string(6)}'  # creates an invalid guid
+    manifest = {
+        **payloads.minimal_manifest,
+        'name': 'Invalid guid format',
+        'browser_specific_settings': {'gecko': {'id': guid}},
+    }
+    api_helpers.make_addon(manifest)
+    with open('sample-addons/make-addon.zip', 'rb') as file:
+        upload = requests.post(
+            url=f'{base_url}{_upload}',
+            headers={'Authorization': f'Session {session_auth}'},
+            files={'upload': file},
+            data={'channel': 'listed'},
+        )
+    upload.raise_for_status()
+    # sleep to allow the first request to be processed
+    time.sleep(3)
+    resp = upload.json()
+    print(resp)
+    uuid = resp['uuid']
+    # check that the upload validation results point at a faulty guid
+    get_upload_details = requests.get(
+        url=f'{base_url}{_upload}{uuid}/',
+        headers={'Authorization': f'Session {session_auth}'},
+    )
+    error = get_upload_details.json()
+    assert (
+        '/browser_specific_settings/gecko/id'
+        in error['validation']['messages'][0]['instancePath']
+    )
+    # try to submit the addon with an invalid guid anyway; it should fail
+    payload = payloads.listed_addon_minimal(uuid)
+    create_addon = requests.put(
+        url=f'{base_url}{_addon_create}{guid}/',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            'Content-Type': 'application/json',
+        },
+        data=json.dumps(payload),
+    )
+    assert (
+        create_addon.status_code == 404
     ), f'Actual status code was {create_addon.status_code}'
 
 
