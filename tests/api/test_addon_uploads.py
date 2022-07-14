@@ -725,6 +725,285 @@ def test_edit_listed_addon_details(base_url, session_auth):
 
 @pytest.mark.serial
 @pytest.mark.create_session('api_user')
+def test_extension_add_invalid_android_categories(base_url, session_auth):
+    """Try to upload an addon that has invalid android categories set in the JSON payload"""
+    with open('sample-addons/listed-addon.zip', 'rb') as file:
+        upload = requests.post(
+            url=f'{base_url}{_upload}',
+            headers={'Authorization': f'Session {session_auth}'},
+            files={'upload': file},
+            data={'channel': 'listed'},
+        )
+    upload.raise_for_status()
+    # sleep to allow the first request to be processed
+    time.sleep(3)
+    print(upload.json())
+    # get the addon uuid generated after upload
+    uuid = upload.json()['uuid']
+    invalid_android_catg = ['nature', 'privacy-security', '', 123, None]
+    for item in invalid_android_catg:
+        payload = {
+            **payloads.listed_addon_details(uuid),
+            'categories': {'android': [item], 'firefox': ['bookmarks']},
+            'slug': 'invalid-android-cat',
+        }
+        create_addon = requests.post(
+            url=f'{base_url}{_addon_create}',
+            headers={
+                'Authorization': f'Session {session_auth}',
+                'Content-Type': 'application/json',
+            },
+            data=json.dumps(payload),
+        )
+        print(
+            f'For android category "{item}": Response status is {create_addon.status_code}; {create_addon.text}\n'
+        )
+        assert (
+            create_addon.status_code == 400
+        ), f'Actual status code was {create_addon.status_code}'
+        assert (
+            'Invalid category name' in create_addon.text
+        ), f'Actual response message was {create_addon.text}'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_extension_add_invalid_firefox_categories(base_url, session_auth):
+    """Try to upload an addon that has invalid firefox categories set in the JSON payload"""
+    with open('sample-addons/listed-addon.zip', 'rb') as file:
+        upload = requests.post(
+            url=f'{base_url}{_upload}',
+            headers={'Authorization': f'Session {session_auth}'},
+            files={'upload': file},
+            data={'channel': 'listed'},
+        )
+    upload.raise_for_status()
+    # sleep to allow the first request to be processed
+    time.sleep(3)
+    print(upload.json())
+    # get the addon uuid generated after upload
+    uuid = upload.json()['uuid']
+    invalid_firefox_catg = ['fashion', 'security-privacy', '', 12.3]
+    for item in invalid_firefox_catg:
+        payload = {
+            **payloads.listed_addon_details(uuid),
+            'categories': {'android': ['performance'], 'firefox': [item]},
+            'slug': 'invalid-firefox-cat',
+        }
+        create_addon = requests.post(
+            url=f'{base_url}{_addon_create}',
+            headers={
+                'Authorization': f'Session {session_auth}',
+                'Content-Type': 'application/json',
+            },
+            data=json.dumps(payload),
+        )
+        print(
+            f'For firefox category "{item}": Response status is {create_addon.status_code}; {create_addon.text}\n'
+        )
+        assert (
+            create_addon.status_code == 400
+        ), f'Actual status code was {create_addon.status_code}'
+        assert (
+            'Invalid category name' in create_addon.text
+        ), f'Actual response message was {create_addon.text}'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_extension_other_category_is_standalone(base_url, session_auth):
+    """Extensions with a category set to 'other' cannot have another category set"""
+    with open('sample-addons/listed-addon.zip', 'rb') as file:
+        upload = requests.post(
+            url=f'{base_url}{_upload}',
+            headers={'Authorization': f'Session {session_auth}'},
+            files={'upload': file},
+            data={'channel': 'listed'},
+        )
+    upload.raise_for_status()
+    # sleep to allow the first request to be processed
+    time.sleep(3)
+    print(upload.json())
+    # get the addon uuid generated after upload
+    uuid = upload.json()['uuid']
+    payload = {
+        **payloads.listed_addon_details(uuid),
+        'categories': {
+            'android': ['other', 'performance'],
+            'firefox': ['other', 'bookmarks'],
+        },
+        'slug': 'other-category',
+    }
+    create_addon = requests.post(
+        url=f'{base_url}{_addon_create}',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            'Content-Type': 'application/json',
+        },
+        data=json.dumps(payload),
+    )
+    assert (
+        create_addon.status_code == 400
+    ), f'Actual status code was {create_addon.status_code}'
+    assert (
+        'The \\"other\\" category cannot be combined with another category'
+        in create_addon.text
+    ), f'Actual response message was {create_addon.text}'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_extension_invalid_slug(base_url, session_auth):
+    """Addon slugs can be composed only from letters and numbers"""
+    with open('sample-addons/listed-addon.zip', 'rb') as file:
+        upload = requests.post(
+            url=f'{base_url}{_upload}',
+            headers={'Authorization': f'Session {session_auth}'},
+            files={'upload': file},
+            data={'channel': 'listed'},
+        )
+    upload.raise_for_status()
+    # sleep to allow the first request to be processed
+    time.sleep(3)
+    print(upload.json())
+    # get the addon uuid generated after upload
+    uuid = upload.json()['uuid']
+    invalid_slugs = [102030, '---', '?name', '@#_' ')(', None]
+    for item in invalid_slugs:
+        # crete a new dictionary from the original payload, with invalid slug values
+        payload = {**payloads.listed_addon_details(uuid), 'slug': item}
+        create_addon = requests.post(
+            url=f'{base_url}{_addon_create}',
+            headers={
+                'Authorization': f'Session {session_auth}',
+                'Content-Type': 'application/json',
+            },
+            data=json.dumps(payload),
+        )
+        print(
+            f'For slug "{item}": Response status is {create_addon.status_code}; {create_addon.text}\n'
+        )
+        assert (
+            create_addon.status_code == 400
+        ), f'Actual status code was {create_addon.status_code}'
+        if item == invalid_slugs[0]:  # slugs cannot contain only digits either
+            assert (
+                'This slug cannot be used. Please choose another.' in create_addon.text
+            ), f'Actual response message was {create_addon.text}'
+        else:
+            assert (
+                'Enter a valid “slug” consisting of letters, numbers, underscores or hyphens.'
+                in create_addon.text
+            ), f'Actual response message was {create_addon.text}'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_extension_duplicate_slug(base_url, session_auth, variables):
+    """Use a slug that already belongs to another addon"""
+    addon = payloads.edit_addon_details['slug']
+    payload = {
+        **payloads.edit_addon_details,
+        'slug': variables['approved_addon_with_sources'],
+    }
+    edit_addon = requests.patch(
+        url=f'{base_url}{_addon_create}{addon}/',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            'Content-Type': 'application/json',
+        },
+        data=json.dumps(payload),
+    )
+    assert (
+        edit_addon.status_code == 400
+    ), f'Actual status code was {edit_addon.status_code}'
+    assert (
+        'addon with this slug already exists.' in edit_addon.text
+    ), f'Actual response message was {edit_addon.text}'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_extension_invalid_name(base_url, session_auth):
+    """Addon names are required to have at least one letter or number character to be valid"""
+    addon = payloads.edit_addon_details['slug']
+    invalid_names = ['', '.', '****', None]
+    for item in invalid_names:
+        # crete a new dictionary from the original payload, with invalid name values
+        payload = {**payloads.edit_addon_details, 'name': {'en-US': item}}
+        edit_addon = requests.patch(
+            url=f'{base_url}{_addon_create}{addon}/',
+            headers={
+                'Authorization': f'Session {session_auth}',
+                'Content-Type': 'application/json',
+            },
+            data=json.dumps(payload),
+        )
+        print(
+            f'For name "{item}": Response status is {edit_addon.status_code}; {edit_addon.text}\n'
+        )
+        assert (
+            edit_addon.status_code == 400
+        ), f'Actual status code was {edit_addon.status_code}'
+        # check response messages based on the name value sent
+        if item == '':
+            assert (
+                'This field may not be blank' in edit_addon.text
+            ), f'Actual response message was {edit_addon.text}'
+        elif item is None:
+            assert (
+                'A value in the default locale of \\"en-US\\" is required.'
+                in edit_addon.text
+            ), f'Actual response message was {edit_addon.text}'
+        else:
+            assert (
+                'Ensure this field contains at least one letter or number character'
+                in edit_addon.text
+            ), f'Actual response message was {edit_addon.text}'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_extension_invalid_summary(base_url, session_auth):
+    """Addon summaries need to be in string format and below 250 characters"""
+    addon = payloads.edit_addon_details['slug']
+    over_250_summary = reusables.get_random_string(251)
+    summaries = ['', over_250_summary, None]
+    # crete a new dictionary from the original payload, with invalid summary values
+    for item in summaries:
+        payload = {**payloads.edit_addon_details, 'summary': {'en-US': item}}
+        edit_addon = requests.patch(
+            url=f'{base_url}{_addon_create}{addon}/',
+            headers={
+                'Authorization': f'Session {session_auth}',
+                'Content-Type': 'application/json',
+            },
+            data=json.dumps(payload),
+        )
+        print(
+            f'For summary "{item}": Response status is {edit_addon.status_code}; {edit_addon.text}\n'
+        )
+        assert (
+            edit_addon.status_code == 400
+        ), f'Actual status code was {edit_addon.status_code}'
+        # check response messages based on the summary value sent
+        if item == '':
+            assert (
+                'This field may not be blank.' in edit_addon.text
+            ), f'Actual response message was {edit_addon.text}'
+        elif item == over_250_summary:
+            assert (
+                'Ensure this field has no more than 250 characters.' in edit_addon.text
+            ), f'Actual response message was {edit_addon.text}'
+        else:  # if None
+            assert (
+                'A value in the default locale of \\"en-US\\" is required.'
+                in edit_addon.text
+            ), f'Actual response message was {edit_addon.text}'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
 @pytest.mark.clear_session
 def test_delete_extension_valid_token(selenium, base_url, session_auth, variables):
     addon = payloads.edit_addon_details['slug']
