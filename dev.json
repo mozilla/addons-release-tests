@@ -1,4 +1,5 @@
 {
    "base_url": "https://addons-dev.allizom.org",
-   "approved_addon_with_sources": "approved-src-code"
+   "approved_addon_with_sources": "approved-src-code",
+   "contributions_bad_request_message": "{\"contributions_url\":[\"URL domain must be one of [www.buymeacoffee.com, donate.mozilla.org, flattr.com, github.com, ko-fi.com, liberapay.com, www.micropayment.de, opencollective.com, www.patreon.com, www.paypal.com, paypal.me].\"]}"
 }

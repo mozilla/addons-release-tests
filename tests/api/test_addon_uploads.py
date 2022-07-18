@@ -962,6 +962,44 @@ def test_extension_invalid_name(base_url, session_auth):
             ), f'Actual response message was {edit_addon.text}'
 
 
+@pytest.mark.parametrize(
+    'trademark_name',
+    [
+        'A Name with Firefox',
+        'A Name with Mozilla',
+        'A Name with Mozilla Firefox',
+        'Name has FireFox',
+        'Name has MOZILLA',
+    ],
+)
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_extension_with_trademark_in_name(base_url, session_auth, trademark_name):
+    """Verifies that addon names can't be edited to include a Mozilla or Firefox trademark"""
+    addon = payloads.edit_addon_details['slug']
+    # crete a new dictionary from the original payload, with variable name values
+    name = {**payloads.edit_addon_details, 'name': {'en-US': trademark_name}}
+    edit_addon = requests.patch(
+        url=f'{base_url}{_addon_create}{addon}/',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            'Content-Type': 'application/json',
+        },
+        data=json.dumps(name),
+    )
+    print(
+        f'For name "{trademark_name}": Response status is {edit_addon.status_code}; {edit_addon.text}\n'
+    )
+    assert (
+        edit_addon.status_code == 400
+    ), f'Actual status code was {edit_addon.status_code}'
+    # check that the trademark check error message is returned
+    assert (
+        'Add-on names cannot contain the Mozilla or Firefox trademarks.'
+        in edit_addon.text
+    ), f'Actual response message was {edit_addon.text}'
+
+
 @pytest.mark.serial
 @pytest.mark.create_session('api_user')
 def test_extension_invalid_summary(base_url, session_auth):
@@ -999,6 +1037,265 @@ def test_extension_invalid_summary(base_url, session_auth):
             assert (
                 'A value in the default locale of \\"en-US\\" is required.'
                 in edit_addon.text
+            ), f'Actual response message was {edit_addon.text}'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_extension_invalid_homepage(base_url, session_auth):
+    """Try to add some invalid and unaccepted homepage urls for an addon"""
+    addon = payloads.edit_addon_details['slug']
+    invalid_homepage = [
+        '',
+        '.',
+        'abc123',
+        'example.com',
+        'http://not-valid',
+        'www.some-url.org',
+        base_url,
+    ]
+    for item in invalid_homepage:
+        # crete a new dictionary from the original payload, with variable homepage values
+        homepage = {**payloads.edit_addon_details, 'homepage': {'en-US': item}}
+        edit_addon = requests.patch(
+            url=f'{base_url}{_addon_create}{addon}/',
+            headers={
+                'Authorization': f'Session {session_auth}',
+                'Content-Type': 'application/json',
+            },
+            data=json.dumps(homepage),
+        )
+        print(
+            f'For homepage "{item}": Response status is {edit_addon.status_code}; {edit_addon.text}\n'
+        )
+        assert (
+            edit_addon.status_code == 400
+        ), f'Actual status code was {edit_addon.status_code}'
+        # check response messages based on the homepage value sent
+        if item == '':
+            assert (
+                'This field may not be blank' in edit_addon.text
+            ), f'Actual response message was {edit_addon.text}'
+        # homepage URLs can't belong to the AMO domains
+        elif item == base_url:
+            assert (
+                f'This field can only be used to link to external websites. URLs on {base_url} are not allowed.'
+                in edit_addon.text
+            ), f'Actual response message was {edit_addon.text}'
+        else:
+            assert (
+                'Enter a valid URL.' in edit_addon.text
+            ), f'Actual response message was {edit_addon.text}'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_extension_invalid_support_email(base_url, session_auth):
+    """Try to add some invalid and unaccepted emails for an addon"""
+    addon = payloads.edit_addon_details['slug']
+    invalid_email = ['', '.', 'abc123', 'mail.com', 'abc@defg', 123, None]
+    for item in invalid_email:
+        # crete a new dictionary from the original payload, with variable email values
+        email = {**payloads.edit_addon_details, 'support_email': {'en-US': item}}
+        edit_addon = requests.patch(
+            url=f'{base_url}{_addon_create}{addon}/',
+            headers={
+                'Authorization': f'Session {session_auth}',
+                'Content-Type': 'application/json',
+            },
+            data=json.dumps(email),
+        )
+        print(
+            f'For email "{item}": Response status is {edit_addon.status_code}; {edit_addon.text}\n'
+        )
+        assert (
+            edit_addon.status_code == 400
+        ), f'Actual status code was {edit_addon.status_code}'
+        # check response messages based on the email value sent
+        if item == '':
+            assert (
+                'This field may not be blank' in edit_addon.text
+            ), f'Actual response message was {edit_addon.text}'
+        elif item is None:
+            assert (
+                'A value in the default locale of \\"en-US\\" is required if other translations are set.'
+                in edit_addon.text
+            ), f'Actual response message was {edit_addon.text}'
+        else:
+            assert (
+                'Enter a valid email address.' in edit_addon.text
+            ), f'Actual response message was {edit_addon.text}'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_extension_invalid_experimental_and_payment(base_url, session_auth):
+    """Try to set the 'experimental' and 'requires_payment' fields to other values than boolean"""
+    addon = payloads.edit_addon_details['slug']
+    # 'is_experimental' and 'requires_payment' can only be True or False
+    invalid_values = ['', 'abc123', None, 123]
+    for item in invalid_values:
+        # crete a new dictionary from the original payload, with variable values
+        payload = {
+            **payloads.edit_addon_details,
+            'is_experimental': item,
+            'requires_payment': item,
+        }
+        edit_addon = requests.patch(
+            url=f'{base_url}{_addon_create}{addon}/',
+            headers={
+                'Authorization': f'Session {session_auth}',
+                'Content-Type': 'application/json',
+            },
+            data=json.dumps(payload),
+        )
+        print(
+            f'For email "{item}": Response status is {edit_addon.status_code}; {edit_addon.text}\n'
+        )
+        assert (
+            edit_addon.status_code == 400
+        ), f'Actual status code was {edit_addon.status_code}'
+        # check response messages based on the values sent
+        if item is None:
+            assert (
+                'This field may not be null.' in edit_addon.text
+            ), f'Actual response message was {edit_addon.text}'
+        else:
+            assert (
+                'Must be a valid boolean.' in edit_addon.text
+            ), f'Actual response message was {edit_addon.text}'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_extension_valid_contribute_domains(base_url, session_auth):
+    """Add a valid contributions url to an addon; requests should be successful"""
+    addon = payloads.edit_addon_details['slug']
+    valid_domains = [
+        'https://www.buymeacoffee.com',
+        'https://donate.mozilla.org',
+        'https://flattr.com',
+        'https://github.com/sponsors/',
+        'https://ko-fi.com',
+        'https://liberapay.com',
+        'https://www.micropayment.de',
+        'https://opencollective.com',
+        'https://www.patreon.com',
+        'https://www.paypal.com',
+        'https://paypal.me',
+    ]
+    for item in valid_domains:
+        # crete a new dictionary from the original payload, with variable domain values
+        payload = {**payloads.edit_addon_details, 'contributions_url': item}
+        edit_addon = requests.patch(
+            url=f'{base_url}{_addon_create}{addon}/',
+            headers={
+                'Authorization': f'Session {session_auth}',
+                'Content-Type': 'application/json',
+            },
+            data=json.dumps(payload),
+        )
+        print(
+            f'For domain "{item}": Response status is {edit_addon.status_code}; {edit_addon.text}\n'
+        )
+        assert (
+            edit_addon.status_code == 200
+        ), f'Actual status code was {edit_addon.status_code}'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_extension_invalid_contribute_domains(base_url, session_auth, variables):
+    """Set an invalid or an unaccepted value as the addon's contribution url;
+    accepted domains are predefined and must all start with 'https'"""
+    addon = payloads.edit_addon_details['slug']
+    invalid_domains = [
+        '',
+        123,
+        'abc123',
+        'https://invalid.com',
+        'https://www.notbuymeacoffee.com',
+        'http://donate.mozilla.org',
+        'https://patreon.com',
+        'https://www.paypal.me',
+    ]
+    for item in invalid_domains:
+        # crete a new dictionary from the original payload, with variable domain values
+        payload = {**payloads.edit_addon_details, 'contributions_url': item}
+        edit_addon = requests.patch(
+            url=f'{base_url}{_addon_create}{addon}/',
+            headers={
+                'Authorization': f'Session {session_auth}',
+                'Content-Type': 'application/json',
+            },
+            data=json.dumps(payload),
+        )
+        print(
+            f'For domain "{item}": Response status is {edit_addon.status_code}; {edit_addon.text}\n'
+        )
+        assert (
+            edit_addon.status_code == 400
+        ), f'Actual status code was {edit_addon.status_code}'
+        # check response messages based on the domain value sent
+        if item == '':
+            assert (
+                'This field may not be blank' in edit_addon.text
+            ), f'Actual response message was {edit_addon.text}'
+        # domain starts with 'https' but is not in the accepted domains list
+        elif type(item) is str and item.startswith('https://'):
+            assert (
+                variables['contributions_bad_request_message'] in edit_addon.text
+            ), f'Actual response message was {edit_addon.text}'
+        # domain is in the accepted list but starts with 'http'
+        elif item == 'http://donate.mozilla.org':
+            assert (
+                'URLs must start with https://.' in edit_addon.text
+            ), f'Actual response message was {edit_addon.text}'
+        else:
+            # if the value doesn't start with 'https' and is not in the accepted list
+            assert (
+                variables['contributions_bad_request_message']
+                and 'URLs must start with https://.' in edit_addon.text
+            ), f'Actual response message was {edit_addon.text}'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_extension_invalid_addon_tags(base_url, session_auth):
+    """Try to set some invalid or unaccepted tags to an addon; valid tags are predefined"""
+    addon = payloads.edit_addon_details['slug']
+    # set some invalid or combinations of invalid tags; for example,
+    # a combination of a valid and an invalid tag should not be accepted
+    invalid_tags = [['', 'abc123'], None, [123, 'search'], True]
+    for item in invalid_tags:
+        # crete a new dictionary from the original payload, with variable values
+        payload = {**payloads.edit_addon_details, 'tags': item}
+        edit_addon = requests.patch(
+            url=f'{base_url}{_addon_create}{addon}/',
+            headers={
+                'Authorization': f'Session {session_auth}',
+                'Content-Type': 'application/json',
+            },
+            data=json.dumps(payload),
+        )
+        print(
+            f'For tags "{item}": Response status is {edit_addon.status_code}; {edit_addon.text}\n'
+        )
+        assert (
+            edit_addon.status_code == 400
+        ), f'Actual status code was {edit_addon.status_code}'
+        # check response messages based on the values sent
+        if item is None:
+            assert (
+                'This field may not be null.' in edit_addon.text
+            ), f'Actual response message was {edit_addon.text}'
+        elif type(item) is list:  # items stored in list but are not valid tags
+            assert (
+                'is not a valid choice' in edit_addon.text
+            ), f'Actual response message was {edit_addon.text}'
+        else:  # if values are not stored in a list
+            assert (
+                'Expected a list of items' in edit_addon.text
             ), f'Actual response message was {edit_addon.text}'
 
 
