@@ -1,3 +1,4 @@
 {
-   "base_url": "https://addons-dev.allizom.org"
+   "base_url": "https://addons-dev.allizom.org",
+   "approved_addon_with_sources": "approved-src-code"
 }
