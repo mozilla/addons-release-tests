@@ -24,7 +24,7 @@ isort==5.10.1
 lazy-object-proxy==1.7.1
 mccabe==0.7.0
 more-itertools==8.13.0
-networkx==2.8.4
+networkx==2.8.5
 numpy==1.23.0
 packaging==21.3
 pathspec==0.9.0
@@ -35,7 +35,7 @@ PyBrowserID==0.14.0
 pycparser==2.21
 PyFxA==0.7.7
 PyJWT==2.4.0
-pylint==2.14.4
+pylint==2.14.5
 pyparsing==3.0.9
 PyPOM==2.2.3
 pytest==7.1.2
