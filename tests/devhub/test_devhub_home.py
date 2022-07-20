@@ -477,14 +477,12 @@ def test_devhub_addons_footer_links(base_url, selenium, count, link):
         [
             'firefox/new',
             'firefox/browsers/mobile/',
-            'mixedreality.mozilla.org',
             'firefox/enterprise/',
         ]
     ),
     ids=[
         'DevHub Footer - Browsers section -  Desktop',
         'DevHub Footer - Browsers section -  Mobile',
-        'DevHub Footer - Browsers section -  Reality',
         'DevHub Footer - Browsers section -  Enterprise',
     ],
 )
