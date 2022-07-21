@@ -148,3 +148,11 @@ edit_addon_details = {
         'pinterest',
     ],
 }
+
+preview_captions = {
+    'caption': {
+        'de': 'Image caption in german',
+        'en-US': 'Image caption in english',
+        'fr': 'Image caption in french'
+    }
+}

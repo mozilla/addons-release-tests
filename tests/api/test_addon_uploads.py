@@ -1299,6 +1299,260 @@ def test_extension_invalid_addon_tags(base_url, session_auth):
             ), f'Actual response message was {edit_addon.text}'
 
 
+@pytest.mark.parametrize(
+    'icon',
+    [
+        'img/profile_picture.png',
+        'img/addon_icon.jpg',
+    ],
+    ids=[
+        'PNG icon',
+        'JPG icon',
+    ],
+)
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_extension_add_valid_icon(base_url, session_auth, icon):
+    """Upload a custom icon for an addon; JPG and PNG are the only accepted formats"""
+    addon = payloads.edit_addon_details['slug']
+    with open(icon, 'rb') as img:
+        edit_addon = requests.patch(
+            url=f'{base_url}{_addon_create}{addon}/',
+            headers={'Authorization': f'Session {session_auth}'},
+            files={'icon': img},
+        )
+        print(
+            f'For icon "{icon}": Response status is {edit_addon.status_code}; {edit_addon.text}\n'
+        )
+        assert (
+            edit_addon.status_code == 200
+        ), f'Actual status code was {edit_addon.status_code}'
+        # get the icons returned by the API and add them to a list (icons are saved in three sizes)
+        r_icons = edit_addon.json()['icons']
+        user_icons = [value for value in r_icons.values()]
+        # if the icon has been upload successfully, we should se '/user-media/' in the icon location
+        # and not '/static-server/' which is the location for the default icon served by AMO
+        for icon in user_icons:
+            assert f'{base_url}/user-media/addon_icons/' in icon
+
+
+@pytest.mark.parametrize(
+    'icon',
+    [
+        'img/bmp_icon.bmp',
+        'img/static_gif.gif',
+        'img/animated_png.png',
+        'img/not_square.png',
+        'img/invalid_image.png',
+    ],
+    ids=[
+        'BMP icon',
+        'GIF static icon',
+        'PNG animated icon',
+        'Icon not square',
+        'Non image file with a .png extension',
+    ],
+)
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_extension_add_invalid_icons(base_url, session_auth, icon):
+    """Verify that requests fail if icons do not meet these acceptance criteria:
+    PNG or JPG, square images, non-animated images, valid image file"""
+    addon = payloads.edit_addon_details['slug']
+    with open(icon, 'rb') as img:
+        edit_addon = requests.patch(
+            url=f'{base_url}{_addon_create}{addon}/',
+            headers={'Authorization': f'Session {session_auth}'},
+            files={'icon': img},
+        )
+        print(
+            f'For icon "{icon}": Response status is {edit_addon.status_code}; {edit_addon.text}\n'
+        )
+        assert (
+            edit_addon.status_code == 400
+        ), f'Actual status code was {edit_addon.status_code}'
+        if icon == 'img/bmp_icon.bmp' or icon == 'img/static_gif.gif':
+            assert (
+                'Images must be either PNG or JPG.' in edit_addon.text
+            ), f'Actual response was {edit_addon.text}'
+        elif icon == 'img/animated_png.png':
+            assert (
+                'Images cannot be animated.' in edit_addon.text
+            ), f'Actual response was {edit_addon.text}'
+        elif icon == 'img/not_square.png':
+            assert (
+                'Images must be square (same width and height).' in edit_addon.text
+            ), f'Actual response was {edit_addon.text}'
+        else:  # for the non-image file
+            assert (
+                'Upload a valid image.' in edit_addon.text
+            ), f'Actual response was {edit_addon.text}'
+
+
+@pytest.mark.parametrize(
+    'count, preview',
+    enumerate(
+        [
+            'img/screenshot_3.png',
+            'img/screenshot_1.jpg',
+        ]
+    ),
+    ids=[
+        'PNG image',
+        'JPG image',
+    ],
+)
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_extension_add_valid_screenshots(base_url, session_auth, count, preview):
+    """Set valid preview images for an addon; only JPG and JPG formats are accepted"""
+    addon = payloads.edit_addon_details['slug']
+    with open(preview, 'rb') as img:
+        edit_addon = requests.post(
+            url=f'{base_url}{_addon_create}{addon}/previews/',
+            headers={'Authorization': f'Session {session_auth}'},
+            files={'image': img},
+            data={
+                'position': count
+            },  # sets the order in which the previews should appear
+        )
+        print(
+            f'For image "{preview}": Response status is {edit_addon.status_code}; {edit_addon.text}\n'
+        )
+        assert (
+            edit_addon.status_code == 201
+        ), f'Actual status code was {edit_addon.status_code}'
+        # verify the image has been uploaded by checking the image location (should be '/user_media/')
+        assert f'{base_url}/user-media/previews/' in edit_addon.json()['image_url']
+        assert edit_addon.json()['position'] == count
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_extension_previews_add_caption(base_url, session_auth):
+    """Adds a short text for each screenshot uploaded for an addon"""
+    addon = payloads.edit_addon_details['slug']
+    # capture the preview ids to be used in the PATCH request and add them to a list
+    previews_id = []
+    get_addon = requests.get(
+        url=f'{base_url}{_addon_create}{addon}/',
+        headers={'Authorization': f'Session {session_auth}'},
+    )
+    r = get_addon.json()
+    for image in r['previews']:
+        previews_id.append(image.get('id'))
+    payload = payloads.preview_captions
+    # add a caption for all the available previews
+    for preview in previews_id:
+        edit_addon = requests.patch(
+            url=f'{base_url}{_addon_create}{addon}/previews/{preview}/',
+            headers={
+                'Authorization': f'Session {session_auth}',
+                'Content-Type': 'application/json',
+            },
+            data=json.dumps(payload),
+        )
+        response = edit_addon.json()
+        assert (
+            edit_addon.json()['caption'] == payload['caption']
+        ), f'Actual response was {response}'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_extension_no_image_attached(base_url, session_auth):
+    """Send a screenshot upload request without adding an image"""
+    addon = payloads.edit_addon_details['slug']
+    edit_addon = requests.post(
+        url=f'{base_url}{_addon_create}{addon}/previews/',
+        headers={'Authorization': f'Session {session_auth}'},
+    )
+    assert (
+        edit_addon.status_code == 400
+    ), f'Actual status code was {edit_addon.status_code}'
+    assert (
+        'No file was submitted.' in edit_addon.text
+    ), f'Actual response message was {edit_addon.text}'
+
+
+@pytest.mark.parametrize(
+    'preview',
+    [
+        'img/bmp_icon.bmp',
+        'img/static_gif.gif',
+        'img/animated_png.png',
+        'img/invalid_image.png',
+    ],
+    ids=[
+        'BMP screenshot',
+        'GIF static screenshot',
+        'PNG animated screenshot',
+        'Non image file with a .png extension',
+    ],
+)
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_extension_add_invalid_image(base_url, session_auth, preview):
+    """Verify that requests fail if images do not meet these acceptance criteria:
+    PNG or JPG, non-animated images, valid image file"""
+    addon = payloads.edit_addon_details['slug']
+    with open(preview, 'rb') as img:
+        edit_addon = requests.post(
+            url=f'{base_url}{_addon_create}{addon}/previews/',
+            headers={'Authorization': f'Session {session_auth}'},
+            files={'image': img},
+        )
+        print(
+            f'For image "{preview}": Response status is {edit_addon.status_code}; {edit_addon.text}\n'
+        )
+        assert (
+            edit_addon.status_code == 400
+        ), f'Actual status code was {edit_addon.status_code}'
+        if preview == 'img/bmp_icon.bmp' or preview == 'img/static_gif.gif':
+            assert (
+                'Images must be either PNG or JPG.' in edit_addon.text
+            ), f'Actual response was {edit_addon.text}'
+        elif preview == 'img/animated_png.png':
+            assert (
+                'Images cannot be animated.' in edit_addon.text
+            ), f'Actual response was {edit_addon.text}'
+        else:  # for the non-image file
+            assert (
+                'Upload a valid image.' in edit_addon.text
+            ), f'Actual response was {edit_addon.text}'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_extension_delete_previews(base_url, session_auth):
+    """Verify that addon previews can be deleted"""
+    addon = payloads.edit_addon_details['slug']
+    # get the preview ids for the available images
+    preview_ids = []
+    get_addon = requests.get(
+        url=f'{base_url}{_addon_create}{addon}/',
+        headers={'Authorization': f'Session {session_auth}'},
+    )
+    r = get_addon.json()
+    for image in r['previews']:
+        preview_ids.append(image.get('id'))
+    for preview_id in preview_ids:
+        delete_image = requests.delete(
+            url=f'{base_url}{_addon_create}{addon}/previews/{preview_id}',
+            headers={'Authorization': f'Session {session_auth}'},
+        )
+        assert (
+            delete_image.status_code == 204
+        ), f'Actual status code was {delete_image.status_code}'
+    # get the add-on details again
+    get_addon = requests.get(
+        url=f'{base_url}{_addon_create}{addon}/',
+        headers={'Authorization': f'Session {session_auth}'},
+    )
+    # check that there are no screenshots left for this addon
+    assert len(get_addon.json()['previews']) == 0
+
+
 @pytest.mark.serial
 @pytest.mark.create_session('api_user')
 @pytest.mark.clear_session
