@@ -46,7 +46,7 @@ pytest-forked==1.4.0
 pytest-fxa==1.4.0
 pytest-html==3.1.1
 pytest-instafail==0.4.2
-pytest-metadata==2.0.1
+pytest-metadata==2.0.2
 pytest-rerunfailures==10.2
 pytest-selenium==3.0.0
 pytest-variables==2.0.0
@@ -60,7 +60,7 @@ toml==0.10.2
 typed-ast==1.5.4
 typing-extensions==4.3.0
 urllib3==1.26.11
-virtualenv==20.15.1
+virtualenv==20.16.1
 wcwidth==0.2.5
 WebOb==1.8.7
 wrapt==1.14.1
