@@ -1337,25 +1337,27 @@ def test_extension_add_valid_icon(base_url, session_auth, icon):
 
 
 @pytest.mark.parametrize(
-    'icon',
-    [
-        'img/bmp_icon.bmp',
-        'img/static_gif.gif',
-        'img/animated_png.png',
-        'img/not_square.png',
-        'img/invalid_image.png',
-    ],
+    'count, icon',
+    enumerate(
+        [
+            'img/bmp_icon.bmp',
+            'img/static_gif.gif',
+            'img/animated_png.png',
+            'img/invalid_image.png',
+            'img/not_square.png',
+        ]
+    ),
     ids=[
         'BMP icon',
         'GIF static icon',
         'PNG animated icon',
-        'Icon not square',
         'Non image file with a .png extension',
+        'Icon not square',
     ],
 )
 @pytest.mark.serial
 @pytest.mark.create_session('api_user')
-def test_extension_add_invalid_icons(base_url, session_auth, icon):
+def test_extension_add_invalid_icons(base_url, session_auth, count, icon, variables):
     """Verify that requests fail if icons do not meet these acceptance criteria:
     PNG or JPG, square images, non-animated images, valid image file"""
     addon = payloads.edit_addon_details['slug']
@@ -1371,22 +1373,8 @@ def test_extension_add_invalid_icons(base_url, session_auth, icon):
         assert (
             edit_addon.status_code == 400
         ), f'Actual status code was {edit_addon.status_code}'
-        if icon == 'img/bmp_icon.bmp' or icon == 'img/static_gif.gif':
-            assert (
-                'Images must be either PNG or JPG.' in edit_addon.text
-            ), f'Actual response was {edit_addon.text}'
-        elif icon == 'img/animated_png.png':
-            assert (
-                'Images cannot be animated.' in edit_addon.text
-            ), f'Actual response was {edit_addon.text}'
-        elif icon == 'img/not_square.png':
-            assert (
-                'Images must be square (same width and height).' in edit_addon.text
-            ), f'Actual response was {edit_addon.text}'
-        else:  # for the non-image file
-            assert (
-                'Upload a valid image.' in edit_addon.text
-            ), f'Actual response was {edit_addon.text}'
+        # check that the validation messages expected for each image type are matching the API response
+        assert variables['image_validation_messages'][count] in edit_addon.text
 
 
 @pytest.mark.parametrize(
@@ -1476,13 +1464,15 @@ def test_extension_no_image_attached(base_url, session_auth):
 
 
 @pytest.mark.parametrize(
-    'preview',
-    [
-        'img/bmp_icon.bmp',
-        'img/static_gif.gif',
-        'img/animated_png.png',
-        'img/invalid_image.png',
-    ],
+    'count, preview',
+    enumerate(
+        [
+            'img/bmp_icon.bmp',
+            'img/static_gif.gif',
+            'img/animated_png.png',
+            'img/invalid_image.png',
+        ]
+    ),
     ids=[
         'BMP screenshot',
         'GIF static screenshot',
@@ -1492,7 +1482,7 @@ def test_extension_no_image_attached(base_url, session_auth):
 )
 @pytest.mark.serial
 @pytest.mark.create_session('api_user')
-def test_extension_add_invalid_image(base_url, session_auth, preview):
+def test_extension_add_invalid_image(base_url, session_auth, count, preview, variables):
     """Verify that requests fail if images do not meet these acceptance criteria:
     PNG or JPG, non-animated images, valid image file"""
     addon = payloads.edit_addon_details['slug']
@@ -1508,18 +1498,8 @@ def test_extension_add_invalid_image(base_url, session_auth, preview):
         assert (
             edit_addon.status_code == 400
         ), f'Actual status code was {edit_addon.status_code}'
-        if preview == 'img/bmp_icon.bmp' or preview == 'img/static_gif.gif':
-            assert (
-                'Images must be either PNG or JPG.' in edit_addon.text
-            ), f'Actual response was {edit_addon.text}'
-        elif preview == 'img/animated_png.png':
-            assert (
-                'Images cannot be animated.' in edit_addon.text
-            ), f'Actual response was {edit_addon.text}'
-        else:  # for the non-image file
-            assert (
-                'Upload a valid image.' in edit_addon.text
-            ), f'Actual response was {edit_addon.text}'
+        # check that the validation messages expected for each image type are matching the API response
+        assert variables['image_validation_messages'][count] in edit_addon.text
 
 
 @pytest.mark.serial
