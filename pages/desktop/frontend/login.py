@@ -78,7 +78,7 @@ class Login(Base):
         # here, I'm capturing that TimeoutException and trying to push the script to continue to the next steps.
         try:
             continue_btn = self.wait.until(
-                EC.element_to_be_clickable((By.CSS_SELECTOR, '.button-row button'))
+                EC.element_to_be_clickable((By.ID, 'submit-btn'))
             )
             continue_btn.click()
         except TimeoutException as error:
