@@ -8,5 +8,25 @@
       "Images cannot be animated.",
       "Upload a valid image. The file you uploaded was either not an image or a corrupted image.",
       "Images must be square (same width and height)."
-   ]
+   ],
+   "name_translations_from_locales_xpi": {
+       "ar": "«غرير الخصوصية»",
+       "de": "German name from _locales",
+       "en-US": "Privacy Badger",
+       "fr": "Privacy Badger",
+       "pl": "Privacy Badger",
+       "pt-BR": "Privacy Badger",
+       "ru": "Privacy Badger",
+       "zh-CN": "隐私獾"
+  },
+  "summary_translations_from_locales_xpi": {
+       "ar": "يتعلم «غرير الخصوصية» تلقائيا أن يحجب المتعقبات الخفية",
+       "de": "German summary from _locales.",
+       "en-US": "Privacy Badger automatically learns to block invisible trackers.",
+       "fr": "Privacy Badger apprend automatiquement à bloquer les traqueurs invisibles.",
+       "pl": "Privacy Badger automatycznie uczy się blokować niewidoczne elementy śledzące.",
+       "pt-BR": "O Privacy Badger aprende automaticamente a bloquear rastreadores invisíveis.",
+       "ru": "Privacy Badger автоматически учится блокировать невидимые трекеры.",
+       "zh-CN": "隐私獾会自动学习去阻止不可见的追踪器。"
+  }
 }
