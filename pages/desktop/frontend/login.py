@@ -110,7 +110,7 @@ class Login(Base):
         # issue - https://github.com/mozilla/geckodriver/issues/1608
         try:
             continue_btn = self.wait.until(
-                EC.element_to_be_clickable((By.CSS_SELECTOR, '.button-row button'))
+                EC.element_to_be_clickable((By.ID, 'submit-btn'))
             )
             continue_btn.click()
         except TimeoutException as error:
