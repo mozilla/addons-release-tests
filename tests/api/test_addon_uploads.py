@@ -1541,9 +1541,9 @@ def test_edit_default_locale_with_translations(base_url, session_auth):
     addon = payloads.edit_addon_details['slug']
     # list all the addon translations and try to set them as the default locale
     available_translations = ['de', 'fr', 'ro']
-    for item in available_translations:
+    for locale in available_translations:
         # crete a new dictionary from the original payload, with variable values
-        payload = {**payloads.edit_addon_details, 'default_locale': item}
+        payload = {**payloads.edit_addon_details, 'default_locale': locale}
         edit_addon = requests.patch(
             url=f'{base_url}{_addon_create}{addon}/',
             headers={
@@ -1553,14 +1553,14 @@ def test_edit_default_locale_with_translations(base_url, session_auth):
             data=json.dumps(payload),
         )
         print(
-            f'For locale "{item}": Response status is {edit_addon.status_code}; {edit_addon.text}\n'
+            f'For locale "{locale}": Response status is {edit_addon.status_code}; {edit_addon.text}\n'
         )
         assert (
             edit_addon.status_code == 200
         ), f'Actual status code was {edit_addon.status_code}'
         # check response messages based on the values sent
         addon_details = edit_addon.json()
-        assert addon_details['default_locale'] == item
+        assert addon_details['default_locale'] == locale
 
 
 @pytest.mark.serial
@@ -1571,9 +1571,9 @@ def test_edit_default_locale_with_missing_translations(base_url, session_auth):
     addon = payloads.edit_addon_details['slug']
     # list some locales for which there are n translations and try to set them as the default locale
     unavailable_translations = ['pl', 'pt-BR']
-    for item in unavailable_translations:
+    for locale in unavailable_translations:
         # crete a new dictionary from the original payload, with variable values
-        payload = {**payloads.edit_addon_details, 'default_locale': item}
+        payload = {**payloads.edit_addon_details, 'default_locale': locale}
         edit_addon = requests.patch(
             url=f'{base_url}{_addon_create}{addon}/',
             headers={
@@ -1583,14 +1583,14 @@ def test_edit_default_locale_with_missing_translations(base_url, session_auth):
             data=json.dumps(payload),
         )
         print(
-            f'For locale "{item}": Response status is {edit_addon.status_code}; {edit_addon.text}\n'
+            f'For locale "{locale}": Response status is {edit_addon.status_code}; {edit_addon.text}\n'
         )
         assert (
             edit_addon.status_code == 400
         ), f'Actual status code was {edit_addon.status_code}'
         # # check response messages based on the values sent
         assert (
-            f'A value in the default locale of \\"{item}\\" is required.'
+            f'A value in the default locale of \\"{locale}\\" is required.'
             in edit_addon.text
         ), f'Actual response message was {edit_addon.text}'
 
@@ -1601,9 +1601,9 @@ def test_edit_default_locale_invalid_values(base_url, session_auth):
     """Use some invalid/unaccepted data types for setting a 'default_locale'"""
     addon = payloads.edit_addon_details['slug']
     invalid_locales = ['foo', 123, None, ['de', 'fr'], '']
-    for item in invalid_locales:
+    for locale in invalid_locales:
         # crete a new dictionary from the original payload, with variable values
-        payload = {**payloads.edit_addon_details, 'default_locale': item}
+        payload = {**payloads.edit_addon_details, 'default_locale': locale}
         edit_addon = requests.patch(
             url=f'{base_url}{_addon_create}{addon}/',
             headers={
@@ -1613,19 +1613,19 @@ def test_edit_default_locale_invalid_values(base_url, session_auth):
             data=json.dumps(payload),
         )
         print(
-            f'For locale "{item}": Response status is {edit_addon.status_code}; {edit_addon.text}\n'
+            f'For locale "{locale}": Response status is {edit_addon.status_code}; {edit_addon.text}\n'
         )
         assert (
             edit_addon.status_code == 400
         ), f'Actual status code was {edit_addon.status_code}'
         # check response messages based on the values sent
-        if item is None:
+        if locale is None:
             assert (
                 'This field may not be null.' in edit_addon.text
             ), f'Actual response message was {edit_addon.text}'
         else:
             assert (
-                f'"default_locale":["\\"{item}\\" is not a valid choice."]'
+                f'"default_locale":["\\"{locale}\\" is not a valid choice."]'
                 in edit_addon.text
             ), f'Actual response message was {edit_addon.text}'
 
