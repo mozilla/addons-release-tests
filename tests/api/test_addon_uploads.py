@@ -1535,6 +1535,225 @@ def test_extension_delete_previews(base_url, session_auth):
 
 @pytest.mark.serial
 @pytest.mark.create_session('api_user')
+def test_edit_default_locale_with_translations(base_url, session_auth):
+    """Change the 'default_locale' of the addon to another locale for which we
+    already have translations for the mandatory fields - i.e. 'name' and 'summary'"""
+    addon = payloads.edit_addon_details['slug']
+    # list all the addon translations and try to set them as the default locale
+    available_translations = ['de', 'fr', 'ro']
+    for locale in available_translations:
+        # crete a new dictionary from the original payload, with variable values
+        payload = {**payloads.edit_addon_details, 'default_locale': locale}
+        edit_addon = requests.patch(
+            url=f'{base_url}{_addon_create}{addon}/',
+            headers={
+                'Authorization': f'Session {session_auth}',
+                'Content-Type': 'application/json',
+            },
+            data=json.dumps(payload),
+        )
+        print(
+            f'For locale "{locale}": Response status is {edit_addon.status_code}; {edit_addon.text}\n'
+        )
+        assert (
+            edit_addon.status_code == 200
+        ), f'Actual status code was {edit_addon.status_code}'
+        # check response messages based on the values sent
+        addon_details = edit_addon.json()
+        assert addon_details['default_locale'] == locale
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_edit_default_locale_with_missing_translations(base_url, session_auth):
+    """Change the 'default_locale' of the addon to another locale for which we
+    don't have translations for all the required fields - i.e. 'homepage', 'email'"""
+    addon = payloads.edit_addon_details['slug']
+    # list some locales for which there are n translations and try to set them as the default locale
+    unavailable_translations = ['pl', 'pt-BR']
+    for locale in unavailable_translations:
+        # crete a new dictionary from the original payload, with variable values
+        payload = {**payloads.edit_addon_details, 'default_locale': locale}
+        edit_addon = requests.patch(
+            url=f'{base_url}{_addon_create}{addon}/',
+            headers={
+                'Authorization': f'Session {session_auth}',
+                'Content-Type': 'application/json',
+            },
+            data=json.dumps(payload),
+        )
+        print(
+            f'For locale "{locale}": Response status is {edit_addon.status_code}; {edit_addon.text}\n'
+        )
+        assert (
+            edit_addon.status_code == 400
+        ), f'Actual status code was {edit_addon.status_code}'
+        # # check response messages based on the values sent
+        assert (
+            f'A value in the default locale of \\"{locale}\\" is required.'
+            in edit_addon.text
+        ), f'Actual response message was {edit_addon.text}'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_edit_default_locale_invalid_values(base_url, session_auth):
+    """Use some invalid/unaccepted data types for setting a 'default_locale'"""
+    addon = payloads.edit_addon_details['slug']
+    invalid_locales = ['foo', 123, None, ['de', 'fr'], '']
+    for locale in invalid_locales:
+        # crete a new dictionary from the original payload, with variable values
+        payload = {**payloads.edit_addon_details, 'default_locale': locale}
+        edit_addon = requests.patch(
+            url=f'{base_url}{_addon_create}{addon}/',
+            headers={
+                'Authorization': f'Session {session_auth}',
+                'Content-Type': 'application/json',
+            },
+            data=json.dumps(payload),
+        )
+        print(
+            f'For locale "{locale}": Response status is {edit_addon.status_code}; {edit_addon.text}\n'
+        )
+        assert (
+            edit_addon.status_code == 400
+        ), f'Actual status code was {edit_addon.status_code}'
+        # check response messages based on the values sent
+        if locale is None:
+            assert (
+                'This field may not be null.' in edit_addon.text
+            ), f'Actual response message was {edit_addon.text}'
+        else:
+            assert (
+                f'"default_locale":["\\"{locale}\\" is not a valid choice."]'
+                in edit_addon.text
+            ), f'Actual response message was {edit_addon.text}'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_upload_extension_default_locale_has_no_translations(base_url, session_auth):
+    """Try to upload an addon while setting a 'default_locale' for which there are no
+    available translations in the mandatory fields, i.e. 'name' and 'summary'"""
+    with open('sample-addons/localizations.xpi', 'rb') as file:
+        upload = requests.post(
+            url=f'{base_url}{_upload}',
+            headers={'Authorization': f'Session {session_auth}'},
+            files={'upload': file},
+            data={'channel': 'listed'},
+        )
+    # sleep to allow the first request to be processed
+    time.sleep(3)
+    upload.raise_for_status()
+    resp = upload.json()
+    # get the addon uuid generated after upload
+    uuid = resp['uuid']
+    slug = reusables.get_random_string(10)
+    # set a default locale that doesn't have any translations in the xpi or the request JSON
+    payload = {
+        **payloads.listed_addon_minimal(uuid),
+        'slug': slug,
+        'default_locale': 'ja',
+    }
+    create_addon = requests.post(
+        url=f'{base_url}{_addon_create}',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            'Content-Type': 'application/json',
+        },
+        data=json.dumps(payload),
+    )
+    assert (
+        create_addon.status_code == 400
+    ), f'Actual status code was {create_addon.status_code}'
+    # check that the error reflects that 'name' and 'summary' are mandatory fields to set a 'default_locale'
+    assert (
+        create_addon.text
+        == '{"name":["A value in the default locale of \\"ja\\" is required."],'
+        '"summary":["A value in the default locale of \\"ja\\" is required."]}'
+    )
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_upload_extension_with_localizations_in_xpi(base_url, session_auth, variables):
+    """Addon translations set in a 'locales' file in the .xpi should be reflected
+    in the API response returned after the addon is successfully created"""
+    with open('sample-addons/localizations.xpi', 'rb') as file:
+        upload = requests.post(
+            url=f'{base_url}{_upload}',
+            headers={'Authorization': f'Session {session_auth}'},
+            files={'upload': file},
+            data={'channel': 'listed'},
+        )
+    # sleep to allow the first request to be processed
+    time.sleep(3)
+    resp = upload.json()
+    upload.raise_for_status()
+    # get the addon uuid generated after upload
+    uuid = resp['uuid']
+    # set a unique addon slug to make sure we don't run into duplicates
+    slug = reusables.get_random_string(10)
+    payload = {**payloads.listed_addon_minimal(uuid), 'slug': slug}
+    create_addon = requests.post(
+        url=f'{base_url}{_addon_create}',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            'Content-Type': 'application/json',
+        },
+        data=json.dumps(payload),
+    )
+    create_addon.raise_for_status()
+    response = create_addon.json()
+    # verify that the translations from the xpi are reflected in the api response
+    assert response['default_locale'] == 'de'
+    assert response['name'] == variables['name_translations_from_locales_xpi']
+    assert response['summary'] == variables['summary_translations_from_locales_xpi']
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_upload_localized_extension_json_overwrite(base_url, session_auth):
+    """If an addon with a 'locales' file defined in the .xpi sets different translations
+    in the request JSON object, the JSON values should override the locales file from the .xpi"""
+    with open('sample-addons/localizations.xpi', 'rb') as file:
+        upload = requests.post(
+            url=f'{base_url}{_upload}',
+            headers={'Authorization': f'Session {session_auth}'},
+            files={'upload': file},
+            data={'channel': 'listed'},
+        )
+    # sleep to allow the first request to be processed
+    time.sleep(3)
+    upload.raise_for_status()
+    resp = upload.json()
+    # get the addon uuid generated after upload
+    uuid = resp['uuid']
+    # set a unique addon slug to make sure we don't run into duplicates
+    slug = reusables.get_random_string(10)
+    payload = {
+        **payloads.listed_addon_details(uuid),
+        'slug': slug,
+        'default_locale': 'en-US',
+    }
+    create_addon = requests.post(
+        url=f'{base_url}{_addon_create}',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            'Content-Type': 'application/json',
+        },
+        data=json.dumps(payload),
+    )
+    create_addon.raise_for_status()
+    response = create_addon.json()
+    # verify that xpi translations have been overwritten by the JSON payload translations
+    assert response['default_locale'] == payload['default_locale']
+    assert response['name'] == payload['name']
+    assert response['summary'] == payload['summary']
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
 @pytest.mark.clear_session
 def test_delete_extension_valid_token(selenium, base_url, session_auth, variables):
     addon = payloads.edit_addon_details['slug']
