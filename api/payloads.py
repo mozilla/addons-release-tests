@@ -156,3 +156,38 @@ preview_captions = {
         'fr': 'Image caption in french'
     }
 }
+
+edit_version_details = {
+    'license': 'MPL-2.0',
+    'release_notes': {
+        'de': 'Edited DE Version notes added in API at addon creation time',
+        'en-US': 'Edited EN-US Version notes added in API at addon creation time',
+        'fr': 'Edited FR Version notes added in API at addon creation time',
+        'ro': 'Edited FR Version notes added in API at addon creation time',
+    },
+    'compatibility': {
+        'android': {
+            'min': '85.0',
+            'max': '*'
+        },
+        'firefox': {
+            'min': '89.0',
+            'max': '100.*'
+        }
+    }
+}
+
+custom_license = {
+    'custom_license': {
+        'name': {
+            'de': 'DE Custom License Name',
+            'en-US': 'EN Custom License Name',
+            'fr': 'FR Custom License Name'
+        },
+        'text': {
+            'de': 'DE Custom License Text',
+            'en-US': 'EN Custom License Text',
+            'fr': 'FR Custom License Text'
+        }
+    }
+}
