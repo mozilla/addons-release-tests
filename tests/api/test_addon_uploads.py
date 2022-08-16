@@ -1833,9 +1833,28 @@ def test_edit_version_set_custom_license(base_url, session_auth):
     assert payload['custom_license']['text'] == response['license']['text']
 
 
+@pytest.mark.parametrize(
+    'slug',
+    [
+        '',
+        None,
+        False,
+        123,
+        'random slug',
+        {'value': 'some value'},
+    ],
+    ids=[
+        'Empty string',
+        'None/No value',
+        'Boolean',
+        'Integer',
+        'Random string',
+        'Dictionary',
+    ],
+)
 @pytest.mark.serial
 @pytest.mark.create_session('api_user')
-def test_edit_version_invalid_license(base_url, session_auth):
+def test_edit_version_invalid_license(base_url, session_auth, slug):
     """Extension license slugs have to match one of the predefined licenses accepted by AMO"""
     addon = payloads.edit_addon_details['slug']
     request = requests.get(
@@ -1844,33 +1863,30 @@ def test_edit_version_invalid_license(base_url, session_auth):
     )
     # get the version id of the version we want to edit
     version = request.json()['current_version']['id']
-    # set a few unaccepted/invalid data types as license slugs
-    invalid_license = ['', None, False, 123, 'random slug', {'value': 'some value'}]
-    for slug in invalid_license:
-        payload = {**payloads.edit_version_details, 'license': slug}
-        edit_version = requests.patch(
-            url=f'{base_url}{_addon_create}{addon}/versions/{version}/',
-            headers={
-                'Authorization': f'Session {session_auth}',
-                'Content-Type': 'application/json',
-            },
-            data=json.dumps(payload),
-        )
-        print(
-            f'For license slug "{slug}": Response status is '
-            f'{edit_version.status_code}; {edit_version.text}\n'
-        )
+    payload = {**payloads.edit_version_details, 'license': slug}
+    edit_version = requests.patch(
+        url=f'{base_url}{_addon_create}{addon}/versions/{version}/',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            'Content-Type': 'application/json',
+        },
+        data=json.dumps(payload),
+    )
+    print(
+        f'For license slug "{slug}": Response status is '
+        f'{edit_version.status_code}; {edit_version.text}\n'
+    )
+    assert (
+        edit_version.status_code == 400
+    ), f'Actual status code was {edit_version.status_code}'
+    if slug is None:
         assert (
-            edit_version.status_code == 400
-        ), f'Actual status code was {edit_version.status_code}'
-        if slug is None:
-            assert (
-                'This field may not be null.' in edit_version.text
-            ), f'Actual response message was {edit_version.text}'
-        else:
-            assert (
-                f'License with slug={slug} does not exist.' in edit_version.text
-            ), f'Actual response message was {edit_version.text}'
+            'This field may not be null.' in edit_version.text
+        ), f'Actual response message was {edit_version.text}'
+    else:
+        assert (
+            f'License with slug={slug} does not exist.' in edit_version.text
+        ), f'Actual response message was {edit_version.text}'
 
 
 @pytest.mark.serial
