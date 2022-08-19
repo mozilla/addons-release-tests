@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  win: circleci/windows@2.4.1
+  win: circleci/windows@4.1.1
 jobs:
   # run collections tests in a separate serial job to make serial workflows more granular
   collections_serial_tests:
