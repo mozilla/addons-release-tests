@@ -1,12 +1,12 @@
 version: 2.1
 orbs:
-  win: circleci/windows@2.4.1
+  win: circleci/windows@4.1.1
 jobs:
   # run collections tests in a separate serial job to make serial workflows more granular
   collections_serial_tests:
     executor:
       name: win/default
-      size: "medium"
+      size: "large"
     working_directory:  ~/addons-release-tests/
     steps:
       - checkout
@@ -36,7 +36,7 @@ jobs:
   ratings_serial_tests:
     executor:
       name: win/default
-      size: "medium"
+      size: "large"
     working_directory: ~/addons-release-tests/
     steps:
       - checkout
@@ -66,7 +66,7 @@ jobs:
   user_serial_tests:
     executor:
       name: win/default
-      size: "medium"
+      size: "large"
     working_directory: ~/addons-release-tests/
     steps:
       - checkout
@@ -96,7 +96,7 @@ jobs:
   frontend_parallel_tests:
     executor:
       name: win/default
-      size: "medium"
+      size: "large"
     working_directory: ~/addons-release-tests/
     steps:
       - checkout
@@ -127,7 +127,7 @@ jobs:
     executor:
       name: win/default
       version: "previous"
-      size: "medium"
+      size: "large"
     working_directory: ~/addons-release-tests/
     steps:
       - checkout
@@ -157,7 +157,7 @@ jobs:
   addon_submissions_tests:
     executor:
       name: win/default
-      size: "medium"
+      size: "large"
     working_directory: ~/addons-release-tests/
     steps:
       - checkout
@@ -187,7 +187,7 @@ jobs:
   sanity_parallel_tests:
     executor:
       name: win/default
-      size: "medium"
+      size: "large"
     working_directory: ~/addons-release-tests/
     steps:
       - checkout
@@ -217,7 +217,7 @@ jobs:
   sanity_serial_tests:
     executor:
       name: win/default
-      size: "medium"
+      size: "large"
     working_directory: ~/addons-release-tests/
     steps:
       - checkout
@@ -247,7 +247,7 @@ jobs:
   api_submission_tests:
     executor:
       name: win/default
-      size: "medium"
+      size: "large"
     working_directory: ~/addons-release-tests/
     steps:
       - checkout
