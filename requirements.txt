@@ -1,6 +1,6 @@
 ﻿apipkg==3.0.1
 appdirs==1.4.4
-astroid==2.12.2
+astroid==2.12.5
 atomicwrites==1.4.1
 attrs==22.1.0
 certifi==2022.6.15
@@ -24,7 +24,7 @@ isort==5.10.1
 lazy-object-proxy==1.7.1
 mccabe==0.7.0
 more-itertools==8.14.0
-networkx==2.8.5
+networkx==2.8.6
 numpy==1.23.2
 packaging==21.3
 pathspec==0.9.0
