@@ -1753,6 +1753,176 @@ def test_upload_localized_extension_json_overwrite(base_url, session_auth):
 
 
 @pytest.mark.serial
+def test_edit_addon_with_incorrect_account(base_url, selenium):
+    """Edit the add-on details while being authenticated with a different, non-owner developer account"""
+    amo = Home(selenium, base_url).open().wait_for_page_to_load()
+    # login with a user that has no authorship over the addon we want o edit
+    amo.login('developer')
+    session_cookie = selenium.get_cookie('sessionid')
+    addon = payloads.edit_addon_details['slug']
+    # crete a new dictionary from the original payload, with a different name values
+    payload = {**payloads.edit_addon_details, 'name': {'en-US': 'some_name'}}
+    edit_addon = requests.patch(
+        url=f'{base_url}{_addon_create}{addon}/',
+        headers={
+            'Authorization': f'Session {session_cookie["value"]}',
+            'Content-Type': 'application/json',
+        },
+        data=json.dumps(payload),
+    )
+    assert (
+        edit_addon.status_code == 403
+    ), f'Actual status code was {edit_addon.status_code}'
+    assert (
+        'You do not have permission to perform this action.' in edit_addon.text
+    ), f'Actual response message was {edit_addon.text}'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_edit_version_details(base_url, session_auth):
+    """Edit the version specific fields, i.e. 'release_notes', 'license, 'compatibility'"""
+    addon = payloads.edit_addon_details['slug']
+    request = requests.get(
+        url=f'{base_url}{_addon_create}{addon}',
+        headers={'Authorization': f'Session {session_auth}'},
+    )
+    # get the version id of the version we want to edit
+    version = request.json()['current_version']['id']
+    payload = payloads.edit_version_details
+    edit_version = requests.patch(
+        url=f'{base_url}{_addon_create}{addon}/versions/{version}/',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            'Content-Type': 'application/json',
+        },
+        data=json.dumps(payload),
+    )
+    edit_version.raise_for_status()
+    response = edit_version.json()
+    # verify that the data we sent has been registered correctly in the response we get
+    assert payload['license'] == response['license']['slug']
+    assert payload['compatibility'] == response['compatibility']
+    assert payload['release_notes'] == response['release_notes']
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_edit_version_set_custom_license(base_url, session_auth):
+    """Instead of using a predefined addon license provided by AMO, add a
+    custom license with 'name' and 'text' defined by the addon author"""
+    addon = payloads.edit_addon_details['slug']
+    request = requests.get(
+        url=f'{base_url}{_addon_create}{addon}',
+        headers={'Authorization': f'Session {session_auth}'},
+    )
+    # get the version id of the version we want to edit
+    version = request.json()['current_version']['id']
+    payload = payloads.custom_license
+    edit_version = requests.patch(
+        url=f'{base_url}{_addon_create}{addon}/versions/{version}/',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            'Content-Type': 'application/json',
+        },
+        data=json.dumps(payload),
+    )
+    edit_version.raise_for_status()
+    response = edit_version.json()
+    assert payload['custom_license']['name'] == response['license']['name']
+    assert payload['custom_license']['text'] == response['license']['text']
+
+
+@pytest.mark.parametrize(
+    'slug',
+    [
+        '',
+        None,
+        False,
+        123,
+        'random slug',
+        {'value': 'some value'},
+    ],
+    ids=[
+        'Empty string',
+        'None/No value',
+        'Boolean',
+        'Integer',
+        'Random string',
+        'Dictionary',
+    ],
+)
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_edit_version_invalid_license(base_url, session_auth, slug):
+    """Extension license slugs have to match one of the predefined licenses accepted by AMO"""
+    addon = payloads.edit_addon_details['slug']
+    request = requests.get(
+        url=f'{base_url}{_addon_create}{addon}',
+        headers={'Authorization': f'Session {session_auth}'},
+    )
+    # get the version id of the version we want to edit
+    version = request.json()['current_version']['id']
+    payload = {**payloads.edit_version_details, 'license': slug}
+    edit_version = requests.patch(
+        url=f'{base_url}{_addon_create}{addon}/versions/{version}/',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            'Content-Type': 'application/json',
+        },
+        data=json.dumps(payload),
+    )
+    print(
+        f'For license slug "{slug}": Response status is '
+        f'{edit_version.status_code}; {edit_version.text}\n'
+    )
+    assert (
+        edit_version.status_code == 400
+    ), f'Actual status code was {edit_version.status_code}'
+    if slug is None:
+        assert (
+            'This field may not be null.' in edit_version.text
+        ), f'Actual response message was {edit_version.text}'
+    else:
+        assert (
+            f'License with slug={slug} does not exist.' in edit_version.text
+        ), f'Actual response message was {edit_version.text}'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_edit_version_both_license_and_custom_license(base_url, session_auth):
+    """An addon can have either a predefined license or a custom license but not both"""
+    addon = payloads.edit_addon_details['slug']
+    request = requests.get(
+        url=f'{base_url}{_addon_create}{addon}',
+        headers={'Authorization': f'Session {session_auth}'},
+    )
+    # get the version id of the version we want to edit
+    version = request.json()['current_version']['id']
+    # add a custom license besides the 'license' we already have in the edit version payload
+    payload = {
+        **payloads.edit_version_details,
+        'custom_license': {'name': {'en-US': 'custom-name'}},
+    }
+    edit_version = requests.patch(
+        url=f'{base_url}{_addon_create}{addon}/versions/{version}/',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            'Content-Type': 'application/json',
+        },
+        data=json.dumps(payload),
+    )
+    assert (
+        edit_version.status_code == 400
+    ), f'Actual status code was {edit_version.status_code}'
+    assert (
+        'Both `license` and `custom_license` cannot be provided together.'
+        in edit_version.text
+    ), f'Actual response message was {edit_version.text}'
+
+
+@pytest.mark.serial
 @pytest.mark.create_session('api_user')
 @pytest.mark.clear_session
 def test_delete_extension_valid_token(selenium, base_url, session_auth, variables):
