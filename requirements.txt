@@ -35,7 +35,7 @@ PyBrowserID==0.14.0
 pycparser==2.21
 PyFxA==0.7.7
 PyJWT==2.4.0
-pylint==2.14.5
+pylint==2.15.0
 pyparsing==3.0.9
 PyPOM==2.2.3
 pytest==7.1.2
