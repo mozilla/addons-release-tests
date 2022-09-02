@@ -43,13 +43,13 @@ class Detail(Base):
         as 'Addon name by author(s) name'. This format makes it difficult to determine
         the exact addon name, especially when we want to use it in comparisons.
         The following method makes sure that we only return the addon name without authors"""
+        # get the name + authors
         el = self.find_element(*self._addon_name_locator).text
-        name_value = el.split()
-        # we want to remove all elements from the list starting from 'by', but its index varies
-        get_index = name_value.index('by')
-        # finally recreating the addon name without the authors
-        final_name = name_value[0:get_index]
-        return ' '.join(final_name)
+        # isolate the authors text
+        authors = self.find_element(By.CSS_SELECTOR, '.AddonTitle-author').text
+        # remove the authors part from the name element to get only the actual addon name
+        name = el.replace(authors, '')[:-1]
+        return name
 
     @property
     def is_compatible(self):
