@@ -106,4 +106,4 @@ class StaticPages(Base):
         self.wait.until(
             EC.visibility_of_element_located((By.CSS_SELECTOR, '.AddonTitle'))
         )
-        return Detail(self.selenium, self.base_url)
+        return Detail(self.driver, self.base_url)

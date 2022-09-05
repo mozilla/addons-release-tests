@@ -45,4 +45,4 @@ class EditAddon(Base):
         self.find_element(*self._manage_versions_link_locator).click()
         from pages.desktop.developers.manage_versions import ManageVersions
 
-        return ManageVersions(self.selenium, self.base_url).wait_for_page_to_load()
+        return ManageVersions(self.driver, self.base_url).wait_for_page_to_load()

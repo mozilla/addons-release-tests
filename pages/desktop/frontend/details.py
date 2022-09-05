@@ -103,8 +103,8 @@ class Detail(Base):
         # clicks on the promoted badge and waits for the sumo page to load
         self.promoted_badge.click()
         self.wait.until(expected.number_of_windows_to_be(2))
-        new_tab = self.selenium.window_handles[1]
-        self.selenium.switch_to.window(new_tab)
+        new_tab = self.driver.window_handles[1]
+        self.driver.switch_to.window(new_tab)
         self.wait.until(
             expected.visibility_of_element_located((By.CLASS_NAME, 'sumo-page-heading'))
         )
@@ -137,8 +137,8 @@ class Detail(Base):
         # clicks on the install warning and waits for the sumo page to load
         self.find_element(*self._install_warning_button_locator).click()
         self.wait.until(expected.number_of_windows_to_be(2))
-        new_tab = self.selenium.window_handles[1]
-        self.selenium.switch_to.window(new_tab)
+        new_tab = self.driver.window_handles[1]
+        self.driver.switch_to.window(new_tab)
         self.wait.until(
             expected.visibility_of_element_located((By.CLASS_NAME, 'sumo-page-heading'))
         )
@@ -232,7 +232,7 @@ class Detail(Base):
 
         def stats_reviews_link(self):
             self.addon_reviews_stats.find_element(By.CSS_SELECTOR, 'dt a').click()
-            return Reviews(self.selenium, self.page.base_url).wait_for_page_to_load()
+            return Reviews(self.driver, self.page.base_url).wait_for_page_to_load()
 
         @property
         def no_reviews_stats(self):
@@ -280,8 +280,8 @@ class Detail(Base):
         def click_contribute_button(self):
             self.find_element(*self._contribute_button_locator).click()
             self.wait.until(expected.number_of_windows_to_be(2))
-            new_tab = self.selenium.window_handles[1]
-            self.selenium.switch_to.window(new_tab)
+            new_tab = self.driver.window_handles[1]
+            self.driver.switch_to.window(new_tab)
 
     class Permissions(Region):
         _permissions_header_locator = (By.CSS_SELECTOR, '.PermissionsCard header')
@@ -303,8 +303,8 @@ class Detail(Base):
         def click_permissions_button(self):
             self.find_element(*self._permissions_learn_more_locator).click()
             self.wait.until(expected.number_of_windows_to_be(2))
-            new_tab = self.selenium.window_handles[1]
-            self.selenium.switch_to.window(new_tab)
+            new_tab = self.driver.window_handles[1]
+            self.driver.switch_to.window(new_tab)
 
         class PermissionDetails(Region):
             _permission_icon_locator = (By.CSS_SELECTOR, '.Permission .Icon')
@@ -379,7 +379,7 @@ class Detail(Base):
 
         def addon_versions(self):
             self.find_element(*self._all_versions_locator).click()
-            return Versions(self.selenium, self.page.base_url).wait_for_page_to_load()
+            return Versions(self.driver, self.page.base_url).wait_for_page_to_load()
 
         @property
         def addon_tags(self):
@@ -821,7 +821,7 @@ class Detail(Base):
 
         def click_all_reviews_link(self):
             self.find_element(*self._all_reviews_link_locator).click()
-            return Reviews(self.selenium, self.page.base_url).wait_for_page_to_load()
+            return Reviews(self.driver, self.page.base_url).wait_for_page_to_load()
 
         @property
         def all_reviews_link_rating_count(self):

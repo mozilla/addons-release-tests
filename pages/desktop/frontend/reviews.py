@@ -174,7 +174,7 @@ class Reviews(Base):
                 message='Flag menu options were not loaded',
             )
             # using JavaScriptExecutor to avoid ElementClickInterceptedException
-            self.selenium.execute_script(
+            self.driver.execute_script(
                 "arguments[0].click();", self.flag_review_option[count]
             )
             self.wait.until(

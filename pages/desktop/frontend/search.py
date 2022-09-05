@@ -109,7 +109,7 @@ class Search(Page):
             self.find_elements(*self._result_link_locator)[count].click()
             from pages.desktop.frontend.details import Detail
 
-            return Detail(self.selenium, self.page.base_url).wait_for_page_to_load()
+            return Detail(self.driver, self.page.base_url).wait_for_page_to_load()
 
         class ResultListItems(Region):
             _rating_locator = (By.CSS_SELECTOR, '.Rating--small')
@@ -129,7 +129,7 @@ class Search(Page):
                 self.find_element(*self._search_item_name_locator).click()
                 from pages.desktop.frontend.details import Detail
 
-                detail_page = Detail(self.selenium, self.page.page.base_url)
+                detail_page = Detail(self.driver, self.page.page.base_url)
                 return detail_page.wait_for_page_to_load()
 
             @property
@@ -145,7 +145,7 @@ class Search(Page):
 
             @property
             def promoted_badge(self):
-                WebDriverWait(self.selenium, 10).until(
+                WebDriverWait(self.driver, 10).until(
                     EC.visibility_of_element_located(self._promoted_badge_locator),
                     message='Promoted badge was not found for these search results',
                 )

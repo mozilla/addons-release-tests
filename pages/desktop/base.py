@@ -28,13 +28,13 @@ class Base(Page):
     def wait_for_title_update(self, term):
         self.wait.until(
             EC.title_contains(term),
-            message=f'Page title was {self.selenium.title}, expected {term}',
+            message=f'Page title was {self.driver.title}, expected {term}',
         )
         return self
 
     def wait_for_current_url(self, term):
         self.wait.until(
-            EC.url_contains(term), message=f'The url was {self.selenium.current_url}'
+            EC.url_contains(term), message=f'The url was {self.driver.current_url}'
         )
         return self
 
@@ -70,22 +70,22 @@ class Base(Page):
         # wait for the FxA login page to load
         self.wait.until(
             EC.visibility_of_element_located((By.NAME, 'email')),
-            message=f'FxA email input field was not displayed in {self.selenium.current_url}',
+            message=f'FxA email input field was not displayed in {self.driver.current_url}',
         )
         fxa.account(user)
         # wait for transition between FxA page and AMO (URL and page)
         self.wait.until(
             EC.url_contains('addons'),
-            message=f'AMO could not be loaded in {self.selenium.current_url}'
-            f'Response status code was {requests.head(self.selenium.current_url).status_code}',
+            message=f'AMO could not be loaded in {self.driver.current_url}'
+            f'Response status code was {requests.head(self.driver.current_url).status_code}',
         )
-        WebDriverWait(self.selenium, 30).until(
+        WebDriverWait(self.driver, 30).until(
             EC.invisibility_of_element_located((By.CLASS_NAME, 'LoadingText'))
         )
         # assess that the user has been logged in
         self.wait.until(
             lambda _: self.logged_in,
-            message=f'Log in flow was not successful. URL at fail time was {self.selenium.current_url}',
+            message=f'Log in flow was not successful. URL at fail time was {self.driver.current_url}',
         )
 
     def register(self):
@@ -150,7 +150,7 @@ class Header(Region):
         self.find_element(*self._extensions_locator).click()
         from pages.desktop.frontend.extensions import Extensions
 
-        return Extensions(self.selenium, self.page.base_url).wait_for_page_to_load()
+        return Extensions(self.driver, self.page.base_url).wait_for_page_to_load()
 
     @property
     def extensions_text(self):
@@ -164,13 +164,13 @@ class Header(Region):
         self.find_element(*self._themes_locator).click()
         from pages.desktop.frontend.themes import Themes
 
-        return Themes(self.selenium, self.page.base_url).wait_for_page_to_load()
+        return Themes(self.driver, self.page.base_url).wait_for_page_to_load()
 
     def click_title(self):
         self.find_element(*self._header_title_locator).click()
         from pages.desktop.frontend.home import Home
 
-        return Home(self.selenium, self.page.base_url).wait_for_page_to_load()
+        return Home(self.driver, self.page.base_url).wait_for_page_to_load()
 
     @property
     def login_button(self):
@@ -180,11 +180,11 @@ class Header(Region):
         self.find_element(*self._login_locator).click()
         from pages.desktop.frontend.login import Login
 
-        return Login(self.selenium, self.page.base_url)
+        return Login(self.driver, self.page.base_url)
 
     def user_header_display_name(self, value):
         WebDriverWait(
-            self.selenium, 30, ignored_exceptions=StaleElementReferenceException
+            self.driver, 30, ignored_exceptions=StaleElementReferenceException
         ).until(
             EC.text_to_be_present_in_element(self._user_locator, value),
             message='The expected displayed name was not visible',
@@ -192,7 +192,7 @@ class Header(Region):
 
     def click_logout(self):
         user = WebDriverWait(
-            self.selenium, 30, ignored_exceptions=StaleElementReferenceException
+            self.driver, 30, ignored_exceptions=StaleElementReferenceException
         ).until(
             EC.element_to_be_clickable(
                 (
@@ -201,14 +201,14 @@ class Header(Region):
                 )
             )
         )
-        action = ActionChains(self.selenium)
+        action = ActionChains(self.driver)
         action.move_to_element(user)
         action.pause(3)
         action.perform()
         # assigning the webelement to a variable before initializing the action chains can lead
         # to stale element errors since the dropdown state changes when we hover over it
         logout = WebDriverWait(
-            self.selenium, 20, ignored_exceptions=StaleElementReferenceException
+            self.driver, 20, ignored_exceptions=StaleElementReferenceException
         ).until(EC.element_to_be_clickable(self._logout_locator))
         action.move_to_element(logout)
         action.pause(3)
@@ -225,7 +225,7 @@ class Header(Region):
 
     def click_user_menu_links(self, count, landing_page):
         user = WebDriverWait(
-            self.selenium, 30, ignored_exceptions=StaleElementReferenceException
+            self.driver, 30, ignored_exceptions=StaleElementReferenceException
         ).until(
             EC.element_to_be_clickable(
                 (
@@ -234,12 +234,12 @@ class Header(Region):
                 )
             )
         )
-        action = ActionChains(self.selenium)
+        action = ActionChains(self.driver)
         action.move_to_element(user)
         action.pause(2)
         action.perform()
         link = WebDriverWait(
-            self.selenium, 20, ignored_exceptions=StaleElementReferenceException
+            self.driver, 20, ignored_exceptions=StaleElementReferenceException
         ).until(EC.element_to_be_clickable(self.user_menu_link(count)))
         action.move_to_element(link)
         action.pause(2)
@@ -248,7 +248,7 @@ class Header(Region):
         # waits for the landing page to open
         self.wait.until(
             EC.visibility_of_element_located((By.CSS_SELECTOR, landing_page)),
-            message=f'Expected page not loaded; page was {self.selenium.current_url}',
+            message=f'Expected page not loaded; page was {self.driver.current_url}',
         )
 
     @property
@@ -268,7 +268,7 @@ class Header(Region):
         dropdown = self.find_element(*self._more_dropdown_locator)
         link = menu.find_elements(*self._more_dropdown_links_locator)
         # Create an action chain clicking on the elements of the dropdown more menu
-        action = ActionChains(self.selenium)
+        action = ActionChains(self.driver)
         action.move_to_element(menu)
         action.pause(2)
         action.move_to_element(dropdown)
@@ -285,13 +285,13 @@ class Header(Region):
         self.find_element(*self._devhub_locator).click()
         self.wait.until(
             EC.number_of_windows_to_be(2),
-            message=f'Number of windows was {len(self.selenium.window_handles)}, expected 2',
+            message=f'Number of windows was {len(self.driver.window_handles)}, expected 2',
         )
-        new_tab = self.selenium.window_handles[1]
-        self.selenium.switch_to.window(new_tab)
+        new_tab = self.driver.window_handles[1]
+        self.driver.switch_to.window(new_tab)
         self.wait.until(
             EC.visibility_of_element_located((By.CLASS_NAME, 'DevHub-Navigation-Logo')),
-            message=f'DevHub homepage not loaded; page was {self.selenium.current_url}',
+            message=f'DevHub homepage not loaded; page was {self.driver.current_url}',
         )
 
     @property
@@ -302,13 +302,13 @@ class Header(Region):
         self.find_element(*self._extension_workshop_locator).click()
         self.wait.until(
             EC.number_of_windows_to_be(2),
-            message=f'Number of windows was {len(self.selenium.window_handles)}, expected 2',
+            message=f'Number of windows was {len(self.driver.window_handles)}, expected 2',
         )
-        new_tab = self.selenium.window_handles[1]
-        self.selenium.switch_to.window(new_tab)
+        new_tab = self.driver.window_handles[1]
+        self.driver.switch_to.window(new_tab)
         self.wait.until(
             EC.visibility_of_element_located((By.CLASS_NAME, 'logo')),
-            message=f'Extension Workshop not loaded; page was {self.selenium.current_url}',
+            message=f'Extension Workshop not loaded; page was {self.driver.current_url}',
         )
 
     @property
@@ -353,8 +353,8 @@ class Header(Region):
                 textbox.send_keys(Keys.ENTER)
                 from pages.desktop.frontend.search import Search
 
-                return Search(self.selenium, self.page).wait_for_page_to_load()
-            WebDriverWait(self.selenium, 30).until(
+                return Search(self.driver, self.page).wait_for_page_to_load()
+            WebDriverWait(self.driver, 30).until(
                 EC.invisibility_of_element_located((By.CLASS_NAME, 'LoadingText'))
             )
             return self.search_suggestions
@@ -367,7 +367,7 @@ class Header(Region):
                 ),
                 message='Search suggestions list did not open',
             )
-            WebDriverWait(self.selenium, 30).until(
+            WebDriverWait(self.driver, 30).until(
                 EC.invisibility_of_element_located((By.CLASS_NAME, 'LoadingText'))
             )
             el_list = self.find_element(*self._search_suggestions_list_locator)
@@ -393,7 +393,7 @@ class Header(Region):
 
             @property
             def promoted_icon(self):
-                WebDriverWait(self.selenium, 10).until(
+                WebDriverWait(self.driver, 10).until(
                     EC.visibility_of_element_located(self._promoted_icon_locator),
                     message='Promoted icon was not found for these search suggestions',
                 )
@@ -404,7 +404,7 @@ class Header(Region):
                 self.root.click()
                 from pages.desktop.frontend.details import Detail
 
-                return Detail(self.selenium, self.page).wait_for_page_to_load()
+                return Detail(self.driver, self.page).wait_for_page_to_load()
 
 
 class Footer(Region):

@@ -30,7 +30,7 @@ class ManageVersions(Page):
         # set a loop to verify if approval occurs within this interval
         while time.time() < timeout_start + 300:
             # refresh the page to check if the status has changed
-            self.selenium.refresh()
+            self.driver.refresh()
             if value not in self.version_approval_status.text:
                 # wait 30 seconds before we refresh again
                 time.sleep(30)
@@ -80,6 +80,4 @@ class ManageVersions(Page):
             self.find_element(*self._delete_button_locator).click()
             from pages.desktop.developers.addons_manage import ManageAddons
 
-            return ManageAddons(
-                self.selenium, self.page.base_url
-            ).wait_for_page_to_load()
+            return ManageAddons(self.driver, self.page.base_url).wait_for_page_to_load()

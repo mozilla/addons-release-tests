@@ -26,7 +26,7 @@ class RatingStats(Region):
         self.find_element(*self._addon_title_locator).click()
         from pages.desktop.frontend.details import Detail
 
-        return Detail(self.selenium, self.page)
+        return Detail(self.driver, self.page)
 
     @property
     def addon_image(self):
@@ -36,7 +36,7 @@ class RatingStats(Region):
         self.find_element(*self._addon_image_locator).click()
         from pages.desktop.frontend.details import Detail
 
-        return Detail(self.selenium, self.page)
+        return Detail(self.driver, self.page)
 
     @property
     def addon_author_names(self):
@@ -46,7 +46,7 @@ class RatingStats(Region):
         self.find_elements(*self._addon_author_locator)[index].click()
         from pages.desktop.frontend.users import User
 
-        return User(self.selenium, self.page).view
+        return User(self.driver, self.page).view
 
     @property
     def rating_stars(self):
@@ -65,7 +65,7 @@ class RatingStats(Region):
         self.find_elements(*self._rating_by_star_locator)[count].click()
         from pages.desktop.frontend.reviews import Reviews
 
-        return Reviews(self.selenium, self.page)
+        return Reviews(self.driver, self.page)
 
     def number_of_reviews_with_specific_stars(self, count):
         return int(self.find_elements(*self._number_of_reviews_locator)[count].text)

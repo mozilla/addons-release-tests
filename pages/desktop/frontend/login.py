@@ -120,7 +120,7 @@ class Login(Base):
         self.wait.until(
             EC.element_to_be_clickable(self._password_locator),
             message=f'Password input field not displayed; '
-                    f'FxA card header was {self.find_element(*self._login_card_header_locator).text}',
+            f'FxA card header was {self.find_element(*self._login_card_header_locator).text}',
         )
         self.find_element(*self._password_locator).send_keys(password)
         self.find_element(*self._repeat_password_locator).send_keys(password)

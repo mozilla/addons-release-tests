@@ -79,8 +79,8 @@ class Versions(Base):
         @property
         def version_size(self):  # memory size, ex: 7.35 KB
             return self.find_element(*self._released_date_locator).text.split('-')[1][
-                   1:
-                   ]
+                1:
+            ]
 
         @property
         def version_release_notes(self):

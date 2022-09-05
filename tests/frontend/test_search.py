@@ -3,6 +3,7 @@ import pytest
 
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.select import Select
 
@@ -70,7 +71,7 @@ def test_esc_key_closes_suggestion_list(base_url, selenium, variables):
     # Send ESC key to browser
     action.send_keys(Keys.ESCAPE).perform()
     with pytest.raises(NoSuchElementException):
-        selenium.find_element_by_css_selector('AutoSearchInput-suggestions-list')
+        selenium.find_element(By.CSS_SELECTOR, 'AutoSearchInput-suggestions-list')
 
 
 @pytest.mark.sanity
@@ -82,7 +83,7 @@ def test_click_aside_closes_suggestion_list(base_url, selenium, variables):
     action = ActionChains(selenium)
     action.move_to_element(page.primary_hero).click().perform()
     with pytest.raises(NoSuchElementException):
-        selenium.find_element_by_css_selector('AutoSearchInput-suggestions-list')
+        selenium.find_element(By.CSS_SELECTOR, 'AutoSearchInput-suggestions-list')
 
 
 @pytest.mark.skip(reason='this test requires more optimization')

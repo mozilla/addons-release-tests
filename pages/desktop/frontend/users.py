@@ -27,7 +27,7 @@ class User(Base):
 
     def wait_for_user_to_load(self):
         WebDriverWait(
-            self.selenium, 20, ignored_exceptions=StaleElementReferenceException
+            self.driver, 20, ignored_exceptions=StaleElementReferenceException
         ).until(lambda _: self.is_element_displayed(*self._display_name_locator))
         return self
 
@@ -192,19 +192,19 @@ class User(Base):
 
         def click_edit_profile_button(self):
             self.find_element(*self._user_profile_edit_link_locator).click()
-            return User(self.selenium, self.page.base_url).wait_for_page_to_load()
+            return User(self.driver, self.page.base_url).wait_for_page_to_load()
 
         @property
         def user_extensions(self):
             self.find_element(*self._user_extensions_card_locator)
-            return Search(self.selenium, self.page.base_url).wait_for_page_to_load()
+            return Search(self.driver, self.page.base_url).wait_for_page_to_load()
 
         @property
         def user_extensions_results(self):
             items = self.find_elements(*self._user_extensions_results_locator)
             return [
                 Search(
-                    self.selenium, self.page.base_url
+                    self.driver, self.page.base_url
                 ).SearchResultList.ResultListItems(self, el)
                 for el in items
             ]
@@ -212,7 +212,7 @@ class User(Base):
         @property
         def user_themes(self):
             self.find_element(*self._user_themes_card_locator)
-            return Search(self.selenium, self.page.base_url).wait_for_page_to_load()
+            return Search(self.driver, self.page.base_url).wait_for_page_to_load()
 
         @property
         def extensions_pagination(self):
@@ -220,7 +220,7 @@ class User(Base):
 
         def extensions_next_page(self):
             self.find_element(*self._extensions_next_page_locator).click()
-            return User(self.selenium, self.page.base_url).wait_for_page_to_load()
+            return User(self.driver, self.page.base_url).wait_for_page_to_load()
 
         @property
         def extensions_page_number(self):
@@ -232,7 +232,7 @@ class User(Base):
 
         def themes_next_page(self):
             self.find_element(*self._themes_next_page_locator).click()
-            return User(self.selenium, self.page.base_url).wait_for_page_to_load()
+            return User(self.driver, self.page.base_url).wait_for_page_to_load()
 
         @property
         def themes_page_number(self):
@@ -246,7 +246,7 @@ class User(Base):
         @property
         def user_review_items(self):
             items = self.find_elements(*self._user_review_list_locator)
-            reviews = Reviews(self.selenium, self.page.base_url).wait_for_page_to_load()
+            reviews = Reviews(self.driver, self.page.base_url).wait_for_page_to_load()
             return [reviews.UserReview(self, el) for el in items]
 
         def click_user_abuse_report(self):
@@ -378,7 +378,7 @@ class User(Base):
 
         def click_view_profile_link(self):
             link = WebDriverWait(
-                self.selenium, 20, ignored_exceptions=StaleElementReferenceException
+                self.driver, 20, ignored_exceptions=StaleElementReferenceException
             ).until(EC.element_to_be_clickable(self._view_profile_link_locator))
             link.click()
             self.wait.until(
@@ -534,7 +534,7 @@ class User(Base):
 
         def confirm_delete_account(self):
             self.find_element(*self._confirm_delete_profile_button_locator).click()
-            return Home(self.selenium, self.page.base_url).wait_for_page_to_load()
+            return Home(self.driver, self.page.base_url).wait_for_page_to_load()
 
         @property
         def invalid_url_error_text(self):
