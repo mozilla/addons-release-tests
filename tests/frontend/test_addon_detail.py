@@ -5,6 +5,7 @@ import urllib.parse
 import requests
 
 from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as expected
 from selenium.webdriver.support.select import Select
@@ -73,7 +74,7 @@ def test_non_promoted_addon(selenium, base_url, variables):
     addon = Detail(selenium, base_url)
     # check that the Promoted badge is not displayed
     with pytest.raises(NoSuchElementException):
-        selenium.find_element_by_class_name('PromotedBadge-large')
+        selenium.find_element(By.CLASS_NAME, 'PromotedBadge-large')
     # checks the presence of an install warning
     assert addon.install_warning.is_displayed()
     assert variables['install_warning_message'] in addon.install_warning_message
@@ -152,7 +153,10 @@ def test_higher_firefox_incompatibility(selenium, base_url, variables):
         'You need an updated version of Firefox for this extension'
         in addon.compatibility_banner.text
     )
-    assert 'Download the new Firefox and get the extension' in addon.get_firefox_button.text
+    assert (
+        'Download the new Firefox and get the extension'
+        in addon.get_firefox_button.text
+    )
     # clicks on the Download button and checks that the download Firefox page opens
     addon.get_firefox_button.click()
     addon.wait_for_current_url('/firefox/download/thanks/')
@@ -432,7 +436,7 @@ def test_more_info_privacy_policy_missing(selenium, base_url, variables):
     selenium.get(f'{base_url}/addon/{extension}')
     Detail(selenium, base_url).wait_for_page_to_load()
     with pytest.raises(NoSuchElementException):
-        selenium.find_element_by_class_name('AddonMoreInfo-privacy-policy-link')
+        selenium.find_element(By.CLASS_NAME, 'AddonMoreInfo-privacy-policy-link')
     print('The add-on does not have a Privacy Policy')
 
 
@@ -457,7 +461,7 @@ def test_more_info_eula_missing(selenium, base_url, variables):
     selenium.get(f'{base_url}/addon/{extension}')
     Detail(selenium, base_url).wait_for_page_to_load()
     with pytest.raises(NoSuchElementException):
-        selenium.find_element_by_class_name('AddonMoreInfo-eula')
+        selenium.find_element(By.CLASS_NAME, 'AddonMoreInfo-eula')
     print('The add-on does not have an End User License Agreement')
 
 

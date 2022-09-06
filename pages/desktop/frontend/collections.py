@@ -158,7 +158,7 @@ class Collections(Base):
         def save_collection(self):
             self.find_element(*self._create_button_locator).click()
             return (
-                Collections(self.selenium, self.page)
+                Collections(self.driver, self.page)
                 .CollectionDetail(self)
                 .wait_for_details_to_load()
             )
@@ -202,7 +202,7 @@ class Collections(Base):
                     lambda _: self.is_element_displayed(*self._search_list_locator),
                     message='Search suggestions list was not loaded',
                 )
-                WebDriverWait(self.selenium, 30).until(
+                WebDriverWait(self.driver, 30).until(
                     EC.invisibility_of_element_located((By.CLASS_NAME, 'LoadingText')),
                     message='There were no search suggestions loaded for the used query',
                 )
@@ -323,7 +323,7 @@ class Collections(Base):
                 # if the note could not be deleted because of a field error,
                 # we need to catch that error and force the test to fail
                 except TimeoutException:
-                    error = self.selenium.find_element(
+                    error = self.driver.find_element(
                         By.CSS_SELECTOR, '.ErrorList p'
                     ).text
                     pytest.fail(error)
@@ -469,7 +469,7 @@ class Collections(Base):
 
         def confirm_delete_collection(self):
             self.find_element(*self._confirm_delete_button_locator).click()
-            return Collections(self.selenium, self.page).wait_for_page_to_load()
+            return Collections(self.driver, self.page).wait_for_page_to_load()
 
         @property
         def sort_addons(self):

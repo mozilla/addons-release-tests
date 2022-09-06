@@ -114,8 +114,8 @@ def test_cancel_edit_review(selenium, base_url, variables):
     # cancel the edit review from and check that the form is no longer displayed
     addon.ratings.cancel_review.click()
     with pytest.raises(NoSuchElementException):
-        selenium.find_element_by_css_selector(
-            '.AddonReviewManager .DismissibleTextForm-dismiss'
+        selenium.find_element(
+            By.CSS_SELECTOR, '.AddonReviewManager .DismissibleTextForm-dismiss'
         )
 
 
@@ -148,7 +148,7 @@ def test_delete_review(selenium, base_url, variables):
     addon.ratings.click_delete_confirm_button()
     # checks that the review text is no longer displayed
     with pytest.raises(NoSuchElementException):
-        selenium.find_element_by_css_selector('.UserReview-body')
+        selenium.find_element(By.CSS_SELECTOR, '.UserReview-body')
 
 
 @pytest.mark.serial

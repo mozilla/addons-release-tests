@@ -98,20 +98,20 @@ class Home(Base):
         target = link[count].get_attribute('target')
         # external links are opened in new tabs, so we need to account for multiple windows
         if target == '_blank':
-            home_tab = self.selenium.current_window_handle
+            home_tab = self.driver.current_window_handle
             link[count].click()
             self.wait.until(EC.number_of_windows_to_be(2))
-            new_tab = self.selenium.window_handles[1]
-            self.selenium.switch_to.window(new_tab)
+            new_tab = self.driver.window_handles[1]
+            self.driver.switch_to.window(new_tab)
             # see more external links can contain variable content we might not know in advance (especially on prod)
             # the solution used here is to verify that the content we link to is available (i.e. page response = 200)
             self.wait.until(custom_waits.url_not_contins('about:blank'))
-            page = requests.head(self.selenium.current_url)
+            page = requests.head(self.driver.current_url)
             assert (
                 page.status_code == 200
             ), f'The response status code was {page.status_code}'
-            self.selenium.close()
-            self.selenium.switch_to.window(home_tab)
+            self.driver.close()
+            self.driver.switch_to.window(home_tab)
         else:
             # similar to external links, internal links might contain unpredictable content;
             # in this case, we check that the content exists inside the AMO domain
@@ -119,12 +119,12 @@ class Home(Base):
             self.wait.until(
                 EC.invisibility_of_element_located((By.CLASS_NAME, 'LoadingText'))
             )
-            assert 'addons' in self.selenium.current_url
-            page = requests.head(self.selenium.current_url)
+            assert 'addons' in self.driver.current_url
+            page = requests.head(self.driver.current_url)
             assert (
                 page.status_code == 200
             ), f'The response status code was {page.status_code}'
-            self.selenium.back()
+            self.driver.back()
             # waits for the homepage to reload
             self.wait.until(
                 EC.invisibility_of_element_located((By.CLASS_NAME, 'LoadingText'))
@@ -163,7 +163,7 @@ class Home(Base):
                 self.root.click()
                 from pages.desktop.frontend.search import Search
 
-                return Search(self.selenium, self.page.base_url)
+                return Search(self.driver, self.page.base_url)
 
     class Extensions(Region):
         _browse_all_locator = (By.CSS_SELECTOR, '.Card-shelf-footer-in-header a')
@@ -179,7 +179,7 @@ class Home(Base):
             self.find_element(*self._browse_all_locator).click()
             from pages.desktop.frontend.search import Search
 
-            search = Search(self.selenium, self.page.base_url)
+            search = Search(self.driver, self.page.base_url)
             return search.wait_for_page_to_load()
 
         @property
@@ -204,7 +204,7 @@ class Home(Base):
             self.find_element(*self._browse_all_locator).click()
             from pages.desktop.frontend.search import Search
 
-            search = Search(self.selenium, self.page.base_url)
+            search = Search(self.driver, self.page.base_url)
             return search.wait_for_page_to_load()
 
         @property
@@ -226,7 +226,7 @@ class Home(Base):
             self.find_element(*self._addon_link_locator).click()
             from pages.desktop.frontend.extensions import Extensions
 
-            return Extensions(self.selenium, self.page.base_url)
+            return Extensions(self.driver, self.page.base_url)
 
         @property
         def addon_icon_preview(self):
@@ -276,7 +276,7 @@ class Home(Base):
 
         def click_hero_extension_link(self):
             self.find_element(*self._extension_button_locator).click()
-            return Detail(self.selenium, self.page.base_url).wait_for_page_to_load()
+            return Detail(self.driver, self.page.base_url).wait_for_page_to_load()
 
     class SecondaryHero(Region):
         _secondary_headline_locator = (By.CLASS_NAME, 'SecondaryHero-message-headline')
@@ -299,7 +299,7 @@ class Home(Base):
             self.find_element(*self._see_all_extensions_locator).click()
             from pages.desktop.frontend.extensions import Extensions
 
-            return Extensions(self.selenium, self.page.base_url).wait_for_page_to_load()
+            return Extensions(self.driver, self.page.base_url).wait_for_page_to_load()
 
         @property
         def secondary_hero_modules(self):
@@ -330,14 +330,14 @@ class Home(Base):
                 if target == '_blank':
                     link.click()
                     self.wait.until(EC.number_of_windows_to_be(2))
-                    new_tab = self.selenium.window_handles[1]
-                    self.selenium.switch_to.window(new_tab)
+                    new_tab = self.driver.window_handles[1]
+                    self.driver.switch_to.window(new_tab)
                     # editorial might change these links when they need to push new content and we don't know
                     # in advance what that content might be; also, we want to avoid frequent maintenance for
                     # these tests; the solution used is to verify that the content we link to is available
                     # (i.e. we check that the page response status is 200)
                     self.wait.until(custom_waits.url_not_contins('about:blank'))
-                    page = requests.head(self.selenium.current_url)
+                    page = requests.head(self.driver.current_url)
                     assert (
                         page.status_code == 200
                     ), f'The response status code was {page.status_code}'
@@ -351,8 +351,8 @@ class Home(Base):
                             (By.CLASS_NAME, 'LoadingText')
                         )
                     )
-                    assert 'addons' in self.selenium.current_url
-                    page = requests.head(self.selenium.current_url)
+                    assert 'addons' in self.driver.current_url
+                    page = requests.head(self.driver.current_url)
                     assert (
                         page.status_code == 200
                     ), f'The response status code was {page.status_code}'

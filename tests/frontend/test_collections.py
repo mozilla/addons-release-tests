@@ -347,11 +347,11 @@ def test_confirm_delete_dialog(selenium, base_url, variables):
     collections.collection_detail.click_edit_collection_button()
     # verify that the confirm delete dialog elements are not displayed
     with pytest.raises(NoSuchElementException):
-        selenium.find_element_by_css_selector('.ConfirmationDialog-message')
+        selenium.find_element(By.CSS_SELECTOR, '.ConfirmationDialog-message')
     with pytest.raises(NoSuchElementException):
-        selenium.find_element_by_css_selector('.ConfirmationDialog-cancel-button')
+        selenium.find_element(By.CSS_SELECTOR, '.ConfirmationDialog-cancel-button')
     with pytest.raises(NoSuchElementException):
-        selenium.find_element_by_css_selector('.ConfirmationDialog-confirm-button')
+        selenium.find_element(By.CSS_SELECTOR, '.ConfirmationDialog-confirm-button')
     # click on the second delete collection button
     collections.collection_detail.delete_collection()
     # verify that the confirm delete dialog elements are displayed

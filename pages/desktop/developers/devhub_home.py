@@ -148,7 +148,7 @@ class DevHubHome(Base):
         self.find_element(*self._fxa_login_button_locator).click()
         from pages.desktop.frontend.login import Login
 
-        return Login(self.selenium, self.base_url)
+        return Login(self.driver, self.base_url)
 
     @property
     def sign_out_link(self):
@@ -166,19 +166,19 @@ class DevHubHome(Base):
         # wait for the FxA login page to load
         self.wait.until(
             EC.visibility_of_element_located((By.NAME, 'email')),
-            message=f'FxA email input field was not displayed in {self.selenium.current_url}',
+            message=f'FxA email input field was not displayed in {self.driver.current_url}',
         )
         fxa.account(user)
         # wait for transition between FxA page and Devhub
         self.wait.until(
             EC.url_contains('developers'),
-            message=f'Devhub could not be loaded in {self.selenium.current_url}'
-            f'Response status code was {requests.head(self.selenium.current_url).status_code}',
+            message=f'Devhub could not be loaded in {self.driver.current_url}'
+            f'Response status code was {requests.head(self.driver.current_url).status_code}',
         )
         # assess that the user has been logged in
         self.wait.until(
             lambda _: self.sign_out_link.is_displayed(),
-            message=f'Log in flow was not successful. URL at fail time was {self.selenium.current_url}',
+            message=f'Log in flow was not successful. URL at fail time was {self.driver.current_url}',
         )
 
     @property
@@ -237,11 +237,11 @@ class DevHubHome(Base):
         icon.click()
         from pages.desktop.frontend.users import User
 
-        return User(self.selenium, self.base_url)
+        return User(self.driver, self.base_url)
 
     def click_my_addons_header_link(self):
         self.find_element(*self._my_addons_header_link_locator).click()
-        return ManageAddons(self.selenium, self.base_url)
+        return ManageAddons(self.driver, self.base_url)
 
     @property
     def logged_in_hero_banner_header(self):
@@ -264,15 +264,15 @@ class DevHubHome(Base):
 
     def click_see_all_addons_link(self):
         self.find_element(*self._see_all_addons_link_locator).click()
-        return ManageAddons(self.selenium, self.base_url)
+        return ManageAddons(self.driver, self.base_url)
 
     def click_submit_addon_button(self):
         self.find_element(*self._submit_addon_button_locator).click()
-        return SubmitAddon(self.selenium, self.base_url)
+        return SubmitAddon(self.driver, self.base_url)
 
     def click_submit_theme_button(self):
         self.find_element(*self._submit_theme_button_locator).click()
-        return SubmitAddon(self.selenium, self.base_url)
+        return SubmitAddon(self.driver, self.base_url)
 
     @property
     def my_addons_list(self):
@@ -325,7 +325,7 @@ class DevHubHome(Base):
 
         def click_my_addon_edit_link(self):
             self.find_element(*self._my_addon_edit_link_locator).click()
-            return EditAddon(self.selenium, self.page.base_url)
+            return EditAddon(self.driver, self.page.base_url)
 
         @property
         def my_addon_version_number(self):
@@ -378,7 +378,7 @@ class DevHubHome(Base):
             finally:
                 # we execute this regardless of the status in order to go back and select
                 # the next available addon in the Devhub Homepage, My Addons list
-                self.selenium.back()
+                self.driver.back()
 
 
 class ConnectFooter(Region):
@@ -465,10 +465,10 @@ class ConnectFooter(Region):
         self.find_element(*self._newsletter_privacy_notice_link_locator).click()
         self.wait.until(
             EC.number_of_windows_to_be(2),
-            message=f'Number of windows was {len(self.selenium.window_handles)}, expected 2',
+            message=f'Number of windows was {len(self.driver.window_handles)}, expected 2',
         )
-        new_tab = self.selenium.window_handles[1]
-        self.selenium.switch_to.window(new_tab)
+        new_tab = self.driver.window_handles[1]
+        self.driver.switch_to.window(new_tab)
 
     @property
     def newsletter_signup_confirmation_header(self):

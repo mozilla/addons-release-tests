@@ -263,9 +263,7 @@ def test_mozilla_footer_link(base_url, selenium):
     page.footer.mozilla_link.click()
     assert 'mozilla.org' in selenium.current_url
     page.wait.until(
-        EC.visibility_of_element_located(
-            (By.CSS_SELECTOR, '.c-navigation-logo-image')
-        ),
+        EC.visibility_of_element_located((By.CSS_SELECTOR, '.c-navigation-logo-image')),
         message='The chosen element could not be loaded on the Mozilla webpage',
     )
 

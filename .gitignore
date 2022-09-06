@@ -1,3 +1,5 @@
 .idea/
 test-results.html
+frontend-parallel-test-results.html
 **/__pycache__/
+

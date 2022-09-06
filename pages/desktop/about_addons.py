@@ -33,12 +33,12 @@ class AboutAddons(Page):
         # AMO search results open in a new tab, so we need to switch windows
         self.wait.until(
             EC.number_of_windows_to_be(2),
-            message=f'Number of windows was {len(self.selenium.window_handles)}, expected 2',
+            message=f'Number of windows was {len(self.driver.window_handles)}, expected 2',
         )
-        self.selenium.switch_to.window(self.selenium.window_handles[1])
+        self.driver.switch_to.window(self.driver.window_handles[1])
         from pages.desktop.frontend.search import Search
 
-        return Search(self.selenium, self.base_url).wait_for_page_to_load()
+        return Search(self.driver, self.base_url).wait_for_page_to_load()
 
     def click_extensions_side_button(self):
         self.find_element(*self._extension_tab_button_locator).click()
@@ -90,12 +90,12 @@ class AboutAddons(Page):
         # this button opens AMO homepage in a new tab
         self.wait.until(
             EC.number_of_windows_to_be(2),
-            message=f'Number of windows was {len(self.selenium.window_handles)}, expected 2',
+            message=f'Number of windows was {len(self.driver.window_handles)}, expected 2',
         )
-        self.selenium.switch_to.window(self.selenium.window_handles[1])
+        self.driver.switch_to.window(self.driver.window_handles[1])
         from pages.desktop.frontend.home import Home
 
-        return Home(self.selenium, self.base_url).wait_for_page_to_load()
+        return Home(self.driver, self.base_url).wait_for_page_to_load()
 
     class AddonCards(Region):
         _theme_image_locator = (By.CLASS_NAME, 'card-heading-image')
@@ -142,12 +142,12 @@ class AboutAddons(Page):
             self.disco_addon_author.click()
             self.wait.until(
                 EC.number_of_windows_to_be(2),
-                message=f'Number of windows was {len(self.selenium.window_handles)}, expected 2',
+                message=f'Number of windows was {len(self.driver.window_handles)}, expected 2',
             )
-            self.selenium.switch_to.window(self.selenium.window_handles[1])
+            self.driver.switch_to.window(self.driver.window_handles[1])
             from pages.desktop.frontend.details import Detail
 
-            return Detail(self.selenium, self.page.base_url)
+            return Detail(self.driver, self.page.base_url)
 
         @property
         def disco_extension_summary(self):

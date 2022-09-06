@@ -73,7 +73,7 @@ class SubmitAddon(Page):
 
     def click_create_theme_button(self):
         self.find_element(*self._create_theme_button_locator).click()
-        return ThemeWizard(self.selenium, self.base_url).wait_for_page_to_load()
+        return ThemeWizard(self.driver, self.base_url).wait_for_page_to_load()
 
     def is_validation_successful(self):
         """Wait for addon validation to complete; if not successful, the test will fail"""
@@ -91,7 +91,7 @@ class SubmitAddon(Page):
 
     def click_continue_upload_button(self):
         self.find_element(*self._submit_file_button_locator).click()
-        return UploadSource(self.selenium, self.base_url)
+        return UploadSource(self.driver, self.base_url)
 
     def submit_button_disabled(self):
         self.find_element(*self._submit_file_button_locator).get_attribute('disabled')
@@ -129,13 +129,13 @@ class UploadSource(Page):
     def continue_unlisted_submission(self):
         self.find_element(*self._continue_button_locator).click()
         return SubmissionConfirmationPage(
-            self.selenium, self.base_url
+            self.driver, self.base_url
         ).wait_for_page_to_load()
 
     def continue_listed_submission(self):
         self.find_element(*self._continue_button_locator).click()
         return ListedAddonSubmissionForm(
-            self.selenium, self.base_url
+            self.driver, self.base_url
         ).wait_for_page_to_load()
 
     @property
@@ -214,7 +214,7 @@ class ListedAddonSubmissionForm(Page):
 
     def edit_addon_slug(self, value):
         self.find_element(*self._edit_addon_slug_link_locator).click()
-        edit_field = WebDriverWait(self.selenium, 10).until(
+        edit_field = WebDriverWait(self.driver, 10).until(
             EC.visibility_of_element_located(self._edit_addon_slug_field_locator)
         )
         edit_field.send_keys(value)
@@ -304,14 +304,14 @@ class ListedAddonSubmissionForm(Page):
     def submit_addon(self):
         self.find_element(*self._submit_addon_button_locator).click()
         return SubmissionConfirmationPage(
-            self.selenium, self.base_url
+            self.driver, self.base_url
         ).wait_for_page_to_load()
 
     def cancel_submission(self):
         self.find_element(*self._cancel_addon_submission_button_locator).click()
         from pages.desktop.developers.edit_addon import EditAddon
 
-        return EditAddon(self.selenium, self.base_url).wait_for_page_to_load()
+        return EditAddon(self.driver, self.base_url).wait_for_page_to_load()
 
 
 class ThemeWizard(Page):
@@ -367,12 +367,12 @@ class ThemeWizard(Page):
     def submit_theme(self):
         self.find_element(*self._submit_theme_button_locator).click()
         return ListedAddonSubmissionForm(
-            self.selenium, self.base_url
+            self.driver, self.base_url
         ).wait_for_page_to_load()
 
     def cancel_submission(self):
         self.find_element(*self._cancel_submission_button_locator).click()
-        return SubmitAddon(self.selenium, self.base_url).wait_for_page_to_load()
+        return SubmitAddon(self.driver, self.base_url).wait_for_page_to_load()
 
 
 class SubmissionConfirmationPage(Page):
@@ -403,17 +403,17 @@ class SubmissionConfirmationPage(Page):
         self.find_element(*self._manage_listing_button_locator).click()
         from pages.desktop.developers.addons_manage import ManageAddons
 
-        return ManageAddons(self.selenium, self.base_url).wait_for_page_to_load()
+        return ManageAddons(self.driver, self.base_url).wait_for_page_to_load()
 
     def click_edit_version_button(self):
         self.find_element(*self._edit_version_button_locator).click()
-        return ManageVersions(self.selenium, self.base_url)
+        return ManageVersions(self.driver, self.base_url)
 
     def click_edit_listing_button(self):
         self.find_element(*self._edit_listing_button_locator).click()
         from pages.desktop.developers.edit_addon import EditAddon
 
-        return EditAddon(self.selenium, self.base_url).wait_for_page_to_load()
+        return EditAddon(self.driver, self.base_url).wait_for_page_to_load()
 
     @property
     def generated_theme_preview(self):

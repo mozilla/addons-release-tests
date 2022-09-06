@@ -222,7 +222,7 @@ def test_user_update_profile(base_url, selenium, variables):
     assert updated_name in user.user_display_name.text
     # check that location field is not displayed
     with pytest.raises(NoSuchElementException):
-        selenium.find_element_by_css_selector('.UserProfile-location')
+        selenium.find_element(By.CSS_SELECTOR, '.UserProfile-location')
     biography_text = variables['biography'] + variables['biography_extra']
     assert biography_text in user.view.user_biography
 
@@ -239,7 +239,7 @@ def test_user_update_url(base_url, selenium, variables):
     user.edit.submit_changes()
     assert initial_page_url in selenium.current_url
     with pytest.raises(NoSuchElementException):
-        selenium.find_element_by_css_selector('.Notice-error .Notice-text')
+        selenium.find_element(By.CSS_SELECTOR, '.Notice-error .Notice-text')
 
     # test invalid URL, this should not pass the API validation
     # it should not submit, red error message should be displayed
@@ -421,9 +421,9 @@ def test_user_regular_has_no_role(base_url, selenium):
     user.edit.click_view_profile_link()
     # check that we do not display role badges for regular users
     with pytest.raises(NoSuchElementException):
-        selenium.find_element_by_css_selector('.UserProfile-developer')
+        selenium.find_element(By.CSS_SELECTOR, '.UserProfile-developer')
     with pytest.raises(NoSuchElementException):
-        selenium.find_element_by_css_selector('.UserProfile-artist')
+        selenium.find_element(By.CSS_SELECTOR, '.UserProfile-artist')
 
 
 @pytest.mark.serial

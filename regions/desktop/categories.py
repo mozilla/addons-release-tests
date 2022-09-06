@@ -33,4 +33,4 @@ class Categories(Region):
             self.root.click()
             from pages.desktop.frontend.search import Search
 
-            return Search(self.selenium, self.page)
+            return Search(self.driver, self.page)
