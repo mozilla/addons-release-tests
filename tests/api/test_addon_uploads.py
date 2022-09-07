@@ -1924,6 +1924,316 @@ def test_edit_version_both_license_and_custom_license(base_url, session_auth):
 
 @pytest.mark.serial
 @pytest.mark.create_session('api_user')
+def test_edit_version_custom_license_no_text(base_url, session_auth):
+    """When setting a custom license, it is mandatory for that license to contain a text"""
+    addon = payloads.edit_addon_details['slug']
+    request = requests.get(
+        url=f'{base_url}{_addon_create}{addon}',
+        headers={'Authorization': f'Session {session_auth}'},
+    )
+    # get the version id of the version we want to edit
+    version = request.json()['current_version']['id']
+    payload = {
+        **payloads.custom_license,
+        'custom_license': {'name': {'en-US': 'no-text-provided'}},
+    }
+    edit_version = requests.patch(
+        url=f'{base_url}{_addon_create}{addon}/versions/{version}/',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            'Content-Type': 'application/json',
+        },
+        data=json.dumps(payload),
+    )
+    assert (
+        edit_version.status_code == 400
+    ), f'Actual status code was {edit_version.status_code}'
+    assert (
+        '{"custom_license":{"text":["This field is required."]}}' in edit_version.text
+    ), f'Actual response message was {edit_version.text}'
+
+
+@pytest.mark.parametrize(
+    'value',
+    [
+        '',
+        'all-rights-reserved',
+        123,
+        None,
+        False,
+    ],
+    ids=[
+        'Empty string',
+        'Built in license',
+        'Integer',
+        'None/No value',
+        'Boolean',
+    ],
+)
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_edit_version_invalid_custom_license_format(base_url, session_auth, value):
+    """Custom licenses should be a dictionary containing the license name and text; other formats should fail"""
+    addon = payloads.edit_addon_details['slug']
+    request = requests.get(
+        url=f'{base_url}{_addon_create}{addon}',
+        headers={'Authorization': f'Session {session_auth}'},
+    )
+    # get the version id of the version we want to edit
+    version = request.json()['current_version']['id']
+    payload = {**payloads.custom_license, 'custom_license': value}
+    edit_version = requests.patch(
+        url=f'{base_url}{_addon_create}{addon}/versions/{version}/',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            'Content-Type': 'application/json',
+        },
+        data=json.dumps(payload),
+    )
+    print(
+        f'For custom_license "{value}": Response status is '
+        f'{edit_version.status_code}; {edit_version.text}\n'
+    )
+    assert (
+        edit_version.status_code == 400
+    ), f'Actual status code was {edit_version.status_code}'
+    if value is None:
+        assert (
+            'This field may not be null.' in edit_version.text
+        ), f'Actual response message was {edit_version.text}'
+    else:
+        assert (
+            'Invalid data. Expected a dictionary' in edit_version.text
+        ), f'Actual response message was {edit_version.text}'
+
+
+@pytest.mark.parametrize(
+    'value',
+    [
+        '',
+        {'foo': 'string'},
+    ],
+    ids=[
+        'Not a dictionary',
+        'Invalid locale',
+    ],
+)
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_edit_version_invalid_custom_license_name_and_text(
+    base_url, session_auth, value
+):
+    """Custom licenses should be a dictionary containing the license name and text;
+    also, the name and text need to be specified in a valid locale"""
+    addon = payloads.edit_addon_details['slug']
+    request = requests.get(
+        url=f'{base_url}{_addon_create}{addon}',
+        headers={'Authorization': f'Session {session_auth}'},
+    )
+    # get the version id of the version we want to edit
+    version = request.json()['current_version']['id']
+    payload = {
+        **payloads.custom_license,
+        'custom_license': {'name': value, 'text': value},
+    }
+    edit_version = requests.patch(
+        url=f'{base_url}{_addon_create}{addon}/versions/{version}/',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            'Content-Type': 'application/json',
+        },
+        data=json.dumps(payload),
+    )
+    print(
+        f'For custom_license "{value}": Response status is '
+        f'{edit_version.status_code}; {edit_version.text}\n'
+    )
+    assert (
+        edit_version.status_code == 400
+    ), f'Actual status code was {edit_version.status_code}'
+    if type(value) is not dict:
+        assert (
+            'You must provide an object of {lang-code:value}.' in edit_version.text
+        ), f'Actual response message was {edit_version.text}'
+    else:
+        assert (
+            'The language code \\"foo\\" is invalid.' in edit_version.text
+        ), f'Actual response message was {edit_version.text}'
+
+
+@pytest.mark.parametrize(
+    'value',
+    [
+        '',
+        None,
+        False,
+        123,
+        'random string',
+    ],
+    ids=[
+        'Empty string',
+        'None/No value',
+        'Boolean',
+        'Integer',
+        'Random string',
+    ],
+)
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_edit_version_invalid_compatibility_format(base_url, session_auth, value):
+    """The compatibility field needs to be either a dictionary or a list; other formats should fail"""
+    addon = payloads.edit_addon_details['slug']
+    request = requests.get(
+        url=f'{base_url}{_addon_create}{addon}',
+        headers={'Authorization': f'Session {session_auth}'},
+    )
+    # get the version id of the version we want to edit
+    version = request.json()['current_version']['id']
+    payload = {**payloads.edit_version_details, 'compatibility': value}
+    edit_version = requests.patch(
+        url=f'{base_url}{_addon_create}{addon}/versions/{version}/',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            'Content-Type': 'application/json',
+        },
+        data=json.dumps(payload),
+    )
+    print(
+        f'For compatibility "{value}": Response status is '
+        f'{edit_version.status_code}; {edit_version.text}\n'
+    )
+    assert (
+        edit_version.status_code == 400
+    ), f'Actual status code was {edit_version.status_code}'
+    if value is None:
+        assert (
+            'This field may not be null.' in edit_version.text
+        ), f'Actual response message was {edit_version.text}'
+    else:
+        assert (
+            'Invalid value' in edit_version.text
+        ), f'Actual response message was {edit_version.text}'
+
+
+@pytest.mark.parametrize(
+    'request_value, response_value',
+    [
+        (
+            ['android', 'firefox'],
+            {
+                'android': {'min': '48.0', 'max': '*'},
+                'firefox': {'min': '42.0', 'max': '*'},
+            },
+        ),
+        (['firefox'], {'firefox': {'min': '42.0', 'max': '*'}}),
+        ({'firefox': {'min': '65.0'}}, {'firefox': {'min': '65.0', 'max': '*'}}),
+        ({'android': {'max': '95.0'}}, {'android': {'min': '48.0', 'max': '95.0'}}),
+    ],
+    ids=[
+        'Compatibility in list format, valid apps (firefox and android)',
+        'Compatibility in list format, only firefox compatibility',
+        'Valid app - firefox and valid appversion',
+        'Valid app - android and valid appversion',
+    ],
+)
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_extension_valid_compatibility_values(
+    base_url, session_auth, request_value, response_value
+):
+    """Tests the compatibility field with a set of valid values"""
+    addon = payloads.edit_addon_details['slug']
+    request = requests.get(
+        url=f'{base_url}{_addon_create}{addon}',
+        headers={'Authorization': f'Session {session_auth}'},
+    )
+    # get the version id of the version we want to edit
+    version = request.json()['current_version']['id']
+    payload = {**payloads.edit_version_details, 'compatibility': request_value}
+    edit_version = requests.patch(
+        url=f'{base_url}{_addon_create}{addon}/versions/{version}/',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            'Content-Type': 'application/json',
+        },
+        data=json.dumps(payload),
+    )
+    print(
+        f'For compatibility "{request_value}": Response status is '
+        f'{edit_version.status_code}; {edit_version.text}\n'
+    )
+    r = edit_version.json()
+    assert (
+        edit_version.status_code == 200
+    ), f'Actual status code was {edit_version.status_code}'
+    # verify that the returned compatibility matches what we expect for the values sent
+    assert response_value == r['compatibility']
+
+
+@pytest.mark.parametrize(
+    'value',
+    [
+        [None, None],
+        ['firefox', None],
+        {'firefox': {'min': '*'}},
+        {'firefox': {'min': '78.*'}},
+        {'android': {'max': '99595.0'}},
+        {'firefox': {'min': '*', 'max': '65.0'}},
+    ],
+    ids=[
+        'None/No values',
+        'Valid app for firefox, None for android',
+        'Invalid firefox min appversion - "*"',
+        'Invalid firefox min appversion - "x.*"',
+        'Unavailable max appversion',
+        'Valid max version, invalid min version',
+    ],
+)
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_edit_version_invalid_compatibility_values(base_url, session_auth, value):
+    """Compatibility values should be a combination of valid applications (firefox or android)
+    and application versions (existing versions of Firefox for desktop/android)"""
+    addon = payloads.edit_addon_details['slug']
+    request = requests.get(
+        url=f'{base_url}{_addon_create}{addon}',
+        headers={'Authorization': f'Session {session_auth}'},
+    )
+    # get the version id of the version we want to edit
+    version = request.json()['current_version']['id']
+    payload = {**payloads.edit_version_details, 'compatibility': value}
+    edit_version = requests.patch(
+        url=f'{base_url}{_addon_create}{addon}/versions/{version}/',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            'Content-Type': 'application/json',
+        },
+        data=json.dumps(payload),
+    )
+    print(
+        f'For compatibility "{value}": Response status is '
+        f'{edit_version.status_code}; {edit_version.text}\n'
+    )
+    assert (
+        edit_version.status_code == 400
+    ), f'Actual status code was {edit_version.status_code}'
+    if type(value) is list:
+        assert (
+            'Invalid app specified' in edit_version.text
+        ), f'Actual response message was {edit_version.text}'
+    else:
+        try:
+            assert (
+                'Unknown min app version specified' in edit_version.text
+            ), f'Actual response message was {edit_version.text}'
+        except AssertionError:
+            assert (
+                'Unknown max app version specified' in edit_version.text
+            ), f'Actual response message was {edit_version.text}'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
 @pytest.mark.clear_session
 def test_delete_extension_valid_token(selenium, base_url, session_auth, variables):
     addon = payloads.edit_addon_details['slug']
