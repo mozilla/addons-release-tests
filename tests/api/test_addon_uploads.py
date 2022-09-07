@@ -1808,6 +1808,37 @@ def test_edit_version_details(base_url, session_auth):
 
 @pytest.mark.serial
 @pytest.mark.create_session('api_user')
+def test_edit_version_custom_license_no_text(base_url, session_auth):
+    """When setting a custom license, it is mandatory for that license to contain a text"""
+    addon = payloads.edit_addon_details['slug']
+    request = requests.get(
+        url=f'{base_url}{_addon_create}{addon}',
+        headers={'Authorization': f'Session {session_auth}'},
+    )
+    # get the version id of the version we want to edit
+    version = request.json()['current_version']['id']
+    payload = {
+        **payloads.custom_license,
+        'custom_license': {'name': {'en-US': 'no-text-provided'}},
+    }
+    edit_version = requests.patch(
+        url=f'{base_url}{_addon_create}{addon}/versions/{version}/',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            'Content-Type': 'application/json',
+        },
+        data=json.dumps(payload),
+    )
+    assert (
+        edit_version.status_code == 400
+    ), f'Actual status code was {edit_version.status_code}'
+    assert (
+        '{"custom_license":{"text":["This field is required."]}}' in edit_version.text
+    ), f'Actual response message was {edit_version.text}'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
 def test_edit_version_set_custom_license(base_url, session_auth):
     """Instead of using a predefined addon license provided by AMO, add a
     custom license with 'name' and 'text' defined by the addon author"""
@@ -1919,37 +1950,6 @@ def test_edit_version_both_license_and_custom_license(base_url, session_auth):
     assert (
         'Both `license` and `custom_license` cannot be provided together.'
         in edit_version.text
-    ), f'Actual response message was {edit_version.text}'
-
-
-@pytest.mark.serial
-@pytest.mark.create_session('api_user')
-def test_edit_version_custom_license_no_text(base_url, session_auth):
-    """When setting a custom license, it is mandatory for that license to contain a text"""
-    addon = payloads.edit_addon_details['slug']
-    request = requests.get(
-        url=f'{base_url}{_addon_create}{addon}',
-        headers={'Authorization': f'Session {session_auth}'},
-    )
-    # get the version id of the version we want to edit
-    version = request.json()['current_version']['id']
-    payload = {
-        **payloads.custom_license,
-        'custom_license': {'name': {'en-US': 'no-text-provided'}},
-    }
-    edit_version = requests.patch(
-        url=f'{base_url}{_addon_create}{addon}/versions/{version}/',
-        headers={
-            'Authorization': f'Session {session_auth}',
-            'Content-Type': 'application/json',
-        },
-        data=json.dumps(payload),
-    )
-    assert (
-        edit_version.status_code == 400
-    ), f'Actual status code was {edit_version.status_code}'
-    assert (
-        '{"custom_license":{"text":["This field is required."]}}' in edit_version.text
     ), f'Actual response message was {edit_version.text}'
 
 
