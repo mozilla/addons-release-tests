@@ -14,6 +14,7 @@ from pages.desktop.frontend.details import Detail
 from pages.desktop.frontend.search import Search
 from pages.desktop.frontend.users import User
 from pages.desktop.frontend.reviews import Reviews
+from pages.desktop.frontend.versions import Versions
 
 
 @pytest.mark.sanity
@@ -395,9 +396,95 @@ def test_more_info_external_license(selenium, base_url, variables):
     extension = variables['addon_with_stats']
     selenium.get(f'{base_url}/addon/{extension}')
     addon = Detail(selenium, base_url).wait_for_page_to_load()
-    addon.more_info.addon_external_license()
+    addon.more_info.click_addon_external_license()
     # checks that redirection to an external page happens
     assert variables['base_url'] not in selenium.current_url
+
+
+@pytest.mark.parametrize(
+    'extension, license_name, license_link',
+    [
+        (
+            'mpl-2-0',
+            'Mozilla Public License 2.0',
+            'https://www.mozilla.org/en-US/MPL/2.0/',
+        ),
+        (
+            'gnu-general-2-0',
+            'GNU General Public License v2.0',
+            'https://www.gnu.org/licenses/old-licenses/gpl-2.0',
+        ),
+        (
+            'gnu-general-3-0',
+            'GNU General Public License v3.0',
+            'https://www.gnu.org/licenses/gpl-3.0',
+        ),
+        (
+            'gnu-library-2-1',
+            'GNU Library General Public License v2.1',
+            'https://www.gnu.org/licenses/old-licenses/lgpl-2.1',
+        ),
+        (
+            'gnu-library-3-0',
+            'GNU Library General Public License v3.0',
+            'https://www.gnu.org/licenses/lgpl-3.0',
+        ),
+        (
+            'mit-license',
+            'The MIT License',
+            'https://opensource.org/licenses/mit-license',
+        ),
+        (
+            'bsd-license',
+            'The BSD License',
+            'https://opensource.org/licenses/bsd-license',
+        ),
+    ],
+    ids=[
+        'Mozilla Public License 2.0',
+        'GNU General Public License v2.0',
+        'GNU General Public License v3.0',
+        'GNU Library General Public License v2.1',
+        'GNU Library General Public License v3.0',
+        'The MIT License',
+        'The BSD License',
+    ],
+)
+def test_more_info_builtin_licenses(
+    selenium, base_url, extension, license_name, license_link
+):
+    """Test all the builtin licenses offered by AMO by checking
+    their names and links in the detail and version pages"""
+    selenium.get(f'{base_url}/addon/{extension}/')
+    # check the builtin license on the addon detail page
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    assert license_name in addon.more_info.addon_external_license_text
+    addon.more_info.click_addon_external_license()
+    addon.wait_for_current_url(license_link)
+    selenium.get(f'{base_url}/addon/{extension}/versions/')
+    # check the builtin license on the addon versions list page
+    version = Versions(selenium, base_url).wait_for_page_to_load()
+    assert license_name in version.versions_list[0].license_text
+    version.versions_list[0].license_link.click()
+    version.wait_for_current_url(license_link)
+
+
+def test_more_info_reserved_license_is_not_linkified(selenium, base_url):
+    """The 'All Rights Reserved' license is a simple text name and should be linkified"""
+    selenium.get(f'{base_url}/addon/all-rights-reserved/')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    assert (
+        'All Rights Reserved' in addon.more_info.addon_all_rights_reserved_license_text
+    )
+    # checks that there are no linked objects in more info license component
+    with pytest.raises(NoSuchElementException):
+        selenium.find_element(By.CSS_SELECTOR, '.AddonMoreInfo-license a')
+    selenium.get(f'{base_url}/addon/all-rights-reserved/versions/')
+    version = Versions(selenium, base_url).wait_for_page_to_load()
+    assert 'All Rights Reserved' in version.versions_list[0].license_text
+    # checks that there are no linked objects in version info license component
+    with pytest.raises(NoSuchElementException):
+        selenium.find_element(By.CSS_SELECTOR, '.AddonVersionCard-license a')
 
 
 @pytest.mark.nondestructive
