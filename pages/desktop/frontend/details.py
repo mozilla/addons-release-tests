@@ -329,6 +329,10 @@ class Detail(Base):
             '.AddonMoreInfo-related-categories-list a',
         )
         _addon_license_locator = (By.CLASS_NAME, 'AddonMoreInfo-license-link')
+        _all_rights_reserved_license_locator = (
+            By.CLASS_NAME,
+            'AddonMoreInfo-license-name',
+        )
         _privacy_policy_locator = (By.CLASS_NAME, 'AddonMoreInfo-privacy-policy-link')
         _eula_locator = (By.CLASS_NAME, 'AddonMoreInfo-eula')
         _all_versions_locator = (By.CLASS_NAME, 'AddonMoreInfo-version-history-link')
@@ -358,7 +362,15 @@ class Detail(Base):
         def addon_categories(self):
             return self.find_elements(*self._addon_categories_locator)
 
-        def addon_external_license(self):
+        @property
+        def addon_external_license_text(self):
+            return self.find_element(*self._addon_license_locator).text
+
+        @property
+        def addon_all_rights_reserved_license_text(self):
+            return self.find_element(*self._all_rights_reserved_license_locator).text
+
+        def click_addon_external_license(self):
             self.find_element(*self._addon_license_locator).click()
             # clicking on license should open a link outside of AMO
             self.wait.until(
