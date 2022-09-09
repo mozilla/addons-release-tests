@@ -60,7 +60,7 @@ toml==0.10.2
 typed-ast==1.5.4
 typing-extensions==4.3.0
 urllib3==1.26.12
-virtualenv==20.16.4
+virtualenv==20.16.5
 wcwidth==0.2.5
 WebOb==1.8.7
 wrapt==1.14.1
