@@ -493,7 +493,7 @@ def test_more_info_custom_license(selenium, base_url, variables):
     selenium.get(f'{base_url}/addon/{extension}')
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     # checks that the AMO custom license page opens and has the correct content
-    custom_license = addon.more_info.addon_custom_license()
+    custom_license = addon.more_info.click_addon_custom_license()
     assert (
         'Custom License for Ghostery - Privacy Ad Blocker'
         in custom_license.custom_licence_and_privacy_header
@@ -507,7 +507,7 @@ def test_more_info_privacy_policy(selenium, base_url, variables):
     extension = variables['detail_extension_slug']
     selenium.get(f'{base_url}/addon/{extension}')
     addon = Detail(selenium, base_url).wait_for_page_to_load()
-    privacy = addon.more_info.addon_privacy_policy()
+    privacy = addon.more_info.click_addon_privacy_policy()
     # checks that the AMO privacy policy page opens and has the correct content
     assert (
         'Privacy policy for Ghostery - Privacy Ad Blocker'
@@ -786,3 +786,136 @@ def test_current_theme_not_in_more_by_artist_previews(selenium, base_url, variab
     addon.themes.more_themes_by_author_previews[0].click()
     addon.wait_for_page_to_load()
     assert theme_preview not in addon.themes.preview_source
+
+
+def test_addon_summary_outgoing_urls(selenium, base_url):
+    """Checks that external URLs in summary are redirected through the outgoing domain"""
+    selenium.get(f'{base_url}/addon/outgoing-urls/')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    outgoing_summary = addon.summary.find_element(By.CSS_SELECTOR, 'a')
+    assert (
+        'https://stage.outgoing.nonprod.webservices.mozgcp.net'
+        in outgoing_summary.get_attribute('href')
+    )
+    outgoing_summary.click()
+    addon.wait_for_current_url('https://extensionworkshop.allizom.org/')
+
+
+def test_addon_description_outgoing_urls(selenium, base_url):
+    """Checks that external URLs in description are redirected through the outgoing domain"""
+    selenium.get(f'{base_url}/addon/outgoing-urls/')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    outgoing_description = addon.description.addon_description_text.find_element(
+        By.CSS_SELECTOR, 'a'
+    )
+    assert (
+        'https://stage.outgoing.nonprod.webservices.mozgcp.net'
+        in outgoing_description.get_attribute('href')
+    )
+    outgoing_description.click()
+    addon.wait_for_current_url('https://extensionworkshop.allizom.org/')
+
+
+def test_addon_developer_comments_outgoing_urls(selenium, base_url):
+    """Checks that external URLs in developer comments are redirected through the outgoing domain"""
+    selenium.get(f'{base_url}/addon/outgoing-urls/')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    outgoing_dev_comments = addon.developer_comments.content.find_element(
+        By.CSS_SELECTOR, 'a'
+    )
+    assert (
+        'https://stage.outgoing.nonprod.webservices.mozgcp.net'
+        in outgoing_dev_comments.get_attribute('href')
+    )
+    outgoing_dev_comments.click()
+    addon.wait_for_current_url('https://extensionworkshop.allizom.org/')
+
+
+def test_addon_more_info_homepage_outgoing_urls(selenium, base_url):
+    """Checks that external URLs in homepage are redirected through the outgoing domain"""
+    selenium.get(f'{base_url}/addon/outgoing-urls/')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    outgoing_homepage = addon.more_info.addon_homepage_link
+    assert (
+        'https://stage.outgoing.nonprod.webservices.mozgcp.net'
+        in outgoing_homepage.get_attribute('href')
+    )
+    outgoing_homepage.click()
+    addon.wait_for_current_url('https://extensionworkshop.allizom.org/')
+
+
+def test_addon_more_info_support_site_outgoing_urls(selenium, base_url):
+    """Checks that external URLs in support site are redirected through the outgoing domain"""
+    selenium.get(f'{base_url}/addon/outgoing-urls/')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    outgoing_support_site = addon.more_info.addon_support_site_link
+    assert (
+        'https://stage.outgoing.nonprod.webservices.mozgcp.net'
+        in outgoing_support_site.get_attribute('href')
+    )
+    outgoing_support_site.click()
+    addon.wait_for_current_url('https://extensionworkshop.allizom.org/')
+
+
+def test_addon_custom_license_outgoing_urls(selenium, base_url):
+    """Checks that external URLs in custom license are redirected through the outgoing domain"""
+    selenium.get(f'{base_url}/addon/outgoing-urls/')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    custom_license = addon.more_info.click_addon_custom_license()
+    outgoing_custom_license = (
+        custom_license.custom_licence_and_privacy_text.find_element(
+            By.CSS_SELECTOR, 'a'
+        )
+    )
+    assert (
+        'https://stage.outgoing.nonprod.webservices.mozgcp.net'
+        in outgoing_custom_license.get_attribute('href')
+    )
+    outgoing_custom_license.click()
+    addon.wait_for_current_url('https://extensionworkshop.allizom.org/')
+
+
+def test_addon_privacy_policy_outgoing_urls(selenium, base_url):
+    """Checks that external URLs in privacy policy are redirected through the outgoing domain"""
+    selenium.get(f'{base_url}/addon/outgoing-urls/')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    privacy_policy = addon.more_info.click_addon_privacy_policy()
+    outgoing_privacy_policy = (
+        privacy_policy.custom_licence_and_privacy_text.find_element(
+            By.CSS_SELECTOR, 'a'
+        )
+    )
+    assert (
+        'https://stage.outgoing.nonprod.webservices.mozgcp.net'
+        in outgoing_privacy_policy.get_attribute('href')
+    )
+    outgoing_privacy_policy.click()
+    addon.wait_for_current_url('https://extensionworkshop.allizom.org/')
+
+
+def test_addon_version_notes_outgoing_urls(selenium, base_url):
+    """Checks that external URLs in release notes are redirected through the outgoing domain"""
+    selenium.get(f'{base_url}/addon/outgoing-urls/')
+    # check release notes in addon detail page
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    release_notes_outgoing = addon.release_notes.release_notes_text.find_element(
+        By.CSS_SELECTOR, 'a'
+    )
+    assert (
+        'https://stage.outgoing.nonprod.webservices.mozgcp.net'
+        in release_notes_outgoing.get_attribute('href')
+    )
+    release_notes_outgoing.click()
+    addon.wait_for_current_url('https://extensionworkshop.allizom.org/')
+    # check release notes in addon versions page
+    selenium.get(f'{base_url}/addon/outgoing-urls/versions/')
+    version = Versions(selenium, base_url).wait_for_page_to_load()
+    version_notes_outgoing = version.versions_list[
+        0
+    ].version_release_notes.find_element(By.CSS_SELECTOR, 'a')
+    assert (
+        'https://stage.outgoing.nonprod.webservices.mozgcp.net'
+        in version_notes_outgoing.get_attribute('href')
+    )
+    version_notes_outgoing.click()
+    addon.wait_for_current_url('https://extensionworkshop.allizom.org/')
