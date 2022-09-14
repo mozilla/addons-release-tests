@@ -1924,6 +1924,154 @@ def test_edit_version_both_license_and_custom_license(base_url, session_auth):
 
 @pytest.mark.serial
 @pytest.mark.create_session('api_user')
+def test_delete_extension_non_existent_addon(base_url, session_auth):
+    """Try to obtain a delete token for a non-existent addon"""
+    addon = 'rand-om123'
+    get_delete_confirm = requests.get(
+        url=f'{base_url}{_addon_create}{addon}/delete_confirm/',
+        headers={'Authorization': f'Session {session_auth}'},
+    )
+    assert (
+        get_delete_confirm.status_code == 404
+    ), f'Actual response: {get_delete_confirm.status_code}, {get_delete_confirm.text}'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_delete_extension_from_another_author(base_url, session_auth, variables):
+    """Try to delete someone else's addon; the request should fail"""
+    addon = variables['detail_extension_slug']
+    get_delete_confirm = requests.get(
+        url=f'{base_url}{_addon_create}{addon}/delete_confirm/',
+        headers={'Authorization': f'Session {session_auth}'},
+    )
+    assert (
+        get_delete_confirm.status_code == 403
+    ), f'Actual response: {get_delete_confirm.status_code}, {get_delete_confirm.text}'
+    assert (
+        'You do not have permission to perform this action.' in get_delete_confirm.text,
+        f'Actual response message was {get_delete_confirm.text}',
+    )
+
+
+@pytest.mark.parametrize(
+    'token',
+    [
+        'random-string',
+        '',
+        123,
+        None,
+    ],
+    ids=[
+        'Random string',
+        'Empty string',
+        'Integer',
+        'None/No value',
+    ],
+)
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_delete_extension_with_invalid_tokens(base_url, session_auth, token):
+    """Use invalid formats or data types for the token required to delete an addon"""
+    addon = payloads.edit_addon_details['slug']
+    delete_addon = requests.delete(
+        url=f'{base_url}{_addon_create}{addon}/',
+        headers={'Authorization': f'Session {session_auth}'},
+        params={'delete_confirm': token},
+    )
+    assert (
+        delete_addon.status_code == 400
+    ), f'For token "{token}", status code = {delete_addon.status_code}, message = {delete_addon.text}'
+    if token is None or token == '':
+        assert (
+            'token must be supplied for add-on delete' in delete_addon.text
+        ), f'Actual response message was {delete_addon.text}'
+    else:
+        assert (
+            'token is invalid' in delete_addon.text
+        ), f'For token "{token}", status code = {delete_addon.status_code}, message = {delete_addon.text}'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_upload_addon_with_guid_from_deleted_addon(base_url, session_auth):
+    """Create an addon, delete it and then try to reuse the GUID to submit a
+    new addon; the request should fail since GUIDs cannot be reused"""
+    guid = f'reused-guid@{reusables.get_random_string(6)}'
+    # create the addon manifest to be uploaded
+    manifest = {
+        **payloads.minimal_manifest,
+        'name': 'Reuse GUID of deleted addon',
+        'browser_specific_settings': {'gecko': {'id': guid}},
+    }
+    api_helpers.make_addon(manifest)
+    # upload the addon with the custom GUID for the first time
+    with open('sample-addons/make-addon.zip', 'rb') as file:
+        upload = requests.post(
+            url=f'{base_url}{_upload}',
+            headers={'Authorization': f'Session {session_auth}'},
+            files={'upload': file},
+            data={'channel': 'unlisted'},
+        )
+    time.sleep(3)
+    upload.raise_for_status()
+    uuid = upload.json()['uuid']
+    payload = payloads.listed_addon_minimal(uuid)
+    create_addon = requests.post(
+        url=f'{base_url}{_addon_create}',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            'Content-Type': 'application/json',
+        },
+        data=json.dumps(payload),
+    )
+    create_addon.raise_for_status()
+    # get the token that would allow the actual delete request to be sent
+    get_delete_confirm = requests.get(
+        url=f'{base_url}{_addon_create}{guid}/delete_confirm/',
+        headers={'Authorization': f'Session {session_auth}'},
+    )
+    token = get_delete_confirm.json()['delete_confirm']
+    # delete the addon and verify that the delete request was successful
+    delete_addon = requests.delete(
+        url=f'{base_url}{_addon_create}{guid}/',
+        headers={'Authorization': f'Session {session_auth}'},
+        params={'delete_confirm': token},
+    )
+    assert (
+        delete_addon.status_code == 204
+    ), f'Actual response: {delete_addon.status_code}, {delete_addon.text}'
+    # upload the addon using the same custom GUID for the second time
+    with open('sample-addons/make-addon.zip', 'rb') as file:
+        upload = requests.post(
+            url=f'{base_url}{_upload}',
+            headers={'Authorization': f'Session {session_auth}'},
+            files={'upload': file},
+            data={'channel': 'listed'},
+        )
+    time.sleep(3)
+    upload.raise_for_status()
+    uuid = upload.json()['uuid']
+    payload = payloads.listed_addon_minimal(uuid)
+    create_addon = requests.post(
+        url=f'{base_url}{_addon_create}',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            'Content-Type': 'application/json',
+        },
+        data=json.dumps(payload),
+    )
+    # verify that the submission fails because it uses a duplicate GUID
+    assert (
+        create_addon.status_code == 400
+    ), f'Actual response: {create_addon.status_code}, {create_addon.text}'
+    assert (
+        'Duplicate add-on ID found.' in create_addon.text
+    ), f'Actual message was {create_addon.text}'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
 @pytest.mark.clear_session
 def test_delete_extension_valid_token(selenium, base_url, session_auth, variables):
     addon = payloads.edit_addon_details['slug']
