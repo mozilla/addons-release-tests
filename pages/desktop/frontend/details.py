@@ -321,6 +321,8 @@ class Detail(Base):
     class MoreInfo(Region):
         _more_info_header_locator = (By.CSS_SELECTOR, '.AddonMoreInfo header')
         _support_links_locator = (By.CSS_SELECTOR, '.AddonMoreInfo-links a')
+        _homepage_link_locator = (By.CSS_SELECTOR, '.AddonMoreInfo-homepage-link')
+        _support_site_link_locator = (By.CSS_SELECTOR, '.AddonMoreInfo-support-link')
         _version_number_locator = (By.CLASS_NAME, 'AddonMoreInfo-version')
         _addon_size_locator = (By.CLASS_NAME, 'AddonMoreInfo-filesize')
         _last_updated_locator = (By.CLASS_NAME, 'AddonMoreInfo-last-updated')
@@ -345,6 +347,14 @@ class Detail(Base):
         @property
         def addon_support_links(self):
             return self.find_elements(*self._support_links_locator)
+
+        @property
+        def addon_homepage_link(self):
+            return self.find_element(*self._homepage_link_locator)
+
+        @property
+        def addon_support_site_link(self):
+            return self.find_element(*self._support_site_link_locator)
 
         @property
         def addon_version_number(self):
@@ -377,11 +387,11 @@ class Detail(Base):
                 expected.invisibility_of_element_located(self._more_info_header_locator)
             )
 
-        def addon_custom_license(self):
+        def click_addon_custom_license(self):
             self.find_element(*self._addon_license_locator).click()
             return self.License(self).wait_for_region_to_load()
 
-        def addon_privacy_policy(self):
+        def click_addon_privacy_policy(self):
             self.find_element(*self._privacy_policy_locator).click()
             return self.License(self).wait_for_region_to_load()
 
