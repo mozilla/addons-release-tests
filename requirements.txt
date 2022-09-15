@@ -25,7 +25,7 @@ lazy-object-proxy==1.7.1
 mccabe==0.7.0
 more-itertools==8.14.0
 networkx==2.8.6
-numpy==1.23.2
+numpy==1.23.3
 packaging==21.3
 pathspec==0.10.1
 pluggy==1.0.0
@@ -71,4 +71,4 @@ zope.deprecation==4.4.0
 zope.event==4.5.0
 zope.hookable==5.1.0
 zope.interface==5.4.0
-zope.proxy==4.5.0
+zope.proxy==4.5.1
