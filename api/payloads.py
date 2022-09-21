@@ -191,3 +191,20 @@ custom_license = {
         }
     }
 }
+
+
+def theme_details(uuid, theme_license):
+    body = {
+        "categories": {
+            "firefox": ['nature'],
+        },
+        "summary": {
+            "en-US": "theme summary api submissions"
+        },
+        "version": {
+            "license": theme_license,
+            "upload": uuid,
+            "compatibility": ["firefox"]
+        }
+    }
+    return body

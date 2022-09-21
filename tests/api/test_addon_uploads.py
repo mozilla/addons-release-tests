@@ -63,6 +63,114 @@ def test_bad_authentication_addon_upload(selenium, base_url):
 
 @pytest.mark.serial
 @pytest.mark.create_session('api_user')
+def test_upload_addon_crx_archive(base_url, session_auth):
+    """Use a .crx file to upload an addon and make sure the submission is successful"""
+    with open('sample-addons/crx_ext.crx', 'rb') as file:
+        upload = requests.post(
+            url=f'{base_url}{_upload}',
+            headers={'Authorization': f'Session {session_auth}'},
+            files={'upload': file},
+            data={'channel': 'unlisted'},
+        )
+    time.sleep(3)
+    upload.raise_for_status()
+    uuid = upload.json()['uuid']
+    payload = payloads.listed_addon_minimal(uuid)
+    create_addon = requests.post(
+        url=f'{base_url}{_addon_create}',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            'Content-Type': 'application/json',
+        },
+        data=json.dumps(payload),
+    )
+    create_addon.raise_for_status()
+    assert (
+        create_addon.status_code == 201
+    ), f'Actual response: {create_addon.status_code}, {create_addon.text}'
+
+
+@pytest.mark.parametrize(
+    'file_type',
+    [
+        '7z-ext.7z',
+        'tgz-ext.tgz',
+        'tar-gz-ext.tar.gz',
+        'manifest.json',
+    ],
+    ids=[
+        'Archive in "7z" format',
+        'Archive in "tgz" format',
+        'Archive in "tar.gz" format',
+        'Non archive - JSON file',
+    ],
+)
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_upload_addon_unsupported_file_types(base_url, session_auth, file_type):
+    """Try to upload unsupported archive types or files as extensions; AMO is supporting
+    only three file types for addon uploads: .zip, .xpi, .crx"""
+    with open(f'sample-addons/{file_type}', 'rb') as file:
+        upload = requests.post(
+            url=f'{base_url}{_upload}',
+            headers={'Authorization': f'Session {session_auth}'},
+            files={'upload': file},
+            data={'channel': 'unlisted'},
+        )
+    time.sleep(3)
+    upload.raise_for_status()
+    uuid = upload.json()['uuid']
+    # get the validation messages returned by the API
+    validation = requests.get(
+        url=f'{base_url}{_upload}{uuid}',
+        headers={'Authorization': f'Session {session_auth}'},
+    )
+    assert (
+        'Unsupported file type, please upload a supported file (.crx, .xpi, .zip).'
+        in validation.json()['validation']['messages'][0]['message']
+    ), f'Actual response for "{file_type}" was {validation.json()["validation"]}'
+
+
+@pytest.mark.parametrize(
+    'file_type',
+    [
+        'tar-renamed-as-zip.zip',
+        'broken-archive.zip',
+    ],
+    ids=[
+        'A "tar" compression renamed as "zip"',
+        'Corrupt archive',
+    ],
+)
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_upload_addon_with_broken_archives(base_url, session_auth, file_type):
+    """Try to upload an addon with a corrupt or invalid archive and check that the
+    validation message identifies them as such; for example, a 'tar' compression
+    renamed to look as a 'zip' file should be detected as invalid"""
+    with open(f'sample-addons/{file_type}', 'rb') as file:
+        upload = requests.post(
+            url=f'{base_url}{_upload}',
+            headers={'Authorization': f'Session {session_auth}'},
+            files={'upload': file},
+            data={'channel': 'unlisted'},
+        )
+    time.sleep(3)
+    upload.raise_for_status()
+    uuid = upload.json()['uuid']
+    # get the validation messages returned by the API
+    validation = requests.get(
+        url=f'{base_url}{_upload}{uuid}',
+        headers={'Authorization': f'Session {session_auth}'},
+    )
+    assert (
+        'Invalid or corrupt add-on file.'
+        in validation.json()['validation']['messages'][0]['message']
+    ), f'Actual response for "{file_type}" was {validation.json()["validation"]}'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
 def test_upload_unlisted_extension(base_url, session_auth):
     upload = requests.post(
         url=f'{base_url}{_upload}',
@@ -2378,6 +2486,76 @@ def test_upload_addon_with_guid_from_deleted_addon(base_url, session_auth):
     assert (
         'Duplicate add-on ID found.' in create_addon.text
     ), f'Actual message was {create_addon.text}'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_upload_theme(base_url, session_auth):
+    with open('sample-addons/theme.xpi', 'rb') as file:
+        upload = requests.post(
+            url=f'{base_url}{_upload}',
+            headers={'Authorization': f'Session {session_auth}'},
+            files={'upload': file},
+            data={'channel': 'listed'},
+        )
+        time.sleep(3)
+        upload.raise_for_status()
+        # get the addon uuid generated after upload
+        uuid = upload.json()['uuid']
+        # set a license type specific for themes
+        theme_license = 'CC-BY-3.0'
+        payload = {
+            **payloads.theme_details(uuid, theme_license),
+            'slug': f'theme-{reusables.get_random_string(10)}',
+        }
+        create_addon = requests.post(
+            url=f'{base_url}{_addon_create}',
+            headers={
+                'Authorization': f'Session {session_auth}',
+                'Content-Type': 'application/json',
+            },
+            data=json.dumps(payload),
+        )
+        create_addon.raise_for_status()
+        # verify that the addon has been submitted as a theme by checking the 'type' property
+        assert create_addon.json()['type'] == 'statictheme'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_upload_theme_with_wrong_license(base_url, session_auth):
+    """Try to upload a theme while using a license that is specific for extensions"""
+    with open('sample-addons/theme.xpi', 'rb') as file:
+        upload = requests.post(
+            url=f'{base_url}{_upload}',
+            headers={'Authorization': f'Session {session_auth}'},
+            files={'upload': file},
+            data={'channel': 'listed'},
+        )
+        time.sleep(3)
+        upload.raise_for_status()
+        # get the addon uuid generated after upload
+        uuid = upload.json()['uuid']
+        # set a license slug that is allowed only for extension submissions
+        ext_license = 'MPL-2.0'
+        payload = {
+            **payloads.theme_details(uuid, ext_license),
+            'slug': f'theme-{reusables.get_random_string(10)}',
+        }
+        create_addon = requests.post(
+            url=f'{base_url}{_addon_create}',
+            headers={
+                'Authorization': f'Session {session_auth}',
+                'Content-Type': 'application/json',
+            },
+            data=json.dumps(payload),
+        )
+        assert (
+            create_addon.status_code == 400
+        ), f'Actual response: {create_addon.status_code}, {create_addon.text}'
+        assert (
+            'Wrong add-on type for this license.' in create_addon.text
+        ), f'Actual response was {create_addon.text}'
 
 
 @pytest.mark.serial
