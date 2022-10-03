@@ -176,7 +176,8 @@ def test_user_change_profile_picture(base_url, selenium, wait):
     # waits for the image source to change after the new image is uploaded and verifies
     # that the new source doesn't match the old source, i.e. image has changed
     wait.until(
-        custom_waits.check_value_inequality(edit_old_icon, user.edit.picture_source)
+        lambda _: edit_old_icon != user.edit.picture_source,
+        message=f'old icon = {edit_old_icon}, new icon = {user.edit.picture_source}',
     )
     user.edit.submit_changes()
     # reassign 'User' to a new variable since the page has been refreshed and 'user' can become stale
