@@ -214,6 +214,7 @@ def test_collection_addon_notes(selenium, base_url, variables):
     )
     # edit the collection addon note
     collections.create.edit_addons_list[0].click_edit_note()
+    collections.create.edit_addons_list[0].clear_collection_note_text_field()
     collections.create.edit_addons_list[0].note_input_text(
         variables['collection_addon_edited_note']
     )

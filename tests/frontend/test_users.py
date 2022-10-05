@@ -565,6 +565,7 @@ def test_user_profile_edit_review(base_url, selenium, variables, wait):
     edit = Detail(selenium, base_url)
     edit.ratings.edit_review.click()
     edited_review_text = variables['edited_text_input']
+    edit.ratings.clear_review_text_field()
     edit.ratings.review_text_input(edited_review_text)
     edit.ratings.submit_review()
     # verifies that the review text has been updated

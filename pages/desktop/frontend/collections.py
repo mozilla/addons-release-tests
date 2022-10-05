@@ -288,6 +288,9 @@ class Collections(Base):
             def note_input_text(self, value):
                 self.find_element(*self._add_note_textarea_locator).send_keys(value)
 
+            def clear_collection_note_text_field(self):
+                self.find_element(*self._add_note_textarea_locator).clear()
+
             @property
             def note_input_value(self):
                 return self.find_element(*self._add_note_textarea_locator).text
