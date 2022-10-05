@@ -177,6 +177,30 @@ edit_version_details = {
     }
 }
 
+
+def new_version_details(uuid):
+    body = {
+        "upload": uuid,
+        "license": "GPL-2.0-or-later",
+        "release_notes": {
+            "de": "New Version DE notes added in API at addon creation time",
+            "en-US": "New Version EN-US notes added in API at addon creation time",
+            "fr": "New Version FR notes added in API at addon creation time"
+        },
+        "compatibility": {
+            "android": {
+                "min": "78.0",
+                "max": "100.*"
+            },
+            "firefox": {
+                "min": "70.0a1",
+                "max": "*"
+            }
+        }
+    }
+    return body
+
+
 custom_license = {
     'custom_license': {
         'name': {

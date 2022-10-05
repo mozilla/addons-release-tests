@@ -1,12 +1,16 @@
 import json
+import time
 
 import pytest
 import requests
 
-from api import payloads
+from api import payloads, api_helpers
+
+from scripts import reusables
 
 # endpoints used in the version edit tests
 _addon_create = '/api/v5/addons/addon/'
+_upload = '/api/v5/addons/upload/'
 
 # These tests are covering various valid and invalid scenarios for editing
 # addon version details such as: compatibility, license, release notes, source code,
@@ -104,6 +108,194 @@ def test_edit_version_set_custom_license(base_url, session_auth):
     response = edit_version.json()
     assert payload['custom_license']['name'] == response['license']['name']
     assert payload['custom_license']['text'] == response['license']['text']
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_upload_new_listed_version(base_url, session_auth):
+    """Uploads a new listed version for an existing addon"""
+    with open('sample-addons/listed-addon-new-version.zip', 'rb') as file:
+        upload = requests.post(
+            url=f'{base_url}{_upload}',
+            headers={'Authorization': f'Session {session_auth}'},
+            files={'upload': file},
+            data={'channel': 'listed'},
+        )
+    time.sleep(3)
+    upload.raise_for_status()
+    # get the addon uuid generated after upload
+    uuid = upload.json()['uuid']
+    addon = payloads.edit_addon_details['slug']
+    payload = payloads.new_version_details(uuid)
+    new_version = requests.post(
+        url=f'{base_url}{_addon_create}{addon}/versions/',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            'Content-Type': 'application/json',
+        },
+        data=json.dumps(payload),
+    )
+    new_version.raise_for_status()
+    response = new_version.json()
+    # verify that the new version was created with the data provided
+    assert response['version'] == '1.1'
+    assert payload['license'] == response['license']['slug']
+    assert payload['compatibility'] == response['compatibility']
+    assert payload['release_notes'] == response['release_notes']
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_upload_new_version_with_existing_version_number(base_url, session_auth):
+    """Uploads a new version with an existing version number; the upload should fail"""
+    with open('sample-addons/listed-addon-new-version.zip', 'rb') as file:
+        upload = requests.post(
+            url=f'{base_url}{_upload}',
+            headers={'Authorization': f'Session {session_auth}'},
+            files={'upload': file},
+            data={'channel': 'listed'},
+        )
+    time.sleep(3)
+    upload.raise_for_status()
+    # get the addon uuid generated after upload
+    uuid = upload.json()['uuid']
+    addon = payloads.edit_addon_details['slug']
+    payload = payloads.new_version_details(uuid)
+    new_version = requests.post(
+        url=f'{base_url}{_addon_create}{addon}/versions/',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            'Content-Type': 'application/json',
+        },
+        data=json.dumps(payload),
+    )
+    assert (
+        new_version.status_code == 400
+    ), f'Actual response: status code = {new_version.status_code}, message = {new_version.text}'
+    assert (
+        'Version 1.1 already exists.' in new_version.text
+    ), f'Actual response message was {new_version.text}'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_upload_new_unlisted_version_with_put_method(base_url, session_auth):
+    """Takes an addon with listed version only and submits an unlisted version;
+    this is creating an addon with mixed versions. Use the PUT endpoint in this
+     case to check that it also works for a new version submission process"""
+    addon = payloads.edit_addon_details['slug']
+    # get the addon guid required for the PUT method
+    get_addon_details = requests.get(
+        url=f'{base_url}{_addon_create}{addon}/',
+        headers={'Authorization': f'Session {session_auth}'},
+    )
+    guid = get_addon_details.json()['guid']
+    # upload a new unlisted version
+    with open('sample-addons/mixed-addon-versions.zip', 'rb') as file:
+        upload = requests.post(
+            url=f'{base_url}{_upload}',
+            headers={'Authorization': f'Session {session_auth}'},
+            files={'upload': file},
+            data={'channel': 'unlisted'},
+        )
+    time.sleep(3)
+    upload.raise_for_status()
+    resp = upload.json()
+    # verify that the upload was created as unlisted
+    assert 'unlisted' in resp['channel']
+    # get the addon uuid generated after upload
+    uuid = resp['uuid']
+    new_version = requests.put(
+        url=f'{base_url}{_addon_create}{guid}/',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            'Content-Type': 'application/json',
+        },
+        data=json.dumps({'version': {'upload': uuid}}),
+    )
+    new_version.raise_for_status()
+    response = new_version.json()
+    # this property needs to exist if the unlisted submission was successful
+    return response['latest_unlisted_version']['id']
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_upload_new_version_with_different_addon_type(base_url, session_auth):
+    """Take an exiting addon of type 'extensions' and try to upload a new version
+    of type 'statictheme' for it; the submission should fail"""
+    with open('sample-addons/theme.xpi', 'rb') as file:
+        upload = requests.post(
+            url=f'{base_url}{_upload}',
+            headers={'Authorization': f'Session {session_auth}'},
+            files={'upload': file},
+            data={'channel': 'listed'},
+        )
+    time.sleep(3)
+    upload.raise_for_status()
+    # get the addon uuid generated after upload
+    uuid = upload.json()['uuid']
+    addon = payloads.edit_addon_details['slug']
+    payload = {'upload': uuid}
+    new_version = requests.post(
+        url=f'{base_url}{_addon_create}{addon}/versions/',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            'Content-Type': 'application/json',
+        },
+        data=json.dumps(payload),
+    )
+    assert (
+        new_version.status_code == 400
+    ), f'Actual response: status code = {new_version.status_code}, message = {new_version.text}'
+    assert (
+        'The type (10) does not match the type of your add-on on AMO (1)'
+        in new_version.text
+    ), f'Actual response message was {new_version.text}'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_upload_new_version_with_different_guid(base_url, session_auth):
+    """Take an exiting addon and submit a new version that has a different GUID
+    from what we have on AMO for this addon; the submission should fail"""
+    guid = f'random-guid@{reusables.get_random_string(6)}'
+    # create the addon manifest to be uploaded
+    manifest = {
+        **payloads.minimal_manifest,
+        'version': '2.0',
+        'name': 'New version with different guid',
+        'browser_specific_settings': {'gecko': {'id': guid}},
+    }
+    api_helpers.make_addon(manifest)
+    with open('sample-addons/make-addon.zip', 'rb') as file:
+        upload = requests.post(
+            url=f'{base_url}{_upload}',
+            headers={'Authorization': f'Session {session_auth}'},
+            files={'upload': file},
+            data={'channel': 'listed'},
+        )
+    time.sleep(3)
+    upload.raise_for_status()
+    # get the addon uuid generated after upload
+    uuid = upload.json()['uuid']
+    addon = payloads.edit_addon_details['slug']
+    payload = {'upload': uuid}
+    new_version = requests.post(
+        url=f'{base_url}{_addon_create}{addon}/versions/',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            'Content-Type': 'application/json',
+        },
+        data=json.dumps(payload),
+    )
+    assert (
+        new_version.status_code == 400
+    ), f'Actual response: status code = {new_version.status_code}, message = {new_version.text}'
+    assert (
+        f'The add-on ID in your manifest.json ({guid}) does not match the ID of your add-on on AMO'
+        in new_version.text
+    ), f'Actual response message was {new_version.text}'
 
 
 @pytest.mark.parametrize(
