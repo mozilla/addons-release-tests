@@ -97,6 +97,7 @@ def test_edit_review(selenium, base_url, variables):
     addon.login('rating_user')
     addon.ratings.edit_review.click()
     edited_review_text = variables['edited_text_input']
+    addon.ratings.clear_review_text_field()
     addon.ratings.review_text_input(edited_review_text)
     # updates the review text and verifies that the changes are saved
     addon.ratings.submit_review()
@@ -429,6 +430,7 @@ def test_edit_review_in_all_reviews_page(selenium, base_url, variables):
     assert len(reviews.selected_score_highlight) == 4
     # update the written review text in All reviews page
     edited_review_text = variables['edited_text_input']
+    addon.ratings.clear_review_text_field()
     addon.ratings.review_text_input(edited_review_text)
     addon.ratings.submit_review()
     assert edited_review_text in reviews.review_items[0].review_body
@@ -483,6 +485,7 @@ def test_edit_developer_reply_to_review(selenium, base_url, variables):
     reviews = addon.ratings.click_all_reviews_link()
     edited_reply = variables['edited_text_input']
     addon.ratings.edit_review.click()
+    reviews.review_items[0].clear_developer_reply_text_field()
     reviews.review_items[0].reply_text_input(edited_reply)
     reviews.review_items[0].publish_reply()
     assert edited_reply in reviews.review_items[0].posted_reply_text

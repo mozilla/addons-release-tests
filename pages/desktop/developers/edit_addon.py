@@ -1,6 +1,8 @@
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
 
 from pages.desktop.base import Base
+from pages.desktop.developers.submit_addon import SubmitAddon
 
 
 class EditAddon(Base):
@@ -11,6 +13,11 @@ class EditAddon(Base):
     _addon_name_locator = (By.CSS_SELECTOR, '.section header h2')
     _listed_addon_status_locator = (By.CSS_SELECTOR, '.addon-listed-status a')
     _last_modified_date_locator = (By.CLASS_NAME, 'date-updated')
+    _unlisted_version_tooltip_locator = (
+        By.CLASS_NAME,
+        'distribution-tag-unlisted.tooltip',
+    )
+    _submit_new_version_link_locator = (By.CLASS_NAME, 'version-upload')
     _manage_versions_link_locator = (
         By.CSS_SELECTOR,
         '#edit-addon-nav ul:nth-child(1) li:nth-child(3)',
@@ -27,6 +34,16 @@ class EditAddon(Base):
     @property
     def listed_addon_status(self):
         return self.find_element(*self._listed_addon_status_locator).text
+
+    def click_upload_version_link(self):
+        self.wait.until(
+            EC.element_to_be_clickable(self._submit_new_version_link_locator)
+        ).click()
+        return SubmitAddon(self.selenium, self.base_url).wait_for_page_to_load()
+
+    @property
+    def unlisted_version_tooltip(self):
+        return self.find_element(*self._unlisted_version_tooltip_locator)
 
     @property
     def last_modified_date(self):

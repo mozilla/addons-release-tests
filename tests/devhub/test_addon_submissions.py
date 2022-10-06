@@ -114,10 +114,43 @@ def test_addon_last_modified_date(selenium, base_url):
     assert reusables.current_date() == edit_addon.last_modified_date
 
 
+@pytest.mark.serial
+@pytest.mark.create_session('submissions_user')
+def test_submit_mixed_addon_versions(selenium, base_url, variables, wait):
+    """Uploads an unlisted version to an exiting listed addon"""
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    my_addons = page.click_my_addons_header_link()
+    # open the edit page of the latest listed add-on submitted
+    edit_addon = my_addons.addon_list[0].click_addon_name()
+    submit_version = edit_addon.click_upload_version_link()
+    submit_version.change_version_distribution()
+    # select unlisted option for the new version
+    submit_version.select_unlisted_option()
+    submit_version.click_continue()
+    # checking that the Firefox compatibility checkbox is selected by default
+    wait.until(lambda _: submit_version.firefox_compat_checkbox.is_selected())
+    submit_version.upload_addon('mixed-addon-versions.zip')
+    # wait for the validation to finish and check if it is successful
+    submit_version.is_validation_successful()
+    assert submit_version.success_validation_message.is_displayed()
+    # on submit source code page, select No as we do not test source code upload here
+    source = submit_version.click_continue_upload_button()
+    source.select_no_to_omit_source()
+    confirmation_page = source.continue_unlisted_submission()
+    assert (
+        variables['unlisted_submission_confirmation']
+        in confirmation_page.submission_confirmation_messages[0].text
+    )
+    manage_addons = confirmation_page.click_manage_listing_button()
+    edit_addon = manage_addons.addon_list[0].click_addon_name()
+    # verify that the unlisted addon badge is now visible on the edit details page
+    assert edit_addon.unlisted_version_tooltip.is_displayed()
+
+
 @pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.create_session('submissions_user')
-def test_submit_listed_wizard_theme(selenium, base_url, variables, wait):
+def test_submit_listed_wizard_theme(selenium, base_url, variables, wait, delete_themes):
     """A test that checks a straight-forward theme submission with the devhub wizard"""
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     submit_addon = page.click_submit_theme_button()

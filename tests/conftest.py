@@ -179,3 +179,23 @@ def wait():
     return WebDriverWait(
         selenium, 10, ignored_exceptions=StaleElementReferenceException
     )
+
+
+@pytest.fixture
+def delete_themes(selenium, base_url):
+    """Use this fixture in devhub theme submission tests when we want to
+    immediately delete the theme once the test has completed"""
+    yield
+
+    from pages.desktop.developers.devhub_home import DevHubHome
+
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    manage_addons = page.click_my_addons_header_link()
+    manage_addons.click_on_my_themes()
+    while len(manage_addons.addon_list) > 0:
+        addon = manage_addons.addon_list[0]
+        edit = addon.click_addon_name()
+        manage = edit.click_manage_versions_link()
+        delete = manage.delete_addon()
+        delete.input_delete_confirmation_string()
+        delete.confirm_delete_addon()
