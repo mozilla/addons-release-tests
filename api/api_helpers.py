@@ -1,4 +1,4 @@
-"""File holding some reusable methods used in the API addon submission tests"""
+import hashlib
 import json
 import zipfile
 
@@ -61,3 +61,25 @@ def verify_addon_response_details(payload, response, request):
     print(f'List of response values: {response_values}')
     # compare the request details list with the response details list
     return addon_details == response_values
+
+
+def compare_source_files(file_a, file_b, request):
+    """Method to compare the hashes of the uploaded and downloaded
+    addon source files to make sure they are matching; the comparison differs
+    between POST and PATCH requests, so the method is split in two checks"""
+    # this is the source file downloaded from AMO used in both request types
+    source_from_api = hashlib.sha256(file_b.content).digest()
+    if request == 'POST':
+        # in POST request we compare the local source uploaded with the source from the API
+        local_file = hashlib.sha256(open(file_a, 'rb').read()).digest()
+        assert (
+            local_file == source_from_api
+        ), f'File contents did not match: local_file_hash = {local_file}, source_from_api_hash = {source_from_api}'
+    if request == 'PATCH':
+        # in PATCH requests, we are fetching the previous source file attached to the version
+        # and compare it to the new attached files to make sure they are different
+        previous_source_from_api = hashlib.sha256(file_a.content).digest()
+        assert previous_source_from_api != source_from_api, (
+            f'Source files were not updated successfully: previous_source_from_api_hash = {previous_source_from_api}, '
+            f'source_from_api_hash = {source_from_api}'
+        )
