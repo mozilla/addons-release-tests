@@ -1,3 +1,5 @@
+"""File holding some reusable methods used in the API addon submission tests"""
+
 import hashlib
 import json
 import zipfile
