@@ -210,6 +210,9 @@ class Reviews(Base):
         def reply_text_input(self, value):
             self.find_element(*self._review_reply_textarea_locator).send_keys(value)
 
+        def clear_developer_reply_text_field(self):
+            self.find_element(*self._review_reply_textarea_locator).clear()
+
         def publish_reply(self):
             self.find_element(*self._publish_reply_button_locator).click()
             self.wait.until(

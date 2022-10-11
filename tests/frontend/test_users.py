@@ -176,7 +176,8 @@ def test_user_change_profile_picture(base_url, selenium, wait):
     # waits for the image source to change after the new image is uploaded and verifies
     # that the new source doesn't match the old source, i.e. image has changed
     wait.until(
-        custom_waits.check_value_inequality(edit_old_icon, user.edit.picture_source)
+        lambda _: edit_old_icon != user.edit.picture_source,
+        message=f'old icon = {edit_old_icon}, new icon = {user.edit.picture_source}',
     )
     user.edit.submit_changes()
     # reassign 'User' to a new variable since the page has been refreshed and 'user' can become stale
@@ -564,6 +565,7 @@ def test_user_profile_edit_review(base_url, selenium, variables, wait):
     edit = Detail(selenium, base_url)
     edit.ratings.edit_review.click()
     edited_review_text = variables['edited_text_input']
+    edit.ratings.clear_review_text_field()
     edit.ratings.review_text_input(edited_review_text)
     edit.ratings.submit_review()
     # verifies that the review text has been updated

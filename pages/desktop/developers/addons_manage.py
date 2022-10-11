@@ -11,6 +11,10 @@ class ManageAddons(Base):
 
     _my_addons_page_logo = (By.CSS_SELECTOR, '.site-titles')
     _page_title_locator = (By.CSS_SELECTOR, '.hero > h1')
+    _my_themes_section_button_locator = (
+        By.CSS_SELECTOR,
+        '.submission-type-tabs > a:nth-child(2)',
+    )
     _sort_by_created_locator = (By.LINK_TEXT, 'Created')
     _addon_items_locator = (By.CLASS_NAME, 'item.addon')
     _submit_addon_button_locator = (By.CSS_SELECTOR, '#submit-addon > a')
@@ -28,6 +32,15 @@ class ManageAddons(Base):
     @property
     def my_addons_page_title(self):
         return self.find_element(*self._page_title_locator)
+
+    def click_on_my_themes(self):
+        self.find_element(*self._my_themes_section_button_locator).click()
+        self.wait.until(
+            lambda _: self.find_element(
+                *self._my_themes_section_button_locator
+            ).get_attribute('class')
+            == 'active'
+        )
 
     def sort_by_created(self):
         self.find_element(*self._sort_by_created_locator).click()

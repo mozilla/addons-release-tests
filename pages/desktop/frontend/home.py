@@ -105,7 +105,7 @@ class Home(Base):
             self.driver.switch_to.window(new_tab)
             # see more external links can contain variable content we might not know in advance (especially on prod)
             # the solution used here is to verify that the content we link to is available (i.e. page response = 200)
-            self.wait.until(custom_waits.url_not_contins('about:blank'))
+            self.wait.until(custom_waits.url_not_contains('about:blank'))
             page = requests.head(self.driver.current_url)
             assert (
                 page.status_code == 200
@@ -336,7 +336,7 @@ class Home(Base):
                     # in advance what that content might be; also, we want to avoid frequent maintenance for
                     # these tests; the solution used is to verify that the content we link to is available
                     # (i.e. we check that the page response status is 200)
-                    self.wait.until(custom_waits.url_not_contins('about:blank'))
+                    self.wait.until(custom_waits.url_not_contains('about:blank'))
                     page = requests.head(self.driver.current_url)
                     assert (
                         page.status_code == 200
