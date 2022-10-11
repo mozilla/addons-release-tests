@@ -133,6 +133,18 @@ def test_upload_addon_unsupported_file_types(base_url, session_auth, file_type):
     time.sleep(3)
     upload.raise_for_status()
     uuid = upload.json()['uuid']
+    payload = payloads.listed_addon_minimal(uuid)
+    create_addon = requests.post(
+        url=f'{base_url}{_addon_create}',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            'Content-Type': 'application/json',
+        },
+        data=json.dumps(payload),
+    )
+    assert (
+        create_addon.status_code == 400
+    ), f'Actual response: {create_addon.status_code}, {create_addon.text}'
     # get the validation messages returned by the API
     validation = requests.get(
         url=f'{base_url}{_upload}{uuid}',
@@ -171,6 +183,18 @@ def test_upload_addon_with_broken_archives(base_url, session_auth, file_type):
     time.sleep(3)
     upload.raise_for_status()
     uuid = upload.json()['uuid']
+    payload = payloads.listed_addon_minimal(uuid)
+    create_addon = requests.post(
+        url=f'{base_url}{_addon_create}',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            'Content-Type': 'application/json',
+        },
+        data=json.dumps(payload),
+    )
+    assert (
+        create_addon.status_code == 400
+    ), f'Actual response: {create_addon.status_code}, {create_addon.text}'
     # get the validation messages returned by the API
     validation = requests.get(
         url=f'{base_url}{_upload}{uuid}',
