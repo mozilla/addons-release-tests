@@ -1080,3 +1080,162 @@ def test_upload_theme_with_wrong_license(base_url, session_auth):
         assert (
             'Wrong add-on type for this license.' in create_addon.text
         ), f'Actual response was {create_addon.text}'
+
+
+@pytest.mark.serial
+@pytest.mark.login('staff_user')
+def test_upload_language_pack_unauthorized_user(selenium, base_url):
+    """Users not part of the language pack submission group are not allowed to submit langpacks"""
+    session_auth = selenium.get_cookie('sessionid')
+    with open('sample-addons/lang-pack.xpi', 'rb') as file:
+        upload = requests.post(
+            url=f'{base_url}{_upload}',
+            headers={'Authorization': f'Session {session_auth["value"]}'},
+            files={'upload': file},
+            data={'channel': 'listed'},
+        )
+    time.sleep(3)
+    upload.raise_for_status()
+    # get the addon uuid generated after upload
+    uuid = upload.json()['uuid']
+    payload = payloads.lang_tool_details(uuid)
+    create_addon = requests.post(
+        url=f'{base_url}{_addon_create}',
+        headers={
+            'Authorization': f'Session {session_auth["value"]}',
+            'Content-Type': 'application/json',
+        },
+        data=json.dumps(payload),
+    )
+    assert (
+        create_addon.status_code == 400
+    ), f'Actual response: {create_addon.status_code}, {create_addon.text}'
+    assert (
+        'You cannot submit a language pack' in create_addon.text
+    ), f'Actual response message was {create_addon.text}'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_upload_language_pack_with_authorized_user(base_url, session_auth):
+    """Upload a langpack with a user that belongs to the language pack submissions group"""
+    with open('sample-addons/lang-pack.xpi', 'rb') as file:
+        upload = requests.post(
+            url=f'{base_url}{_upload}',
+            headers={'Authorization': f'Session {session_auth}'},
+            files={'upload': file},
+            data={'channel': 'listed'},
+        )
+    time.sleep(3)
+    upload.raise_for_status()
+    # get the addon uuid generated after upload
+    uuid = upload.json()['uuid']
+    payload = payloads.lang_tool_details(uuid)
+    create_addon = requests.post(
+        url=f'{base_url}{_addon_create}',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            'Content-Type': 'application/json',
+        },
+        data=json.dumps(payload),
+    )
+    assert (
+        create_addon.status_code == 201
+    ), f'Actual response: {create_addon.status_code}, {create_addon.text}'
+    response = create_addon.json()
+    # verify that the add-on was created as a language pack by looking at the 'type' property
+    assert response['type'] == 'language'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_upload_language_pack_incorrect_category(base_url, session_auth):
+    """Language packs only accept 'general' as a category value; other values should fail"""
+    with open('sample-addons/lang-pack.xpi', 'rb') as file:
+        upload = requests.post(
+            url=f'{base_url}{_upload}',
+            headers={'Authorization': f'Session {session_auth}'},
+            files={'upload': file},
+            data={'channel': 'listed'},
+        )
+    time.sleep(3)
+    upload.raise_for_status()
+    # get the addon uuid generated after upload
+    uuid = upload.json()['uuid']
+    payload = {
+        **payloads.lang_tool_details(uuid),
+        'categories': {'firefox': ['bookmarks']},
+    }
+    create_addon = requests.post(
+        url=f'{base_url}{_addon_create}',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            'Content-Type': 'application/json',
+        },
+        data=json.dumps(payload),
+    )
+    assert (
+        create_addon.status_code == 400
+    ), f'Actual response: {create_addon.status_code}, {create_addon.text}'
+    assert (
+        'Invalid category name.' in create_addon.text
+    ), f'Actual response message was {create_addon.text}'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_upload_privileged_addon_with_unauthorized_account(base_url, session_auth):
+    """Upload an addon signed with a mozilla signature using an unauthorized account"""
+    with open('sample-addons/mozilla-signed.xpi', 'rb') as file:
+        upload = requests.post(
+            url=f'{base_url}{_upload}',
+            headers={'Authorization': f'Session {session_auth}'},
+            files={'upload': file},
+            data={'channel': 'unlisted'},
+        )
+        time.sleep(3)
+        upload.raise_for_status()
+        # get the addon uuid generated after upload
+        uuid = upload.json()['uuid']
+        payload = {**payloads.listed_addon_minimal(uuid)}
+        create_addon = requests.post(
+            url=f'{base_url}{_addon_create}',
+            headers={
+                'Authorization': f'Session {session_auth}',
+                'Content-Type': 'application/json',
+            },
+            data=json.dumps(payload),
+        )
+        assert (
+            create_addon.status_code == 400
+        ), f'Actual response: {create_addon.status_code}, {create_addon.text}'
+        assert 'You cannot submit a Mozilla Signed Extension' in create_addon.text
+
+
+@pytest.mark.create_session('api_user')
+def test_upload_privileged_addon_with_unauthorized_account(base_url, session_auth):
+    """Upload an addon signed with a mozilla signature using an unauthorized account"""
+    with open('sample-addons/mozilla-signed.xpi', 'rb') as file:
+        upload = requests.post(
+            url=f'{base_url}{_upload}',
+            headers={'Authorization': f'Session {session_auth}'},
+            files={'upload': file},
+            data={'channel': 'unlisted'},
+        )
+        time.sleep(3)
+        upload.raise_for_status()
+        # get the addon uuid generated after upload
+        uuid = upload.json()['uuid']
+        payload = {**payloads.listed_addon_minimal(uuid)}
+        create_addon = requests.post(
+            url=f'{base_url}{_addon_create}',
+            headers={
+                'Authorization': f'Session {session_auth}',
+                'Content-Type': 'application/json',
+            },
+            data=json.dumps(payload),
+        )
+        assert (
+            create_addon.status_code == 400
+        ), f'Actual response: {create_addon.status_code}, {create_addon.text}'
+        assert 'You cannot submit a Mozilla Signed Extension' in create_addon.text

@@ -39,6 +39,9 @@ class Login(Base):
     # 8. user used in API tests
     API_USER_EMAIL = os.environ.get('API_USER_EMAIL')
     API_USER_PASSWORD = os.environ.get('API_USER_PASSWORD')
+    # 9. user with a mozilla account that has specific submission permissions
+    STAFF_USER_EMAIL = os.environ.get('STAFF_USER_EMAIL')
+    STAFF_USER_PASSWORD = os.environ.get('STAFF_USER_PASSWORD')
 
     _email_locator = (By.NAME, 'email')
     _continue_locator = (By.CSS_SELECTOR, '.button-row button')
@@ -64,6 +67,8 @@ class Login(Base):
             self.fxa_login(self.SUBMISSIONS_USER_EMAIL, self.SUBMISSIONS_USER_PASSWORD)
         elif user == 'api_user':
             self.fxa_login(self.API_USER_EMAIL, self.API_USER_PASSWORD)
+        elif user == 'staff_user':
+            self.fxa_login(self.STAFF_USER_EMAIL, self.STAFF_USER_PASSWORD)
         else:
             self.fxa_login(self.REGULAR_USER_EMAIL, self.REGULAR_USER_PASSWORD)
 

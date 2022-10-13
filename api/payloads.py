@@ -1,4 +1,5 @@
 """Payload data used in the API addon submission tests"""
+from scripts import reusables
 
 minimal_manifest = {
     'manifest_version': 2,
@@ -153,7 +154,7 @@ preview_captions = {
     'caption': {
         'de': 'Image caption in german',
         'en-US': 'Image caption in english',
-        'fr': 'Image caption in french'
+        'fr': 'Image caption in french',
     }
 }
 
@@ -166,15 +167,9 @@ edit_version_details = {
         'ro': 'Edited FR Version notes added in API at addon creation time',
     },
     'compatibility': {
-        'android': {
-            'min': '85.0',
-            'max': '*'
-        },
-        'firefox': {
-            'min': '89.0',
-            'max': '100.*'
-        }
-    }
+        'android': {'min': '85.0', 'max': '*'},
+        'firefox': {'min': '89.0', 'max': '100.*'},
+    },
 }
 
 
@@ -185,18 +180,23 @@ def new_version_details(uuid):
         "release_notes": {
             "de": "New Version DE notes added in API at addon creation time",
             "en-US": "New Version EN-US notes added in API at addon creation time",
-            "fr": "New Version FR notes added in API at addon creation time"
+            "fr": "New Version FR notes added in API at addon creation time",
         },
         "compatibility": {
-            "android": {
-                "min": "78.0",
-                "max": "100.*"
-            },
-            "firefox": {
-                "min": "70.0a1",
-                "max": "*"
-            }
-        }
+            "android": {"min": "78.0", "max": "100.*"},
+            "firefox": {"min": "70.0a1", "max": "*"},
+        },
+    }
+    return body
+
+
+def lang_tool_details(uuid):
+    body = {
+        'slug': f'langpack-{reusables.get_random_string(10)}',
+        'categories': {
+            'firefox': ['general'],
+        },
+        'version': {'license': 'MPL-2.0', 'upload': uuid, 'compatibility': ['firefox']},
     }
     return body
 
@@ -206,13 +206,13 @@ custom_license = {
         'name': {
             'de': 'DE Custom License Name',
             'en-US': 'EN Custom License Name',
-            'fr': 'FR Custom License Name'
+            'fr': 'FR Custom License Name',
         },
         'text': {
             'de': 'DE Custom License Text',
             'en-US': 'EN Custom License Text',
-            'fr': 'FR Custom License Text'
-        }
+            'fr': 'FR Custom License Text',
+        },
     }
 }
 
