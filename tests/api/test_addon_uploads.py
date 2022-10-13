@@ -1283,7 +1283,6 @@ def test_upload_addon_with_reserved_guid_authorized_account(base_url, session_au
             },
             data=json.dumps(payload),
         )
-        print(create_addon.text)
         assert (
             create_addon.status_code == 201
         ), f'Actual response: {create_addon.status_code}, {create_addon.text}'
