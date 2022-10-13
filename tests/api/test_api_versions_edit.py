@@ -298,6 +298,81 @@ def test_upload_new_version_with_different_guid(base_url, session_auth):
     ), f'Actual response message was {new_version.text}'
 
 
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_upload_new_version_with_sources(base_url, session_auth):
+    """Uploads a new version for an exiting addon while also attaching additional source code"""
+    manifest = {
+        **payloads.minimal_manifest,
+        'name': 'EN-US Name edited',
+        'version': '3.0',
+    }
+    api_helpers.make_addon(manifest)
+    with open('sample-addons/make-addon.zip', 'rb') as file:
+        upload = requests.post(
+            url=f'{base_url}{_upload}',
+            headers={'Authorization': f'Session {session_auth}'},
+            files={'upload': file},
+            data={'channel': 'listed'},
+        )
+    time.sleep(3)
+    upload.raise_for_status()
+    # get the addon uuid generated after upload
+    uuid = upload.json()['uuid']
+    addon = payloads.edit_addon_details['slug']
+    # submit the version and attach source code
+    with open('sample-addons/listed-addon.zip', 'rb') as source:
+        new_version = requests.post(
+            url=f'{base_url}{_addon_create}{addon}/versions/',
+            headers={'Authorization': f'Session {session_auth}'},
+            data={'upload': uuid},
+            files={'source': source},
+        )
+    response = new_version.json()
+    new_version.raise_for_status()
+    # verify that the 'source' field doesn't return null in the API response
+    assert f'{base_url}/firefox/downloads/source/' in response['source']
+    url = response['source']
+    # compare the actual source file uploaded with the one returned by the API to make sure they match
+    response_source = requests.get(url, cookies={'sessionid': session_auth}, timeout=10)
+    api_helpers.compare_source_files(
+        'sample-addons/listed-addon.zip', response_source, 'POST'
+    )
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_edit_version_change_sources(base_url, session_auth):
+    """Upload different source file for an existing version and make sure that changes were applied"""
+    addon = payloads.edit_addon_details['slug']
+    request = requests.get(
+        url=f'{base_url}{_addon_create}{addon}',
+        headers={'Authorization': f'Session {session_auth}'},
+    )
+    # get the version id of the version we want to edit
+    version = request.json()['current_version']['id']
+    get_old_source = requests.get(
+        url=f'{base_url}{_addon_create}{addon}/versions/{version}/',
+        headers={'Authorization': f'Session {session_auth}'},
+    )
+    # download the previous source code attached to the version
+    previous_source = requests.get(
+        get_old_source.json()['source'], cookies={'sessionid': session_auth}, timeout=10
+    )
+    with open('sample-addons/unlisted-addon.zip', 'rb') as source:
+        change_source = requests.patch(
+            url=f'{base_url}{_addon_create}{addon}/versions/{version}/',
+            headers={'Authorization': f'Session {session_auth}'},
+            files={'source': source},
+        )
+    # download the new source code attached to the  version
+    new_source = requests.get(
+        change_source.json()['source'], cookies={'sessionid': session_auth}, timeout=10
+    )
+    # compare that the previous source and the new source do not match
+    api_helpers.compare_source_files(previous_source, new_source, 'PATCH')
+
+
 @pytest.mark.parametrize(
     'slug',
     [
