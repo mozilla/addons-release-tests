@@ -1083,9 +1083,11 @@ def test_upload_theme_with_wrong_license(base_url, session_auth):
 
 
 @pytest.mark.serial
-@pytest.mark.login('staff_user')
 def test_upload_language_pack_unauthorized_user(selenium, base_url):
     """Users not part of the language pack submission group are not allowed to submit langpacks"""
+    # get the sessionid for a regular user
+    page = Home(selenium, base_url).open().wait_for_page_to_load()
+    page.login('developer')
     session_auth = selenium.get_cookie('sessionid')
     with open('sample-addons/lang-pack.xpi', 'rb') as file:
         upload = requests.post(
@@ -1213,13 +1215,14 @@ def test_upload_privileged_addon_with_unauthorized_account(base_url, session_aut
 
 
 @pytest.mark.serial
-@pytest.mark.create_session('staff_user')
-def test_upload_privileged_addon_with_authorized_account(base_url, session_auth):
+@pytest.mark.login('staff_user')
+def test_upload_privileged_addon_with_authorized_account(selenium, base_url):
     """Upload an addon signed with a mozilla signature using an account holding the right permissions"""
+    session_auth = selenium.get_cookie('sessionid')
     with open('sample-addons/mozilla-signed.xpi', 'rb') as file:
         upload = requests.post(
             url=f'{base_url}{_upload}',
-            headers={'Authorization': f'Session {session_auth}'},
+            headers={'Authorization': f'Session {session_auth["value"]}'},
             files={'upload': file},
             data={'channel': 'unlisted'},
         )
@@ -1231,7 +1234,7 @@ def test_upload_privileged_addon_with_authorized_account(base_url, session_auth)
         create_addon = requests.post(
             url=f'{base_url}{_addon_create}',
             headers={
-                'Authorization': f'Session {session_auth}',
+                'Authorization': f'Session {session_auth["value"]}',
                 'Content-Type': 'application/json',
             },
             data=json.dumps(payload),
