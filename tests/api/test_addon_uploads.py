@@ -1128,7 +1128,7 @@ def test_upload_language_pack_with_authorized_user(base_url, session_auth):
             files={'upload': file},
             data={'channel': 'listed'},
         )
-    time.sleep(3)
+    time.sleep(5)
     upload.raise_for_status()
     # get the addon uuid generated after upload
     uuid = upload.json()['uuid']
@@ -1160,7 +1160,7 @@ def test_upload_language_pack_incorrect_category(base_url, session_auth):
             files={'upload': file},
             data={'channel': 'listed'},
         )
-    time.sleep(3)
+    time.sleep(5)
     upload.raise_for_status()
     # get the addon uuid generated after upload
     uuid = upload.json()['uuid']
