@@ -2,7 +2,11 @@
    "base_url": "https://addons-dev.allizom.org",
    "detail_extension_slug": "awesome-screenshot-plus-",
    "duplicate_guid": "@contain-facebook",
-   "approved_addon_with_sources": "approved-src-code",
+   "approved_addon_with_sources": "jswszwpeoc",
+   "api_post_valid_author": 10641975,
+   "api_post_author_no_display_name": 10642339,
+   "api_post_author_no_dev_agreement": 10642340,
+   "api_post_additional_author": 10640485,
    "contributions_bad_request_message": "{\"contributions_url\":[\"URL domain must be one of [www.buymeacoffee.com, donate.mozilla.org, flattr.com, github.com, ko-fi.com, liberapay.com, www.micropayment.de, opencollective.com, www.patreon.com, www.paypal.com, paypal.me].\"]}",
    "image_validation_messages": [
       "Images must be either PNG or JPG.",
