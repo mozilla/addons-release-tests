@@ -41,7 +41,8 @@ def test_addon_add_new_author(base_url, session_auth, variables):
 
 
 @pytest.mark.serial
-@pytest.mark.login('developer')
+@pytest.mark.create_session('staff_user')
+@pytest.mark.clear_session
 def test_addon_author_decline_invitation(selenium, base_url, variables):
     """With a user that was invited to become an addon author, decline the invitation received"""
     session_auth = selenium.get_cookie('sessionid')
