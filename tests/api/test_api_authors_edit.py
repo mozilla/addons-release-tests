@@ -43,13 +43,12 @@ def test_addon_add_new_author(base_url, session_auth, variables):
 @pytest.mark.serial
 @pytest.mark.create_session('staff_user')
 @pytest.mark.clear_session
-def test_addon_author_decline_invitation(selenium, base_url, variables):
+def test_addon_author_decline_invitation(selenium, base_url, session_auth, variables):
     """With a user that was invited to become an addon author, decline the invitation received"""
-    session_auth = selenium.get_cookie('sessionid')
     addon = payloads.edit_addon_details['slug']
     decline_invite = requests.post(
         url=f'{base_url}{_addon_create}{addon}/pending-authors/decline/',
-        headers={'Authorization': f'Session {session_auth["value"]}'},
+        headers={'Authorization': f'Session {session_auth}'},
     )
     assert (
         decline_invite.status_code == 200
@@ -57,7 +56,7 @@ def test_addon_author_decline_invitation(selenium, base_url, variables):
     # try to re-decline invitation to make sure only once it's possible and there are no unexpected errors raised
     redecline_invite = requests.post(
         url=f'{base_url}{_addon_create}{addon}/pending-authors/decline/',
-        headers={'Authorization': f'Session {session_auth["value"]}'},
+        headers={'Authorization': f'Session {session_auth}'},
     )
     assert (
         redecline_invite.status_code == 403
@@ -65,7 +64,7 @@ def test_addon_author_decline_invitation(selenium, base_url, variables):
     # After having declined an invitation, try to confirm it; this should not be allowed
     confirm_declined_invite = requests.post(
         url=f'{base_url}{_addon_create}{addon}/pending-authors/confirm/',
-        headers={'Authorization': f'Session {session_auth["value"]}'},
+        headers={'Authorization': f'Session {session_auth}'},
     )
     assert (
         confirm_declined_invite.status_code == 403
