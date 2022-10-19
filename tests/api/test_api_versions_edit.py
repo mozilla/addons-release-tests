@@ -374,6 +374,76 @@ def test_edit_version_change_sources(base_url, session_auth):
 
 
 @pytest.mark.parametrize(
+    'file_type',
+    [
+        'tar-bz2-ext.tar.bz2',
+        'tgz-ext.tgz',
+        'tar-gz-ext.tar.gz',
+    ],
+    ids=[
+        'Archive in "tar.bz2" format',
+        'Archive in "tgz" format',
+        'Archive in "tar.gz" format',
+    ],
+)
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_edit_version_upload_supported_source_files(base_url, session_auth, file_type):
+    """Upload all the supported source file types and make sure the request is successful"""
+    addon = payloads.edit_addon_details['slug']
+    request = requests.get(
+        url=f'{base_url}{_addon_create}{addon}',
+        headers={'Authorization': f'Session {session_auth}'},
+    )
+    # get the version id of the version we want to edit
+    version = request.json()['current_version']['id']
+    with open(f'sample-addons/{file_type}', 'rb') as file:
+        upload_source = requests.patch(
+            url=f'{base_url}{_addon_create}{addon}/versions/{version}/',
+            headers={'Authorization': f'Session {session_auth}'},
+            files={'source': file},
+        )
+    assert (
+        upload_source.status_code == 200
+    ), f'For file_type "{file_type}", status code = {upload_source.status_code}, message = {upload_source.text}'
+    # verify that the file upload was successful by comparing the uploaded file with the file returned by the API
+    response = upload_source.json()
+    url = response['source']
+    response_source = requests.get(url, cookies={'sessionid': session_auth}, timeout=10)
+    api_helpers.compare_source_files(
+        f'sample-addons/{file_type}', response_source, 'post'
+    )
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_sources_cannot_be_changed_for_approved_versions(
+    base_url, session_auth, variables
+):
+    """Addons that were Approved by a reviewer can't have their source files changed"""
+    addon = variables['approved_addon_with_sources']
+    request = requests.get(
+        url=f'{base_url}{_addon_create}{addon}',
+        headers={'Authorization': f'Session {session_auth}'},
+    )
+    # get the version id of the version we want to edit
+    version = request.json()['current_version']['id']
+    with open('sample-addons/source-img.zip', 'rb') as file:
+        upload_source = requests.patch(
+            url=f'{base_url}{_addon_create}{addon}/versions/{version}/',
+            headers={'Authorization': f'Session {session_auth}'},
+            files={'source': file},
+        )
+    assert (
+        upload_source.status_code == 400
+    ), f'Actual response: {upload_source.status_code}, {upload_source.text}'
+    assert (
+        'Source cannot be changed because this version has been reviewed by Mozilla.'
+        in upload_source.text
+    ), f'Actual response message was {upload_source.text}'
+
+
+@pytest.mark.parametrize(
     'slug',
     [
         '',
