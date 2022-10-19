@@ -232,3 +232,10 @@ def theme_details(uuid, theme_license):
         }
     }
     return body
+
+
+author_stats = {
+    "role": "developer",
+    "listed": False,
+    "position": 0
+}

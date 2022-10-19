@@ -1292,7 +1292,6 @@ def test_upload_addon_with_reserved_guid_authorized_account(base_url, session_au
 
 @pytest.mark.serial
 @pytest.mark.create_session('staff_user')
-@pytest.mark.clear_session
 def test_upload_addon_with_trademark_name_authorized_account(
     selenium, base_url, session_auth
 ):
