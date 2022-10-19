@@ -12,6 +12,9 @@ class AboutAddons(Page):
     _search_box_locator = (By.CSS_SELECTOR, '.main-search search-textbox')
     _extension_tab_button_locator = (By.CSS_SELECTOR, 'button[name = "extension"]')
     _theme_tab_button_locator = (By.CSS_SELECTOR, 'button[name = "theme"]')
+    _dictionary_tab_button_locator = (By.CSS_SELECTOR, 'button[name = "dictionary"]')
+    _langpack_tab_button_locator = (By.CSS_SELECTOR, 'button[name = "locale"]')
+    _extension_disable_toggle_locator = (By.CLASS_NAME, 'extension-enable-button')
     _enabled_theme_status_locator = (By.CLASS_NAME, 'card.addon')
     _installed_addon_cards_locator = (By.CSS_SELECTOR, '.card.addon')
     _enabled_theme_image_locator = (By.CLASS_NAME, 'card-heading-image')
@@ -55,6 +58,25 @@ class AboutAddons(Page):
                 (By.CLASS_NAME, 'list-section-heading'), 'Enabled'
             )
         )
+
+    def click_dictionaries_side_button(self):
+        self.find_element(*self._dictionary_tab_button_locator).click()
+        self.wait.until(
+            EC.text_to_be_present_in_element(
+                (By.CLASS_NAME, 'list-section-heading'), 'Enabled'
+            )
+        )
+
+    def click_language_side_button(self):
+        self.find_element(*self._langpack_tab_button_locator).click()
+        self.wait.until(
+            EC.text_to_be_present_in_element(
+                (By.CLASS_NAME, 'list-section-heading'), 'Enabled'
+            )
+        )
+
+    def disable_extension(self):
+        self.find_element(*self._extension_disable_toggle_locator).click()
 
     @property
     def installed_addon_cards(self):
