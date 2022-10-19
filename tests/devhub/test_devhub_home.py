@@ -449,7 +449,6 @@ def test_devhub_mozilla_footer_link(base_url, selenium):
             'discourse',
             '/about',
             'review_guide',
-            'mozilla.org',  # temporary
         ]
     ),
     ids=[
@@ -461,7 +460,6 @@ def test_devhub_mozilla_footer_link(base_url, selenium):
         'DevHub Footer - Addons section -  Forum',
         'DevHub Footer - Addons section -  Report a bug',
         'DevHub Footer - Addons section -  Review Guide',
-        'DevHub Footer - Addons section -  Site status',
     ],
 )
 @pytest.mark.nondestructive
