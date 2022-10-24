@@ -42,8 +42,7 @@ def test_addon_add_new_author(base_url, session_auth, variables):
 
 @pytest.mark.serial
 @pytest.mark.create_session('staff_user')
-@pytest.mark.clear_session
-def test_addon_author_decline_invitation(selenium, base_url, session_auth, variables):
+def test_addon_author_decline_invitation(base_url, session_auth, variables):
     """With a user that was invited to become an addon author, decline the invitation received"""
     addon = payloads.edit_addon_details['slug']
     decline_invite = requests.post(
@@ -167,3 +166,94 @@ def test_addon_confirm_invitation_with_wrong_user(base_url, session_auth, variab
     assert (
         confirm_invite.status_code == 403
     ), f'Actual response: {confirm_invite.status_code}, {confirm_invite.text}'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_addon_list_pending_authors(base_url, session_auth, variables):
+    """Check that users invited to become addon authors are listed in the pending authors queue"""
+    addon = payloads.edit_addon_details['slug']
+    # this is the author that should be pending for confirmation
+    author = variables['api_post_valid_author']
+    get_pending_authors = requests.get(
+        url=f'{base_url}{_addon_create}{addon}/pending-authors/',
+        headers={'Authorization': f'Session {session_auth}'},
+    )
+    get_pending_authors.raise_for_status()
+    assert author == get_pending_authors.json()[0].get('user_id')
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_addon_get_pending_author_details(base_url, session_auth, variables):
+    """Check that the author details (role, position, visibility) set up in the request
+    are returned in the pending author details API"""
+    addon = payloads.edit_addon_details['slug']
+    author = variables['api_post_valid_author']
+    get_pending_author_details = requests.get(
+        url=f'{base_url}{_addon_create}{addon}/pending-authors/{author}/',
+        headers={'Authorization': f'Session {session_auth}'},
+    )
+    get_pending_author_details.raise_for_status()
+    pending_author = get_pending_author_details.json()
+    # check that the author details match the actual author that is currently pending
+    assert author == pending_author['user_id']
+    assert payloads.author_stats['role'] == pending_author['role']
+    assert payloads.author_stats['listed'] == pending_author['listed']
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_addon_edit_pending_author(base_url, session_auth, variables):
+    """As the user who initiated the author request, edit the details (role, visibility) of
+    the invite and make sure that the changes are applied correctly"""
+    addon = payloads.edit_addon_details['slug']
+    author = variables['api_post_valid_author']
+    payload = {'role': 'owner', 'listed': True}
+    edit_pending_author_details = requests.patch(
+        url=f'{base_url}{_addon_create}{addon}/pending-authors/{author}/',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            'Content-Type': 'application/json',
+        },
+        data=json.dumps(payload),
+    )
+    edit_pending_author_details.raise_for_status()
+    pending_author = edit_pending_author_details.json()
+    # check that the author details have been updated
+    assert author == pending_author['user_id']
+    assert payload['role'] == pending_author['role']
+    assert payload['listed'] == pending_author['listed']
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_addon_delete_pending_author(base_url, session_auth, variables):
+    """As the user who initiated the author request, delete the invite before the
+    new author had the chance to confirm it"""
+    addon = payloads.edit_addon_details['slug']
+    author = variables['api_post_valid_author']
+    delete_pending_author = requests.delete(
+        url=f'{base_url}{_addon_create}{addon}/pending-authors/{author}/',
+        headers={'Authorization': f'Session {session_auth}'},
+    )
+    assert (
+        delete_pending_author.status_code == 204
+    ), f'Actual response: {delete_pending_author.status_code}, {delete_pending_author.text}'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('staff_user')
+@pytest.mark.clear_session
+def test_addon_author_confirm_deleted_invitation(
+    base_url, selenium, session_auth, variables
+):
+    """With the author that was invited, try to accept the deleted invite to make sure it is not possible"""
+    addon = payloads.edit_addon_details['slug']
+    confirm_deleted_invite = requests.post(
+        url=f'{base_url}{_addon_create}{addon}/pending-authors/confirm/',
+        headers={'Authorization': f'Session {session_auth}'},
+    )
+    assert (
+        confirm_deleted_invite.status_code == 403
+    ), f'Actual response: {confirm_deleted_invite.status_code}, {confirm_deleted_invite.text}'
