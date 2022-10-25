@@ -444,6 +444,36 @@ def test_non_developer_user_profile_is_not_public(base_url, selenium, variables)
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
+def test_user_addon_cards_for_users_with_multiple_roles(base_url, selenium, variables):
+    """Users who are both extension developers and theme artists should have the Extensions
+    and Themes cards displayed on their profiles. Additionally, the User reviews card should
+    be hidden when the profile is viewed by another user"""
+    user_profile = variables['developer_and_artist_role']
+    selenium.get(f'{base_url}/user/{user_profile}')
+    user = User(selenium, base_url).wait_for_user_to_load()
+    user_profile_name = user.user_display_name.text
+    # check that extensions results have the following properties displayed:
+    assert f'Extensions by {user_profile_name}' in user.view.user_extensions_card_header
+    for extension in user.view.user_extensions_results:
+        assert extension.search_name.is_displayed()
+        assert extension.search_result_icon.is_displayed()
+        assert extension.search_result_rating_stars.is_displayed()
+        assert user_profile_name in extension.search_result_author.text
+        assert extension.search_result_users.is_displayed()
+        assert extension.search_result_summary.is_displayed()
+    # check that themes results have the following properties displayed:
+    assert f'Themes by {user_profile_name}' in user.view.user_themes_card_header
+    for theme in user.view.user_themes_results:
+        assert theme.search_name.is_displayed()
+        assert theme.search_result_icon.is_displayed()
+        assert theme.search_result_users.is_displayed()
+    # verify that the user profile ratings card is not displayed when viewed by another user
+    with pytest.raises(NoSuchElementException):
+        selenium.find_element(By.CLASS_NAME, 'UserProfile-reviews')
+
+
+@pytest.mark.serial
+@pytest.mark.nondestructive
 def test_user_profile_extensions_card(base_url, selenium, variables):
     page = variables['developer_and_artist_role']
     selenium.get(f'{base_url}/user/{page}')

@@ -62,11 +62,20 @@ class User(Base):
         _user_biography_locator = (By.CSS_SELECTOR, '.UserProfile-biography')
         _user_profile_edit_link_locator = (By.CSS_SELECTOR, '.UserProfile-edit-link')
         _user_extensions_card_locator = (By.CSS_SELECTOR, '.AddonsCard--vertical')
+        _user_extensions_card_header_locator = (
+            By.CSS_SELECTOR,
+            '.AddonsCard--vertical .Card-header-text',
+        )
         _user_extensions_results_locator = (
             By.CSS_SELECTOR,
             '.AddonsCard--vertical .SearchResult',
         )
         _user_themes_card_locator = (By.CSS_SELECTOR, '.AddonsByAuthorsCard--theme')
+        _user_themes_card_header_locator = (
+            By.CSS_SELECTOR,
+            '.AddonsByAuthorsCard--theme .Card-header-text',
+        )
+        _user_themes_results_locator = (By.CLASS_NAME, 'SearchResult--theme')
         _user_reviews_card_locator = (By.CSS_SELECTOR, '.UserProfile-reviews')
         _extensions_pagination_locator = (
             By.CSS_SELECTOR,
@@ -200,6 +209,10 @@ class User(Base):
             return Search(self.driver, self.page.base_url).wait_for_page_to_load()
 
         @property
+        def user_extensions_card_header(self):
+            return self.find_element(*self._user_extensions_card_header_locator).text
+
+        @property
         def user_extensions_results(self):
             items = self.find_elements(*self._user_extensions_results_locator)
             return [
@@ -213,6 +226,20 @@ class User(Base):
         def user_themes(self):
             self.find_element(*self._user_themes_card_locator)
             return Search(self.driver, self.page.base_url).wait_for_page_to_load()
+
+        @property
+        def user_themes_card_header(self):
+            return self.find_element(*self._user_themes_card_header_locator).text
+
+        @property
+        def user_themes_results(self):
+            items = self.find_elements(*self._user_themes_results_locator)
+            return [
+                Search(
+                    self.driver, self.page.base_url
+                ).SearchResultList.ResultListItems(self, el)
+                for el in items
+            ]
 
         @property
         def extensions_pagination(self):
