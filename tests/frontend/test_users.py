@@ -450,7 +450,7 @@ def test_user_addon_cards_for_users_with_multiple_roles(base_url, selenium, vari
     be hidden when the profile is viewed by another user"""
     user_profile = variables['developer_and_artist_role']
     selenium.get(f'{base_url}/user/{user_profile}')
-    user = User(selenium, base_url).wait_for_user_to_load()
+    user = User(selenium, base_url)
     user_profile_name = user.user_display_name.text
     # check that extensions results have the following properties displayed:
     assert f'Extensions by {user_profile_name}' in user.view.user_extensions_card_header
@@ -468,7 +468,10 @@ def test_user_addon_cards_for_users_with_multiple_roles(base_url, selenium, vari
         assert theme.search_result_icon.is_displayed()
         assert theme.search_result_users.is_displayed()
     # verify that the user profile ratings card is not displayed when viewed by another user
-    with pytest.raises(NoSuchElementException):
+    with pytest.raises(
+        NoSuchElementException,
+        match='Message: Unable to locate element: .UserProfile-reviews',
+    ):
         selenium.find_element(By.CLASS_NAME, 'UserProfile-reviews')
 
 
