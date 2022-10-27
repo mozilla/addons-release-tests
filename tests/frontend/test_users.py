@@ -469,7 +469,7 @@ def test_user_addon_cards_for_users_with_multiple_roles(base_url, selenium, vari
         assert theme.search_result_users.is_displayed()
     # verify that the user profile ratings card is not displayed when viewed by another user
     with pytest.raises(
-        NoSuchElementException,
+        Exception,
         match='Message: Unable to locate element: .UserProfile-reviews',
     ):
         selenium.find_element(By.CLASS_NAME, 'UserProfile-reviews')
