@@ -116,7 +116,16 @@ class Search(Page):
             _search_item_name_locator = (By.CSS_SELECTOR, '.SearchResult-link')
             _promoted_badge_locator = (By.CSS_SELECTOR, '.PromotedBadge')
             _promoted_badge_label_locator = (By.CSS_SELECTOR, '.PromotedBadge-label')
-            _users_locator = (By.CLASS_NAME, 'SearchResult-users-text')
+            _users_locator = (By.CLASS_NAME, 'SearchResult-users')
+            _users_number_locator = (By.CLASS_NAME, 'SearchResult-users-text')
+            _icon_locator = (By.CLASS_NAME, 'SearchResult-icon')
+            _rating_stars_locator = (By.CLASS_NAME, 'SearchResult-rating')
+            _author_locator = (By.CLASS_NAME, 'SearchResult-author')
+            _summary_locator = (By.CLASS_NAME, 'SearchResult-summary')
+
+            @property
+            def search_name(self):
+                return self.find_element(*self._search_item_name_locator)
 
             @property
             def name(self):
@@ -134,7 +143,7 @@ class Search(Page):
 
             @property
             def users(self):
-                users = self.find_element(*self._users_locator).text
+                users = self.find_element(*self._users_number_locator).text
                 return int(users.split()[0].replace(',', '').replace('users', ''))
 
             @property
@@ -142,6 +151,26 @@ class Search(Page):
                 """Returns the rating"""
                 rating = self.find_element(*self._rating_locator).get_property('title')
                 return float(rating.split()[1])
+
+            @property
+            def search_result_icon(self):
+                return self.find_element(*self._icon_locator)
+
+            @property
+            def search_result_rating_stars(self):
+                return self.find_element(*self._rating_stars_locator)
+
+            @property
+            def search_result_author(self):
+                return self.find_element(*self._author_locator)
+
+            @property
+            def search_result_users(self):
+                return self.find_element(*self._users_locator)
+
+            @property
+            def search_result_summary(self):
+                return self.find_element(*self._summary_locator)
 
             @property
             def promoted_badge(self):
