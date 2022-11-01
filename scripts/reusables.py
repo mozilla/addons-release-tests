@@ -29,3 +29,13 @@ def current_date():
     today = datetime.datetime.today()
     time = today.strftime('%b %#d, %Y')
     return time
+
+
+def convert_bytes(size):
+    """Used for converting addon file sizes from bytes (as returned by the 'file.length' property) to units
+      from on AMO (usually KB or MB) for the purpose of comparing that AMO is showing the correct file size"""
+    for x in ['bytes', 'KB', 'MB']:
+        if size < 1024.0:
+            return "%3.2f %s" % (size, x)
+        size /= 1024.0
+    return size

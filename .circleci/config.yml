@@ -273,6 +273,36 @@ jobs:
       - store_artifacts:
           path: api_submission_tests.html
 
+  # a set of frontend regression tests to be run on AMO -dev once per day (set as nightly tests)
+  frontend_dev_parallel_tests:
+    executor:
+      name: win/default
+      size: "large"
+    working_directory: ~/addons-release-tests/
+    steps:
+      - checkout
+      - run:
+          name: Upgrade pip
+          command: py -3.9 -m pip install --upgrade pip --user
+      - run:
+          name: Install requirements
+          command: py -3.9 -m pip install --no-deps -r ./requirements.txt
+      - run:
+          name: Install geckodriver
+          command: choco install selenium-gecko-driver
+      - run:
+          name: Install Firefox
+          command: choco install firefox-nightly --pre
+      - run:
+          name: Run frontend parallel tests
+          environment:
+            MOZ_HEADLESS: 1
+            PYTEST_ADDOPTS: -n 4 --reruns 2
+          command: py -3.9 -m pytest tests\frontend -m "not serial and not prod_only" --driver Firefox --variables translations.json --variables dev.json --html=frontend-dev-parallel-test-results.html --self-contained-html
+          no_output_timeout: 30m
+      - store_artifacts:
+          path: frontend-dev-parallel-test-results.html
+
 workflows:
   commit_workflow:
     when:
@@ -317,3 +347,11 @@ workflows:
       - sanity_serial_tests: # # will run after the hold job is approved
           requires:
             - hold
+  # scheduled in CircleCI Project settings to run once a day
+  scheduled_dev_regression_tests:
+    when:
+      and:
+        - equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
+        - equal: [ "scheduled_dev_regression_tests", << pipeline.schedule.name >> ]
+    jobs:
+      - frontend_dev_parallel_tests
