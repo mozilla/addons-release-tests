@@ -577,7 +577,7 @@ def test_upload_extension_with_incorrect_version_number(base_url, session_auth):
     error = get_upload_details.json()
     # check the upload validation results for 'version' field errors
     assert (
-        '"/version" must match format "versionString"'
+        'The version string should be simplified.'
         in error['validation']['messages'][0]['message']
     )
     payload = payloads.listed_addon_minimal(uuid)
