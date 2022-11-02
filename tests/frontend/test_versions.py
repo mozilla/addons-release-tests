@@ -7,6 +7,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 
 from pages.desktop.frontend.versions import Versions
+from scripts import reusables
 
 
 @pytest.mark.nondestructive
@@ -84,22 +85,20 @@ def test_license_link(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 def test_current_version(selenium, base_url, variables):
-    addon_url = 'addon/devhub-listed-ext-07-30/'
+    addon_url = f'addon/{variables["addon_version_install"]}/'
     # get info from api
     response = requests.get(f'{base_url}/api/v5/addons/{addon_url}')
     addon_version = response.json()['current_version']['version']
-    addon_size_kb = (
-        str(round(response.json()['current_version']['file']['size'] / 1024, 2)) + ' KB'
-    )
+    addon_size = reusables.convert_bytes(response.json()['current_version']['file']['size'])
     api_date = response.json()['current_version']['file']['created'][:10]
     # process the date to have the same format as in frontend
     api_date = datetime.strptime(api_date, '%Y-%m-%d')
     api_processed_date = datetime.strftime(api_date, "%b %#d, %Y")
     # verify info displayed in page
     page = Versions(selenium, base_url)
-    selenium.get(variables['addon_version_page_url'])
+    selenium.get(f'{base_url}/addon/{variables["addon_version_install"]}/versions/')
     assert page.versions_list[0].version_number == addon_version
-    assert addon_size_kb == page.versions_list[0].version_size
+    assert addon_size == page.versions_list[0].version_size
     assert page.versions_list[0].released_date == api_processed_date
 
 

@@ -1,21 +1,57 @@
 {
-   "base_url": "https://addons-dev.allizom.org",
-   "detail_extension_slug": "awesome-screenshot-plus-",
-   "duplicate_guid": "@contain-facebook",
-   "approved_addon_with_sources": "jswszwpeoc",
-   "api_post_valid_author": 10642370,
-   "api_post_author_no_display_name": 10642339,
-   "api_post_author_no_dev_agreement": 10642340,
-   "api_post_additional_author": 10640485,
-   "contributions_bad_request_message": "{\"contributions_url\":[\"URL domain must be one of [www.buymeacoffee.com, donate.mozilla.org, flattr.com, github.com, ko-fi.com, liberapay.com, www.micropayment.de, opencollective.com, www.patreon.com, www.paypal.com, paypal.me].\"]}",
-   "image_validation_messages": [
+  "base_url": "https://addons-dev.allizom.org",
+
+  "search_term": "Flagfox",
+
+  "not_found_page_title": "Oops! We can’t find that page",
+
+  "secondary_hero_title": "Extensions are like apps for Firefox.",
+  "secondary_hero_summary": "They add features to Firefox to make browsing faster, safer, or just plain fun",
+
+  "detail_extension_slug": "awesome-screenshot-plus-",
+  "detail_extension_name": "Awesome Screenshot Plus - Capture, Annotate & More",
+  "by_firefox_addon": "addon_by_firefox",
+  "experimental_addon": "experimental_addon",
+  "addon_detail_guid": "{f2cd2fe0-0c62-40bd-8e28-2f4d7fc0ad43}",
+  "addon_detail_id": "622217",
+  "addon_unicode_slug": "웃统一码翻译翻译",
+  "lower_firefox_version":"lower_firefox ",
+  "higher_firefox_version": "higher_firefox",
+  "incompatible_platform": "platform_incompat",
+  "addon_with_stats": "facebook-container",
+  "addon_without_stats": "addon_without_stats ",
+  "theme_detail_page": "full-moon-kitty",
+  "support_site_link": "https://www.awesomescreenshot.com/",
+  "ratings_card_summary": "How are you enjoying Awesome Screenshot Plus - Capture, Annotate & More?",
+  "contribute_utm_param": "utm_content=product-page-contribute&utm_medium=referral&utm_source=addons.mozilla.org",
+  "contribute_card_summary": "The developer of this extension asks that you help support its continued development by making a small contribution.",
+  "install_warning_message": "This add-on is not actively monitored for security by Mozilla. Make sure you trust it before installing.",
+
+  "static_page_blocked_addon": "https://addons-dev.allizom.org/en-US/firefox/blocked-addon/%7B904e7c93-3726-4f05-a357-cd2ceb32dedf%7D/",
+  "blocked_addon_name": "Awaiting review",
+  "static_page_login_expired_text": "Login authentication has expired. Reload the page to continue without authentication, or login again using the Log In link at the top of the page.",
+
+  "addon_version_page_url": "https://addons-dev.allizom.org/en-US/firefox/addon/dark22reader/versions/",
+  "version_page_notice_message": "Be careful with old versions! These versions are displayed for testing and reference purposes.\nYou should always use the latest version of an add-on.",
+  "non_recommended_addon": "non-recommended",
+  "addon_version_install": "ghosttext",
+
+
+  "duplicate_guid": "@contain-facebook",
+  "approved_addon_with_sources": "jswszwpeoc",
+  "api_post_valid_author": 10642370,
+  "api_post_author_no_display_name": 10642339,
+  "api_post_author_no_dev_agreement": 10642340,
+  "api_post_additional_author": 10640485,
+  "contributions_bad_request_message": "{\"contributions_url\":[\"URL domain must be one of [www.buymeacoffee.com, donate.mozilla.org, flattr.com, github.com, ko-fi.com, liberapay.com, www.micropayment.de, opencollective.com, www.patreon.com, www.paypal.com, paypal.me].\"]}",
+  "image_validation_messages": [
       "Images must be either PNG or JPG.",
       "Images must be either PNG or JPG.",
       "Images cannot be animated.",
       "Upload a valid image. The file you uploaded was either not an image or a corrupted image.",
       "Images must be square (same width and height)."
    ],
-   "name_translations_from_locales_xpi": {
+  "name_translations_from_locales_xpi": {
        "ar": "«غرير الخصوصية»",
        "de": "German name from _locales",
        "en-US": "Privacy Badger",

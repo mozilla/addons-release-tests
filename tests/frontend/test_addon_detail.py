@@ -15,6 +15,7 @@ from pages.desktop.frontend.search import Search
 from pages.desktop.frontend.users import User
 from pages.desktop.frontend.reviews import Reviews
 from pages.desktop.frontend.versions import Versions
+from scripts import reusables
 
 
 @pytest.mark.sanity
@@ -349,13 +350,12 @@ def test_more_info_addon_size(selenium, base_url, variables):
     selenium.get(f'{base_url}/addon/{extension}')
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     assert addon.more_info.addon_size.is_displayed()
-    more_info_size = addon.more_info.addon_size.text.split()[0].replace(' MB', '')
-    # get the file URL and read its size - conversion from bytes to Mb is required
+    more_info_size = addon.more_info.addon_size.text
+    # get the file URL and read its size
     file = urllib.request.urlopen(addon.addon_xpi)
-    size = file.length / (1024 * 1024)
-    # transforming the file size in two decimal format and comparing
-    # with the size number displayed in the more info card
-    assert '%.2f' % size == more_info_size
+    # convert the size returned by the file.length from bytes to the unit displayed on AMO
+    size = reusables.convert_bytes(file.length)
+    assert size == more_info_size
 
 
 @pytest.mark.sanity
@@ -492,10 +492,11 @@ def test_more_info_custom_license(selenium, base_url, variables):
     extension = variables['detail_extension_slug']
     selenium.get(f'{base_url}/addon/{extension}')
     addon = Detail(selenium, base_url).wait_for_page_to_load()
+    addon_name = addon.name
     # checks that the AMO custom license page opens and has the correct content
     custom_license = addon.more_info.click_addon_custom_license()
     assert (
-        'Custom License for Ghostery - Privacy Ad Blocker'
+        f'Custom License for {addon_name}'
         in custom_license.custom_licence_and_privacy_header
     )
     assert custom_license.custom_licence_and_privacy_text.is_displayed()
@@ -507,10 +508,11 @@ def test_more_info_privacy_policy(selenium, base_url, variables):
     extension = variables['detail_extension_slug']
     selenium.get(f'{base_url}/addon/{extension}')
     addon = Detail(selenium, base_url).wait_for_page_to_load()
+    addon_name = addon.name
     privacy = addon.more_info.click_addon_privacy_policy()
     # checks that the AMO privacy policy page opens and has the correct content
     assert (
-        'Privacy policy for Ghostery - Privacy Ad Blocker'
+        f'Privacy policy for {addon_name}'
         in privacy.custom_licence_and_privacy_header
     )
     assert privacy.custom_licence_and_privacy_text.is_displayed()
@@ -532,10 +534,11 @@ def test_more_info_eula(selenium, base_url, variables):
     extension = variables['detail_extension_slug']
     selenium.get(f'{base_url}/addon/{extension}')
     addon = Detail(selenium, base_url).wait_for_page_to_load()
+    addon_name = addon.name
     eula = addon.more_info.addon_eula()
     # checks that the AMO eula page opens and has the correct content
     assert (
-        'End-User License Agreement for Ghostery - Privacy Ad Blocker'
+        f'End-User License Agreement for {addon_name}'
         in eula.custom_licence_and_privacy_header
     )
     assert eula.custom_licence_and_privacy_text.is_displayed()
@@ -557,12 +560,10 @@ def test_compare_more_info_latest_version(selenium, base_url, variables):
     extension = variables['detail_extension_slug']
     selenium.get(f'{base_url}/addon/{extension}')
     addon = Detail(selenium, base_url).wait_for_page_to_load()
+    addon_name = addon.name
     more_info_version = addon.more_info.addon_version_number.text
     all_versions = addon.more_info.addon_versions()
-    assert (
-        'Ghostery - Privacy Ad Blocker version history'
-        in all_versions.versions_page_header.text
-    )
+    assert addon_name in all_versions.versions_page_header.text
     # verifies that the version number displayed in the more info card
     # matches the latest version number present in all versions page
     latest_version = all_versions.latest_version_number

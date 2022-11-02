@@ -323,7 +323,7 @@ def test_top_rated_recommended_extensions(base_url, selenium, variables):
     page.search.search_for('')
     # verify if sort filter applied correctly
     for result in search_page.result_list.extensions:
-        assert getattr(result, 'rating') > 4
+        assert getattr(result, 'rating') >= 4
     # verify that no themes are displayed
     assert len(search_page.result_list.themes) == 0
     # verify badge type
@@ -344,7 +344,7 @@ def test_top_rated_recommended_themes(base_url, selenium, variables):
     page.search.search_for('')
     # verify if sort filter applied correctly
     for result in search_page.result_list.extensions:
-        assert getattr(result, 'rating') > 4
+        assert getattr(result, 'rating') >= 4
     # verify that all elements are themes
     assert len(search_page.result_list.themes) == len(
         search_page.result_list.extensions
