@@ -265,7 +265,7 @@ def test_addon_invite_multiple_authors(base_url, session_auth, variables):
     # invite the first author
     first_author = variables['api_post_valid_author']
     payload = {**payloads.author_stats, 'user_id': first_author, 'position': 1}
-    second_invite = requests.post(
+    first_invite = requests.post(
         url=f'{base_url}{_addon_create}{addon}/pending-authors/',
         headers={
             'Authorization': f'Session {session_auth}',
@@ -274,8 +274,8 @@ def test_addon_invite_multiple_authors(base_url, session_auth, variables):
         data=json.dumps(payload),
     )
     assert (
-        second_invite.status_code == 201
-    ), f'Actual response: {second_invite.status_code}, {second_invite.text}'
+        first_invite.status_code == 201
+    ), f'Actual response: {first_invite.status_code}, {first_invite.text}'
     # invite the second author
     second_author = variables['api_post_additional_author']
     payload = {**payloads.author_stats, 'user_id': second_author, 'position': 2}
@@ -407,6 +407,125 @@ def test_addon_developer_role_cannot_delete_pending_author(
     assert (
         delete_author.status_code == 403
     ), f'Actual response: {delete_author.status_code}, {delete_author.text}'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_addon_list_active_authors(base_url, session_auth, variables):
+    """Verify that the list of active addon authors contains only the confirmed users"""
+    addon_owner = variables['api_addon_author_owner']
+    additional_author = variables['api_post_valid_author']
+    addon = payloads.edit_addon_details['slug']
+    get_authors = requests.get(
+        url=f'{base_url}{_addon_create}{addon}/authors/',
+        headers={'Authorization': f'Session {session_auth}'},
+    )
+    response = get_authors.json()
+    # we should have only two valid authors for this addon
+    assert len(response) == 2
+    assert response[0].get('user_id') == addon_owner
+    assert response[1].get('user_id') == additional_author
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_addon_author_owner_is_required(base_url, session_auth, variables):
+    """Try to downgrade the current single addon owner to a developer role.
+    The request should fail as an addon requires at least one active owner"""
+    addon = payloads.edit_addon_details['slug']
+    author = variables['api_addon_author_owner']
+    edit_author = requests.patch(
+        url=f'{base_url}{_addon_create}{addon}/authors/{author}/',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            'Content-Type': 'application/json',
+        },
+        data=json.dumps({'role': 'developer'}),
+    )
+    assert (
+        edit_author.status_code == 400
+    ), f'Actual response: {edit_author.status_code}, {edit_author.text}'
+    assert (
+        'Add-ons need at least one owner.' in edit_author.text
+    ), f'Actual message was {edit_author.text}'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_addon_one_listed_author_is_required(base_url, session_auth, variables):
+    """Check that an addon needs to have at least one author listed on the site"""
+    addon = payloads.edit_addon_details['slug']
+    author = variables['api_addon_author_owner']
+    edit_author = requests.patch(
+        url=f'{base_url}{_addon_create}{addon}/authors/{author}/',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            'Content-Type': 'application/json',
+        },
+        data=json.dumps({'listed': False}),
+    )
+    assert (
+        edit_author.status_code == 400
+    ), f'Actual response: {edit_author.status_code}, {edit_author.text}'
+    assert (
+        'Add-ons need at least one listed author.' in edit_author.text
+    ), f'Actual message was {edit_author.text}'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_addon_change_non_active_author_details(base_url, session_auth):
+    """Try to edit the details of a user that is not listed as an addon author
+    and make sure no unexpected errors are raised"""
+    addon = payloads.edit_addon_details['slug']
+    edit_author = requests.patch(
+        url=f'{base_url}{_addon_create}{addon}/authors/0123/',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            'Content-Type': 'application/json',
+        },
+        data=json.dumps(payloads.author_stats),
+    )
+    assert (
+        edit_author.status_code == 404
+    ), f'Actual response: {edit_author.status_code}, {edit_author.text}'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_unauthorized_user_change_author_details(base_url, session_auth, variables):
+    """With a user that is not listed as an addon author, try to edit author details
+    and make sure no unexpected errors are raised"""
+    author = variables['api_post_valid_author']
+    edit_author = requests.patch(
+        url=f'{base_url}{_addon_create}staff_user_adoon /authors/{author}/',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            'Content-Type': 'application/json',
+        },
+        data=json.dumps(payloads.author_stats),
+    )
+    assert (
+        edit_author.status_code == 403
+    ), f'Actual response: {edit_author.status_code}, {edit_author.text}'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_addon_delete_owner_author(base_url, session_auth, variables):
+    """Check that the only owner of an addon cannot be deleted"""
+    addon = payloads.edit_addon_details['slug']
+    author = variables['api_addon_author_owner']
+    delete_owner = requests.delete(
+        url=f'{base_url}{_addon_create}{addon}/authors/{author}/',
+        headers={'Authorization': f'Session {session_auth}'},
+    )
+    assert (
+        delete_owner.status_code == 400
+    ), f'Actual response: {delete_owner.status_code}, {delete_owner.text}'
+    assert (
+        'Add-ons need at least one owner.' in delete_owner.text
+    ), f'Actual message was {delete_owner.text}'
 
 
 @pytest.mark.serial
