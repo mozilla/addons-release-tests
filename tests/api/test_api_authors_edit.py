@@ -392,9 +392,8 @@ def test_addon_developer_role_cannot_edit_pending_author(
 
 @pytest.mark.serial
 @pytest.mark.create_session('staff_user')
-@pytest.mark.clear_session
 def test_addon_developer_role_cannot_delete_pending_author(
-    base_url, selenium, session_auth, variables
+    base_url, session_auth, variables
 ):
     """Check that an author with a 'developer' role doesn't have the rights to delete other
     pending authors; only authors with 'owner' roles have the rights to delete them"""
@@ -526,6 +525,112 @@ def test_addon_delete_owner_author(base_url, session_auth, variables):
     assert (
         'Add-ons need at least one owner.' in delete_owner.text
     ), f'Actual message was {delete_owner.text}'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('staff_user')
+def test_addon_developer_role_cannot_edit_authors(base_url, session_auth, variables):
+    """An author with a developer role should not be allowed to edit existing authors,
+    like elevating their role to owners for example"""
+    addon = payloads.edit_addon_details['slug']
+    author = variables['api_post_valid_author']
+    # send the patch author requests with the developer role
+    edit_author = requests.patch(
+        url=f'{base_url}{_addon_create}{addon}/authors/{author}/',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            'Content-Type': 'application/json',
+        },
+        data=json.dumps({'role': 'owner'}),
+    )
+    assert (
+        edit_author.status_code == 403
+    ), f'Actual response: {edit_author.status_code}, {edit_author.text}'
+    assert (
+        'You do not have permission to perform this action.' in edit_author.text
+    ), f'Actual message was {edit_author.text}'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('staff_user')
+def test_addon_developer_role_cannot_delete_authors(base_url, session_auth, variables):
+    """An author with a developer role should not be allowed to delete existing authors"""
+    addon = payloads.edit_addon_details['slug']
+    author = variables['api_post_valid_author']
+    # send the patch author requests with the developer role
+    delete_author = requests.delete(
+        url=f'{base_url}{_addon_create}{addon}/authors/{author}/',
+        headers={'Authorization': f'Session {session_auth}'},
+    )
+    assert (
+        delete_author.status_code == 403
+    ), f'Actual response: {delete_author.status_code}, {delete_author.text}'
+    assert (
+        'You do not have permission to perform this action.' in delete_author.text
+    ), f'Actual message was {delete_author.text}'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('staff_user')
+def test_addon_developer_role_cannot_delete_addon(base_url, session_auth):
+    """Verify that an addon cannot be deleted by an author with a developer role;
+    only owners are allowed to delete addons"""
+    addon = payloads.edit_addon_details['slug']
+    delete_addon = requests.get(
+        url=f'{base_url}{_addon_create}{addon}/delete_confirm/',
+        headers={'Authorization': f'Session {session_auth}'},
+    )
+    assert (
+        delete_addon.status_code == 403
+    ), f'Actual response: {delete_addon.status_code}, {delete_addon.text}'
+    assert (
+        'You do not have permission to perform this action.' in delete_addon.text
+    ), f'Actual message was {delete_addon.text}'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('staff_user')
+@pytest.mark.clear_session
+def test_addon_developer_role_can_request_author_details(
+    selenium, base_url, variables, session_auth
+):
+    """Verify that an author with a developer role can view details for existing addon authors"""
+    addon = payloads.edit_addon_details['slug']
+    author = variables['api_post_valid_author']
+    # send the patch author requests with the developer role
+    get_author_details = requests.get(
+        url=f'{base_url}{_addon_create}{addon}/authors/{author}/',
+        headers={'Authorization': f'Session {session_auth}'},
+    )
+    assert (
+        get_author_details.status_code == 200
+    ), f'Actual response: {get_author_details.status_code}, {get_author_details.text}'
+    author_detail = get_author_details.json()
+    # check that the user_id requested is the same as the user_id from the response
+    assert author == author_detail['user_id']
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
+def test_addon_change_author_stats(base_url, session_auth, variables):
+    """Change the details - role, visibility, position - of an exiting author
+    and verify that changes were applied correctly"""
+    addon = payloads.edit_addon_details['slug']
+    author = variables['api_post_valid_author']
+    payload = {**payloads.author_stats, 'role': 'owner', 'position': 0, 'listed': True}
+    edit_author = requests.patch(
+        url=f'{base_url}{_addon_create}{addon}/authors/{author}/',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            'Content-Type': 'application/json',
+        },
+        data=json.dumps(payload),
+    )
+    edit_author.raise_for_status()
+    new_stats = edit_author.json()
+    assert new_stats['listed'] == payload['listed']
+    assert new_stats['position'] == payload['position']
+    assert new_stats['role'] == payload['role']
 
 
 @pytest.mark.serial
