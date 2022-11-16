@@ -509,6 +509,21 @@ def test_delete_developer_reply_to_review(selenium, base_url, variables):
     )
 
 
+@pytest.mark.serial
+@pytest.mark.nondestructive
+def test_developers_cannot_rate_their_own_addons(selenium, base_url, variables):
+    """Log in as an addon developer and try to post a review to your own addon; the request should fail"""
+    extension = variables['dev_reply_review']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    addon.login('developer')
+    addon.ratings.rating_stars[4].click()
+    addon.wait.until(EC.text_to_be_present_in_element(
+        (By.CSS_SELECTOR, '.Notice-error'), "You can't leave a review on your own add-on."),
+        message=f'The expected review submission error was not raised'
+    )
+
+
 @pytest.mark.nondestructive
 def test_rating_card_loaded_correctly(selenium, base_url, variables):
     selenium.get(variables["addon_version_page_url"])

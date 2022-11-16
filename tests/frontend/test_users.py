@@ -11,7 +11,6 @@ from pages.desktop.frontend.login import Login
 from pages.desktop.frontend.search import Search
 from pages.desktop.frontend.static_pages import StaticPages
 from pages.desktop.frontend.users import User
-from scripts import custom_waits
 
 
 @pytest.mark.sanity
