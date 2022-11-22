@@ -21,7 +21,7 @@ jobs:
           command: choco install selenium-gecko-driver
       - run:
           name: Install Firefox
-          command: choco install firefox-nightly --pre
+          command: choco install firefox-nightly --pre --ignore-checksums
       - run:
           name: Run collections serial tests
           environment:
@@ -51,7 +51,7 @@ jobs:
           command: choco install selenium-gecko-driver
       - run:
           name: Install Firefox
-          command: choco install firefox-nightly --pre
+          command: choco install firefox-nightly --pre --ignore-checksums
       - run:
           name: Run ratings serial tests
           environment:
@@ -81,7 +81,7 @@ jobs:
           command: choco install selenium-gecko-driver
       - run:
           name: Install Firefox
-          command: choco install firefox-nightly --pre
+          command: choco install firefox-nightly --pre --ignore-checksums
       - run:
           name: Run user serial tests
           environment:
@@ -111,7 +111,7 @@ jobs:
           command: choco install selenium-gecko-driver
       - run:
           name: Install Firefox
-          command: choco install firefox-nightly --pre
+          command: choco install firefox-nightly --pre --ignore-checksums
       - run:
           name: Run frontend parallel tests
           environment:
@@ -142,7 +142,7 @@ jobs:
           command: choco install selenium-gecko-driver
       - run:
           name: Install Firefox
-          command: choco install firefox-nightly --pre
+          command: choco install firefox-nightly --pre --ignore-checksums
       - run:
           name: Run devhub parallel tests
           environment:
@@ -172,7 +172,7 @@ jobs:
           command: choco install selenium-gecko-driver
       - run:
           name: Install Firefox
-          command: choco install firefox-nightly --pre
+          command: choco install firefox-nightly --pre --ignore-checksums
       - run:
           name: Run addon submissions tests
           environment:
@@ -292,7 +292,7 @@ jobs:
           command: choco install selenium-gecko-driver
       - run:
           name: Install Firefox
-          command: choco install firefox-nightly --pre
+          command: choco install firefox-nightly --pre --ignore-checksums
       - run:
           name: Run frontend parallel tests
           environment:
@@ -322,7 +322,7 @@ jobs:
           command: choco install selenium-gecko-driver
       - run:
           name: Install Firefox
-          command: choco install firefox-nightly --pre
+          command: choco install firefox-nightly --pre --ignore-checksums
       - run:
           name: Run user serial tests
           environment:
@@ -352,7 +352,7 @@ jobs:
           command: choco install selenium-gecko-driver
       - run:
           name: Install Firefox
-          command: choco install firefox-nightly --pre
+          command: choco install firefox-nightly --pre --ignore-checksums
       - run:
           name: Run collections serial tests
           environment:
@@ -382,7 +382,7 @@ jobs:
           command: choco install selenium-gecko-driver
       - run:
           name: Install Firefox
-          command: choco install firefox-nightly --pre
+          command: choco install firefox-nightly --pre --ignore-checksums
       - run:
           name: Run ratings serial tests
           environment:
@@ -413,7 +413,7 @@ jobs:
           command: choco install selenium-gecko-driver
       - run:
           name: Install Firefox
-          command: choco install firefox-nightly --pre
+          command: choco install firefox-nightly --pre --ignore-checksums
       - run:
           name: Run devhub parallel tests
           environment:
