@@ -21,7 +21,7 @@ jobs:
           command: choco install selenium-gecko-driver
       - run:
           name: Install Firefox
-          command: choco install firefox-nightly --pre
+          command: choco install firefox-nightly --pre --ignore-checksums
       - run:
           name: Run collections serial tests
           environment:
@@ -51,7 +51,7 @@ jobs:
           command: choco install selenium-gecko-driver
       - run:
           name: Install Firefox
-          command: choco install firefox-nightly --pre
+          command: choco install firefox-nightly --pre --ignore-checksums
       - run:
           name: Run ratings serial tests
           environment:
@@ -81,7 +81,7 @@ jobs:
           command: choco install selenium-gecko-driver
       - run:
           name: Install Firefox
-          command: choco install firefox-nightly --pre
+          command: choco install firefox-nightly --pre --ignore-checksums
       - run:
           name: Run user serial tests
           environment:
@@ -111,7 +111,7 @@ jobs:
           command: choco install selenium-gecko-driver
       - run:
           name: Install Firefox
-          command: choco install firefox-nightly --pre
+          command: choco install firefox-nightly --pre --ignore-checksums
       - run:
           name: Run frontend parallel tests
           environment:
@@ -142,7 +142,7 @@ jobs:
           command: choco install selenium-gecko-driver
       - run:
           name: Install Firefox
-          command: choco install firefox-nightly --pre
+          command: choco install firefox-nightly --pre --ignore-checksums
       - run:
           name: Run devhub parallel tests
           environment:
@@ -172,7 +172,7 @@ jobs:
           command: choco install selenium-gecko-driver
       - run:
           name: Install Firefox
-          command: choco install firefox-nightly --pre
+          command: choco install firefox-nightly --pre --ignore-checksums
       - run:
           name: Run addon submissions tests
           environment:
@@ -292,7 +292,7 @@ jobs:
           command: choco install selenium-gecko-driver
       - run:
           name: Install Firefox
-          command: choco install firefox-nightly --pre
+          command: choco install firefox-nightly --pre --ignore-checksums
       - run:
           name: Run frontend parallel tests
           environment:
@@ -322,7 +322,7 @@ jobs:
           command: choco install selenium-gecko-driver
       - run:
           name: Install Firefox
-          command: choco install firefox-nightly --pre
+          command: choco install firefox-nightly --pre --ignore-checksums
       - run:
           name: Run user serial tests
           environment:
@@ -352,7 +352,7 @@ jobs:
           command: choco install selenium-gecko-driver
       - run:
           name: Install Firefox
-          command: choco install firefox-nightly --pre
+          command: choco install firefox-nightly --pre --ignore-checksums
       - run:
           name: Run collections serial tests
           environment:
@@ -382,7 +382,7 @@ jobs:
           command: choco install selenium-gecko-driver
       - run:
           name: Install Firefox
-          command: choco install firefox-nightly --pre
+          command: choco install firefox-nightly --pre --ignore-checksums
       - run:
           name: Run ratings serial tests
           environment:
@@ -392,6 +392,37 @@ jobs:
           no_output_timeout: 30m
       - store_artifacts:
           path: ratings-dev-test-results.html
+
+ # tests that are covering the developer hub homepage on AMO -dev
+  devhub_dev_parallel_tests:
+    executor:
+      name: win/default
+      version: "previous"
+      size: "large"
+    working_directory: ~/addons-release-tests/
+    steps:
+      - checkout
+      - run:
+          name: Upgrade pip
+          command: py -3.9 -m pip install --upgrade pip --user
+      - run:
+          name: Install requirements
+          command: py -3.9 -m pip install --no-deps -r ./requirements.txt
+      - run:
+          name: Install geckodriver
+          command: choco install selenium-gecko-driver
+      - run:
+          name: Install Firefox
+          command: choco install firefox-nightly --pre --ignore-checksums
+      - run:
+          name: Run devhub parallel tests
+          environment:
+            MOZ_HEADLESS: 1
+            PYTEST_ADDOPTS: -n 4 --reruns 2
+          command: py -3.9 -m pytest tests\devhub\test_devhub_home.py --driver Firefox --variables dev.json --html=devhub-dev-parallel-test-results.html --self-contained-html
+          no_output_timeout: 30m
+      - store_artifacts:
+          path: devhub-dev-parallel-test-results.html
 
 workflows:
   commit_workflow:
@@ -448,3 +479,4 @@ workflows:
       - user_dev_serial_tests
       - collections_dev_serial_tests
       - ratings_dev_serial_tests
+      - devhub_dev_parallel_tests

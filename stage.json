@@ -5,6 +5,8 @@
 
   "not_found_page_title": "Oops! We can’t find that page",
 
+  "fxa_login_page": "accounts.firefox.com",
+
   "detail_extension_slug": "ghostery",
   "detail_extension_name": "Ghostery - Privacy Ad Blocker",
   "addon_with_stats": "facebook-container",

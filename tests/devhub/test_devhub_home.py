@@ -95,7 +95,7 @@ def test_devhub_content_login_link(selenium, base_url, variables):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     page.click_content_login_link()
     # verify that the link opens the FxA login page
-    page.wait_for_current_url('accounts.firefox.com')
+    page.wait_for_current_url(variables['fxa_login_page'])
 
 
 @pytest.mark.sanity
@@ -175,7 +175,7 @@ def test_devhub_my_addons_list_items(selenium, base_url, wait):
         try:
             assert 'Not yet rated' in addon.my_addon_rating_text.text
         except AssertionError:
-            assert 'reviews' in addon.my_addon_rating_text.text
+            assert 'review' in addon.my_addon_rating_text.text
             assert addon.my_addon_rating_stars.is_displayed()
 
 
