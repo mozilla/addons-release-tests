@@ -3,6 +3,8 @@
 
   "search_term": "Flagfox",
 
+  "fxa_login_page": "accounts.firefox.com",
+
   "install_extension": "ghostery",
   "install_theme": "matte-black-red",
   "detail_extension_slug": "privacy-badger17",
