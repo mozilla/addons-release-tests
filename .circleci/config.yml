@@ -424,6 +424,36 @@ jobs:
       - store_artifacts:
           path: devhub-dev-parallel-test-results.html
 
+  # tests covering addon submissions through DevHub from AMO dev
+  addon_submissions_dev_tests:
+    executor:
+      name: win/default
+      size: "large"
+    working_directory: ~/addons-release-tests/
+    steps:
+      - checkout
+      - run:
+          name: Upgrade pip
+          command: py -3.9 -m pip install --upgrade pip --user
+      - run:
+          name: Install requirements
+          command: py -3.9 -m pip install --no-deps -r ./requirements.txt
+      - run:
+          name: Install geckodriver
+          command: choco install selenium-gecko-driver
+      - run:
+          name: Install Firefox
+          command: choco install firefox-nightly --pre --ignore-checksums
+      - run:
+          name: Run addon submissions tests
+          environment:
+            MOZ_HEADLESS: 1
+            PYTEST_ADDOPTS: -n 1 --reruns 2
+          command: py -3.9 -m pytest tests\devhub\test_addon_submissions.py --driver Firefox --variables dev.json --html=submissions-dev-test-results.html --self-contained-html
+          no_output_timeout: 30m
+      - store_artifacts:
+          path: submissions-dev-test-results.html
+
 workflows:
   commit_workflow:
     when:
@@ -480,3 +510,4 @@ workflows:
       - collections_dev_serial_tests
       - ratings_dev_serial_tests
       - devhub_dev_parallel_tests
+      - addon_submissions_dev_tests
