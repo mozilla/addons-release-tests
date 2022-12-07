@@ -132,6 +132,9 @@ class Collections(Base):
         def set_description(self, value):
             self.find_element(*self._description_input_locator).send_keys(value)
 
+        def clear_description(self):
+            self.find_element(*self._description_input_locator).clear()
+
         @property
         def description_value(self):
             return self.find_element(*self._description_input_locator).text
