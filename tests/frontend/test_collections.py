@@ -55,6 +55,7 @@ def test_collection_creator_and_modified_date(selenium, base_url, variables, wai
     # making a small edit to trigger a modified date change in the collection
     collections.collection_detail.click_edit_collection_button()
     collections.collection_detail.click_edit_collection_meta()
+    collections.create.clear_description()
     collections.create.set_description(variables['collection_edit_description'])
     collections.create.save_collection()
     # waits for the list of collection stats to be loaded
