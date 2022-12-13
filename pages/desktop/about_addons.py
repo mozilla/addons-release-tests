@@ -21,6 +21,11 @@ class AboutAddons(Page):
     _installed_addon_name_locator = (By.CSS_SELECTOR, '.addon-name a')
     _installed_addon_author_locator = (By.CSS_SELECTOR, '.addon-detail-row-author a')
     _find_more_addons_button_locator = (By.CLASS_NAME, 'primary')
+    _installed_extension_version_locator = (
+        By.CSS_SELECTOR,
+        '.addon-detail-row-version',
+    )
+    _options_button_locator = (By.CSS_SELECTOR, '.more-options-button')
 
     def wait_for_page_to_load(self):
         self.wait.until(
@@ -118,6 +123,15 @@ class AboutAddons(Page):
         from pages.desktop.frontend.home import Home
 
         return Home(self.driver, self.base_url).wait_for_page_to_load()
+
+    @property
+    def installed_version_number(self):
+        return self.find_element(
+            *self._installed_extension_version_locator
+        ).text.replace('Version\n', '')
+
+    def click_options_button(self):
+        self.find_element(*self._options_button_locator).click()
 
     class AddonCards(Region):
         _theme_image_locator = (By.CLASS_NAME, 'card-heading-image')

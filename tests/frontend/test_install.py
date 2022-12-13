@@ -1,8 +1,12 @@
 import time
 import pytest
 
+from selenium.webdriver import ActionChains
+from selenium.common.exceptions import TimeoutException
+
 from pages.desktop.about_addons import AboutAddons
 from pages.desktop.frontend.details import Detail
+from pages.desktop.frontend.versions import Versions
 
 
 def test_install_uninstall_extension(
@@ -245,3 +249,48 @@ def test_about_addons_install_theme(
     # check that installed theme should be first on the manage Themes page
     assert disco_theme_name in about_addons.installed_addon_name[0].text
     assert 'true' in about_addons.enabled_theme_active_status
+
+
+@pytest.mark.sanity
+def test_about_addons_extension_updates(
+    selenium, base_url, wait, firefox, firefox_notifications, variables
+):
+    """Install an addon from AMO and check for updates in addons manager;
+    this test is set up to be able to run on each AMO environment"""
+    extension = variables['extension_version_updates']
+    selenium.get(f'{base_url}/addon/{extension}/versions/')
+    versions = Versions(selenium, base_url).wait_for_page_to_load()
+    # make a note of the latest version number - this should be visible once the addon updates
+    latest_version = versions.latest_version_number
+    # install an older version of the addon
+    versions.versions_list[1].click_download_link()
+    # if the addon is installed from dev or stage we might need to confirm the site security
+    # in order to be able to install the addon; the following exception accounts for that
+    try:
+        firefox.browser.wait_for_notification(
+            firefox_notifications.AddOnInstallConfirmation
+        ).install()
+    except TimeoutException as error:
+        # check that the timeout message is raised by the AddOnInstallConfirmation class
+        assert error.msg == 'AddOnInstallConfirmation was not shown.'
+        firefox.browser.wait_for_notification(
+            firefox_notifications.AddOnInstallBlocked
+        ).allow()
+        firefox.browser.wait_for_notification(
+            firefox_notifications.AddOnInstallConfirmation
+        ).install()
+    # go to addons manager and locate the installed addon
+    selenium.get('about:addons')
+    about_addons = AboutAddons(selenium)
+    about_addons.click_extensions_side_button()
+    about_addons.installed_addon_cards[0].click()
+    # trigger a manual update check to receive the latest addon version
+    about_addons.click_options_button()
+    action = ActionChains(selenium)
+    action.send_keys('c').perform()
+    # compare the updated version to the latest version from AMO and make sure they match
+    wait.until(
+        lambda _: latest_version == about_addons.installed_version_number,
+        message=f'Latest version from AMO "{latest_version}" did not match updated version from addons manager '
+        f'"{about_addons.installed_version_number}"',
+    )
