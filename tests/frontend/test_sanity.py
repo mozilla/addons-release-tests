@@ -26,7 +26,6 @@ def test_language_tools_landing_page(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 @pytest.mark.prod_only
-@pytest.mark.firefox_release
 def test_install_language_pack(
     selenium, base_url, variables, firefox, firefox_notifications
 ):
@@ -47,7 +46,6 @@ def test_install_language_pack(
 
 @pytest.mark.sanity
 @pytest.mark.prod_only
-@pytest.mark.firefox_release
 def test_install_dictionary(
     selenium, base_url, variables, firefox, firefox_notifications
 ):
@@ -68,7 +66,6 @@ def test_install_dictionary(
 
 @pytest.mark.sanity
 @pytest.mark.prod_only
-@pytest.mark.firefox_release
 def test_install_extension(
     selenium, base_url, variables, firefox, firefox_notifications
 ):
@@ -87,7 +84,6 @@ def test_install_extension(
 
 @pytest.mark.sanity
 @pytest.mark.prod_only
-@pytest.mark.firefox_release
 def test_install_theme(selenium, base_url, variables, firefox, firefox_notifications):
     extension = variables['install_theme']
     selenium.get(f'{base_url}/addon/{extension}')
@@ -103,7 +99,6 @@ def test_install_theme(selenium, base_url, variables, firefox, firefox_notificat
 
 
 @pytest.mark.prod_only
-@pytest.mark.firefox_release
 @pytest.mark.skip(reason='Still investigating why this test has started failing recently')
 def test_about_addons_search(selenium, base_url):
     selenium.get('about:addons')
@@ -118,7 +113,6 @@ def test_about_addons_search(selenium, base_url):
 
 
 @pytest.mark.prod_only
-@pytest.mark.firefox_release
 def test_about_addons_find_more_addons(selenium, base_url, wait):
     selenium.get('about:addons')
     about_addons = AboutAddons(selenium).wait_for_page_to_load()
@@ -128,7 +122,6 @@ def test_about_addons_find_more_addons(selenium, base_url, wait):
 
 
 @pytest.mark.prod_only
-@pytest.mark.firefox_release
 def test_about_addons_addon_cards(selenium, base_url, wait):
     selenium.get('about:addons')
     about_addons = AboutAddons(selenium)
@@ -156,7 +149,6 @@ def test_about_addons_addon_cards(selenium, base_url, wait):
 
 
 @pytest.mark.prod_only
-@pytest.mark.firefox_release
 def test_about_addons_addon_cards_author_link(selenium, base_url, wait):
     selenium.get('about:addons')
     about_addons = AboutAddons(selenium)
@@ -173,7 +165,6 @@ def test_about_addons_addon_cards_author_link(selenium, base_url, wait):
 
 
 @pytest.mark.prod_only
-@pytest.mark.firefox_release
 def test_about_addons_addon_stats_match_amo(selenium, base_url, wait):
     selenium.get('about:addons')
     about_addons = AboutAddons(selenium)
@@ -194,7 +185,6 @@ def test_about_addons_addon_stats_match_amo(selenium, base_url, wait):
 
 
 @pytest.mark.prod_only
-@pytest.mark.firefox_release
 def test_about_addons_install_extension(
     selenium, base_url, wait, firefox, firefox_notifications
 ):
@@ -231,7 +221,6 @@ def test_about_addons_install_extension(
 
 
 @pytest.mark.prod_only
-@pytest.mark.firefox_release
 def test_about_addons_install_theme(
     selenium, base_url, wait, firefox, firefox_notifications
 ):

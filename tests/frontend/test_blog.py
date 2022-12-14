@@ -169,7 +169,6 @@ def test_addon_card_recommendation_badge_link(base_url, selenium, variables):
             page.driver.switch_to.window(initial_window)
 
 
-@pytest.mark.firefox_release
 @pytest.mark.prod_only
 @pytest.mark.nondestructive
 def test_blog_install_addon(
@@ -204,7 +203,6 @@ def test_blog_install_addon(
         )
 
 
-@pytest.mark.firefox_release
 @pytest.mark.prod_only
 @pytest.mark.nondestructive
 def test_addon_link_in_article_addon_cards(base_url, selenium):
@@ -219,7 +217,6 @@ def test_addon_link_in_article_addon_cards(base_url, selenium):
     assert addon_name == addon_detail.name
 
 
-@pytest.mark.firefox_release
 @pytest.mark.prod_only
 @pytest.mark.nondestructive
 def test_author_link_in_article_addon_cards(base_url, selenium):

@@ -1,6 +1,8 @@
 {
   "base_url": "https://addons.mozilla.org/",
 
+  "extension_version_updates": "flagfox",
+
   "search_term": "Flagfox",
 
   "fxa_login_page": "accounts.firefox.com",

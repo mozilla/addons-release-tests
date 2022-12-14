@@ -27,7 +27,7 @@ def sensitive_url(request, base_url):
 
 
 @pytest.fixture
-def firefox_options(firefox_options, request):
+def firefox_options(firefox_options, base_url, variables):
     """Firefox options.
 
     These options configure firefox to allow for addon installation,
@@ -43,11 +43,9 @@ def firefox_options(firefox_options, request):
     '-headless': Firefox will run headless
 
     """
-    # for prod installation tests, we do not need to set special prefs,
-    # so I've added a custom marker which will allow the Firefox
-    # driver to run a clean profile for prod tests, when necessary
-    marker = request.node.get_closest_marker('firefox_release')
-    if marker:
+    # for prod installation tests, we do not need to set special prefs, so we
+    # separate the browser set-up based on the AMO environments
+    if base_url == 'https://addons.mozilla.org/':
         firefox_options.add_argument('-headless')
         firefox_options.log.level = 'trace'
         firefox_options.set_preference(
@@ -70,6 +68,8 @@ def firefox_options(firefox_options, request):
             'extensions.getAddons.get.url',
             'https://services.addons.allizom.org/api/v4/addons/search/?guid=%IDS%&lang=%LOCALE%',
         )
+        firefox_options.set_preference(
+            'extensions.update.url', variables['extensions_update_url'])
         firefox_options.add_argument('-headless')
         firefox_options.log.level = 'trace'
     return firefox_options
