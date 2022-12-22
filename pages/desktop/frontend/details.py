@@ -268,6 +268,7 @@ class Detail(Base):
         _contribute_header_locator = (By.CSS_SELECTOR, '.ContributeCard header')
         _contribute_content_locator = (By.CLASS_NAME, 'ContributeCard-content')
         _contribute_button_locator = (By.CLASS_NAME, 'ContributeCard-button')
+        _contribute_button_icon_locator = (By.CLASS_NAME, 'Icon-heart')
 
         @property
         def contribute_card_header(self):
@@ -276,6 +277,14 @@ class Detail(Base):
         @property
         def contribute_card_content(self):
             return self.find_element(*self._contribute_content_locator).text
+
+        @property
+        def contribute_button_text(self):
+            return self.find_element(*self._contribute_button_locator).text
+
+        @property
+        def contribute_button_heart_icon(self):
+            return self.find_element(*self._contribute_button_icon_locator)
 
         def click_contribute_button(self):
             self.find_element(*self._contribute_button_locator).click()
@@ -290,6 +299,7 @@ class Detail(Base):
             '.PermissionsCard-list--required li',
         )
         _permissions_learn_more_locator = (By.CLASS_NAME, 'PermissionsCard-learn-more')
+        _learn_more_button_icon_locator = (By.CLASS_NAME, 'Icon-external-dark')
 
         @property
         def permissions_card_header(self):
@@ -299,6 +309,14 @@ class Detail(Base):
         def permissions_list(self):
             items = self.find_elements(*self._permissions_list_locator)
             return [self.PermissionDetails(self.page, el) for el in items]
+
+        @property
+        def permissions_learn_more_button(self):
+            return self.find_element(*self._permissions_learn_more_locator).text
+
+        @property
+        def permissions_learn_more_button_icon(self):
+            return self.find_element(*self._learn_more_button_icon_locator)
 
         def click_permissions_button(self):
             self.find_element(*self._permissions_learn_more_locator).click()
@@ -437,6 +455,10 @@ class Detail(Base):
                 return self.find_element(*self._addon_summary_card_locator)
 
     class Screenshots(Region):
+        _screenshot_section_header_locator = (
+            By.CSS_SELECTOR,
+            '.Addon-screenshots .Card-header',
+        )
         _screenshot_thumbnail_locator = (By.CSS_SELECTOR, '.ScreenShots-list img')
         _screenshot_viewer_locator = (By.CSS_SELECTOR, '.pswp--open')
         _next_preview_locator = (By.CSS_SELECTOR, '.pswp__button--arrow--right')
@@ -446,6 +468,10 @@ class Detail(Base):
             '.pswp__button--close',
         )
         _screenshot_counter_location = (By.CSS_SELECTOR, '.pswp__counter')
+
+        @property
+        def screenshot_section_header(self):
+            return self.find_element(*self._screenshot_section_header_locator)
 
         @property
         def screenshot_preview(self):

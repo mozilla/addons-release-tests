@@ -31,7 +31,9 @@ from pages.desktop.frontend.search import Search
 @pytest.mark.nondestructive
 def test_extensions_categories(base_url, selenium, count, category):
     extensions = Extensions(selenium, base_url).open()
+    assert 'Categories' in extensions.categories.categories_list_header.text
     # clicking through each Category listed on Extensions homepage
+    assert category in extensions.categories.category_list[count].category_button_name
     extensions.categories.category_list[count].click()
     category_results = Search(selenium, base_url)
     # checking that category search results are loaded and sorted by users

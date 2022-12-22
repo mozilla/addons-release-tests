@@ -287,6 +287,8 @@ def test_contribute_button(selenium, base_url, variables):
     assert (
         variables['contribute_card_summary'] in addon.contribute.contribute_card_content
     )
+    assert addon.contribute.contribute_button_heart_icon.is_displayed()
+    assert 'Contribute now' in addon.contribute.contribute_button_text
     addon.contribute.click_contribute_button()
     # verifies that utm params are passed from AMO to the external contribute site
     wait = WebDriverWait(selenium, 10)
@@ -304,6 +306,8 @@ def test_extension_permissions(selenium, base_url, variables):
     for permission in permissions:
         assert permission.permission_icon.is_displayed()
         assert permission.permission_description.is_displayed()
+    assert 'Learn more' in addon.permissions.permissions_learn_more_button
+    assert addon.permissions.permissions_learn_more_button_icon.is_displayed()
     addon.permissions.click_permissions_button()
     addon.wait_for_current_url('permission-request')
 
@@ -512,8 +516,7 @@ def test_more_info_privacy_policy(selenium, base_url, variables):
     privacy = addon.more_info.click_addon_privacy_policy()
     # checks that the AMO privacy policy page opens and has the correct content
     assert (
-        f'Privacy policy for {addon_name}'
-        in privacy.custom_licence_and_privacy_header
+        f'Privacy policy for {addon_name}' in privacy.custom_licence_and_privacy_header
     )
     assert privacy.custom_licence_and_privacy_text.is_displayed()
     assert privacy.custom_licence_and_privacy_summary_card.is_displayed()
@@ -606,6 +609,7 @@ def test_screenshot_viewer(selenium, base_url, variables):
     extension = variables['detail_extension_slug']
     selenium.get(f'{base_url}/addon/{extension}')
     addon = Detail(selenium, base_url).wait_for_page_to_load()
+    assert 'Screenshots' in addon.screenshots.screenshot_section_header.text
     # clicks through each screenshot and verifies that the screenshot full size viewer is opened
     for preview in addon.screenshots.screenshot_preview:
         preview.click()
