@@ -31,7 +31,9 @@ from selenium.webdriver.support.select import Select
 @pytest.mark.nondestructive
 def test_themes_categories(base_url, selenium, count, category):
     themes = Themes(selenium, base_url).open()
+    assert 'Categories' in themes.categories.categories_list_header.text
     # clicking through each Theme Category
+    assert category in themes.categories.category_list[count].category_button_name
     themes.categories.category_list[count].click()
     category_results = Search(selenium, base_url)
     # checking that search results within that category are sorted correctly

@@ -6,16 +6,16 @@ from selenium.webdriver.common.by import By
 class Categories(Region):
 
     _root_locator = (By.CLASS_NAME, 'Categories')
+    _categories_card_header_locator = (By.CSS_SELECTOR, '.Categories .Card-header')
     _categories_locator = (By.CLASS_NAME, 'Categories-item')
-    _card_header_locator = (By.CLASS_NAME, 'Card-header-text')
 
     def wait_for_categories_to_load(self):
         self.wait.until(lambda _: self.is_element_displayed(*self._categories_locator))
         return self
 
     @property
-    def card_header(self):
-        return self.find_element(*self._card_header_locator).text
+    def categories_list_header(self):
+        return self.find_element(*self._categories_card_header_locator)
 
     @property
     def category_list(self):
@@ -26,7 +26,7 @@ class Categories(Region):
         _name_locator = (By.CLASS_NAME, 'Categories-link')
 
         @property
-        def name(self):
+        def category_button_name(self):
             return self.find_element(*self._name_locator).text
 
         def click(self):

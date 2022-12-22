@@ -87,7 +87,7 @@ def test_extensions_page_translations(base_url, selenium, variables, language):
     assert page.title in variables[language]['extensions_page']['page_header']
     assert page.header_summary in variables[language]['extensions_page']['page_summary']
     assert (
-        page.categories.card_header
+        page.categories.categories_list_header.text
         in variables[language]['extensions_page']['shelf_title_categories']
     )
     assert (
@@ -115,7 +115,7 @@ def test_themes_page_translations(base_url, selenium, variables, language):
     assert page.title in variables[language]['themes_page']['page_header']
     assert page.header_summary in variables[language]['themes_page']['page_summary']
     assert (
-        page.categories.card_header
+        page.categories.categories_list_header.text
         in variables[language]['themes_page']['shelf_title_categories']
     )
     assert (
