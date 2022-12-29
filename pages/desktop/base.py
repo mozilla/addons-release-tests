@@ -109,6 +109,10 @@ class Header(Region):
         '.SectionLinks \
                            > li:nth-child(1) > a:nth-child(1)',
     )
+    _extensions_active_button_locator = (
+        By.CLASS_NAME,
+        'SectionLinks-link-extension.SectionLinks-link--active',
+    )
     _login_locator = (By.CLASS_NAME, 'Header-authenticate-button')
     _user_locator = (
         By.CSS_SELECTOR,
@@ -141,6 +145,10 @@ class Header(Region):
         '.SectionLinks > li:nth-child(2) > \
                        a:nth-child(1)',
     )
+    _themes_active_button_locator = (
+        By.CLASS_NAME,
+        'SectionLinks-link-theme.SectionLinks-link--active',
+    )
     _devhub_locator = (By.CLASS_NAME, 'Header-developer-hub-link')
     _extension_workshop_locator = (By.CLASS_NAME, 'Header-extension-workshop-link')
     _blog_link_locator = (By.CLASS_NAME, 'Header-blog-link')
@@ -157,6 +165,11 @@ class Header(Region):
         return self.find_element(*self._extensions_locator).text
 
     @property
+    def extensions_button_active(self):
+        """Checks that the 'Extensions' menu button is highlighted when selected"""
+        return self.find_element(*self._extensions_active_button_locator)
+
+    @property
     def themes_link(self):
         return self.find_element(*self._themes_locator)
 
@@ -165,6 +178,11 @@ class Header(Region):
         from pages.desktop.frontend.themes import Themes
 
         return Themes(self.driver, self.page.base_url).wait_for_page_to_load()
+
+    @property
+    def themes_button_active(self):
+        """Checks that the 'Themes' menu button is highlighted when selected"""
+        return self.find_element(*self._themes_active_button_locator)
 
     def click_title(self):
         self.find_element(*self._header_title_locator).click()

@@ -89,7 +89,9 @@ def test_current_version(selenium, base_url, variables):
     # get info from api
     response = requests.get(f'{base_url}/api/v5/addons/{addon_url}')
     addon_version = response.json()['current_version']['version']
-    addon_size = reusables.convert_bytes(response.json()['current_version']['file']['size'])
+    addon_size = reusables.convert_bytes(
+        response.json()['current_version']['file']['size']
+    )
     api_date = response.json()['current_version']['file']['created'][:10]
     # process the date to have the same format as in frontend
     api_date = datetime.strptime(api_date, '%Y-%m-%d')

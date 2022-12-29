@@ -99,7 +99,9 @@ def test_install_theme(selenium, base_url, variables, firefox, firefox_notificat
 
 
 @pytest.mark.prod_only
-@pytest.mark.skip(reason='Still investigating why this test has started failing recently')
+@pytest.mark.skip(
+    reason='Still investigating why this test has started failing recently'
+)
 def test_about_addons_search(selenium, base_url):
     selenium.get('about:addons')
     about_addons = AboutAddons(selenium).wait_for_page_to_load()
@@ -109,7 +111,7 @@ def test_about_addons_search(selenium, base_url):
     # verify that the search query produced results (this is a popular query so we expect
     # to see the first page of results to be fully populated, i.e. 25 items)
     amo_search_results.search_results_list_loaded(25)
-    assert 'privacy' in amo_search_results.result_list.extensions[0].name.lower()
+    assert 'privacy' in amo_search_results.result_list.search_results[0].name.lower()
 
 
 @pytest.mark.prod_only

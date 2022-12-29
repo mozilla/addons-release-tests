@@ -31,15 +31,15 @@ class Search(Page):
             expected.text_to_be_present_in_element(
                 (By.CLASS_NAME, 'SearchContextCard-header'), value
             ),
-            message=f'Expected header title not displayed; title was {value}',
+            message=f'Expected search term "{value}" not found in "{self.find_element(*self._context_card_locator).text}"',
         )
 
     def search_results_list_loaded(self, count):
         """method used when we need to check that the search results list
         contains a certain number of items"""
         self.wait.until(
-            lambda _: len(self.result_list.extensions) >= count,
-            message=f'Expected search results to be {count} but the list returned {len(self.result_list.extensions)}',
+            lambda _: len(self.result_list.search_results) >= count,
+            message=f'Expected search results to be {count} but the list returned {len(self.result_list.search_results)}',
         )
 
     @property
@@ -91,7 +91,7 @@ class Search(Page):
         _extension_locator = (By.CLASS_NAME, 'SearchResult-name')
 
         @property
-        def extensions(self):
+        def search_results(self):
             items = self.find_elements(*self._result_locator)
             return [self.ResultListItems(self, el) for el in items]
 

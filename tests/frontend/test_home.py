@@ -16,6 +16,8 @@ def test_click_header_extensions(base_url, selenium):
     page = Home(selenium, base_url).open()
     ext_page = page.header.click_extensions()
     assert 'Extensions' in ext_page.title
+    assert 'Extensions' in selenium.title
+    assert page.header.extensions_button_active.is_displayed()
 
 
 @pytest.mark.sanity
@@ -24,12 +26,17 @@ def test_click_header_themes(base_url, selenium):
     page = Home(selenium, base_url).open()
     themes_page = page.header.click_themes()
     assert 'Themes' in themes_page.text
+    assert 'Themes' in selenium.title
+    assert page.header.themes_button_active.is_displayed()
 
 
 @pytest.mark.sanity
 @pytest.mark.nondestructive
-def test_logo_routes_to_home(base_url, selenium):
+def test_logo_routes_to_homepage(base_url, selenium):
     page = Home(selenium, base_url).open()
+    # navigate away from the homepage
+    page.header.click_extensions()
+    # click on the Firefox logo
     home = page.header.click_title()
     assert home.primary_hero.is_displayed()
 
@@ -147,7 +154,7 @@ def test_browse_all_recommended_extensions(base_url, selenium):
     page.recommended_extensions.browse_all()
     assert 'type=extension' in selenium.current_url
     search_page = Search(selenium, base_url)
-    for result in search_page.result_list.extensions:
+    for result in search_page.result_list.search_results:
         assert result.promoted_badge
 
 

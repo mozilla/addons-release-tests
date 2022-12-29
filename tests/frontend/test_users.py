@@ -539,7 +539,7 @@ def test_user_profile_open_extension_detail_page(base_url, selenium, variables):
     page = variables['developer_profile']
     selenium.get(f'{base_url}/user/{page}')
     extension = Search(selenium, base_url).wait_for_page_to_load()
-    extension_name = extension.result_list.extensions[0].name
+    extension_name = extension.result_list.search_results[0].name
     # clicks on an extension in the user profile page
     detail_extension = extension.result_list.click_search_result(0)
     # checks that the expected extension detail page is opened
