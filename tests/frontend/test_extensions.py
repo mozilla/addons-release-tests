@@ -76,7 +76,7 @@ def test_browse_more_recommended_extensions(base_url, selenium):
     search_results = Search(selenium, base_url)
     select = Select(search_results.filter_by_badging)
     assert select.first_selected_option.text == 'Recommended'
-    for result in search_results.result_list.extensions:
+    for result in search_results.result_list.search_results:
         assert 'Recommended' in result.promoted_badge_label
 
 
@@ -103,11 +103,11 @@ def test_browse_more_top_rated_extensions(base_url, selenium):
     search_results = Search(selenium, base_url)
     select = Select(search_results.filter_by_badging)
     assert select.first_selected_option.text == 'Recommended'
-    for result in search_results.result_list.extensions:
+    for result in search_results.result_list.search_results:
         assert 'Recommended' in result.promoted_badge_label
     # using a list slice below (normal len is 25) to validate rating ordering
     # because not all addons in the list have a rating on stage
-    ratings = search_results.result_list.extensions[0:16]
+    ratings = search_results.result_list.search_results[0:16]
     for rating in ratings:
         assert rating.rating >= 4
 
@@ -135,5 +135,5 @@ def test_browse_more_trending_extensions(base_url, selenium):
     search_results = Search(selenium, base_url)
     select = Select(search_results.filter_by_badging)
     assert select.first_selected_option.text == 'Recommended'
-    for result in search_results.result_list.extensions:
+    for result in search_results.result_list.search_results:
         assert 'Recommended' in result.promoted_badge_label

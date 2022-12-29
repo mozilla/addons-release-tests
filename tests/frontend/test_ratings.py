@@ -518,9 +518,12 @@ def test_developers_cannot_rate_their_own_addons(selenium, base_url, variables):
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     addon.login('developer')
     addon.ratings.rating_stars[4].click()
-    addon.wait.until(EC.text_to_be_present_in_element(
-        (By.CSS_SELECTOR, '.Notice-error'), "You can't leave a review on your own add-on."),
-        message=f'The expected review submission error was not raised'
+    addon.wait.until(
+        EC.text_to_be_present_in_element(
+            (By.CSS_SELECTOR, '.Notice-error'),
+            "You can't leave a review on your own add-on.",
+        ),
+        message=f'The expected review submission error was not raised',
     )
 
 
@@ -565,7 +568,7 @@ def test_rating_card_authors(selenium, base_url, variables):
         user_page = page.rating_card.click_author_name(i)
         # make a list of author's extensions
         extensions = []
-        for item in user_page.user_extensions.result_list.extensions:
+        for item in user_page.user_extensions.result_list.search_results:
             extensions.append(item.name)
         # verify if the current add-on is in the list
         assert addon_title in extensions

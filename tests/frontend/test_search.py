@@ -189,23 +189,16 @@ def test_search_box_character_limit(base_url, selenium, variables):
 
 
 # Tests covering search results page"
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_search_loads_and_navigates_to_correct_page(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     addon_name = page.recommended_extensions.list[0].name.text
     search = page.search.search_for(addon_name)
-    search_name = search.result_list.extensions[0].name
+    search.wait_for_contextcard_update(addon_name)
+    search_name = search.result_list.search_results[0].name
     assert addon_name in search_name
-    assert search_name in search.result_list.extensions[0].name
-
-
-@pytest.mark.sanity
-@pytest.mark.nondestructive
-def test_search_loads_correct_results(base_url, selenium):
-    page = Home(selenium, base_url).open().wait_for_page_to_load()
-    addon_name = page.recommended_extensions.list[0].name.text
-    items = page.search.search_for(addon_name)
-    assert addon_name in items.result_list.extensions[0].name
+    assert search_name in search.result_list.search_results[0].name
 
 
 @pytest.mark.sanity
@@ -213,12 +206,14 @@ def test_search_loads_correct_results(base_url, selenium):
 def test_blank_search_loads_results(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     search_page = page.search.search_for('', execute=True)
-    results = search_page.result_list.extensions
+    results = search_page.result_list.search_results
     assert len(results) == 25
     for result in results:
         assert result.promoted_badge
     sort = 'users'
-    results = [getattr(result, sort) for result in search_page.result_list.extensions]
+    results = [
+        getattr(result, sort) for result in search_page.result_list.search_results
+    ]
     assert sorted(results, reverse=True) == results
 
 
@@ -255,7 +250,9 @@ def test_filter_by_users(base_url, selenium):
     sort = 'users'
     selenium.get(f'{base_url}/search/?&q={term}&sort={sort}')
     search_page = Search(selenium, base_url).wait_for_page_to_load()
-    results = [getattr(result, sort) for result in search_page.result_list.extensions]
+    results = [
+        getattr(result, sort) for result in search_page.result_list.search_results
+    ]
     assert sorted(results, reverse=True) == results
 
 
@@ -270,9 +267,9 @@ def test_filter_by_rating_and_hotness(base_url, selenium, category, sort_attr):
     addon_name = 'fox'
     selenium.get(f'{base_url}/search/?&q={addon_name}&sort={sort_attr}')
     search_page = Search(selenium, base_url).wait_for_page_to_load()
-    results = search_page.result_list.extensions
+    results = search_page.result_list.search_results
     if sort_attr == 'rating':
-        for result in search_page.result_list.extensions:
+        for result in search_page.result_list.search_results:
             assert result.rating > 4
     else:
         assert len(results) == 25
@@ -303,10 +300,10 @@ def test_top_rated_recommended_addons(base_url, selenium, variables):
     page.search.search_field.clear()
     page.search.search_for('')
     # verify if sort filter applied correctly
-    for result in search_page.result_list.extensions:
+    for result in search_page.result_list.search_results:
         assert getattr(result, 'rating') > 4
     # verify badge type
-    results = search_page.result_list.extensions
+    results = search_page.result_list.search_results
     for result in results:
         assert 'Recommended' in result.promoted_badge_label
 
@@ -322,12 +319,12 @@ def test_top_rated_recommended_extensions(base_url, selenium, variables):
     page.search.search_field.clear()
     page.search.search_for('')
     # verify if sort filter applied correctly
-    for result in search_page.result_list.extensions:
+    for result in search_page.result_list.search_results:
         assert getattr(result, 'rating') >= 4
     # verify that no themes are displayed
     assert len(search_page.result_list.themes) == 0
     # verify badge type
-    results = search_page.result_list.extensions
+    results = search_page.result_list.search_results
     for result in results:
         assert 'Recommended' in result.promoted_badge_label
 
@@ -343,14 +340,14 @@ def test_top_rated_recommended_themes(base_url, selenium, variables):
     page.search.search_field.clear()
     page.search.search_for('')
     # verify if sort filter applied correctly
-    for result in search_page.result_list.extensions:
+    for result in search_page.result_list.search_results:
         assert getattr(result, 'rating') >= 4
     # verify that all elements are themes
     assert len(search_page.result_list.themes) == len(
-        search_page.result_list.extensions
+        search_page.result_list.search_results
     )
     # verify badge type
-    results = search_page.result_list.extensions
+    results = search_page.result_list.search_results
     for result in results:
         assert 'Recommended' in result.promoted_badge_label
 
@@ -366,11 +363,11 @@ def test_most_users_recommended_addons(base_url, selenium, variables):
     page.search.search_for(variables['search_term'])
     # verify if elements are correctly sorted
     results = [
-        getattr(result, 'users') for result in search_page.result_list.extensions
+        getattr(result, 'users') for result in search_page.result_list.search_results
     ]
     assert sorted(results, reverse=True) == results
     # verify badge type
-    results = search_page.result_list.extensions
+    results = search_page.result_list.search_results
     for result in results:
         assert 'Recommended' in result.promoted_badge_label
 
@@ -386,11 +383,11 @@ def test_most_users_by_firefox_addons(base_url, selenium, variables):
     page.search.search_for(variables['search_term'])
     # verify if elements are correctly sorted
     results = [
-        getattr(result, 'users') for result in search_page.result_list.extensions
+        getattr(result, 'users') for result in search_page.result_list.search_results
     ]
     assert sorted(results, reverse=True) == results
     # verify badge type
-    results = search_page.result_list.extensions
+    results = search_page.result_list.search_results
     for result in results:
         assert 'By Firefox' in result.promoted_badge_label
 
@@ -426,7 +423,7 @@ def test_filter_promoted(base_url, selenium, sort_attr, title):
     select = Select(search_page.filter_by_badging)
     select.select_by_value(sort_attr)
     search_page.wait_for_contextcard_update('results found')
-    results = search_page.result_list.extensions
+    results = search_page.result_list.search_results
     for result in results:
         assert result.promoted_badge
         if title != 'Reviewed':

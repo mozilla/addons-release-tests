@@ -255,11 +255,13 @@ def test_collection_sort_addons_by_date_added(selenium, base_url, variables, wai
     sort.select_by_visible_text('Oldest first')
     addons.wait_for_page_to_load()
     # this addon was already in the collection, so it is the older one when sort is applied
-    assert variables['search_term'] in addons.result_list.extensions[0].name
+    assert variables['search_term'] in addons.result_list.search_results[0].name
     sort.select_by_visible_text('Newest first')
     addons.wait_for_page_to_load()
     # this is the new addon added to the collection, so it is the most recent when sort is applied
-    assert variables['detail_extension_name'] in addons.result_list.extensions[0].name
+    assert (
+        variables['detail_extension_name'] in addons.result_list.search_results[0].name
+    )
 
 
 @pytest.mark.serial
@@ -332,7 +334,7 @@ def test_add_to_collection_in_addon_detail_page(selenium, base_url, variables, w
     # open the collection details and check that the new addon was included
     collections.select_collection(0)
     addons_list = Search(selenium, base_url).wait_for_page_to_load()
-    assert addon_name in addons_list.result_list.extensions[0].name
+    assert addon_name in addons_list.result_list.search_results[0].name
 
 
 @pytest.mark.serial
@@ -426,7 +428,7 @@ def test_collection_sort_addons_by_name(selenium, base_url, variables):
     sort.select_by_visible_text('Name')
     # waiting for the new addon sorting to take effect
     addons.wait_for_page_to_load()
-    addons_list = [el.name.lower() for el in addons.result_list.extensions]
+    addons_list = [el.name.lower() for el in addons.result_list.search_results]
     # check that the addons list has been sorted alphabetically
     assert addons_list == sorted(addons_list)
 
@@ -444,7 +446,7 @@ def test_collection_sort_addons_by_popularity(selenium, base_url, variables):
     # waiting for the new addon sorting to take effect
     addons.wait_for_page_to_load()
     # making a record of the list of addons after being sorted
-    frontend_addons_list = [el.name for el in addons.result_list.extensions]
+    frontend_addons_list = [el.name for el in addons.result_list.search_results]
     # there is no way to directly determine that the sorting is correct in the frontend so we need to
     # take the api request sent by the frontend and compare the results with the api response
     request = requests.get(variables['public_collection_popularity'], timeout=10)
