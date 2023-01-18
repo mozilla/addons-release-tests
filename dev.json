@@ -39,7 +39,7 @@
   "addon_version_page_url": "https://addons-dev.allizom.org/en-US/firefox/addon/dark22reader/versions/",
   "version_page_notice_message": "Be careful with old versions! These versions are displayed for testing and reference purposes.\nYou should always use the latest version of an add-on.",
   "non_recommended_addon": "non-recommended",
-  "addon_version_install": "ghosttext",
+  "addon_version_install": "both-desktop-android",
 
   "initial_text_input": "original text",
   "edited_text_input": "edited text",

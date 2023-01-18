@@ -5,6 +5,7 @@ import requests
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
 
 from pages.desktop.frontend.versions import Versions
 from scripts import reusables
@@ -147,12 +148,24 @@ def test_version_download_file(
     selenium.get(f'{base_url}/addon/{variables["addon_version_install"]}/versions/')
     page = Versions(selenium, base_url).wait_for_page_to_load()
     page.versions_list[1].click_download_link()
-    firefox.browser.wait_for_notification(
-        firefox_notifications.AddOnInstallConfirmation
-    ).install()
-    firefox.browser.wait_for_notification(
-        firefox_notifications.AddOnInstallComplete
-    ).close()
+    # if the addon is installed from dev or stage we might need to confirm the site security
+    # in order to be able to install the addon; the following exception accounts for that
+    try:
+        firefox.browser.wait_for_notification(
+            firefox_notifications.AddOnInstallConfirmation
+        ).install()
+    except TimeoutException as error:
+        # check that the timeout message is raised by the AddOnInstallConfirmation class
+        assert error.msg == 'AddOnInstallConfirmation was not shown.'
+        firefox.browser.wait_for_notification(
+            firefox_notifications.AddOnInstallBlocked
+        ).allow()
+        firefox.browser.wait_for_notification(
+            firefox_notifications.AddOnInstallConfirmation
+        ).install()
+        firefox.browser.wait_for_notification(
+            firefox_notifications.AddOnInstallComplete
+        ).close()
     # go to the addon detail page and check that the button states have changed
     addon_detail = page.rating_card.click_addon_title()
     # check if add button changed into remove button
