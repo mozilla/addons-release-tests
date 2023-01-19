@@ -86,7 +86,7 @@
   "collection_edit_name": "Edited collection name",
   "collection_edit_description": " Edited collection description",
   "public_collection": "/4757633/privacy-matters/",
-  "public_collection_name": "Privacy Matters",
+  "public_collection_name": "privacy-security",
   "collection_addon_note": "original note",
   "collection_addon_edited_note": "edited note",
   "public_collection_popularity": "https://addons.allizom.org/api/v5/accounts/account/4757633/collections/privacy-matters/addons/?page=1&sort=-popularity",
