@@ -25,7 +25,6 @@ class StaticPages(Base):
     # ------- Blocked Add-on page
     _blocked_addon_page_links_locator = (By.CSS_SELECTOR, '.Card-contents > p > a')
     # ------- Login Expired page
-    _logged_out_notice_locator = (By.CSS_SELECTOR, '.Notice-warning:nth-child(2)')
     _reload_the_page_link_locator = (By.CSS_SELECTOR, '.ReloadPageLink')
 
     def wait_for_page_to_load(self):

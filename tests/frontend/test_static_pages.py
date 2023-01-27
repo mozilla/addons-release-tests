@@ -100,7 +100,7 @@ def test_about_firefox_addons_page_links(base_url, selenium, variables):
         # click the link
         link.click()
         # verify if the opened page link contains the correct domain
-        assert link_domain in selenium.current_url
+        page.wait_for_current_url(link_domain)
         # go back to test the next link
         page.driver.back()
 
@@ -126,20 +126,17 @@ def test_login_expired_page(base_url, selenium, variables):
     selenium.get(base_url)
     page = Home(selenium, base_url)
     page.login('regular_user')
-    # click the workshop link to open a new tab
-    page.header.click_extension_workshop()
-    # select the second tab
-    page.driver.switch_to.window(page.driver.window_handles[1])
-    # go to the AMO page and logout
+    # open AMO in a new tab and logout
+    page.driver.switch_to.new_window('tab')
     page.driver.get(base_url)
     page.logout()
-    # select the first tab
+    # go back to the first tab
     page.driver.switch_to.window(page.driver.window_handles[0])
     # open a detail page for an extension, it should get you to the expired login page
     page.hero_banner.click_hero_extension_link()
     # verify the expired login page
     page = StaticPages(selenium, base_url)
-    assert 'You have been logged out.' in page.logged_out_notice_message.text
+    assert 'You have been logged out.' in page.notice_message.text
     assert 'Login Expired' in page.page_header
     assert variables['static_page_login_expired_text'] in page.content.text
     # click the link for reloading the page
