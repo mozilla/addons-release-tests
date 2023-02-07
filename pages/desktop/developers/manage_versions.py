@@ -21,7 +21,7 @@ class ManageVersions(Page):
 
     @property
     def version_approval_status(self):
-        return self.find_element(*self._version_approval_status_locator)
+        return self.find_elements(*self._version_approval_status_locator)
 
     def wait_for_version_autoapproval(self, value):
         """Method that verifies if auto-approval occurs within a set time"""
@@ -31,17 +31,17 @@ class ManageVersions(Page):
         while time.time() < timeout_start + 300:
             # refresh the page to check if the status has changed
             self.driver.refresh()
-            if value not in self.version_approval_status.text:
+            if value not in self.version_approval_status[0].text:
                 # wait 30 seconds before we refresh again
                 time.sleep(30)
-            # break the loop of the status changed to the expected value within set time
+            # break the loop if the status changed to the expected value within set time
             else:
                 break
         # if auto-approval took longer than normal, we want to fail the test and capture the final status
         else:
             pytest.fail(
                 f'Autoapproval took longer than normal; '
-                f'Addon final status was "{self.version_approval_status.text}" instead of "{value}"'
+                f'Addon final status was "{self.version_approval_status[0].text}" instead of "{value}"'
             )
 
     def delete_addon(self):
