@@ -34,7 +34,6 @@ def test_submit_unlisted_addon(selenium, base_url, variables, wait):
     wait.until(lambda _: 'Unlisted-addon-auto' in manage_addons.addon_list[0].name)
 
 
-@pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.create_session('submissions_user')
 def test_verify_if_version_is_autoapproved(selenium, base_url, variables, wait):
