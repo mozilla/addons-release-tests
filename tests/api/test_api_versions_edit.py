@@ -121,7 +121,7 @@ def test_upload_new_listed_version(base_url, session_auth):
             files={'upload': file},
             data={'channel': 'listed'},
         )
-    time.sleep(3)
+    time.sleep(5)
     upload.raise_for_status()
     # get the addon uuid generated after upload
     uuid = upload.json()['uuid']
@@ -155,7 +155,7 @@ def test_upload_new_version_with_existing_version_number(base_url, session_auth)
             files={'upload': file},
             data={'channel': 'listed'},
         )
-    time.sleep(3)
+    time.sleep(5)
     upload.raise_for_status()
     # get the addon uuid generated after upload
     uuid = upload.json()['uuid']
@@ -198,7 +198,7 @@ def test_upload_new_unlisted_version_with_put_method(base_url, session_auth):
             files={'upload': file},
             data={'channel': 'unlisted'},
         )
-    time.sleep(3)
+    time.sleep(5)
     upload.raise_for_status()
     resp = upload.json()
     # verify that the upload was created as unlisted
@@ -231,7 +231,7 @@ def test_upload_new_version_with_different_addon_type(base_url, session_auth):
             files={'upload': file},
             data={'channel': 'listed'},
         )
-    time.sleep(3)
+    time.sleep(5)
     upload.raise_for_status()
     # get the addon uuid generated after upload
     uuid = upload.json()['uuid']
@@ -275,7 +275,7 @@ def test_upload_new_version_with_different_guid(base_url, session_auth):
             files={'upload': file},
             data={'channel': 'listed'},
         )
-    time.sleep(3)
+    time.sleep(5)
     upload.raise_for_status()
     # get the addon uuid generated after upload
     uuid = upload.json()['uuid']
@@ -315,7 +315,7 @@ def test_upload_new_version_with_sources(base_url, session_auth):
             files={'upload': file},
             data={'channel': 'listed'},
         )
-    time.sleep(3)
+    time.sleep(5)
     upload.raise_for_status()
     # get the addon uuid generated after upload
     uuid = upload.json()['uuid']

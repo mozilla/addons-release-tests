@@ -85,7 +85,7 @@ def test_upload_addon_crx_archive(base_url, session_auth):
             files={'upload': file},
             data={'channel': 'unlisted'},
         )
-    time.sleep(3)
+    time.sleep(5)
     upload.raise_for_status()
     uuid = upload.json()['uuid']
     payload = payloads.listed_addon_minimal(uuid)
@@ -130,7 +130,7 @@ def test_upload_addon_unsupported_file_types(base_url, session_auth, file_type):
             files={'upload': file},
             data={'channel': 'unlisted'},
         )
-    time.sleep(3)
+    time.sleep(5)
     upload.raise_for_status()
     uuid = upload.json()['uuid']
     payload = payloads.listed_addon_minimal(uuid)
@@ -180,7 +180,7 @@ def test_upload_addon_with_broken_archives(base_url, session_auth, file_type):
             files={'upload': file},
             data={'channel': 'unlisted'},
         )
-    time.sleep(3)
+    time.sleep(5)
     upload.raise_for_status()
     uuid = upload.json()['uuid']
     payload = payloads.listed_addon_minimal(uuid)
@@ -337,7 +337,7 @@ def test_submit_xpi_with_trademark_restricted_user(
     upload.raise_for_status()
     resp = upload.json()
     # sleep to allow the upload  request to be processed
-    time.sleep(3)
+    time.sleep(5)
     uuid = resp['uuid']
     payload = payloads.listed_addon_minimal(uuid)
     create_addon = requests.post(
@@ -391,7 +391,7 @@ def test_submit_addon_with_reserved_guid(base_url, session_auth, guid):
         )
     upload.raise_for_status()
     # sleep to allow the upload  request to be processed
-    time.sleep(3)
+    time.sleep(5)
     resp = upload.json()
     print(resp)
     uuid = resp['uuid']
@@ -437,7 +437,7 @@ def test_upload_extension_with_duplicate_guid(base_url, session_auth, variables)
         )
     upload.raise_for_status()
     # sleep to allow the first request to be processed
-    time.sleep(3)
+    time.sleep(5)
     resp = upload.json()
     uuid = resp['uuid']
     payload = payloads.listed_addon_minimal(uuid)
@@ -474,7 +474,7 @@ def test_upload_extension_without_name_in_manifest(base_url, session_auth):
         )
     upload.raise_for_status()
     # sleep to allow the first request to be processed
-    time.sleep(3)
+    time.sleep(5)
     resp = upload.json()
     print(resp)
     uuid = resp['uuid']
@@ -522,7 +522,7 @@ def test_upload_extension_without_summary(base_url, session_auth):
         )
     upload.raise_for_status()
     # sleep to allow the first request to be processed
-    time.sleep(3)
+    time.sleep(5)
     resp = upload.json()
     print(resp)
     uuid = resp['uuid']
@@ -565,7 +565,7 @@ def test_upload_extension_with_incorrect_version_number(base_url, session_auth):
         )
     upload.raise_for_status()
     # sleep to allow the first request to be processed
-    time.sleep(3)
+    time.sleep(5)
     resp = upload.json()
     uuid = resp['uuid']
     # we need to inspect the validation results returned by the linter
@@ -620,7 +620,7 @@ def test_upload_extension_with_put_method(base_url, session_auth):
         )
     upload.raise_for_status()
     # sleep to allow the first request to be processed
-    time.sleep(3)
+    time.sleep(5)
     resp = upload.json()
     print(resp)
     uuid = resp['uuid']
@@ -664,7 +664,7 @@ def test_upload_extension_with_put_guid_mismatch(base_url, session_auth):
         )
     upload.raise_for_status()
     # sleep to allow the first request to be processed
-    time.sleep(3)
+    time.sleep(5)
     resp = upload.json()
     print(resp)
     uuid = resp['uuid']
@@ -699,7 +699,7 @@ def test_upload_extension_with_put_no_guid_in_manifest(base_url, session_auth):
         )
     upload.raise_for_status()
     # sleep to allow the first request to be processed
-    time.sleep(3)
+    time.sleep(5)
     resp = upload.json()
     print(resp)
     uuid = resp['uuid']
@@ -742,7 +742,7 @@ def test_upload_extension_with_put_no_guid_in_request(base_url, session_auth):
         )
     upload.raise_for_status()
     # sleep to allow the first request to be processed
-    time.sleep(3)
+    time.sleep(5)
     resp = upload.json()
     uuid = resp['uuid']
     payload = payloads.listed_addon_minimal(uuid)
@@ -783,7 +783,7 @@ def test_upload_extension_with_put_invalid_guid_format(base_url, session_auth):
         )
     upload.raise_for_status()
     # sleep to allow the first request to be processed
-    time.sleep(3)
+    time.sleep(5)
     resp = upload.json()
     print(resp)
     uuid = resp['uuid']
@@ -825,7 +825,7 @@ def test_upload_extension_default_locale_has_no_translations(base_url, session_a
             data={'channel': 'listed'},
         )
     # sleep to allow the first request to be processed
-    time.sleep(3)
+    time.sleep(5)
     upload.raise_for_status()
     resp = upload.json()
     # get the addon uuid generated after upload
@@ -869,7 +869,7 @@ def test_upload_extension_with_localizations_in_xpi(base_url, session_auth, vari
             data={'channel': 'listed'},
         )
     # sleep to allow the first request to be processed
-    time.sleep(3)
+    time.sleep(5)
     resp = upload.json()
     upload.raise_for_status()
     # get the addon uuid generated after upload
@@ -906,7 +906,7 @@ def test_upload_localized_extension_json_overwrite(base_url, session_auth):
             data={'channel': 'listed'},
         )
     # sleep to allow the first request to be processed
-    time.sleep(3)
+    time.sleep(5)
     upload.raise_for_status()
     resp = upload.json()
     # get the addon uuid generated after upload
@@ -955,7 +955,7 @@ def test_upload_addon_with_guid_from_deleted_addon(base_url, session_auth):
             files={'upload': file},
             data={'channel': 'unlisted'},
         )
-    time.sleep(3)
+    time.sleep(5)
     upload.raise_for_status()
     uuid = upload.json()['uuid']
     payload = payloads.listed_addon_minimal(uuid)
@@ -991,7 +991,7 @@ def test_upload_addon_with_guid_from_deleted_addon(base_url, session_auth):
             files={'upload': file},
             data={'channel': 'listed'},
         )
-    time.sleep(3)
+    time.sleep(5)
     upload.raise_for_status()
     uuid = upload.json()['uuid']
     payload = payloads.listed_addon_minimal(uuid)
@@ -1022,7 +1022,7 @@ def test_upload_theme(base_url, session_auth):
             files={'upload': file},
             data={'channel': 'listed'},
         )
-        time.sleep(3)
+        time.sleep(5)
         upload.raise_for_status()
         # get the addon uuid generated after upload
         uuid = upload.json()['uuid']
@@ -1056,7 +1056,7 @@ def test_upload_theme_with_wrong_license(base_url, session_auth):
             files={'upload': file},
             data={'channel': 'listed'},
         )
-        time.sleep(3)
+        time.sleep(5)
         upload.raise_for_status()
         # get the addon uuid generated after upload
         uuid = upload.json()['uuid']
@@ -1096,7 +1096,7 @@ def test_upload_language_pack_unauthorized_user(selenium, base_url):
             files={'upload': file},
             data={'channel': 'listed'},
         )
-    time.sleep(3)
+    time.sleep(5)
     upload.raise_for_status()
     # get the addon uuid generated after upload
     uuid = upload.json()['uuid']
@@ -1195,7 +1195,7 @@ def test_upload_privileged_addon_with_unauthorized_account(base_url, session_aut
             files={'upload': file},
             data={'channel': 'unlisted'},
         )
-        time.sleep(3)
+        time.sleep(5)
         upload.raise_for_status()
         # get the addon uuid generated after upload
         uuid = upload.json()['uuid']
@@ -1226,7 +1226,7 @@ def test_upload_privileged_addon_with_authorized_account(selenium, base_url):
             files={'upload': file},
             data={'channel': 'unlisted'},
         )
-        time.sleep(3)
+        time.sleep(5)
         upload.raise_for_status()
         # get the addon uuid generated after upload
         uuid = upload.json()['uuid']
@@ -1270,7 +1270,7 @@ def test_upload_addon_with_reserved_guid_authorized_account(base_url, session_au
             files={'upload': file},
             data={'channel': 'unlisted'},
         )
-        time.sleep(3)
+        time.sleep(5)
         upload.raise_for_status()
         # get the addon uuid generated after upload
         uuid = upload.json()['uuid']
@@ -1310,7 +1310,7 @@ def test_upload_addon_with_trademark_name_authorized_account(
             files={'upload': file},
             data={'channel': 'unlisted'},
         )
-        time.sleep(3)
+        time.sleep(5)
         upload.raise_for_status()
         uuid = upload.json()['uuid']
         payload = payloads.listed_addon_minimal(uuid)

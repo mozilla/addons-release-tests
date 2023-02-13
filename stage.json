@@ -136,5 +136,41 @@
   "listed_addon_summary_en": "Listed add-on summary set at add-on creation time",
   "listed_addon_description_en": "Listed add-on description set at add-on creation time",
   "listed_addon_privacy_policy_en": "Listed add-on privacy policy",
-  "listed_addon_reviewer_notes": "TEST ADDON: Reviewer notes set by the developer"
+  "listed_addon_reviewer_notes": "TEST ADDON: Reviewer notes set by the developer",
+
+  "duplicate_guid": "@contain-facebook",
+  "approved_addon_with_sources": "jswszwpeoc",
+  "api_post_valid_author": 11688279,
+  "api_addon_author_owner": 11688278,
+  "api_post_author_no_display_name": 11688334,
+  "api_post_additional_author": 11685651,
+  "api_post_author_no_dev_agreement": 11688335,
+  "contributions_bad_request_message": "{\"contributions_url\":[\"URL domain must be one of [www.buymeacoffee.com, donate.mozilla.org, flattr.com, github.com, ko-fi.com, liberapay.com, www.micropayment.de, opencollective.com, www.patreon.com, www.paypal.com, paypal.me].\"]}",
+  "image_validation_messages": [
+      "Images must be either PNG or JPG.",
+      "Images must be either PNG or JPG.",
+      "Images cannot be animated.",
+      "Upload a valid image. The file you uploaded was either not an image or a corrupted image.",
+      "Images must be square (same width and height)."
+   ],
+  "name_translations_from_locales_xpi": {
+       "ar": "«غرير الخصوصية»",
+       "de": "German name from _locales",
+       "en-US": "Privacy Badger",
+       "fr": "Privacy Badger",
+       "pl": "Privacy Badger",
+       "pt-BR": "Privacy Badger",
+       "ru": "Privacy Badger",
+       "zh-CN": "隐私獾"
+  },
+  "summary_translations_from_locales_xpi": {
+       "ar": "يتعلم «غرير الخصوصية» تلقائيا أن يحجب المتعقبات الخفية",
+       "de": "German summary from _locales.",
+       "en-US": "Privacy Badger automatically learns to block invisible trackers.",
+       "fr": "Privacy Badger apprend automatiquement à bloquer les traqueurs invisibles.",
+       "pl": "Privacy Badger automatycznie uczy się blokować niewidoczne elementy śledzące.",
+       "pt-BR": "O Privacy Badger aprende automaticamente a bloquear rastreadores invisíveis.",
+       "ru": "Privacy Badger автоматически учится блокировать невидимые трекеры.",
+       "zh-CN": "隐私獾会自动学习去阻止不可见的追踪器。"
+  }
 }
