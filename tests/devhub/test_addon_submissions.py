@@ -2,9 +2,12 @@ import pytest
 
 from pages.desktop.developers.devhub_home import DevHubHome
 from pages.desktop.developers.manage_versions import ManageVersions
-from pages.desktop.developers.submit_addon import SubmitAddon
+from pages.desktop.developers.submit_addon import (
+    SubmitAddon,
+    SubmissionConfirmationPage,
+)
 from scripts import reusables
-from api import api_helpers, payloads
+from api import api_helpers
 
 
 @pytest.mark.sanity
@@ -162,7 +165,8 @@ def test_verify_new_unlisted_version_autoapproval(selenium, base_url, variables)
     version_string = api_helpers.get_addon_version_string(base_url, addon, auth)
     # create a new addon version with the incremented versio number
     manifest = {
-        **payloads.minimal_manifest,
+        'manifest_version': 2,
+        'theme': {'frame': '#083af0', 'tab_background_text': '#ffffff'},
         'version': f'{float(version_string) + 1}',
         'name': 'New version auto-approval',
     }
@@ -174,10 +178,8 @@ def test_verify_new_unlisted_version_autoapproval(selenium, base_url, variables)
     # wait for the validation to finish and check if it is successful
     submit_version.is_validation_successful()
     assert submit_version.success_validation_message.is_displayed()
-    # on submit source code page, select No as we do not test source code upload here
-    source = submit_version.click_continue_upload_button()
-    source.select_no_to_omit_source()
-    confirmation_page = source.continue_unlisted_submission()
+    submit_version.click_continue()
+    confirmation_page = SubmissionConfirmationPage(selenium)
     assert (
         variables['unlisted_submission_confirmation']
         in confirmation_page.submission_confirmation_messages[0].text
