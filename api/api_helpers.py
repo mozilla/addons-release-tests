@@ -4,6 +4,8 @@ import hashlib
 import json
 import zipfile
 
+import requests
+
 
 def make_addon(manifest_data):
     """Dynamically create a simple extension with minimal manifest properties"""
@@ -85,3 +87,17 @@ def compare_source_files(file_a, file_b, request):
             f'Source files were not updated successfully: previous_source_from_api_hash = {previous_source_from_api}, '
             f'source_from_api_hash = {source_from_api}'
         )
+
+
+def get_addon_version_string(base_url, addon, auth):
+    """Get the version string of an addon's latest version by using
+    the /addons/versions/ API endpoint"""
+    request = requests.get(
+        url=f'{base_url}/api/v5/addons/addon/{addon}/versions/?filter=all_with_unlisted',
+        headers={'Authorization': f'Session {auth}'},
+    )
+    assert (
+        request.status_code == 200
+    ), f'Actual response was: status code: {request.status_code}, {request.text}'
+    version_string = request.json()['results'][0]['version']
+    return version_string

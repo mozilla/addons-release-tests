@@ -1,7 +1,13 @@
 import pytest
 
 from pages.desktop.developers.devhub_home import DevHubHome
+from pages.desktop.developers.manage_versions import ManageVersions
+from pages.desktop.developers.submit_addon import (
+    SubmitAddon,
+    SubmissionConfirmationPage,
+)
 from scripts import reusables
+from api import api_helpers
 
 
 @pytest.mark.sanity
@@ -36,7 +42,7 @@ def test_submit_unlisted_addon(selenium, base_url, variables, wait):
 
 @pytest.mark.serial
 @pytest.mark.create_session('submissions_user')
-def test_verify_if_version_is_autoapproved(selenium, base_url, variables, wait):
+def test_verify_first_version_autoapproval(selenium, base_url, variables, wait):
     """This test will wait (for max 5 minutes) until the status of an add-on changes to approved"""
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     my_addons = page.click_my_addons_header_link()
@@ -144,6 +150,44 @@ def test_submit_mixed_addon_versions(selenium, base_url, variables, wait):
     edit_addon = manage_addons.addon_list[0].click_addon_name()
     # verify that the unlisted addon badge is now visible on the edit details page
     assert edit_addon.unlisted_version_tooltip.is_displayed()
+
+
+@pytest.mark.sanity
+@pytest.mark.serial
+def test_verify_new_unlisted_version_autoapproval(selenium, base_url, variables):
+    """Uploads a new version to an existing addon and verifies that is auto-approved"""
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    page.devhub_login('developer')
+    addon = variables['unlisted_new_version_autoapproval']
+    # in order to upload a new version, we need to increment on the existing version number
+    # to obtain the current version number, we make an API request that returns the value
+    auth = selenium.get_cookie('sessionid')['value']
+    version_string = api_helpers.get_addon_version_string(base_url, addon, auth)
+    # create a new addon version with the incremented versio number
+    manifest = {
+        'manifest_version': 2,
+        'theme': {'frame': '#083af0', 'tab_background_text': '#ffffff'},
+        'version': f'{float(version_string) + 1}',
+        'name': 'New version auto-approval',
+    }
+    api_helpers.make_addon(manifest)
+    # go to the unlisted distribution page to submit a new version
+    selenium.get(f'{base_url}/developers/addon/{addon}/versions/submit/')
+    submit_version = SubmitAddon(selenium).wait_for_page_to_load()
+    submit_version.upload_addon('make-addon.zip')
+    # wait for the validation to finish and check if it is successful
+    submit_version.is_validation_successful()
+    assert submit_version.success_validation_message.is_displayed()
+    submit_version.click_continue()
+    confirmation_page = SubmissionConfirmationPage(selenium)
+    assert (
+        variables['unlisted_submission_confirmation']
+        in confirmation_page.submission_confirmation_messages[0].text
+    )
+    # open the manage versions page for the addon and wait for the latest version to be auto-approved
+    selenium.get(f'{base_url}/developers/addon/{addon}/versions')
+    version_status = ManageVersions(selenium).wait_for_page_to_load()
+    version_status.wait_for_version_autoapproval('Approved')
 
 
 @pytest.mark.sanity
