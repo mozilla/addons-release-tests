@@ -436,12 +436,12 @@ def test_more_info_external_license(selenium, base_url, variables):
         (
             'mit-license',
             'The MIT License',
-            'https://opensource.org/license/mit-license-php/',
+            'https://opensource.org/license/mit/',
         ),
         (
             'bsd-license',
             'The BSD License',
-            'https://opensource.org/license/bsd-license-php/',
+            'https://opensource.org/license/bsd-2-clause/',
         ),
     ],
     ids=[
