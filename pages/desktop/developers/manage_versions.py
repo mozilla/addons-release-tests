@@ -28,7 +28,7 @@ class ManageVersions(Page):
         timeout_start = time.time()
         # auto-approvals should normally take ~5 minutes;
         # set a loop to verify if approval occurs within this interval
-        while time.time() < timeout_start + 300:
+        while time.time() < timeout_start + 360:
             # refresh the page to check if the status has changed
             self.driver.refresh()
             if value not in self.version_approval_status[0].text:

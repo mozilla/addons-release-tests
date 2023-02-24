@@ -200,7 +200,6 @@ def test_home_popular_themes_shelf(base_url, selenium):
     assert users_list == sorted(users_list, reverse=True)
 
 
-@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_home_see_more_recommended_themes(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
