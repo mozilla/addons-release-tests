@@ -170,7 +170,7 @@ def test_upload_new_version_with_existing_version_number(base_url, session_auth)
         data=json.dumps(payload),
     )
     assert (
-        new_version.status_code == 400
+        new_version.status_code == 409
     ), f'Actual response: status code = {new_version.status_code}, message = {new_version.text}'
     assert (
         'Version 1.1 already exists.' in new_version.text
