@@ -450,7 +450,7 @@ def test_upload_extension_with_duplicate_guid(base_url, session_auth, variables)
         data=json.dumps(payload),
     )
     assert (
-        create_addon.status_code == 400
+        create_addon.status_code == 409
     ), f'Actual status code was {create_addon.status_code}'
     assert (
         'Duplicate add-on ID found.' in create_addon.text
@@ -967,7 +967,10 @@ def test_upload_addon_with_guid_from_deleted_addon(base_url, session_auth):
         },
         data=json.dumps(payload),
     )
-    create_addon.raise_for_status()
+    assert (
+        create_addon.status_code == 200,
+        f'Upload response: status code = {create_addon.status_code}; message: {create_addon.text}',
+    )
     # get the token that would allow the actual delete request to be sent
     get_delete_confirm = requests.get(
         url=f'{base_url}{_addon_create}{guid}/delete_confirm/',
@@ -1005,7 +1008,7 @@ def test_upload_addon_with_guid_from_deleted_addon(base_url, session_auth):
     )
     # verify that the submission fails because it uses a duplicate GUID
     assert (
-        create_addon.status_code == 400
+        create_addon.status_code == 409
     ), f'Actual response: {create_addon.status_code}, {create_addon.text}'
     assert (
         'Duplicate add-on ID found.' in create_addon.text
@@ -1023,7 +1026,10 @@ def test_upload_theme(base_url, session_auth):
             data={'channel': 'listed'},
         )
         time.sleep(5)
-        upload.raise_for_status()
+        assert (
+            upload.status_code == 200,
+            f'Upload response: status code = {upload.status_code}; message: {upload.text}',
+        )
         # get the addon uuid generated after upload
         uuid = upload.json()['uuid']
         # set a license type specific for themes
@@ -1040,7 +1046,10 @@ def test_upload_theme(base_url, session_auth):
             },
             data=json.dumps(payload),
         )
-        create_addon.raise_for_status()
+        assert (
+            create_addon.status_code == 200,
+            f'Upload response: status code = {create_addon.status_code}; message: {create_addon.text}',
+        )
         # verify that the addon has been submitted as a theme by checking the 'type' property
         assert create_addon.json()['type'] == 'statictheme'
 
