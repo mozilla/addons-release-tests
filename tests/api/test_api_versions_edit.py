@@ -813,6 +813,66 @@ def test_edit_version_invalid_compatibility_values(base_url, session_auth, value
 
 @pytest.mark.serial
 @pytest.mark.create_session('api_user')
+def test_edit_version_disable_current_version(base_url, session_auth):
+    """Disable then re-enable the current version of an addon as a developer"""
+    addon = payloads.edit_addon_details['slug']
+    request = requests.get(
+        url=f'{base_url}{_addon_create}{addon}',
+        headers={'Authorization': f'Session {session_auth}'},
+    )
+    # get the version id of the version we want to edit
+    version = request.json()['current_version']['id']
+    payload = {'is_disabled': True}
+    edit_version = requests.patch(
+        url=f'{base_url}{_addon_create}{addon}/versions/{version}/',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            'Content-Type': 'application/json',
+        },
+        data=json.dumps(payload),
+    )
+    assert (
+        edit_version.status_code == 200
+    ), f'Actual response was: {edit_version.status_code}; {edit_version.text}'
+    # verify that the version has been disabled successfully
+    version_status = requests.get(
+        url=f'{base_url}{_addon_create}{addon}/versions/{version}/',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            'Content-Type': 'application/json',
+        },
+    )
+    assert (
+        version_status.json()['is_disabled'] is True
+    ), f'Actual response was: {version_status.json()}'
+    # re-enable the version
+    payload = {'is_disabled': False}
+    edit_version = requests.patch(
+        url=f'{base_url}{_addon_create}{addon}/versions/{version}/',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            'Content-Type': 'application/json',
+        },
+        data=json.dumps(payload),
+    )
+    assert (
+        edit_version.status_code == 200
+    ), f'Actual response was: {edit_version.status_code}; {edit_version.text}'
+    # verify that the version has been re-enabled successfully
+    version_status = requests.get(
+        url=f'{base_url}{_addon_create}{addon}/versions/{version}/',
+        headers={
+            'Authorization': f'Session {session_auth}',
+            'Content-Type': 'application/json',
+        },
+    )
+    assert (
+        version_status.json()['is_disabled'] is False
+    ), f'Actual response was: {version_status.json()}'
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('api_user')
 def test_delete_extension_non_existent_addon(base_url, session_auth):
     """Try to obtain a delete token for a non-existent addon"""
     addon = 'rand-om123'
