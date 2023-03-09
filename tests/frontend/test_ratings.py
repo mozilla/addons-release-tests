@@ -538,7 +538,7 @@ def test_rating_card_loaded_correctly(selenium, base_url, variables):
     for star in rating_card.rating_stars:
         assert star.is_displayed()
     # verify that the rating value is in the [0, 5] interval
-    assert rating_card.rating in range(6)
+    assert int(rating_card.rating) in range(6)
     for i in range(5):
         assert page.rating_card.number_of_reviews_with_specific_stars(i) >= 0
     for rating_bar in rating_card.rating_bars:
