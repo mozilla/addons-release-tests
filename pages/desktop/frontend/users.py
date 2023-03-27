@@ -542,7 +542,12 @@ class User(Base):
         def submit_changes_button_disabled(self):
             return self.find_element(*self._edit_profile_submit_disabled_button_locator)
 
+        def update_profile(self):
+            """Updates a user profile and expects to remain on the Edit Profile page (likely due to an error)"""
+            self.find_element(*self._edit_profile_submit_button_locator).click()
+
         def submit_changes(self):
+            """Updates a user profile and expects to navigate to the View Profile page"""
             self.find_element(*self._edit_profile_submit_button_locator).click()
             self.wait.until(
                 EC.visibility_of_element_located((By.CLASS_NAME, 'UserProfile-name'))
