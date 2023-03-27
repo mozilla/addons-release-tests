@@ -544,6 +544,9 @@ class User(Base):
 
         def submit_changes(self):
             self.find_element(*self._edit_profile_submit_button_locator).click()
+            self.wait.until(
+                EC.visibility_of_element_located((By.CLASS_NAME, 'UserProfile-name'))
+            )
 
         def delete_account(self):
             self.find_element(*self._delete_profile_button_locator).click()
