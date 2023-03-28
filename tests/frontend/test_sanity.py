@@ -256,3 +256,40 @@ def test_about_addons_install_theme(
     # are the same in the Recommendations pane and the installed Themes pane
     except AssertionError:
         assert disco_theme_image == about_addons.enabled_theme_image
+
+
+@pytest.mark.prod_only
+def test_detail_page_taar_recommendations(selenium, base_url):
+    """The scope of this test is to verify if the detail page recommendations section
+    is receiving data from the TAAR recommendation service. The verification process is not
+    foolproof, hence the list with potential addons that trigger recommendations (at least at
+    the moment when the test was first created). If we are lucky and the first addon receives results,
+    the verification will stop there, otherwise the test will continue to loop through the other options
+    until results are received or, finally, fail the test with the assumption that TAAR is broken"""
+    potential_addons = [
+        'enhancer-for-youtube',
+        'adblocker-ultimate',
+        'facebook-container',
+        'darkreader',
+        'bitwarden-password-manager',
+        'cookie-autodelete',
+    ]
+    count = 0
+    while count <= len(potential_addons):
+        selenium.get(f'{base_url}/addon/{potential_addons[count]}')
+        addon_detail = Detail(selenium, base_url).wait_for_page_to_load()
+        try:
+            # if TAAR responds, the recommendation section header should have this title
+            assert (
+                'Other users with this extension also installed'
+                in addon_detail.recommendations.addon_recommendations_header
+            )
+            assert len(addon_detail.recommendations.recommendations_results_item) == 4
+            break
+        except AssertionError:
+            count += 1
+            # if we reach the end of the list without TAAR results, then the test should fail
+            if count == 6:
+                pytest.fail(
+                    'There were no recommendations returned for any of the potential addons. Maybe TAAR is broken?'
+                )
