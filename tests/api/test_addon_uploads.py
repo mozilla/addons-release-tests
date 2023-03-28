@@ -370,6 +370,7 @@ def test_submit_xpi_with_trademark_restricted_user(
         'reserved_guid@mozillafoundation.org',
         'reserved_guid@rally.mozilla.org',
         'reserved_guid@temporary-addon',
+        'reserved_guid@mozac.org',
     ],
 )
 @pytest.mark.serial
@@ -404,12 +405,9 @@ def test_submit_addon_with_reserved_guid(base_url, session_auth, guid):
         },
         data=json.dumps(payload),
     )
-    print(
-        f'For guid "{guid}": response status was {create_addon.status_code}, {create_addon.text}'
-    )
     assert (
         create_addon.status_code == 400
-    ), f'Actual status code was {create_addon.status_code}'
+    ), f'For guid "{guid}": response status was {create_addon.status_code}, {create_addon.text}'
     assert (
         'You cannot submit an add-on using an ID ending with this suffix'
         in create_addon.text
