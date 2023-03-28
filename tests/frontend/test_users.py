@@ -236,7 +236,7 @@ def test_user_update_url(base_url, selenium, variables):
     # it should not submit, red error message should not be displayed
     user.edit.homepage_link_field.clear()
     user.edit.homepage_link_field.send_keys('invalid.com')
-    user.edit.submit_changes()
+    user.edit.update_profile()
     assert initial_page_url in selenium.current_url
     with pytest.raises(NoSuchElementException):
         selenium.find_element(By.CSS_SELECTOR, '.Notice-error .Notice-text')
@@ -245,7 +245,7 @@ def test_user_update_url(base_url, selenium, variables):
     # it should not submit, red error message should be displayed
     user.edit.homepage_link_field.clear()
     user.edit.homepage_link_field.send_keys('https://invalid,com')
-    user.edit.submit_changes()
+    user.edit.update_profile()
     user.wait.until(
         EC.visibility_of_element_located(
             (
@@ -348,17 +348,14 @@ def test_user_notifications_subscriptions(base_url, selenium, wait):
     # unsubscribe from one of the non-mandatory notifications
     edit_user.edit.notifications_checkbox[0].click()
     edit_user.edit.submit_changes()
-    view_user = User(selenium, base_url)
-    wait.until(lambda _: view_user.view.edit_profile_button.is_displayed())
-    view_user.view.click_edit_profile_button()
+    User(selenium, base_url).open().wait_for_page_to_load()
     # verify that the notification checkbox is no longer selected
     with pytest.raises(AssertionError):
         assert edit_user.edit.notifications_checkbox[0].is_selected()
     # subscribe to the notification again
     edit_user.edit.notifications_checkbox[0].click()
     edit_user.edit.submit_changes()
-    wait.until(lambda _: view_user.view.edit_profile_button.is_displayed())
-    view_user.view.click_edit_profile_button()
+    User(selenium, base_url).open().wait_for_page_to_load()
     assert edit_user.edit.notifications_checkbox[0].is_selected()
 
 
