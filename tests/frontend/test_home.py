@@ -347,7 +347,7 @@ def test_browsers_footer_links(base_url, selenium, count, link):
             ['firefox/browsers/', '.mzp-c-split-body h1'],
             ['products/vpn/', '.vpn-hero-heading'],
             ['relay.firefox.com/', '.Button_button__oJAQ2'],
-            ['monitor.firefox', '.fx-monitor-logotype'],
+            ['monitor.firefox', '.monitor-logo'],
             ['getpocket.com', '.mzp-t-product-pocket'],
         ]
     ),
