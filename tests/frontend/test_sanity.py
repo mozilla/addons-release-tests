@@ -275,7 +275,7 @@ def test_detail_page_taar_recommendations(selenium, base_url):
         'cookie-autodelete',
     ]
     count = 0
-    while count <= len(potential_addons):
+    while count < len(potential_addons):
         selenium.get(f'{base_url}/addon/{potential_addons[count]}')
         addon_detail = Detail(selenium, base_url).wait_for_page_to_load()
         try:
@@ -288,8 +288,8 @@ def test_detail_page_taar_recommendations(selenium, base_url):
             break
         except AssertionError:
             count += 1
-            # if we reach the end of the list without TAAR results, then the test should fail
-            if count == 6:
-                pytest.fail(
-                    'There were no recommendations returned for any of the potential addons. Maybe TAAR is broken?'
-                )
+    # if we reach the end of the list without TAAR results, then the test should fail
+    else:
+        pytest.fail(
+            'There were no recommendations returned for any of the potential addons. Maybe TAAR is broken?'
+        )
