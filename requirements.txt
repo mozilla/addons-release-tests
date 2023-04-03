@@ -1,4 +1,4 @@
-﻿apipkg==3.0.1
+apipkg==3.0.1
 appdirs==1.4.4
 astroid==2.14.2
 atomicwrites==1.4.1
@@ -67,7 +67,7 @@ wrapt==1.14.1
 zipp==3.15.0
 zope.component==5.0.1
 zope.deferredimport==4.4
-zope.deprecation==4.4.0
+zope.deprecation==5.0
 zope.event==4.6
 zope.hookable==5.4
 zope.interface==5.5.2
