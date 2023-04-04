@@ -83,7 +83,7 @@ def test_review_guidelines_page_links(base_url, selenium, variables):
     page = StaticPages(selenium, base_url)
     link_domain = page.forum_link.get_attribute('href').split('/')[2].split('.')[0]
     page.forum_link.click()
-    assert link_domain in selenium.current_url
+    page.wait_for_current_url(link_domain)
 
 
 @pytest.mark.nondestructive
