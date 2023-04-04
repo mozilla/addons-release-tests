@@ -3,6 +3,8 @@ import time
 import pytest
 import random
 
+import requests
+
 from pages.desktop.about_addons import AboutAddons
 from pages.desktop.frontend.details import Detail
 from pages.desktop.frontend.language_tools import LanguageTools
@@ -293,3 +295,24 @@ def test_detail_page_taar_recommendations(selenium, base_url):
         pytest.fail(
             'There were no recommendations returned for any of the potential addons. Maybe TAAR is broken?'
         )
+
+
+@pytest.mark.sanity
+def test_discovery_taar_recommendations(base_url, variables):
+    """The scope of this test is to verify if the addons manager recommendations page returns
+    extensions from the TAAR service based on a 'telemetry-client-id'"""
+    request = requests.get(
+        url=f'{base_url}/api/v5/discovery/',
+        params={'telemetry-client-id': variables['telemetry_client_id']},
+    )
+    # make a list with only the extensions returned by the discovery API;
+    # we exclude themes because they are not recommended by default
+    recommendations = [
+        item['is_recommendation']
+        for item in request.json()['results']
+        if item['addon']['type'] == 'extension'
+    ]
+    # determine if the list created before contains at least one recommended extension;
+    # it is not mandatory for all extensions to be TAAR recommendations, but we need to have
+    # at least one to determine whether the service is working or not
+    assert True in recommendations
