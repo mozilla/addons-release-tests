@@ -10,6 +10,8 @@
 
   "fxa_login_page": "accounts.firefox.com",
 
+  "telemetry_client_id": "1111111111111111111111111111111111111111111111111111111111111111",
+
   "detail_extension_slug": "ghostery",
   "detail_extension_name": "Ghostery - Privacy Ad Blocker",
   "addon_with_stats": "facebook-container",

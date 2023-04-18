@@ -45,7 +45,7 @@ def firefox_options(firefox_options, base_url, variables):
     """
     # for prod installation tests, we do not need to set special prefs, so we
     # separate the browser set-up based on the AMO environments
-    if base_url == 'https://addons.mozilla.org/':
+    if base_url == 'https://addons.mozilla.org':
         firefox_options.add_argument('-headless')
         firefox_options.log.level = 'trace'
         firefox_options.set_preference(
