@@ -32,7 +32,7 @@ def test_throttled_request_create_rating_spam(selenium, base_url, variables):
     addon.wait.until(
         EC.visibility_of_element_located((By.CSS_SELECTOR, '.Notice-error'))
     )
-    assert addon.ratings.throttled_request_error.is_displayed()
+    assert addon.ratings.submit_review_error.is_displayed()
 
 
 @pytest.mark.serial
@@ -49,7 +49,7 @@ def test_throttled_request_update_rating_spam(selenium, base_url, variables):
     addon.wait.until(
         EC.visibility_of_element_located((By.CSS_SELECTOR, '.Notice-error'))
     )
-    assert addon.ratings.throttled_request_error.is_displayed()
+    assert addon.ratings.submit_review_error.is_displayed()
 
 
 @pytest.mark.sanity
@@ -637,3 +637,39 @@ def test_rating_card_average_stars(selenium, base_url, variables):
             i
         ) * (5 - i)
     assert total_stars_number / total_reviews_number == page.rating_card.rating
+
+
+@pytest.mark.serial
+@pytest.mark.nondestructive
+@pytest.mark.parametrize(
+    'denied_words, error_message',
+    (
+        ['bad', 'The review text cannot contain the word: "bad"'],
+        [
+            'bad monkey lizard',
+            'The review text cannot contain any of the words: "bad", "lizard", "monkey"',
+        ],
+    ),
+    ids=[
+        'Single word ban',
+        'Multiple words ban',
+    ],
+)
+def test_banned_words_in_user_reviews(
+    selenium, base_url, variables, denied_words, error_message
+):
+    extension = variables['theme_detail_page']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    addon.login('rating_user')
+    # try to submit a user review using denied words in the review body
+    addon.ratings.rating_stars[4].click()
+    addon.ratings.wait_for_rating_form()
+    addon.ratings.write_a_review.click()
+    addon.ratings.review_text_input(f'this is a {denied_words} word')
+    addon.ratings.submit_review_button.click()
+    addon.ratings.submit_review_error_message(error_message)
+    # delete the rating
+    addon.ratings.cancel_review.click()
+    addon.ratings.delete_rating_link.click()
+    addon.ratings.click_delete_confirm_button()

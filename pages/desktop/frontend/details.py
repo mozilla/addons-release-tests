@@ -733,11 +733,19 @@ class Detail(Base):
         _review_permalink_locator = (By.CSS_SELECTOR, '.UserReview-byLine a')
         _report_abuse_button_locator = (By.CLASS_NAME, 'ReportAbuseButton-show-more')
         _all_reviews_link_locator = (By.CLASS_NAME, 'Addon-all-reviews-link')
-        _throttled_request_error_locator = (By.CSS_SELECTOR, '.Notice-error')
+        _submit_review_error_locator = (By.CSS_SELECTOR, '.Notice-error')
 
         @property
-        def throttled_request_error(self):
-            return self.find_element(*self._throttled_request_error_locator)
+        def submit_review_error(self):
+            return self.find_element(*self._submit_review_error_locator)
+
+        def submit_review_error_message(self, value):
+            self.wait.until(
+                expected.text_to_be_present_in_element(
+                    (By.CSS_SELECTOR, '.Notice-error'), value
+                ),
+                message=f'The expected error message "{value}" was not raised',
+            )
 
         @property
         def ratings_card_header(self):
