@@ -10,6 +10,8 @@
 
   "fxa_login_page": "accounts.stage.mozaws.net",
 
+  "telemetry_client_id": "1111111111111111111111111111111111111111111111111111111111111111",
+
   "secondary_hero_title": "Extensions are like apps for Firefox.",
   "secondary_hero_summary": "They add features to Firefox to make browsing faster, safer, or just plain fun",
 
