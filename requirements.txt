@@ -1,4 +1,4 @@
-﻿apipkg==3.0.1
+apipkg==3.0.1
 appdirs==1.4.4
 astroid==2.14.2
 atomicwrites==1.4.1
@@ -28,7 +28,7 @@ more-itertools==9.1.0
 networkx==3.0
 numpy==1.24.2
 packaging==21.3
-pathspec==0.11.0
+pathspec==0.11.1
 pluggy==1.0.0
 psutil==5.9.4
 py==1.11.0
