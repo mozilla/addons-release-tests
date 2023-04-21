@@ -1,4 +1,4 @@
-apipkg==3.0.1
+﻿apipkg==3.0.1
 appdirs==1.4.4
 astroid==2.14.2
 atomicwrites==1.4.1
@@ -11,6 +11,7 @@ colorama==0.4.6
 cryptography==39.0.1
 decorator==5.1.1
 defusedxml==0.7.1
+exceptiongroup==1.1.1
 execnet==1.9.0
 FoxPuppet==1.0.3
 future-fstrings==1.2.0
