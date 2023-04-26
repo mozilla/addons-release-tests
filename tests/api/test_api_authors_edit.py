@@ -113,7 +113,7 @@ def test_addon_add_restricted_author(base_url, session_auth, variables):
         add_author.status_code == 400
     ), f'Actual response {add_author.status_code}, {add_author.text}'
     assert (
-        'The email address used for your account is not allowed for add-on submission.'
+        'The email address used for your account is not allowed for submissions.'
         in add_author.text
     ), f'Actual message was {add_author.text}'
 
