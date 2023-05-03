@@ -20,7 +20,7 @@ hawkauthlib==2.0.0
 hjson==3.1.0
 idna==3.4
 importlib-metadata==6.1.0
-iniconfig==1.1.1
+iniconfig==2.0.0
 isort==5.11.4
 lazy-object-proxy==1.9.0
 mccabe==0.7.0
