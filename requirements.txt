@@ -19,7 +19,7 @@ fxapom==1.10.2
 hawkauthlib==2.0.0
 hjson==3.1.0
 idna==3.4
-importlib-metadata==6.1.0
+importlib-metadata==6.6.0
 iniconfig==2.0.0
 isort==5.11.4
 lazy-object-proxy==1.9.0
