@@ -1334,3 +1334,24 @@ def test_upload_addon_with_trademark_name_authorized_account(
             create_addon.status_code == 201
         ), f'Actual response: {create_addon.status_code}, {create_addon.text}'
         assert addon_name == create_addon.json()['name']['en-US']
+
+
+@pytest.mark.serial
+def test_upload_addon_restricted_user(selenium, base_url):
+    """Try to upload an addon with a user that is on the restricted list for addon submissions"""
+    # get the sessionid for a regular user
+    page = Home(selenium, base_url).open().wait_for_page_to_load()
+    page.login('restricted_user')
+    session_auth = selenium.get_cookie('sessionid')
+    with open('sample-addons/listed-addon.zip', 'rb') as file:
+        upload = requests.post(
+            url=f'{base_url}{_upload}',
+            headers={'Authorization': f'Session {session_auth["value"]}'},
+            files={'upload': file},
+            data={'channel': 'unlisted'},
+        )
+    time.sleep(5)
+    assert (
+        'The email address used for your account is not allowed for submissions.'
+        in upload.text
+    ), f'Actual response message was {upload.text}'
