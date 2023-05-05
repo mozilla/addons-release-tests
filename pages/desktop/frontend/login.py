@@ -42,6 +42,9 @@ class Login(Base):
     # 9. user with a mozilla account that has specific submission permissions
     STAFF_USER_EMAIL = os.environ.get('STAFF_USER_EMAIL')
     STAFF_USER_PASSWORD = os.environ.get('STAFF_USER_PASSWORD')
+    # 10. account added to the list of banned user emails for rating and addon submissions
+    RESTRICTED_USER_EMAIL = os.environ.get('RESTRICTED_USER_EMAIL')
+    RESTRICTED_USER_PASSWORD = os.environ.get('RESTRICTED_USER_PASSWORD')
 
     _email_locator = (By.NAME, 'email')
     _continue_locator = (By.CSS_SELECTOR, '.button-row button')
@@ -69,6 +72,8 @@ class Login(Base):
             self.fxa_login(self.API_USER_EMAIL, self.API_USER_PASSWORD)
         elif user == 'staff_user':
             self.fxa_login(self.STAFF_USER_EMAIL, self.STAFF_USER_PASSWORD)
+        elif user == 'restricted_user':
+            self.fxa_login(self.RESTRICTED_USER_EMAIL, self.RESTRICTED_USER_PASSWORD)
         else:
             self.fxa_login(self.REGULAR_USER_EMAIL, self.REGULAR_USER_PASSWORD)
 

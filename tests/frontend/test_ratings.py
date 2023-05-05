@@ -673,3 +673,17 @@ def test_banned_words_in_user_reviews(
     addon.ratings.cancel_review.click()
     addon.ratings.delete_rating_link.click()
     addon.ratings.click_delete_confirm_button()
+
+
+@pytest.mark.serial
+def test_restricted_user_rating_submission(selenium, base_url, variables):
+    """Verify that a restricted user email is not allowed to post addon ratings"""
+    extension = variables['theme_detail_page']
+    selenium.get(f'{base_url}/addon/{extension}')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    addon.login('restricted_user')
+    # try to submit a user review using denied words in the review body
+    addon.ratings.rating_stars[4].click()
+    addon.ratings.submit_review_error_message(
+        "The email address used for your account is not allowed for submissions."
+    )
