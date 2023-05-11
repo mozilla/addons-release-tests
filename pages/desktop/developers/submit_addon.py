@@ -182,7 +182,8 @@ class ListedAddonSubmissionForm(Page):
         By.CSS_SELECTOR,
         '.submission-buttons button:nth-child(2)',
     )
-    _theme_categories_locator = (By.CSS_SELECTOR, '#addon-categories-edit > ul input')
+    # _theme_categories_locator = (By.CSS_SELECTOR, '#addon-categories-edit > ul input') - temporary not available
+    _theme_categories_locator = (By.CSS_SELECTOR, '#id_category input')
     _theme_licence_sharing_rights_locator = (
         By.CSS_SELECTOR,
         '#cc-chooser ul:nth-of-type(1) input',
