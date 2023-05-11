@@ -232,10 +232,21 @@ def test_devhub_developer_agreement_page_contents(selenium, base_url, variables,
     page.devhub_login('regular_user')
     page.wait_for_page_to_load()
     dist_agreement = page.click_submit_addon_button()
-    assert variables['devhub_submit_addon_agreement_header'] in dist_agreement.distribution_header.text
-    assert variables['distribution_page_explainer'] in dist_agreement.distribution_page_explainer
-    assert 'Firefox Add-on Distribution Agreement' in dist_agreement.distribution_agreement_article_link.text
-    assert 'Review Policies and Rules' in dist_agreement.review_policies_article_link.text
+    assert (
+        variables['devhub_submit_addon_agreement_header']
+        in dist_agreement.distribution_header.text
+    )
+    assert (
+        variables['distribution_page_explainer']
+        in dist_agreement.distribution_page_explainer
+    )
+    assert (
+        'Firefox Add-on Distribution Agreement'
+        in dist_agreement.distribution_agreement_article_link.text
+    )
+    assert (
+        'Review Policies and Rules' in dist_agreement.review_policies_article_link.text
+    )
     assert variables['distribution_user_consent'] in dist_agreement.user_consent_text
     wait.until(lambda _: dist_agreement.recaptcha.is_displayed())
     # clicking on Cancel agreement should redirect to Devhub Homepage
@@ -252,7 +263,8 @@ def test_devhub_developer_agreement_page_links(selenium, base_url):
     dist_agreement = page.click_submit_addon_button()
     # check that the distribution agreement link opens the correct Extension workshop page
     dist_agreement.click_distribution_and_policy_article_link(
-        dist_agreement.distribution_agreement_article_link, 'Firefox Add-on Distribution Agreement'
+        dist_agreement.distribution_agreement_article_link,
+        'Firefox Add-on Distribution Agreement',
     )
     # check that the review policies link opens the correct Extension workshop page
     dist_agreement.click_distribution_and_policy_article_link(

@@ -18,15 +18,30 @@ class SubmitAddon(Page):
         By.CSS_SELECTOR,
         '.addon-submission-process h3',
     )
-    _distribution_page_explainer_locator = (By.CSS_SELECTOR, '.addon-submission-process p:nth-of-type(1)')
+    _distribution_page_explainer_locator = (
+        By.CSS_SELECTOR,
+        '.addon-submission-process p:nth-of-type(1)',
+    )
     _distribution_agreement_checkbox_locator = (By.ID, 'id_distribution_agreement')
-    _distribution_agreement_link_locator = (By.CSS_SELECTOR, '.addon-submission-process li:nth-of-type(1) a')
+    _distribution_agreement_link_locator = (
+        By.CSS_SELECTOR,
+        '.addon-submission-process li:nth-of-type(1) a',
+    )
     _review_policies_checkbox_locator = (By.ID, 'id_review_policy')
-    _review_policies_link_locator = (By.CSS_SELECTOR, '.addon-submission-process li:nth-of-type(2) a')
-    _user_consent_text_locator = (By.CSS_SELECTOR, '.addon-submission-process p:nth-of-type(2)')
+    _review_policies_link_locator = (
+        By.CSS_SELECTOR,
+        '.addon-submission-process li:nth-of-type(2) a',
+    )
+    _user_consent_text_locator = (
+        By.CSS_SELECTOR,
+        '.addon-submission-process p:nth-of-type(2)',
+    )
     _recaptcha_locator = (By.ID, 'id_recaptcha')
     _recaptcha_checkbox_locator = (By.ID, 'recaptcha-anchor')
-    _recaptcha_checkbox_is_selected_locator = (By.CSS_SELECTOR, 'span[aria-checked="true"]')
+    _recaptcha_checkbox_is_selected_locator = (
+        By.CSS_SELECTOR,
+        'span[aria-checked="true"]',
+    )
     _accept_agreement_button = (By.ID, 'accept-agreement')
     _cancel_agreement_button = (By.CSS_SELECTOR, '.submit-buttons a')
     _dev_accounts_info_link_locator = (By.CSS_SELECTOR, '.addon-submission-process p a')
@@ -86,8 +101,7 @@ class SubmitAddon(Page):
         new_tab = self.driver.window_handles[1]
         self.driver.switch_to.window(new_tab)
         self.wait.until(
-            EC.text_to_be_present_in_element(
-                (By.CSS_SELECTOR, '.page-hero h1'), text)
+            EC.text_to_be_present_in_element((By.CSS_SELECTOR, '.page-hero h1'), text)
         )
         self.driver.close()
         # return to the main tab
@@ -121,7 +135,8 @@ class SubmitAddon(Page):
         self.find_element(*self._dev_accounts_info_link_locator).click()
         self.wait.until(
             EC.text_to_be_present_in_element(
-                (By.CSS_SELECTOR, '.page-hero h1'), 'Developer accounts')
+                (By.CSS_SELECTOR, '.page-hero h1'), 'Developer accounts'
+            )
         )
 
     def select_listed_option(self):
