@@ -18,6 +18,33 @@ class SubmitAddon(Page):
         By.CSS_SELECTOR,
         '.addon-submission-process h3',
     )
+    _distribution_page_explainer_locator = (
+        By.CSS_SELECTOR,
+        '.addon-submission-process p:nth-of-type(1)',
+    )
+    _distribution_agreement_checkbox_locator = (By.ID, 'id_distribution_agreement')
+    _distribution_agreement_link_locator = (
+        By.CSS_SELECTOR,
+        '.addon-submission-process li:nth-of-type(1) a',
+    )
+    _review_policies_checkbox_locator = (By.ID, 'id_review_policy')
+    _review_policies_link_locator = (
+        By.CSS_SELECTOR,
+        '.addon-submission-process li:nth-of-type(2) a',
+    )
+    _user_consent_text_locator = (
+        By.CSS_SELECTOR,
+        '.addon-submission-process p:nth-of-type(2)',
+    )
+    _recaptcha_locator = (By.ID, 'id_recaptcha')
+    _recaptcha_checkbox_locator = (By.ID, 'recaptcha-anchor')
+    _recaptcha_checkbox_is_selected_locator = (
+        By.CSS_SELECTOR,
+        'span[aria-checked="true"]',
+    )
+    _accept_agreement_button = (By.ID, 'accept-agreement')
+    _cancel_agreement_button = (By.CSS_SELECTOR, '.submit-buttons a')
+    _dev_accounts_info_link_locator = (By.CSS_SELECTOR, '.addon-submission-process p a')
     _listed_option_locator = (By.CSS_SELECTOR, 'input[value="listed"]')
     _unlisted_option_locator = (By.CSS_SELECTOR, 'input[value="unlisted"]')
     _change_distribution_link_locator = (By.CSS_SELECTOR, '.addon-submit-distribute a')
@@ -42,6 +69,75 @@ class SubmitAddon(Page):
     @property
     def distribution_header(self):
         return self.find_element(*self._addon_distribution_header_locator)
+
+    @property
+    def distribution_page_explainer(self):
+        return self.find_element(*self._distribution_page_explainer_locator).text
+
+    @property
+    def distribution_agreement_checkbox(self):
+        return self.find_element(*self._distribution_agreement_checkbox_locator)
+
+    @property
+    def distribution_agreement_article_link(self):
+        return self.find_element(*self._distribution_agreement_link_locator)
+
+    @property
+    def review_policies_checkbox(self):
+        return self.find_element(*self._review_policies_checkbox_locator)
+
+    @property
+    def review_policies_article_link(self):
+        return self.find_element(*self._review_policies_link_locator)
+
+    def click_distribution_and_policy_article_link(self, link, text):
+        """Clicks on the Distribution agreement and the Policies links
+        which open an Extension Workshop article page in a new tab"""
+        link.click()
+        self.wait.until(
+            EC.number_of_windows_to_be(2),
+            message=f'Number of windows was {len(self.driver.window_handles)}, expected 2',
+        )
+        new_tab = self.driver.window_handles[1]
+        self.driver.switch_to.window(new_tab)
+        self.wait.until(
+            EC.text_to_be_present_in_element((By.CSS_SELECTOR, '.page-hero h1'), text)
+        )
+        self.driver.close()
+        # return to the main tab
+        self.driver.switch_to.window(self.driver.window_handles[0])
+
+    @property
+    def user_consent_text(self):
+        return self.find_element(*self._user_consent_text_locator).text
+
+    @property
+    def recaptcha(self):
+        return self.find_element(*self._recaptcha_locator)
+
+    def click_recaptcha_checkbox(self):
+        """reCAPTCHA is stored in an iframe; switch to the iframe and click on the checkbox"""
+        el = self.find_element(By.CSS_SELECTOR, 'iframe[title="reCAPTCHA"]')
+        self.driver.switch_to.frame(el)
+        self.find_element(*self._recaptcha_checkbox_locator).click()
+
+    @property
+    def accept_agreement(self):
+        return self.find_element(*self._accept_agreement_button)
+
+    @property
+    def cancel_agreement(self):
+        return self.find_element(*self._cancel_agreement_button)
+
+    def click_dev_accounts_info_link(self):
+        """click on the Developer account info link and check that the
+        correct Extension Workshop article is opened"""
+        self.find_element(*self._dev_accounts_info_link_locator).click()
+        self.wait.until(
+            EC.text_to_be_present_in_element(
+                (By.CSS_SELECTOR, '.page-hero h1'), 'Developer accounts'
+            )
+        )
 
     def select_listed_option(self):
         self.find_element(*self._listed_option_locator).click()
