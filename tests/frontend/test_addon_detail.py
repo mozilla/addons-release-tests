@@ -611,9 +611,16 @@ def test_screenshot_viewer(selenium, base_url, variables):
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     assert 'Screenshots' in addon.screenshots.screenshot_section_header.text
     # clicks through each screenshot and verifies that the screenshot full size viewer is opened
+    # also check that the image preview sources are actually retrieved from the server (no broken previews)
     for preview in addon.screenshots.screenshot_preview:
+        preview_count = addon.screenshots.screenshot_preview.index(preview)
         preview.click()
         time.sleep(1)
+        # check that he image preview is not broken
+        src_img = selenium.find_elements(By.CSS_SELECTOR, '.ScreenShots-image')[
+            preview_count
+        ].get_attribute('src')
+        assert requests.get(src_img).status_code == 200
         # checks that the screenshot viewer has opened
         addon.screenshots.screenshot_full_view_displayed()
         addon.screenshots.esc_to_close_screenshot_viewer()
