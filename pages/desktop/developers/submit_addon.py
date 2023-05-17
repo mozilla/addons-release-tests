@@ -45,8 +45,25 @@ class SubmitAddon(Page):
     _accept_agreement_button = (By.ID, 'accept-agreement')
     _cancel_agreement_button = (By.CSS_SELECTOR, '.submit-buttons a')
     _dev_accounts_info_link_locator = (By.CSS_SELECTOR, '.addon-submission-process p a')
+
     _listed_option_locator = (By.CSS_SELECTOR, 'input[value="listed"]')
+    _listed_option_helptext_locator = (
+        By.CSS_SELECTOR,
+        "label[for='id_channel_0'] span[class='helptext']",
+    )
     _unlisted_option_locator = (By.CSS_SELECTOR, 'input[value="unlisted"]')
+    _unlisted_option_helptext_locator = (
+        By.CSS_SELECTOR,
+        "label[for='id_channel_1'] span[class='helptext']",
+    )
+    _distribution_and_signing_helptext_locator = (
+        By.CSS_SELECTOR,
+        '.addon-submit-distribute p:nth-of-type(3)',
+    )
+    _addon_policies_helptext_locator = (
+        By.CSS_SELECTOR,
+        '.addon-submit-distribute p:nth-of-type(4)',
+    )
     _change_distribution_link_locator = (By.CSS_SELECTOR, '.addon-submit-distribute a')
     _continue_button_locator = (By.CSS_SELECTOR, '.addon-submission-field button')
     _upload_file_button_locator = (By.CSS_SELECTOR, '.invisible-upload input')
@@ -90,7 +107,7 @@ class SubmitAddon(Page):
     def review_policies_article_link(self):
         return self.find_element(*self._review_policies_link_locator)
 
-    def click_distribution_and_policy_article_link(self, link, text):
+    def click_extension_workshop_article_link(self, link, text):
         """Clicks on the Distribution agreement and the Policies links
         which open an Extension Workshop article page in a new tab"""
         link.click()
@@ -139,11 +156,43 @@ class SubmitAddon(Page):
             )
         )
 
+    @property
+    def listed_option_helptext(self):
+        return self.find_element(*self._listed_option_helptext_locator).text
+
+    @property
+    def unlisted_option_helptext(self):
+        return self.find_element(*self._unlisted_option_helptext_locator)
+
+    @property
+    def update_url_link(self):
+        return self.unlisted_option_helptext.find_element(By.CSS_SELECTOR, 'a')
+
+    @property
+    def listed_option_radiobutton(self):
+        return self.find_element(*self._listed_option_locator)
+
     def select_listed_option(self):
         self.find_element(*self._listed_option_locator).click()
 
     def select_unlisted_option(self):
         self.find_element(*self._unlisted_option_locator).click()
+
+    @property
+    def distribution_and_signing_helptext(self):
+        return self.find_element(*self._distribution_and_signing_helptext_locator)
+
+    @property
+    def distribution_and_signing_link(self):
+        return self.distribution_and_signing_helptext.find_element(By.CSS_SELECTOR, 'a')
+
+    @property
+    def addon_policies_helptext(self):
+        return self.find_element(*self._addon_policies_helptext_locator)
+
+    @property
+    def addon_policies_link(self):
+        return self.addon_policies_helptext.find_element(By.CSS_SELECTOR, 'a')
 
     def change_version_distribution(self):
         """Changes the distribution (listed/unlisted) when submitting a new version"""

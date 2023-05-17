@@ -134,6 +134,10 @@
   "devhub_submit_addon_distribution_header": "How to Distribute this Version",
   "distribution_page_explainer": "Before starting, please read and accept our Firefox Add-on Distribution Agreement as well as our Review Policies and Rules. The Firefox Add-on Distribution Agreement also links to our Privacy Notice which explains how we handle your information.",
   "distribution_user_consent": "I have read and accept this Agreement and the Rules and Policies.",
+  "listed_option_helptext": "Your submission is publicly listed on addons.allizom.org.",
+  "unlisted_option_helptext": "After your submission is signed by Mozilla, you can download the .xpi file from the Developer Hub and distribute it to your audience. Please make sure the add-on manifest’s update_url is provided, as this is the URL where Firefox finds updates for automatic deployment to your users.",
+  "distribution_and_signing_helptext": "You can learn more about these options by reading Add-on Distribution and Signing on Firefox Extension Workshop.",
+  "addon_policies_helptext": "All add-ons must comply with Mozilla’s Add-on Policies and are subject to manual review at any time after submission.",
 
   "unlisted_submission_confirmation": "You’re done! ✨ You will be notified by email when the signed file is ready to be downloaded from the Developer Hub. If you do not see an email after 24 hours, please check your spam folder.",
   "listed_submission_confirmation": "You’re done! ✨ You will receive a confirmation email when this version is published on addons.allizom.org. Note that it may take up to 24 hours before publication occurs, or longer if your add-on is selected for manual review. If you do not see an email after 24 hours, please check your spam folder.",

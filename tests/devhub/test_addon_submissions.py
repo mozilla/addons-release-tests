@@ -10,6 +10,101 @@ from scripts import reusables
 from api import api_helpers
 
 
+def test_devhub_developer_agreement_page_contents(selenium, base_url, variables, wait):
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    # use an account that hasn't accepted the agreement before
+    page.devhub_login('regular_user')
+    page.wait_for_page_to_load()
+    dist_agreement = page.click_submit_addon_button()
+    assert (
+        variables['devhub_submit_addon_agreement_header']
+        in dist_agreement.distribution_header.text
+    )
+    assert (
+        variables['distribution_page_explainer']
+        in dist_agreement.distribution_page_explainer
+    )
+    assert (
+        'Firefox Add-on Distribution Agreement'
+        in dist_agreement.distribution_agreement_article_link.text
+    )
+    assert (
+        'Review Policies and Rules' in dist_agreement.review_policies_article_link.text
+    )
+    assert variables['distribution_user_consent'] in dist_agreement.user_consent_text
+    wait.until(lambda _: dist_agreement.recaptcha.is_displayed())
+    # clicking on Cancel agreement should redirect to Devhub Homepage
+    dist_agreement.cancel_agreement.click()
+    page = DevHubHome(selenium, base_url).wait_for_page_to_load()
+    assert page.page_logo.is_displayed()
+
+
+def test_devhub_developer_agreement_page_links(selenium, base_url):
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    # use an account that hasn't accepted the agreement before
+    page.devhub_login('regular_user')
+    dist_agreement = page.click_submit_addon_button()
+    # check that the distribution agreement link opens the correct Extension workshop page
+    dist_agreement.click_extension_workshop_article_link(
+        dist_agreement.distribution_agreement_article_link,
+        'Firefox Add-on Distribution Agreement',
+    )
+    # check that the review policies link opens the correct Extension workshop page
+    dist_agreement.click_extension_workshop_article_link(
+        dist_agreement.review_policies_article_link, 'Add-on Policies'
+    )
+    # verify that the Dev Account info link opens an Extension Workshop article page
+    dist_agreement.click_dev_accounts_info_link()
+
+
+def test_devhub_developer_agreement_checkboxes(selenium, base_url):
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    # use an account that hasn't accepted the agreement before
+    page.devhub_login('regular_user')
+    dist_agreement = page.click_submit_addon_button()
+    dist_agreement.distribution_agreement_checkbox.click()
+    assert dist_agreement.distribution_agreement_checkbox.is_selected()
+    dist_agreement.review_policies_checkbox.click()
+    assert dist_agreement.review_policies_checkbox.is_selected()
+    dist_agreement.click_recaptcha_checkbox()
+
+
+def test_addon_distribution_page_contents(selenium, base_url, variables, wait):
+    """Check the elements present on devhub addon distribution page (where the user selects
+    the listed or unlisted channels to upload their addon"""
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    page.devhub_login('submissions_user')
+    dist_page = page.click_submit_addon_button()
+    wait.until(lambda _: dist_page.submission_form_header.is_displayed())
+    assert (
+        variables['devhub_submit_addon_distribution_header']
+        in dist_page.distribution_header.text
+    )
+    # checks that the listed option is selected by default
+    assert dist_page.listed_option_radiobutton.is_selected()
+    assert variables['listed_option_helptext'] in dist_page.listed_option_helptext
+    assert (
+        variables['unlisted_option_helptext'] in dist_page.unlisted_option_helptext.text
+    )
+    # check that the 'update_url', 'distribution' and 'policies' links opens the correct Extension Workshop page
+    dist_page.click_extension_workshop_article_link(
+        dist_page.update_url_link, 'Updating your extension'
+    )
+    assert (
+        variables['distribution_and_signing_helptext']
+        in dist_page.distribution_and_signing_helptext.text
+    )
+    dist_page.click_extension_workshop_article_link(
+        dist_page.distribution_and_signing_link, 'Signing and distributing your add-on'
+    )
+    assert (
+        variables['addon_policies_helptext'] in dist_page.addon_policies_helptext.text
+    )
+    dist_page.click_extension_workshop_article_link(
+        dist_page.addon_policies_link, 'Add-on Policies'
+    )
+
+
 @pytest.mark.sanity
 @pytest.mark.serial
 # The first test starts the browser with a normal login in order to store de session cookie

@@ -226,68 +226,6 @@ def test_devhub_click_submit_new_theme_button(selenium, base_url, wait):
 
 
 @pytest.mark.nondestructive
-def test_devhub_developer_agreement_page_contents(selenium, base_url, variables, wait):
-    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    # use an account that hasn't accepted the agreement before
-    page.devhub_login('regular_user')
-    page.wait_for_page_to_load()
-    dist_agreement = page.click_submit_addon_button()
-    assert (
-        variables['devhub_submit_addon_agreement_header']
-        in dist_agreement.distribution_header.text
-    )
-    assert (
-        variables['distribution_page_explainer']
-        in dist_agreement.distribution_page_explainer
-    )
-    assert (
-        'Firefox Add-on Distribution Agreement'
-        in dist_agreement.distribution_agreement_article_link.text
-    )
-    assert (
-        'Review Policies and Rules' in dist_agreement.review_policies_article_link.text
-    )
-    assert variables['distribution_user_consent'] in dist_agreement.user_consent_text
-    wait.until(lambda _: dist_agreement.recaptcha.is_displayed())
-    # clicking on Cancel agreement should redirect to Devhub Homepage
-    dist_agreement.cancel_agreement.click()
-    page = DevHubHome(selenium, base_url).wait_for_page_to_load()
-    assert page.page_logo.is_displayed()
-
-
-@pytest.mark.nondestructive
-def test_devhub_developer_agreement_page_links(selenium, base_url):
-    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    # use an account that hasn't accepted the agreement before
-    page.devhub_login('regular_user')
-    dist_agreement = page.click_submit_addon_button()
-    # check that the distribution agreement link opens the correct Extension workshop page
-    dist_agreement.click_distribution_and_policy_article_link(
-        dist_agreement.distribution_agreement_article_link,
-        'Firefox Add-on Distribution Agreement',
-    )
-    # check that the review policies link opens the correct Extension workshop page
-    dist_agreement.click_distribution_and_policy_article_link(
-        dist_agreement.review_policies_article_link, 'Add-on Policies'
-    )
-    # verify that the Dev Account info link opens an Extension Workshop article page
-    dist_agreement.click_dev_accounts_info_link()
-
-
-@pytest.mark.nondestructive
-def test_devhub_developer_agreement_checkboxes(selenium, base_url):
-    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    # use an account that hasn't accepted the agreement before
-    page.devhub_login('regular_user')
-    dist_agreement = page.click_submit_addon_button()
-    dist_agreement.distribution_agreement_checkbox.click()
-    assert dist_agreement.distribution_agreement_checkbox.is_selected()
-    dist_agreement.review_policies_checkbox.click()
-    assert dist_agreement.review_policies_checkbox.is_selected()
-    dist_agreement.click_recaptcha_checkbox()
-
-
-@pytest.mark.nondestructive
 def test_devhub_click_first_theme_button(selenium, base_url, variables):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     # an account with no add-ons submitted is used
