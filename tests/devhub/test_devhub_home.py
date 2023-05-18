@@ -236,12 +236,12 @@ def test_devhub_click_first_theme_button(selenium, base_url, variables):
     try:
         assert (
             variables['devhub_submit_addon_agreement_header']
-            in distribution_page.distribution_header.text
+            in distribution_page.submission_form_subheader.text
         )
     except AssertionError:
         assert (
             variables['devhub_submit_addon_distribution_header']
-            in distribution_page.distribution_header.text
+            in distribution_page.submission_form_subheader.text
         )
 
 

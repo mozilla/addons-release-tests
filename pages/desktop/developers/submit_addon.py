@@ -18,6 +18,7 @@ class SubmitAddon(Page):
         By.CSS_SELECTOR,
         '.addon-submission-process h3',
     )
+    _developer_notification_box_locator = (By.CSS_SELECTOR, '.notification-box')
     _distribution_page_explainer_locator = (
         By.CSS_SELECTOR,
         '.addon-submission-process p:nth-of-type(1)',
@@ -66,13 +67,28 @@ class SubmitAddon(Page):
     )
     _change_distribution_link_locator = (By.CSS_SELECTOR, '.addon-submit-distribute a')
     _continue_button_locator = (By.CSS_SELECTOR, '.addon-submission-field button')
+    _file_upload_process_helptext_locator = (By.CSS_SELECTOR, '.new-addon-file p')
     _upload_file_button_locator = (By.CSS_SELECTOR, '.invisible-upload input')
+    _accepted_file_types_locator = (By.CLASS_NAME, 'upload-details')
+    _compatibility_helptext_locator = (By.CSS_SELECTOR, '.compatible-apps label')
+    _compatibility_error_message_locator = (By.CSS_SELECTOR, '.errorlist li')
     _firefox_compat_checkbox_locator = (By.CSS_SELECTOR, '.app.firefox input')
     _android_compat_checkbox_locator = (By.CSS_SELECTOR, '.app.android input')
+    _create_theme_subheader_locator = (
+        By.CSS_SELECTOR,
+        '.addon-create-theme-section h3',
+    )
     _create_theme_button_locator = (By.ID, 'wizardlink')
     _submit_file_button_locator = (By.ID, 'submit-upload-file-finish')
     _addon_validation_success_locator = (By.CLASS_NAME, 'bar-success')
-    _validation_fail_message_locator = (By.CLASS_NAME, 'status-fail')
+    _validation_fail_bar_locator = (By.CLASS_NAME, 'bar-fail')
+    _validation_support_link_locator = (By.CSS_SELECTOR, '#upload-status-results a')
+    _validation_failed_message_locator = (
+        By.CSS_SELECTOR,
+        '#upload-status-results strong',
+    )
+    _validation_fail_reason_locator = (By.CSS_SELECTOR, '#upload_errors li')
+    _validation_status_text_locator = (By.ID, 'upload-status-text')
     _validation_success_message_locator = (By.ID, 'upload-status-results')
 
     @property
@@ -84,8 +100,12 @@ class SubmitAddon(Page):
         return self.find_element(*self._submission_form_header_locator)
 
     @property
-    def distribution_header(self):
+    def submission_form_subheader(self):
         return self.find_element(*self._addon_distribution_header_locator)
+
+    @property
+    def developer_notification_box(self):
+        return self.find_element(*self._developer_notification_box_locator)
 
     @property
     def distribution_page_explainer(self):
@@ -202,11 +222,27 @@ class SubmitAddon(Page):
     def click_continue(self):
         self.find_element(*self._continue_button_locator).click()
 
+    @property
+    def file_upload_helptext(self):
+        return self.find_elements(*self._file_upload_process_helptext_locator)
+
     def upload_addon(self, addon):
         """Selects an addon from the 'sample-addons' folder and uploads it"""
         button = self.find_element(*self._upload_file_button_locator)
         archive = Path(f'{os.getcwd()}/sample-addons/{addon}')
         button.send_keys(str(archive))
+
+    @property
+    def accepted_file_types(self):
+        return self.find_element(*self._accepted_file_types_locator).text
+
+    @property
+    def compatibility_helptext(self):
+        return self.find_elements(*self._compatibility_helptext_locator)[0].text
+
+    @property
+    def compatibility_error_message(self):
+        return self.find_element(*self._compatibility_error_message_locator).text
 
     @property
     def firefox_compat_checkbox(self):
@@ -215,6 +251,10 @@ class SubmitAddon(Page):
     @property
     def android_compat_checkbox(self):
         return self.find_element(*self._android_compat_checkbox_locator)
+
+    @property
+    def create_theme_subheader(self):
+        return self.find_element(*self._create_theme_subheader_locator).text
 
     def click_create_theme_button(self):
         self.find_element(*self._create_theme_button_locator).click()
@@ -227,8 +267,33 @@ class SubmitAddon(Page):
         )
 
     @property
-    def failed_validation_message(self):
-        return self.find_element(*self._validation_fail_message_locator)
+    def failed_validation_bar(self):
+        return self.find_element(*self._validation_fail_bar_locator)
+
+    @property
+    def validation_status_title(self):
+        return self.find_element(*self._validation_status_text_locator).text
+
+    def click_validation_support_link(self):
+        self.find_element(*self._validation_support_link_locator).click()
+        self.wait.until(
+            EC.number_of_windows_to_be(2),
+            message=f'Number of windows was {len(self.driver.window_handles)}, expected 2',
+        )
+        new_tab = self.driver.window_handles[1]
+        self.driver.switch_to.window(new_tab)
+        self.wait.until(EC.url_contains('/mozilla/addons-linter/'))
+        self.driver.close()
+        # return to the main tab
+        self.driver.switch_to.window(self.driver.window_handles[0])
+
+    @property
+    def validation_failed_message(self):
+        return self.find_element(*self._validation_failed_message_locator).text
+
+    @property
+    def validation_failed_reason(self):
+        return self.find_elements(*self._validation_fail_reason_locator)
 
     @property
     def success_validation_message(self):
