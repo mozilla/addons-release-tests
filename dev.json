@@ -135,7 +135,11 @@
   "unlisted_option_helptext": "After your submission is signed by Mozilla, you can download the .xpi file from the Developer Hub and distribute it to your audience. Please make sure the add-on manifest’s update_url is provided, as this is the URL where Firefox finds updates for automatic deployment to your users.",
   "distribution_and_signing_helptext": "You can learn more about these options by reading Add-on Distribution and Signing on Firefox Extension Workshop.",
   "addon_policies_helptext": "All add-ons must comply with Mozilla’s Add-on Policies and are subject to manual review at any time after submission.",
-
+  "upload_extension_file_helptext": "Use the fields below to upload your add-on package. After upload, a series of automated validation tests will be run on your file.",
+  "upload_theme_file_helptext": "You can upload a finished theme using the upload option above, or you can build it yourself using this tool.",
+  "supported_filetypes": "Your add-on should end with .zip, .xpi or .crx",
+  "compatibility_helptext": "Which applications is this version compatible with?",
+  "create_theme_subheader": "Create a Theme Version",
 
   "unlisted_submission_confirmation": "You’re done! ✨ You will be notified by email when the signed file is ready to be downloaded from the Developer Hub. If you do not see an email after 24 hours, please check your spam folder.",
   "listed_submission_confirmation": "You’re done! ✨ You will receive a confirmation email when this version is published on addons-dev.allizom.org. Note that it may take up to 24 hours before publication occurs, or longer if your add-on is selected for manual review. If you do not see an email after 24 hours, please check your spam folder.",

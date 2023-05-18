@@ -18,7 +18,7 @@ def test_devhub_developer_agreement_page_contents(selenium, base_url, variables,
     dist_agreement = page.click_submit_addon_button()
     assert (
         variables['devhub_submit_addon_agreement_header']
-        in dist_agreement.distribution_header.text
+        in dist_agreement.submission_form_subheader.text
     )
     assert (
         variables['distribution_page_explainer']
@@ -78,7 +78,7 @@ def test_addon_distribution_page_contents(selenium, base_url, variables, wait):
     wait.until(lambda _: dist_page.submission_form_header.is_displayed())
     assert (
         variables['devhub_submit_addon_distribution_header']
-        in dist_page.distribution_header.text
+        in dist_page.submission_form_subheader.text
     )
     # checks that the listed option is selected by default
     assert dist_page.listed_option_radiobutton.is_selected()
@@ -102,6 +102,65 @@ def test_addon_distribution_page_contents(selenium, base_url, variables, wait):
     )
     dist_page.click_extension_workshop_article_link(
         dist_page.addon_policies_link, 'Add-on Policies'
+    )
+
+
+def test_devhub_upload_file_page_contents(selenium, base_url, wait, variables):
+    """Verify the elements present on the upload file page, where the user
+    uploads and validates an addon file"""
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    page.devhub_login('submissions_user')
+    selenium.get(f'{base_url}/developers/addon/submit/upload-listed')
+    upload_page = SubmitAddon(selenium, base_url).wait_for_page_to_load()
+    upload_page.developer_notification_box.is_displayed()
+    assert (
+        variables['upload_extension_file_helptext']
+        in upload_page.file_upload_helptext[0].text
+    )
+    assert variables['supported_filetypes'] in upload_page.accepted_file_types
+    assert variables['compatibility_helptext'] in upload_page.compatibility_helptext
+    assert variables['create_theme_subheader'] in upload_page.create_theme_subheader
+    assert (
+        variables['upload_theme_file_helptext']
+        in upload_page.file_upload_helptext[2].text
+    )
+
+
+def test_upload_unsupported_file_validation_error(selenium, base_url, wait):
+    """Verify validation results for errors triggered by unsupported file uploads"""
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    page.devhub_login('submissions_user')
+    selenium.get(f'{base_url}/developers/addon/submit/upload-listed')
+    upload_page = SubmitAddon(selenium, base_url).wait_for_page_to_load()
+    file = 'tar-ext.tar'
+    upload_page.upload_addon(file)
+    wait.until(lambda _: upload_page.failed_validation_bar.is_displayed())
+    # check that the validation results show the following 'error specific' components
+    assert f'Error with {file}' in upload_page.validation_status_title
+    upload_page.click_validation_support_link()
+    assert 'Your add-on failed validation' in upload_page.validation_failed_message
+    assert (
+        "The filetype you uploaded isn't recognized"
+        in upload_page.validation_failed_reason[0].text
+    )
+
+
+def test_upload_file_no_compatibility_selected(selenium, base_url, wait):
+    """Verify that at least one compatibility needs to be selected when uploading an addon"""
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    page.devhub_login('submissions_user')
+    selenium.get(f'{base_url}/developers/addon/submit/upload-listed')
+    upload_page = SubmitAddon(selenium, base_url).wait_for_page_to_load()
+    # un-check the Firefox compat checkbox to leave all compatibility options disabled
+    upload_page.firefox_compat_checkbox.click()
+    upload_page.upload_addon('unlisted-addon.zip')
+    upload_page.is_validation_successful()
+    assert upload_page.success_validation_message.is_displayed()
+    upload_page.click_continue_upload_button()
+    wait.until(
+        lambda _: 'Need to select at least one application.'
+        in upload_page.compatibility_error_message,
+        message=f'The actual error message raised was: {upload_page.compatibility_error_message}',
     )
 
 
