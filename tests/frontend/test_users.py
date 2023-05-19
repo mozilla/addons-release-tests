@@ -1,3 +1,4 @@
+import time
 import pytest
 import requests
 
@@ -355,6 +356,7 @@ def test_user_notifications_subscriptions(base_url, selenium, wait):
     # subscribe to the notification again
     edit_user.edit.notifications_checkbox[0].click()
     edit_user.edit.submit_changes()
+    time.sleep(2)
     User(selenium, base_url).open().wait_for_page_to_load()
     assert edit_user.edit.notifications_checkbox[0].is_selected()
 
