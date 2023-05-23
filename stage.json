@@ -143,6 +143,7 @@
   "supported_filetypes": "Your add-on should end with .zip, .xpi or .crx",
   "compatibility_helptext": "Which applications is this version compatible with?",
   "create_theme_subheader": "Create a Theme Version",
+  "addon_validation_warning": "Please verify the following points before finalizing your submission. This will minimize delays or misunderstanding during the review process",
 
   "unlisted_submission_confirmation": "You’re done! ✨ You will be notified by email when the signed file is ready to be downloaded from the Developer Hub. If you do not see an email after 24 hours, please check your spam folder.",
   "listed_submission_confirmation": "You’re done! ✨ You will receive a confirmation email when this version is published on addons.allizom.org. Note that it may take up to 24 hours before publication occurs, or longer if your add-on is selected for manual review. If you do not see an email after 24 hours, please check your spam folder.",

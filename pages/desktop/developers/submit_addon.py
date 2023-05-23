@@ -87,6 +87,8 @@ class SubmitAddon(Page):
         By.CSS_SELECTOR,
         '#upload-status-results strong',
     )
+    _validation_warning_message_locator = (By.CSS_SELECTOR, '.submission-warning p')
+    _validation_summary_link_locator = (By.CSS_SELECTOR, '.submission-warning a')
     _validation_fail_reason_locator = (By.CSS_SELECTOR, '#upload_errors li')
     _validation_status_text_locator = (By.ID, 'upload-status-text')
     _validation_success_message_locator = (By.ID, 'upload-status-results')
@@ -296,6 +298,21 @@ class SubmitAddon(Page):
         return self.find_elements(*self._validation_fail_reason_locator)
 
     @property
+    def validation_warning_message(self):
+        return self.find_element(*self._validation_warning_message_locator).text
+
+    def click_validation_summary(self):
+        self.find_element(*self._validation_summary_link_locator).click()
+        self.wait.until(
+            EC.number_of_windows_to_be(2),
+            message=f'Number of windows was {len(self.driver.window_handles)}, expected 2',
+        )
+        new_tab = self.driver.window_handles[1]
+        self.driver.switch_to.window(new_tab)
+        self.wait.until(EC.visibility_of_element_located((By.CLASS_NAME, 'results')))
+        return ValidationResults(self.driver, self.base_url)
+
+    @property
     def success_validation_message(self):
         return self.find_element(*self._validation_success_message_locator)
 
@@ -305,6 +322,47 @@ class SubmitAddon(Page):
 
     def submit_button_disabled(self):
         self.find_element(*self._submit_file_button_locator).get_attribute('disabled')
+
+
+class ValidationResults(Page):
+    _validation_results_header_locator = (
+        By.CSS_SELECTOR,
+        "div[class='section'] header h2",
+    )
+    _validation_summary_shelf_locator = (By.CLASS_NAME, 'tiers')
+    _validation_general_results_locator = (By.ID, 'suite-results-tier-1')
+    _validation_security_results_locator = (By.ID, 'suite-results-tier-2')
+    _validation_extension_results_locator = (By.ID, 'suite-results-tier-3')
+    _validation_localization_results_locator = (By.ID, 'suite-results-tier-4')
+    _validation_compatibility_results_locator = (By.ID, 'suite-results-tier-5')
+
+    @property
+    def validation_results_header(self):
+        return self.find_element(*self._validation_results_header_locator).text
+
+    @property
+    def validation_summary_shelf(self):
+        return self.find_element(*self._validation_summary_shelf_locator)
+
+    @property
+    def validation_general_results(self):
+        return self.find_element(*self._validation_general_results_locator)
+
+    @property
+    def validation_security_results(self):
+        return self.find_element(*self._validation_security_results_locator)
+
+    @property
+    def validation_extension_results(self):
+        return self.find_element(*self._validation_extension_results_locator)
+
+    @property
+    def validation_localization_results(self):
+        return self.find_element(*self._validation_localization_results_locator)
+
+    @property
+    def validation_compatibility_results(self):
+        return self.find_element(*self._validation_compatibility_results_locator)
 
 
 class UploadSource(Page):
@@ -320,6 +378,19 @@ class UploadSource(Page):
         '.submission-buttons button:nth-child(1)',
     )
     _upload_source_error_message_locator = (By.CSS_SELECTOR, '.errorlist li')
+    _cancel_and_disable_version_locator = (
+        By.CSS_SELECTOR,
+        '.confirm-submission-cancel',
+    )
+    _cancel_and_disable_explainer_text_locator = (
+        By.CSS_SELECTOR,
+        '#modal-confirm-submission-cancel p',
+    )
+    _cancel_version_confirm_button_locator = (
+        By.CSS_SELECTOR,
+        '.modal-actions .delete-button',
+    )
+    _do_not_cancel_version_link_locator = (By.CSS_SELECTOR, '.modal-actions a')
 
     @property
     def submit_source_page_header(self):
@@ -351,6 +422,20 @@ class UploadSource(Page):
     @property
     def source_upload_fail_message(self):
         return self.find_element(*self._upload_source_error_message_locator).text
+
+    def click_cancel_and_disable_version(self):
+        self.find_element(*self._cancel_and_disable_version_locator).click()
+
+    @property
+    def cancel_and_disable_explainer_text(self):
+        return self.find_element(*self._cancel_and_disable_explainer_text_locator).text
+
+    def click_do_not_cancel_version(self):
+        return self.find_element(*self._do_not_cancel_version_link_locator).click()
+
+    def confirm_cancel_and_disable_version(self):
+        self.find_element(*self._cancel_version_confirm_button_locator).click()
+        return ManageVersions(self.driver, self.base_url).wait_for_page_to_load()
 
 
 class ListedAddonSubmissionForm(Page):

@@ -13,6 +13,7 @@ class ManageVersions(Page):
         By.CSS_SELECTOR,
         '#version-list .file-status div:nth-child(1)',
     )
+    _incomplete_status_locator = (By.CSS_SELECTOR, '.status-incomplete b')
     _delete_addon_button_locator = (By.CLASS_NAME, 'delete-button.delete-addon')
 
     def wait_for_page_to_load(self):
@@ -22,6 +23,10 @@ class ManageVersions(Page):
     @property
     def version_approval_status(self):
         return self.find_elements(*self._version_approval_status_locator)
+
+    @property
+    def incomplete_status(self):
+        return self.find_element(*self._incomplete_status_locator)
 
     def wait_for_version_autoapproval(self, value):
         """Method that verifies if auto-approval occurs within a set time"""
