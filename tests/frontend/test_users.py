@@ -322,14 +322,17 @@ def test_user_regular_notifications(base_url, selenium, variables):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-def test_user_developer_notifications(base_url, selenium, variables):
+def test_user_developer_notifications(base_url, selenium, variables, wait):
     user = User(selenium, base_url).open().wait_for_page_to_load()
     user.login('developer')
     # verifies that information messages about the scope of notifications are displayed
     assert variables['notifications_info_text'] in user.edit.notifications_info_text
     assert variables['notifications_help_text'] in user.edit.notifications_help_text
     # there are 8 types of notifications a developer will/can choose to receive
-    assert len(user.edit.notification_text) == 8
+    wait.until(
+        lambda _: len(user.edit.notification_text) == 8,
+        message=f'Actual number of notifications displayed was "{len(user.edit.notification_text)}"',
+    )
     count = 0
     while count < len(user.edit.notification_text):
         assert (
@@ -349,6 +352,7 @@ def test_user_notifications_subscriptions(base_url, selenium, wait):
     # unsubscribe from one of the non-mandatory notifications
     edit_user.edit.notifications_checkbox[0].click()
     edit_user.edit.submit_changes()
+    time.sleep(3)
     User(selenium, base_url).open().wait_for_page_to_load()
     # verify that the notification checkbox is no longer selected
     with pytest.raises(AssertionError):

@@ -79,8 +79,10 @@ class Base(Page):
             message=f'AMO could not be loaded in {self.driver.current_url}'
             f'Response status code was {requests.head(self.driver.current_url).status_code}',
         )
+        # verifies that the AMO page was fully loaded after login
         WebDriverWait(self.driver, 30).until(
-            EC.invisibility_of_element_located((By.CLASS_NAME, 'LoadingText'))
+            EC.invisibility_of_element_located((By.CLASS_NAME, 'LoadingText')),
+            message='AMO was not loaded properly after login.',
         )
         # assess that the user has been logged in
         self.wait.until(
