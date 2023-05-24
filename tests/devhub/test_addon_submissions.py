@@ -7,7 +7,7 @@ from pages.desktop.developers.submit_addon import (
     SubmissionConfirmationPage,
 )
 from scripts import reusables
-from api import api_helpers
+from api import api_helpers, payloads
 
 
 def test_devhub_developer_agreement_page_contents(selenium, base_url, variables, wait):
@@ -342,6 +342,117 @@ def test_verify_new_unlisted_version_autoapproval(selenium, base_url, variables)
     selenium.get(f'{base_url}/developers/addon/{addon}/versions')
     version_status = ManageVersions(selenium).wait_for_page_to_load()
     version_status.wait_for_version_autoapproval('Approved')
+
+
+@pytest.mark.parametrize(
+    'addon_name, description',
+    (
+        ['这是我的名字', '这是我的描述'],
+        ['1515هذا هو اسمي', 'هذا هو وصفي'],
+        ['이건 내 이름이야', '이것은 내 설명입니다'],
+        ['ဒါက ငါ့နာမည်ပါ။', 'ဤသည်မှာ ကျွန်ုပ်၏ ဖော်ပြချက်ဖြစ်ပါသည်။'],
+        ['ʌɑ:æčβぁŇ', '☺️ʌɑ:æčβぁŇ☺️'],
+    ),
+    ids=[
+        'Chinese characters',
+        'Arabic characters',
+        'Korean characters',
+        'Burmese characters',
+        'Random non-ascii characters',
+    ],
+)
+@pytest.mark.serial
+@pytest.mark.create_session('submissions_user')
+def test_submit_unicode_addon(
+    selenium, base_url, variables, wait, addon_name, description
+):
+    """Test covering the process of uploading addons with non-ASCII characters"""
+    manifest = {
+        **payloads.minimal_manifest,
+        'name': addon_name,
+        'description': description,
+    }
+    api_helpers.make_addon(manifest)
+    selenium.get(f'{base_url}/developers/addon/submit/upload-listed')
+    submit_addon = SubmitAddon(selenium, base_url).wait_for_page_to_load()
+    # checking that the Firefox compatibility checkbox is selected by default
+    wait.until(lambda _: submit_addon.firefox_compat_checkbox.is_selected())
+    submit_addon.upload_addon('make-addon.zip')
+    # waits for the validation to complete and checks that is successful
+    submit_addon.is_validation_successful()
+    # on submit source code page, select 'No' to upload source code
+    source = submit_addon.click_continue_upload_button()
+    source.select_no_to_omit_source()
+    details_form = source.continue_listed_submission()
+    details_form.select_firefox_categories(0)
+    # set an addon license from the available list
+    details_form.select_license_options[0].click()
+    # submit the add-on details
+    confirmation_page = details_form.submit_addon()
+    assert (
+        variables['listed_submission_confirmation']
+        in confirmation_page.submission_confirmation_messages[0].text
+    )
+    # go to the addon edit listing page and check that it was created
+    edit_listing = confirmation_page.click_edit_listing_button()
+    assert addon_name in edit_listing.name
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('submissions_user')
+def test_addon_validation_warning(selenium, base_url, variables, wait):
+    """Test validation results when addons trigger some warnings"""
+    selenium.get(f'{base_url}/developers/addon/submit/upload-listed')
+    submit_addon = SubmitAddon(selenium, base_url).wait_for_page_to_load()
+    # checking that the Firefox compatibility checkbox is selected by default
+    wait.until(lambda _: submit_addon.firefox_compat_checkbox.is_selected())
+    submit_addon.upload_addon('validation-warning.zip')
+    submit_addon.is_validation_successful()
+    assert (
+        variables['addon_validation_warning'] in submit_addon.validation_warning_message
+    )
+    # click on the validation results link to open the validation summary page
+    results = submit_addon.click_validation_summary()
+    assert (
+        'Validation Results for validation-warning.zip'
+        in results.validation_results_header
+    )
+    assert results.validation_summary_shelf.is_displayed()
+    assert results.validation_general_results.is_displayed()
+    assert results.validation_security_results.is_displayed()
+    assert results.validation_extension_results.is_displayed()
+    assert results.validation_localization_results.is_displayed()
+    assert results.validation_compatibility_results.is_displayed()
+
+
+@pytest.mark.serial
+@pytest.mark.create_session('submissions_user')
+def test_cancel_and_disable_version_during_upload(selenium, base_url, wait):
+    """Test what happens in the upload process when a user chooses to cancel the submission"""
+    selenium.get(f'{base_url}/developers/addon/submit/upload-listed')
+    submit_addon = SubmitAddon(selenium, base_url).wait_for_page_to_load()
+    # checking that the Firefox compatibility checkbox is selected by default
+    wait.until(lambda _: submit_addon.firefox_compat_checkbox.is_selected())
+    submit_addon.upload_addon('listed-addon.zip')
+    submit_addon.is_validation_successful()
+    source = submit_addon.click_continue_upload_button()
+    # on the source code page click on the "Cancel and Disable version' button
+    source.click_cancel_and_disable_version()
+    assert (
+        'Are you sure you wish to cancel and disable version?'
+        in source.cancel_and_disable_explainer_text
+    )
+    # click on do not cancel to close the modal
+    source.click_do_not_cancel_version()
+    # click cancel version again and confirm this time
+    source.click_cancel_and_disable_version()
+    canceled_version = source.confirm_cancel_and_disable_version()
+    assert 'Incomplete' in canceled_version.incomplete_status.text
+    assert 'Disabled by Mozilla' in canceled_version.version_approval_status[0].text
+    # delete the incomplete submission
+    delete = canceled_version.delete_addon()
+    delete.input_delete_confirmation_string()
+    delete.confirm_delete_addon()
 
 
 @pytest.mark.sanity
