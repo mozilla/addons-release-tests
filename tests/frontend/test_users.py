@@ -345,7 +345,7 @@ def test_user_developer_notifications(base_url, selenium, variables, wait):
 @pytest.mark.nondestructive
 def test_user_notifications_subscriptions(base_url, selenium, wait):
     edit_user = User(selenium, base_url).open().wait_for_page_to_load()
-    edit_user.login('developer')
+    edit_user.login('staff_user')
     # verify that the first 7 notifications are selected by default
     for checkbox in edit_user.edit.notifications_checkbox[0:7]:
         assert checkbox.is_selected()
