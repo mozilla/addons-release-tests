@@ -71,5 +71,5 @@ zope.deferredimport==4.4
 zope.deprecation==5.0
 zope.event==4.6
 zope.hookable==5.4
-zope.interface==5.5.2
+zope.interface==6.0
 zope.proxy==5.0.0
