@@ -118,7 +118,6 @@ def test_devhub_upload_file_page_contents(selenium, base_url, wait, variables):
         in upload_page.file_upload_helptext[0].text
     )
     assert variables['supported_filetypes'] in upload_page.accepted_file_types
-    assert variables['compatibility_helptext'] in upload_page.compatibility_helptext
     assert variables['create_theme_subheader'] in upload_page.create_theme_subheader
     assert (
         variables['upload_theme_file_helptext']
@@ -145,25 +144,6 @@ def test_upload_unsupported_file_validation_error(selenium, base_url, wait):
     )
 
 
-def test_upload_file_no_compatibility_selected(selenium, base_url, wait):
-    """Verify that at least one compatibility needs to be selected when uploading an addon"""
-    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.devhub_login('submissions_user')
-    selenium.get(f'{base_url}/developers/addon/submit/upload-listed')
-    upload_page = SubmitAddon(selenium, base_url).wait_for_page_to_load()
-    # un-check the Firefox compat checkbox to leave all compatibility options disabled
-    upload_page.firefox_compat_checkbox.click()
-    upload_page.upload_addon('unlisted-addon.zip')
-    upload_page.is_validation_successful()
-    assert upload_page.success_validation_message.is_displayed()
-    upload_page.click_continue_upload_button()
-    wait.until(
-        lambda _: 'Need to select at least one application.'
-        in upload_page.compatibility_error_message,
-        message=f'The actual error message raised was: {upload_page.compatibility_error_message}',
-    )
-
-
 @pytest.mark.sanity
 @pytest.mark.serial
 # The first test starts the browser with a normal login in order to store de session cookie
@@ -174,8 +154,6 @@ def test_submit_unlisted_addon(selenium, base_url, variables, wait):
     # start the upload for an unlisted addon
     submit_addon.select_unlisted_option()
     submit_addon.click_continue()
-    # checking that the Firefox compatibility checkbox is selected by default
-    wait.until(lambda _: submit_addon.firefox_compat_checkbox.is_selected())
     # select an addon to upload
     submit_addon.upload_addon('unlisted-addon.zip')
     submit_addon.is_validation_successful()
@@ -216,13 +194,13 @@ def test_submit_listed_addon(selenium, base_url, variables, wait):
     # start the upload for a listed addon
     submit_addon.select_listed_option()
     submit_addon.click_continue()
-    # checking that the Firefox compatibility checkbox is selected by default
-    wait.until(lambda _: submit_addon.firefox_compat_checkbox.is_selected())
-    # select the Android compatibility checkbox
-    submit_addon.android_compat_checkbox.click()
     submit_addon.upload_addon('listed-addon.zip')
     # waits for the validation to complete and checks that is successful
     submit_addon.is_validation_successful()
+    # checking that the Firefox compatibility checkbox is selected by default
+    assert submit_addon.firefox_compat_checkbox.is_selected()
+    # select the Android compatibility checkbox
+    submit_addon.android_compat_checkbox.click()
     # on submit source code page, select 'Yes' to upload source code
     source = submit_addon.click_continue_upload_button()
     source.select_yes_to_submit_source()
@@ -286,8 +264,6 @@ def test_submit_mixed_addon_versions(selenium, base_url, variables, wait):
     # select unlisted option for the new version
     submit_version.select_unlisted_option()
     submit_version.click_continue()
-    # checking that the Firefox compatibility checkbox is selected by default
-    wait.until(lambda _: submit_version.firefox_compat_checkbox.is_selected())
     submit_version.upload_addon('mixed-addon-versions.zip')
     # wait for the validation to finish and check if it is successful
     submit_version.is_validation_successful()
@@ -465,8 +441,6 @@ def test_submit_listed_wizard_theme(selenium, base_url, variables, wait, delete_
     # start the upload for a listed theme
     submit_addon.select_listed_option()
     submit_addon.click_continue()
-    # checking that the Firefox compatibility checkbox is selected by default
-    wait.until(lambda _: submit_addon.firefox_compat_checkbox.is_selected())
     create_theme = submit_addon.click_create_theme_button()
     theme_name = f'wizard_theme_{reusables.get_random_string(5)}'
     create_theme.set_theme_name(theme_name)
