@@ -9,12 +9,24 @@ from selenium.webdriver.support import expected_conditions as EC
 
 class ManageVersions(Page):
     _addon_name_title_locator = (By.CSS_SELECTOR, 'div[class="section"] header h2')
-    _listing_visibility_section_locator = (By.CSS_SELECTOR, '#edit-addon h3:nth-child(1)')
+    _listing_visibility_section_locator = (
+        By.CSS_SELECTOR,
+        '#edit-addon h3:nth-child(1)',
+    )
     _visible_listing_radio_locator = (By.CSS_SELECTOR, 'input[value="listed"]')
-    _visible_explainer_text_locator = (By.CSS_SELECTOR, '#addon-current-state label:nth-child(1)')
+    _visible_explainer_text_locator = (
+        By.CSS_SELECTOR,
+        '#addon-current-state label:nth-child(1)',
+    )
     _invisible_listing_radio_locator = (By.CSS_SELECTOR, 'input[value="hidden"]')
-    _invisible_explainer_text_locator = (By.CSS_SELECTOR, '#addon-current-state label:nth-of-type(2)')
-    _hide_addon_confirmation_text_locator = (By.CSS_SELECTOR, '#modal-disable p:nth-child(1)')
+    _invisible_explainer_text_locator = (
+        By.CSS_SELECTOR,
+        '#addon-current-state label:nth-of-type(2)',
+    )
+    _hide_addon_confirmation_text_locator = (
+        By.CSS_SELECTOR,
+        '#modal-disable p:nth-child(1)',
+    )
     _hide_addon_button_locator = (By.CSS_SELECTOR, '#modal-disable p button')
     _hide_addon_cancel_link_locator = (By.CSS_SELECTOR, '#modal-disable p a')
     _version_list_locator = (By.ID, 'version-list')
@@ -41,7 +53,7 @@ class ManageVersions(Page):
     def set_addon_visible(self):
         """Selects the Visible option and checks that the radio button is selected"""
         el = self.find_element(*self._visible_listing_radio_locator)
-        el.clcik()
+        el.click()
         assert el.is_selected()
 
     @property
@@ -55,8 +67,12 @@ class ManageVersions(Page):
     def set_addon_invisible(self):
         """Selects the Invisible option and checks that the radio button is selected"""
         el = self.find_element(*self._invisible_listing_radio_locator)
-        el.clcik()
-        self.wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, '#modal-disable p:nth-child(1)')))
+        el.click()
+        self.wait.until(
+            EC.element_to_be_clickable(
+                (By.CSS_SELECTOR, '#modal-disable p:nth-child(1)')
+            )
+        )
 
     def click_hide_addon(self):
         self.find_element(*self._hide_addon_button_locator).click()
