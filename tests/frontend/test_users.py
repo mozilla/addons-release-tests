@@ -351,6 +351,7 @@ def test_user_notifications_subscriptions(base_url, selenium, wait):
         assert checkbox.is_selected()
     # unsubscribe from one of the non-mandatory notifications
     edit_user.edit.notifications_checkbox[0].click()
+    time.sleep(2)
     edit_user.edit.submit_changes()
     time.sleep(3)
     User(selenium, base_url).open().wait_for_page_to_load()
