@@ -169,12 +169,6 @@ class DevHubHome(Base):
             message=f'FxA email input field was not displayed in {self.driver.current_url}',
         )
         fxa.account(user)
-        # wait for transition between FxA page and Devhub
-        self.wait.until(
-            EC.url_contains('developers'),
-            message=f'Devhub could not be loaded in {self.driver.current_url}'
-            f'Response status code was {requests.head(self.driver.current_url).status_code}',
-        )
         # assess that the user has been logged in
         self.wait.until(
             lambda _: self.sign_out_link.is_displayed(),
