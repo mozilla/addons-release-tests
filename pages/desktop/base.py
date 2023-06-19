@@ -54,7 +54,15 @@ class Base(Page):
         count = 0
         while count < 5:
             try:
-                self.is_element_displayed(*self.header._user_locator)
+                self.wait.until(
+                    EC.visibility_of_element_located(
+                        (
+                            By.CSS_SELECTOR,
+                            '.Header-user-and-external-links .DropdownMenu-button-text',
+                        )
+                    ),
+                    message='LOGIN FAILED: The user name was not displayed in the header after login.',
+                )
                 break
             except StaleElementReferenceException as exception:
                 print(f'{exception}: Try to find the element again')
@@ -73,12 +81,6 @@ class Base(Page):
             message=f'FxA email input field was not displayed in {self.driver.current_url}',
         )
         fxa.account(user)
-        # wait for transition between FxA page and AMO (URL and page)
-        self.wait.until(
-            EC.url_contains('addons'),
-            message=f'AMO could not be loaded in {self.driver.current_url}'
-            f'Response status code was {requests.head(self.driver.current_url).status_code}',
-        )
         # verifies that the AMO page was fully loaded after login
         WebDriverWait(self.driver, 30).until(
             EC.invisibility_of_element_located((By.CLASS_NAME, 'LoadingText')),
