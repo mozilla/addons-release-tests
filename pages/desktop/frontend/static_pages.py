@@ -9,6 +9,7 @@ class StaticPages(Base):
     """This class will store informative pages, such as 404 pages, server error pages
     and other pages that have only an informative scope"""
 
+    _not_found_page_locator = (By.CSS_SELECTOR, '.NotFound')
     _notice_text_locator = (By.CSS_SELECTOR, '.Notice-warning')
     _page_header_locator = (By.CSS_SELECTOR, '.Card-header-text')
     _content_locator = (By.CSS_SELECTOR, '.Card-contents')
@@ -34,6 +35,10 @@ class StaticPages(Base):
             message="The requested page could not be loaded",
         )
         return self
+
+    @property
+    def not_found_page(self):
+        return self.find_element(*self._not_found_page_locator)
 
     @property
     def notice_message(self):
