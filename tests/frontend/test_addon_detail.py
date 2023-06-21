@@ -12,6 +12,7 @@ from selenium.webdriver.support.select import Select
 
 from pages.desktop.frontend.details import Detail
 from pages.desktop.frontend.search import Search
+from pages.desktop.frontend.static_pages import StaticPages
 from pages.desktop.frontend.users import User
 from pages.desktop.frontend.reviews import Reviews
 from pages.desktop.frontend.versions import Versions
@@ -90,6 +91,24 @@ def test_experimental_addon(selenium, base_url, variables):
     selenium.get(f'{base_url}/addon/{extension}')
     addon = Detail(selenium, base_url)
     assert addon.experimental_badge.is_displayed()
+
+
+@pytest.mark.nondestructive
+def test_invisible_addon(selenium, base_url, variables):
+    """Verify the response for an invisible addon detail page when viewed
+    with regular non-authorized users vs authorized users"""
+    extension = variables['invisible_addon_detail']
+    selenium.get(f'{base_url}/addon/{extension}')
+    page = StaticPages(selenium, base_url).wait_for_page_to_load()
+    # for regular users detail pages should not be available, hence 404 page
+    assert page.not_found_page.is_displayed()
+    # login with the addon developer who should have access to the detail page
+    page.login('developer')
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    assert (
+        'This is not a public listing. You are only seeing it because of elevated permissions.'
+        in addon.non_public_addon_notice.text
+    )
 
 
 @pytest.mark.nondestructive

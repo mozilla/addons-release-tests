@@ -29,6 +29,7 @@ class Detail(Base):
     _install_warning_locator = (By.CLASS_NAME, 'InstallWarning')
     _install_warning_text_locator = (By.CSS_SELECTOR, '.InstallWarning p')
     _install_warning_button_locator = (By.CSS_SELECTOR, '.InstallWarning a')
+    _non_public_addon_notice_locator = (By.CSS_SELECTOR, '.Addon-non-public-notice')
 
     def wait_for_page_to_load(self):
         """Waits for various page components to be loaded"""
@@ -142,6 +143,10 @@ class Detail(Base):
         self.wait.until(
             expected.visibility_of_element_located((By.CLASS_NAME, 'sumo-page-heading'))
         )
+
+    @property
+    def non_public_addon_notice(self):
+        return self.find_element(*self._non_public_addon_notice_locator)
 
     @property
     def stats(self):
