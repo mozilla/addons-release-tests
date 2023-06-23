@@ -1,3 +1,5 @@
+import time
+
 from pages.desktop.developers.devhub_home import DevHubHome
 from pages.desktop.developers.manage_versions import ManageVersions
 
@@ -35,4 +37,41 @@ def test_set_addon_invisible(selenium, base_url, variables, wait):
     wait.until(
         lambda _: 'Approved' in manage_version.addon_listed_status,
         message=f'Actual addon status was {manage_version.addon_listed_status}',
+    )
+
+
+def test_disable_enable_version(selenium, base_url, variables, wait):
+    """Check that developers cand disable and re-enable addon versions;
+    This test works with an addon having a single version submitted and Approved"""
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    page.devhub_login('developer')
+    selenium.get(f'{base_url}/developers/addon/disable_version_auto/versions')
+    manage_version = ManageVersions(selenium, base_url).wait_for_page_to_load()
+    # had to use a time.sleep here because I couldn't get an explicit wait to work on the button
+    time.sleep(2)
+    # click on Delete/Disable button and then cancel the process to close the modal
+    manage_version.click_delete_disable_version()
+    assert (
+        variables['delete_version_helptext']
+        in manage_version.delete_disable_version_helptext
+    )
+    assert (
+        variables['delete_version_warning_text']
+        in manage_version.delete_disable_version_warning
+    )
+    manage_version.click_cancel_version_delete_link()
+    # restart the Disable process again and finalize it this time
+    manage_version.click_delete_disable_version()
+    manage_version.click_disable_version_button()
+    # verify that the version status changed to Disabled
+    wait.until(
+        lambda _: 'Disabled by Mozilla'
+        in manage_version.version_approval_status[0].text,
+        message=f'Actual version status after Disable was: "{manage_version.version_approval_status[0].text}"',
+    )
+    # re-enable the version and verify that the status changes back to Approved
+    manage_version.click_enable_version()
+    wait.until(
+        lambda _: 'Approved' in manage_version.current_version_status,
+        message=f'Actual version status after Re-enable was: "{manage_version.current_version_status}"',
     )

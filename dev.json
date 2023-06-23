@@ -146,8 +146,8 @@
   "visible_status_explainer": "Visible to everyone on https://addons-dev.allizom.org and included in search results and product pages.",
   "invisible_status_explainer": "Won't be included in search results, and its product page will indicate you disabled it. New version submissions for product won't be accepted in this state.",
   "hide_addon_confirmation_text": "Hiding your add-on will prevent it from appearing anywhere in our gallery and will stop users from receiving automatic updates.",
-
-
+  "delete_version_helptext": "You are about to delete the current version of your add-on. This may cause your add-on status to change, or your listing to lose public visibility, if this is the only public version of your add-on.",
+  "delete_version_warning_text": "Important: Once a version has been deleted, you may not upload a new version with the same version number.",
 
   "unlisted_submission_confirmation": "You’re done! ✨ You will be notified by email when the signed file is ready to be downloaded from the Developer Hub. If you do not see an email after 24 hours, please check your spam folder.",
   "listed_submission_confirmation": "You’re done! ✨ You will receive a confirmation email when this version is published on addons-dev.allizom.org. Note that it may take up to 24 hours before publication occurs, or longer if your add-on is selected for manual review. If you do not see an email after 24 hours, please check your spam folder.",

@@ -29,14 +29,31 @@ class ManageVersions(Page):
     )
     _hide_addon_button_locator = (By.CSS_SELECTOR, '#modal-disable p button')
     _hide_addon_cancel_link_locator = (By.CSS_SELECTOR, '#modal-disable p a')
+
+    _incomplete_status_locator = (By.CSS_SELECTOR, '.status-incomplete b')
+    _addon_listed_status_locator = (By.CSS_SELECTOR, '.addon-listed-status b')
+    _delete_addon_button_locator = (By.CLASS_NAME, 'delete-button.delete-addon')
+
+    # Version List Section
     _version_list_locator = (By.ID, 'version-list')
+    _current_version_status_locator = (
+        By.CSS_SELECTOR,
+        '#current-version-status .file-status > div:nth-child(1)',
+    )
     _version_approval_status_locator = (
         By.CSS_SELECTOR,
         '#version-list .file-status div:nth-child(1)',
     )
-    _incomplete_status_locator = (By.CSS_SELECTOR, '.status-incomplete b')
-    _addon_listed_status_locator = (By.CSS_SELECTOR, '.addon-listed-status b')
-    _delete_addon_button_locator = (By.CLASS_NAME, 'delete-button.delete-addon')
+    _disable_delete_version_button_locator = (By.CSS_SELECTOR, '.version-delete a')
+    _delete_version_help_text_locator = (By.CSS_SELECTOR, '.current-version-warning')
+    _delete_version_warning_locator = (By.CSS_SELECTOR, '.highlight.warning')
+    _delete_version_button_locator = (By.CSS_SELECTOR, '.modal-actions .delete-button')
+    _disable_version_button_locator = (
+        By.CSS_SELECTOR,
+        '.modal-actions .disable-button',
+    )
+    _cancel_disable_version_link_locator = (By.CSS_SELECTOR, '.modal-actions .close')
+    _enable_version_button_locator = (By.CSS_SELECTOR, '.file-status button')
 
     def wait_for_page_to_load(self):
         self.wait.until(EC.visibility_of_element_located(self._version_list_locator))
@@ -95,8 +112,42 @@ class ManageVersions(Page):
         return self.find_element(*self._incomplete_status_locator)
 
     @property
+    def current_version_status(self):
+        return self.find_element(*self._current_version_status_locator).text
+
+    @property
     def version_approval_status(self):
         return self.find_elements(*self._version_approval_status_locator)
+
+    def click_delete_disable_version(self):
+        self.find_element(*self._disable_delete_version_button_locator).click()
+        self.wait.until(
+            EC.element_to_be_clickable(
+                (By.CSS_SELECTOR, '.modal-actions .delete-button')
+            ),
+            message='The Delete/Disable modal was not opened',
+        )
+
+    @property
+    def delete_disable_version_helptext(self):
+        return self.find_element(*self._delete_version_help_text_locator).text
+
+    @property
+    def delete_disable_version_warning(self):
+        return self.find_element(*self._delete_version_warning_locator).text
+
+    def click_delete_version_button(self):
+        self.find_element(*self._delete_version_button_locator).click()
+
+    def click_disable_version_button(self):
+        self.find_element(*self._disable_version_button_locator).click()
+
+    def click_cancel_version_delete_link(self):
+        return self.find_element(*self._cancel_disable_version_link_locator).click()
+
+    def click_enable_version(self):
+        """Allows developers to re-enable a version that was previously disabled"""
+        self.find_element(*self._enable_version_button_locator).click()
 
     def wait_for_version_autoapproval(self, value):
         """Method that verifies if auto-approval occurs within a set time"""
