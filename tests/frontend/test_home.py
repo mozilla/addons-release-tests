@@ -371,7 +371,6 @@ def test_products_footer_links(base_url, selenium, count, link):
     )
 
 
-@pytest.mark.skip(reason='issue with firefox redirects causes this test to fail atm')
 @pytest.mark.parametrize(
     'count, link',
     enumerate(

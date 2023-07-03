@@ -339,8 +339,11 @@ def test_devhub_resources_participate(selenium, base_url, variables):
     'count, link',
     enumerate(
         [
-            'twitter.com/mozamo',
-            'twitter.com/rockyourfirefox',
+            # twitter requires login atm so no direct landing
+            # on the mozilla tweeters is available right now
+            # we are checking that a redirect to twitter happens
+            'twitter.com',
+            'twitter.com',
         ]
     ),
 )
@@ -497,7 +500,6 @@ def test_devhub_products_footer_links(base_url, selenium, count, link):
     page.wait_for_current_url(link)
 
 
-@pytest.mark.skip(reason='issue with firefox redirects causes this test to fail atm')
 @pytest.mark.parametrize(
     'count, link',
     enumerate(
