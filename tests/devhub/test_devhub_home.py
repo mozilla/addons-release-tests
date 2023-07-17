@@ -59,16 +59,6 @@ def test_devhub_login(selenium, base_url, wait):
 
 @pytest.mark.sanity
 @pytest.mark.nondestructive
-def test_devhub_logout(selenium, base_url, wait):
-    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.devhub_login('developer')
-    page.click_sign_out()
-    # confirms user is no longer logged in
-    wait.until(lambda _: page.header_login_button.is_displayed())
-
-
-@pytest.mark.sanity
-@pytest.mark.nondestructive
 def test_devhub_page_overview(selenium, base_url, variables):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     # checks the content in the page 'Overview' - main section
@@ -592,3 +582,13 @@ def test_devhub_footer_copyright_message(base_url, selenium, count, link):
         EC.visibility_of_element_located((By.CSS_SELECTOR, link[1])),
         message=f'The chosen element "{link[1]}" could not be loaded on the "{link[0]}" webpage',
     )
+
+
+@pytest.mark.sanity
+@pytest.mark.nondestructive
+def test_devhub_logout(selenium, base_url, wait):
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    page.devhub_login('developer')
+    page.click_sign_out()
+    # confirms user is no longer logged in
+    wait.until(lambda _: page.header_login_button.is_displayed())

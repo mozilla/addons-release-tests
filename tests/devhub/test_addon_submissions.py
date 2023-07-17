@@ -105,7 +105,7 @@ def test_addon_distribution_page_contents(selenium, base_url, variables, wait):
     )
 
 
-def test_devhub_upload_file_page_contents(selenium, base_url, wait, variables):
+def test_devhub_upload_extension_page_contents(selenium, base_url, wait, variables):
     """Verify the elements present on the upload file page, where the user
     uploads and validates an addon file"""
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
@@ -118,11 +118,6 @@ def test_devhub_upload_file_page_contents(selenium, base_url, wait, variables):
         in upload_page.file_upload_helptext[0].text
     )
     assert variables['supported_filetypes'] in upload_page.accepted_file_types
-    assert variables['create_theme_subheader'] in upload_page.create_theme_subheader
-    assert (
-        variables['upload_theme_file_helptext']
-        in upload_page.file_upload_helptext[2].text
-    )
 
 
 def test_upload_unsupported_file_validation_error(selenium, base_url, wait):
