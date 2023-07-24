@@ -343,6 +343,7 @@ def test_user_developer_notifications(base_url, selenium, variables, wait):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
+@pytest.mark.skip(reason='Intermittent issue, see https://github.com/mozilla/addons-server/issues/20965')
 def test_user_notifications_subscriptions(base_url, selenium, wait):
     edit_user = User(selenium, base_url).open().wait_for_page_to_load()
     edit_user.login('staff_user')
