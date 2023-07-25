@@ -12,7 +12,7 @@ cryptography==41.0.2
 decorator==5.1.1
 defusedxml==0.7.1
 exceptiongroup==1.1.1
-execnet==1.9.0
+execnet==2.0.2
 FoxPuppet==1.0.3
 future-fstrings==1.2.0
 fxapom==1.10.2
