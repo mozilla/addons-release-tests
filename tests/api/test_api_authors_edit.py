@@ -295,8 +295,11 @@ def test_addon_invite_multiple_authors(base_url, session_auth, variables):
         url=f'{base_url}{_addon_create}{addon}/pending-authors/',
         headers={'Authorization': f'Session {session_auth}'},
     )
-    assert second_author == get_pending_authors.json()[0].get('user_id')
-    assert first_author == get_pending_authors.json()[1].get('user_id')
+    print("First author is: " + str(get_pending_authors.json()[0].get('user_id')))
+    print("Second author is: " + str(get_pending_authors.json()[1].get('user_id')))
+    print("Get_Pending_Authors: " + str(get_pending_authors.json()))
+    assert second_author == get_pending_authors.json()[1].get('user_id')
+    assert first_author == get_pending_authors.json()[0].get('user_id')
 
 
 @pytest.mark.serial

@@ -44,7 +44,7 @@
   "static_page_login_expired_text": "Login authentication has expired. Reload the page to continue without authentication, or login again using the Log In link at the top of the page.",
 
   "all_scores_addon": "all-scores",
-  "dev_reply_review": "dev-reply-review",
+  "dev_reply_review": "swanach-rhimparren-gaurlich",
   "initial_text_input": "original text",
   "edited_text_input": "edited text",
   "confirm_delete_message": "Are you sure you want to delete",
@@ -158,14 +158,14 @@
   "listed_addon_description_en": "Listed add-on description set at add-on creation time",
   "listed_addon_privacy_policy_en": "Listed add-on privacy policy",
   "listed_addon_reviewer_notes": "TEST ADDON: Reviewer notes set by the developer",
-  "unlisted_new_version_autoapproval": "2d11928fedca404e81a4",
+  "unlisted_new_version_autoapproval": "6a287c231d154661b87d",
 
   "duplicate_guid": "@contain-facebook",
   "approved_addon_with_sources": "jswszwpeoc",
-  "api_post_valid_author": 11688279,
-  "api_addon_author_owner": 11688278,
+  "api_post_valid_author": 11688808,
+  "api_addon_author_owner": 11688807,
   "api_post_author_no_display_name": 11688334,
-  "api_post_additional_author": 11685651,
+  "api_post_additional_author": 11688833,
   "api_post_author_no_dev_agreement": 11688335,
   "contributions_bad_request_message": "{\"contributions_url\":[\"URL domain must be one of [www.buymeacoffee.com, donate.mozilla.org, flattr.com, github.com, ko-fi.com, liberapay.com, www.micropayment.de, opencollective.com, www.patreon.com, www.paypal.com, paypal.me].\"]}",
   "image_validation_messages": [

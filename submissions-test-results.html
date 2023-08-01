@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <title>Test Report</title>
+    <style>body {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 12px;
+  /* do not increase min-width as some may use split screens */
+  min-width: 800px;
+  color: #999;
+}
+
+h1 {
+  font-size: 24px;
+  color: black;
+}
+
+h2 {
+  font-size: 16px;
+  color: black;
+}
+
+p {
+  color: black;
+}
+
+a {
+  color: #999;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+/******************************
+ * SUMMARY INFORMATION
+ ******************************/
+#environment td {
+  padding: 5px;
+  border: 1px solid #E6E6E6;
+}
+#environment tr:nth-child(odd) {
+  background-color: #f6f6f6;
+}
+
+/******************************
+ * TEST RESULT COLORS
+ ******************************/
+span.passed,
+.passed .col-result {
+  color: green;
+}
+
+span.skipped,
+span.xfailed,
+span.rerun,
+.skipped .col-result,
+.xfailed .col-result,
+.rerun .col-result {
+  color: orange;
+}
+
+span.error,
+span.failed,
+span.xpassed,
+.error .col-result,
+.failed .col-result,
+.xpassed .col-result {
+  color: red;
+}
+
+/******************************
+ * RESULTS TABLE
+ *
+ * 1. Table Layout
+ * 2. Extra
+ * 3. Sorting items
+ *
+ ******************************/
+/*------------------
+ * 1. Table Layout
+ *------------------*/
+#results-table {
+  border: 1px solid #e6e6e6;
+  color: #999;
+  font-size: 12px;
+  width: 100%;
+}
+#results-table th,
+#results-table td {
+  padding: 5px;
+  border: 1px solid #E6E6E6;
+  text-align: left;
+}
+#results-table th {
+  font-weight: bold;
+}
+
+/*------------------
+ * 2. Extra
+ *------------------*/
+.log {
+  background-color: #e6e6e6;
+  border: 1px solid #e6e6e6;
+  color: black;
+  display: block;
+  font-family: "Courier New", Courier, monospace;
+  height: 230px;
+  overflow-y: scroll;
+  padding: 5px;
+  white-space: pre-wrap;
+}
+.log:only-child {
+  height: inherit;
+}
+
+div.image {
+  border: 1px solid #e6e6e6;
+  float: right;
+  height: 240px;
+  margin-left: 5px;
+  overflow: hidden;
+  width: 320px;
+}
+div.image img {
+  width: 320px;
+}
+
+div.video {
+  border: 1px solid #e6e6e6;
+  float: right;
+  height: 240px;
+  margin-left: 5px;
+  overflow: hidden;
+  width: 320px;
+}
+div.video video {
+  overflow: hidden;
+  width: 320px;
+  height: 240px;
+}
+
+.collapsed {
+  display: none;
+}
+
+.expander::after {
+  content: " (show details)";
+  color: #BBB;
+  font-style: italic;
+  cursor: pointer;
+}
+
+.collapser::after {
+  content: " (hide details)";
+  color: #BBB;
+  font-style: italic;
+  cursor: pointer;
+}
+
+/*------------------
+ * 3. Sorting items
+ *------------------*/
+.sortable {
+  cursor: pointer;
+}
+
+.sort-icon {
+  font-size: 0px;
+  float: left;
+  margin-right: 5px;
+  margin-top: 5px;
+  /*triangle*/
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+}
+.inactive .sort-icon {
+  /*finish triangle*/
+  border-top: 8px solid #E6E6E6;
+}
+.asc.active .sort-icon {
+  /*finish triangle*/
+  border-bottom: 8px solid #999;
+}
+.desc.active .sort-icon {
+  /*finish triangle*/
+  border-top: 8px solid #999;
+}
+</style></head>
+  <body onLoad="init()">
+    <script>/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+
+function toArray(iter) {
+    if (iter === null) {
+        return null;
+    }
+    return Array.prototype.slice.call(iter);
+}
+
+function find(selector, elem) { // eslint-disable-line no-redeclare
+    if (!elem) {
+        elem = document;
+    }
+    return elem.querySelector(selector);
+}
+
+function findAll(selector, elem) {
+    if (!elem) {
+        elem = document;
+    }
+    return toArray(elem.querySelectorAll(selector));
+}
+
+function sortColumn(elem) {
+    toggleSortStates(elem);
+    const colIndex = toArray(elem.parentNode.childNodes).indexOf(elem);
+    let key;
+    if (elem.classList.contains('result')) {
+        key = keyResult;
+    } else if (elem.classList.contains('links')) {
+        key = keyLink;
+    } else {
+        key = keyAlpha;
+    }
+    sortTable(elem, key(colIndex));
+}
+
+function showAllExtras() { // eslint-disable-line no-unused-vars
+    findAll('.col-result').forEach(showExtras);
+}
+
+function hideAllExtras() { // eslint-disable-line no-unused-vars
+    findAll('.col-result').forEach(hideExtras);
+}
+
+function showExtras(colresultElem) {
+    const extras = colresultElem.parentNode.nextElementSibling;
+    const expandcollapse = colresultElem.firstElementChild;
+    extras.classList.remove('collapsed');
+    expandcollapse.classList.remove('expander');
+    expandcollapse.classList.add('collapser');
+}
+
+function hideExtras(colresultElem) {
+    const extras = colresultElem.parentNode.nextElementSibling;
+    const expandcollapse = colresultElem.firstElementChild;
+    extras.classList.add('collapsed');
+    expandcollapse.classList.remove('collapser');
+    expandcollapse.classList.add('expander');
+}
+
+function showFilters() {
+    const filterItems = document.getElementsByClassName('filter');
+    for (let i = 0; i < filterItems.length; i++)
+        filterItems[i].hidden = false;
+}
+
+function addCollapse() {
+    // Add links for show/hide all
+    const resulttable = find('table#results-table');
+    const showhideall = document.createElement('p');
+    showhideall.innerHTML = '<a href="javascript:showAllExtras()">Show all details</a> / ' +
+                            '<a href="javascript:hideAllExtras()">Hide all details</a>';
+    resulttable.parentElement.insertBefore(showhideall, resulttable);
+
+    // Add show/hide link to each result
+    findAll('.col-result').forEach(function(elem) {
+        const collapsed = getQueryParameter('collapsed') || 'Passed';
+        const extras = elem.parentNode.nextElementSibling;
+        const expandcollapse = document.createElement('span');
+        if (extras.classList.contains('collapsed')) {
+            expandcollapse.classList.add('expander');
+        } else if (collapsed.includes(elem.innerHTML)) {
+            extras.classList.add('collapsed');
+            expandcollapse.classList.add('expander');
+        } else {
+            expandcollapse.classList.add('collapser');
+        }
+        elem.appendChild(expandcollapse);
+
+        elem.addEventListener('click', function(event) {
+            if (event.currentTarget.parentNode.nextElementSibling.classList.contains('collapsed')) {
+                showExtras(event.currentTarget);
+            } else {
+                hideExtras(event.currentTarget);
+            }
+        });
+    });
+}
+
+function getQueryParameter(name) {
+    const match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+    return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+}
+
+function init () { // eslint-disable-line no-unused-vars
+    resetSortHeaders();
+
+    addCollapse();
+
+    showFilters();
+
+    sortColumn(find('.initial-sort'));
+
+    findAll('.sortable').forEach(function(elem) {
+        elem.addEventListener('click',
+            function() {
+                sortColumn(elem);
+            }, false);
+    });
+}
+
+function sortTable(clicked, keyFunc) {
+    const rows = findAll('.results-table-row');
+    const reversed = !clicked.classList.contains('asc');
+    const sortedRows = sort(rows, keyFunc, reversed);
+    /* Whole table is removed here because browsers acts much slower
+     * when appending existing elements.
+     */
+    const thead = document.getElementById('results-table-head');
+    document.getElementById('results-table').remove();
+    const parent = document.createElement('table');
+    parent.id = 'results-table';
+    parent.appendChild(thead);
+    sortedRows.forEach(function(elem) {
+        parent.appendChild(elem);
+    });
+    document.getElementsByTagName('BODY')[0].appendChild(parent);
+}
+
+function sort(items, keyFunc, reversed) {
+    const sortArray = items.map(function(item, i) {
+        return [keyFunc(item), i];
+    });
+
+    sortArray.sort(function(a, b) {
+        const keyA = a[0];
+        const keyB = b[0];
+
+        if (keyA == keyB) return 0;
+
+        if (reversed) {
+            return keyA < keyB ? 1 : -1;
+        } else {
+            return keyA > keyB ? 1 : -1;
+        }
+    });
+
+    return sortArray.map(function(item) {
+        const index = item[1];
+        return items[index];
+    });
+}
+
+function keyAlpha(colIndex) {
+    return function(elem) {
+        return elem.childNodes[1].childNodes[colIndex].firstChild.data.toLowerCase();
+    };
+}
+
+function keyLink(colIndex) {
+    return function(elem) {
+        const dataCell = elem.childNodes[1].childNodes[colIndex].firstChild;
+        return dataCell == null ? '' : dataCell.innerText.toLowerCase();
+    };
+}
+
+function keyResult(colIndex) {
+    return function(elem) {
+        const strings = ['Error', 'Failed', 'Rerun', 'XFailed', 'XPassed',
+            'Skipped', 'Passed'];
+        return strings.indexOf(elem.childNodes[1].childNodes[colIndex].firstChild.data);
+    };
+}
+
+function resetSortHeaders() {
+    findAll('.sort-icon').forEach(function(elem) {
+        elem.parentNode.removeChild(elem);
+    });
+    findAll('.sortable').forEach(function(elem) {
+        const icon = document.createElement('div');
+        icon.className = 'sort-icon';
+        icon.textContent = 'vvv';
+        elem.insertBefore(icon, elem.firstChild);
+        elem.classList.remove('desc', 'active');
+        elem.classList.add('asc', 'inactive');
+    });
+}
+
+function toggleSortStates(elem) {
+    //if active, toggle between asc and desc
+    if (elem.classList.contains('active')) {
+        elem.classList.toggle('asc');
+        elem.classList.toggle('desc');
+    }
+
+    //if inactive, reset all other functions and add ascending active
+    if (elem.classList.contains('inactive')) {
+        resetSortHeaders();
+        elem.classList.remove('inactive');
+        elem.classList.add('active');
+    }
+}
+
+function isAllRowsHidden(value) {
+    return value.hidden == false;
+}
+
+function filterTable(elem) { // eslint-disable-line no-unused-vars
+    const outcomeAtt = 'data-test-result';
+    const outcome = elem.getAttribute(outcomeAtt);
+    const classOutcome = outcome + ' results-table-row';
+    const outcomeRows = document.getElementsByClassName(classOutcome);
+
+    for(let i = 0; i < outcomeRows.length; i++){
+        outcomeRows[i].hidden = !elem.checked;
+    }
+
+    const rows = findAll('.results-table-row').filter(isAllRowsHidden);
+    const allRowsHidden = rows.length == 0 ? true : false;
+    const notFoundMessage = document.getElementById('not-found-message');
+    notFoundMessage.hidden = !allRowsHidden;
+}
+</script>
+    <h1>submissions-test-results.html</h1>
+    <p>Report generated on 27-Jul-2023 at 19:01:18 by <a href="https://pypi.python.org/pypi/pytest-html">pytest-html</a> v3.1.1</p>
+    <h2>Summary</h2>
+    <p>3 tests ran in 273.41 seconds. </p>
+    <p class="filter" hidden="true">(Un)check the boxes to filter the results.</p><input checked="true" class="filter" data-test-result="passed" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="passed">3 passed</span>, <input checked="true" class="filter" data-test-result="skipped" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="skipped">0 skipped</span>, <input checked="true" class="filter" data-test-result="failed" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="failed">0 failed</span>, <input checked="true" class="filter" data-test-result="error" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="error">0 errors</span>, <input checked="true" class="filter" data-test-result="xfailed" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="xfailed">0 expected failures</span>, <input checked="true" class="filter" data-test-result="xpassed" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="xpassed">0 unexpected passes</span>, <input checked="true" class="filter" data-test-result="rerun" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="rerun">0 rerun</span>
+    <h2>Results</h2>
+    <table id="results-table">
+      <thead id="results-table-head">
+        <tr>
+          <th class="sortable result initial-sort" col="result">Result</th>
+          <th class="sortable" col="name">Test</th>
+          <th class="sortable" col="duration">Duration</th>
+          <th class="sortable links" col="links">Links</th></tr>
+        <tr hidden="true" id="not-found-message">
+          <th colspan="4">No results found. Try to check the filters</th></tr></thead>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">tests/api/test_addon_uploads.py::test_bad_authentication_addon_upload[Desktop]</td>
+          <td class="col-duration">13.77</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> -----------------------------Captured stdout setup------------------------------ <br/>The &quot;click continue button&quot; event occurred.
+The script should be on the password input screen here. We should see &quot;Sign in&quot; in the header. The card  header title is &quot;Enter your password
+for your Firefox account&quot;
+<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">tests/api/test_api_addons_edit.py::test_upload_listed_extension</td>
+          <td class="col-duration">6.85</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> ------------------------------Captured stdout call------------------------------ <br/>{
+  &quot;uuid&quot;: &quot;375108fa14dc4011aeba7052b2b9d46b&quot;,
+  &quot;channel&quot;: &quot;listed&quot;,
+  &quot;processed&quot;: false,
+  &quot;submitted&quot;: false,
+  &quot;url&quot;: &quot;https://addons.allizom.org/api/v5/addons/upload/375108fa14dc4011aeba7052b2b9d46b/&quot;,
+  &quot;valid&quot;: false,
+  &quot;validation&quot;: null,
+  &quot;version&quot;: &quot;1.0&quot;
+}
+{
+  &quot;id&quot;: 1012780,
+  &quot;authors&quot;: [
+    {
+      &quot;id&quot;: 11688807,
+      &quot;name&quot;: &quot;api_user&quot;,
+      &quot;url&quot;: &quot;https://addons.allizom.org/en-US/firefox/user/11688807/&quot;,
+      &quot;username&quot;: &quot;anonymous-c2f376812af322105f986b81fcbb5113&quot;,
+      &quot;picture_url&quot;: null
+    }
+  ],
+  &quot;average_daily_users&quot;: 0,
+  &quot;categories&quot;: {
+    &quot;android&quot;: [
+      &quot;experimental&quot;,
+      &quot;performance&quot;
+    ],
+    &quot;firefox&quot;: [
+      &quot;bookmarks&quot;,
+      &quot;privacy-security&quot;
+    ]
+  },
+  &quot;contributions_url&quot;: {
+    &quot;url&quot;: &quot;https://www.patreon.com?utm_content=product-page-contribute&amp;utm_medium=referral&amp;utm_source=addons.mozilla.org&quot;,
+    &quot;outgoing&quot;: &quot;https://stage.outgoing.nonprod.webservices.mozgcp.net/v1/82d715c26f17f251858d1516b5647fb5c33a03d4a15bf12619943cbb44fd1d88/https%3A//www.patreon.com%3Futm_content=product-page-contribute&amp;utm_medium=referral&amp;utm_source=addons.mozilla.org&quot;
+  },
+  &quot;created&quot;: &quot;2023-07-27T15:57:05Z&quot;,
+  &quot;current_version&quot;: {
+    &quot;id&quot;: 2490203,
+    &quot;approval_notes&quot;: &quot;&quot;,
+    &quot;compatibility&quot;: {
+      &quot;firefox&quot;: {
+        &quot;min&quot;: &quot;58.0&quot;,
+        &quot;max&quot;: &quot;100.*&quot;
+      },
+      &quot;android&quot;: {
+        &quot;min&quot;: &quot;68.0&quot;,
+        &quot;max&quot;: &quot;*&quot;
+      }
+    },
+    &quot;edit_url&quot;: &quot;https://addons.allizom.org/en-US/developers/addon/my_sluggish_slug/versions/2490203&quot;,
+    &quot;file&quot;: {
+      &quot;id&quot;: 1108571,
+      &quot;created&quot;: &quot;2023-07-27T15:57:05Z&quot;,
+      &quot;hash&quot;: &quot;sha256:6ec1823bec1ee62b8ae557c4be647988dfaf68352b866dd6653c91fca08d07a8&quot;,
+      &quot;is_mozilla_signed_extension&quot;: false,
+      &quot;size&quot;: 182,
+      &quot;status&quot;: &quot;unreviewed&quot;,
+      &quot;url&quot;: &quot;https://addons.allizom.org/firefox/downloads/file/1108571/my_sluggish_slug-1.0.zip&quot;,
+      &quot;permissions&quot;: [],
+      &quot;optional_permissions&quot;: [],
+      &quot;host_permissions&quot;: []
+    },
+    &quot;is_disabled&quot;: false,
+    &quot;is_strict_compatibility_enabled&quot;: false,
+    &quot;license&quot;: {
+      &quot;id&quot;: 5045,
+      &quot;is_custom&quot;: false,
+      &quot;name&quot;: {
+        &quot;en-US&quot;: &quot;All Rights Reserved&quot;
+      },
+      &quot;slug&quot;: &quot;all-rights-reserved&quot;,
+      &quot;url&quot;: null
+    },
+    &quot;release_notes&quot;: {
+      &quot;de&quot;: &quot;DE Version notes added in API at addon creation time&quot;,
+      &quot;en-US&quot;: &quot;EN-US Version notes added in API at addon creation time&quot;,
+      &quot;fr&quot;: &quot;FR Version notes added in API at addon creation time&quot;
+    },
+    &quot;reviewed&quot;: null,
+    &quot;version&quot;: &quot;1.0&quot;,
+    &quot;source&quot;: null
+  },
+  &quot;default_locale&quot;: &quot;en-US&quot;,
+  &quot;description&quot;: {
+    &quot;de&quot;: &quot;Description in german&quot;,
+    &quot;en-US&quot;: &quot;Description in en-US&quot;,
+    &quot;fr&quot;: &quot;Description in french&quot;
+  },
+  &quot;developer_comments&quot;: {
+    &quot;de&quot;: &quot;Dev comments in german&quot;,
+    &quot;en-US&quot;: &quot;Dev comments in en-US&quot;,
+    &quot;fr&quot;: &quot;Dev comments in french&quot;
+  },
+  &quot;edit_url&quot;: &quot;https://addons.allizom.org/en-US/developers/addon/my_sluggish_slug/edit&quot;,
+  &quot;guid&quot;: &quot;{327443a0-502d-419f-8376-de6da27c40e4}&quot;,
+  &quot;has_eula&quot;: false,
+  &quot;has_privacy_policy&quot;: false,
+  &quot;homepage&quot;: {
+    &quot;url&quot;: {
+      &quot;de&quot;: &quot;https://addons.not-allizom.de&quot;,
+      &quot;en-US&quot;: &quot;https://addons.not-allizom.org&quot;,
+      &quot;fr&quot;: &quot;https://addons.not-allizom.fr&quot;
+    },
+    &quot;outgoing&quot;: {
+      &quot;de&quot;: &quot;https://stage.outgoing.nonprod.webservices.mozgcp.net/v1/b48a84f06dd1ad1473a915ebac3928fcb3b2ad646de8f991b313e04942f0bdc0/https%3A//addons.not-allizom.de&quot;,
+      &quot;en-US&quot;: &quot;https://stage.outgoing.nonprod.webservices.mozgcp.net/v1/b91dae3f00b1f02b4c712a957c2a16016af76e9f01b1b1da21f819f308842e74/https%3A//addons.not-allizom.org&quot;,
+      &quot;fr&quot;: &quot;https://stage.outgoing.nonprod.webservices.mozgcp.net/v1/324619d551662c5e7ef32ae10be62dc5b34eeffcbc7370e7bd22558c765052d9/https%3A//addons.not-allizom.fr&quot;
+    }
+  },
+  &quot;icon_url&quot;: &quot;https://addons.allizom.org/static-server/img/addon-icons/default-64.d144b50f2bb8.png&quot;,
+  &quot;icons&quot;: {
+    &quot;32&quot;: &quot;https://addons.allizom.org/static-server/img/addon-icons/default-32.2b26add4b394.png&quot;,
+    &quot;64&quot;: &quot;https://addons.allizom.org/static-server/img/addon-icons/default-64.d144b50f2bb8.png&quot;,
+    &quot;128&quot;: &quot;https://addons.allizom.org/static-server/img/addon-icons/default-128.452018499894.png&quot;
+  },
+  &quot;is_disabled&quot;: false,
+  &quot;is_experimental&quot;: true,
+  &quot;last_updated&quot;: null,
+  &quot;name&quot;: {
+    &quot;de&quot;: &quot;DE Name set at creation time&quot;,
+    &quot;en-US&quot;: &quot;EN-US Name set at creation time&quot;,
+    &quot;fr&quot;: &quot;FR Name set at creation time&quot;
+  },
+  &quot;previews&quot;: [],
+  &quot;promoted&quot;: null,
+  &quot;ratings&quot;: {
+    &quot;average&quot;: 0.0,
+    &quot;bayesian_average&quot;: 0.0,
+    &quot;count&quot;: 0,
+    &quot;text_count&quot;: 0
+  },
+  &quot;ratings_url&quot;: &quot;https://addons.allizom.org/en-US/firefox/addon/my_sluggish_slug/reviews/&quot;,
+  &quot;requires_payment&quot;: true,
+  &quot;review_url&quot;: &quot;https://addons.allizom.org/en-US/reviewers/review/1012780&quot;,
+  &quot;slug&quot;: &quot;my_sluggish_slug&quot;,
+  &quot;status&quot;: &quot;nominated&quot;,
+  &quot;summary&quot;: {
+    &quot;de&quot;: &quot;Summary, in german&quot;,
+    &quot;en-US&quot;: &quot;Summary, in en-US&quot;,
+    &quot;fr&quot;: &quot;Summary, in french&quot;
+  },
+  &quot;support_email&quot;: {
+    &quot;de&quot;: &quot;lang-de@mail.com&quot;,
+    &quot;en-US&quot;: &quot;lang-en-us@mail.com&quot;,
+    &quot;fr&quot;: &quot;lang-fr@mail.com&quot;
+  },
+  &quot;support_url&quot;: null,
+  &quot;tags&quot;: [
+    &quot;anti malware&quot;,
+    &quot;anti tracker&quot;,
+    &quot;antivirus&quot;,
+    &quot;chat&quot;,
+    &quot;container&quot;,
+    &quot;content blocker&quot;,
+    &quot;coupon&quot;,
+    &quot;dailymotion&quot;,
+    &quot;dark mode&quot;
+  ],
+  &quot;type&quot;: &quot;extension&quot;,
+  &quot;url&quot;: &quot;https://addons.allizom.org/en-US/firefox/addon/my_sluggish_slug/&quot;,
+  &quot;version&quot;: {
+    &quot;id&quot;: 2490203,
+    &quot;approval_notes&quot;: &quot;&quot;,
+    &quot;channel&quot;: &quot;listed&quot;,
+    &quot;compatibility&quot;: {
+      &quot;firefox&quot;: {
+        &quot;min&quot;: &quot;58.0&quot;,
+        &quot;max&quot;: &quot;100.*&quot;
+      },
+      &quot;android&quot;: {
+        &quot;min&quot;: &quot;68.0&quot;,
+        &quot;max&quot;: &quot;*&quot;
+      }
+    },
+    &quot;edit_url&quot;: &quot;https://addons.allizom.org/en-US/developers/addon/my_sluggish_slug/versions/2490203&quot;,
+    &quot;file&quot;: {
+      &quot;id&quot;: 1108571,
+      &quot;created&quot;: &quot;2023-07-27T15:57:05Z&quot;,
+      &quot;hash&quot;: &quot;sha256:6ec1823bec1ee62b8ae557c4be647988dfaf68352b866dd6653c91fca08d07a8&quot;,
+      &quot;is_mozilla_signed_extension&quot;: false,
+      &quot;size&quot;: 182,
+      &quot;status&quot;: &quot;unreviewed&quot;,
+      &quot;url&quot;: &quot;https://addons.allizom.org/firefox/downloads/file/1108571/my_sluggish_slug-1.0.zip&quot;,
+      &quot;permissions&quot;: [],
+      &quot;optional_permissions&quot;: [],
+      &quot;host_permissions&quot;: []
+    },
+    &quot;is_disabled&quot;: false,
+    &quot;is_strict_compatibility_enabled&quot;: false,
+    &quot;license&quot;: {
+      &quot;id&quot;: 5045,
+      &quot;is_custom&quot;: false,
+      &quot;name&quot;: {
+        &quot;en-US&quot;: &quot;All Rights Reserved&quot;
+      },
+      &quot;slug&quot;: &quot;all-rights-reserved&quot;,
+      &quot;text&quot;: null,
+      &quot;url&quot;: null
+    },
+    &quot;release_notes&quot;: {
+      &quot;de&quot;: &quot;DE Version notes added in API at addon creation time&quot;,
+      &quot;en-US&quot;: &quot;EN-US Version notes added in API at addon creation time&quot;,
+      &quot;fr&quot;: &quot;FR Version notes added in API at addon creation time&quot;
+    },
+    &quot;reviewed&quot;: null,
+    &quot;source&quot;: null,
+    &quot;version&quot;: &quot;1.0&quot;
+  },
+  &quot;versions_url&quot;: &quot;https://addons.allizom.org/en-US/firefox/addon/my_sluggish_slug/versions/&quot;,
+  &quot;weekly_downloads&quot;: 0,
+  &quot;latest_unlisted_version&quot;: null
+}
+List of request values: [{&#x27;android&#x27;: [&#x27;experimental&#x27;, &#x27;performance&#x27;], &#x27;firefox&#x27;: [&#x27;bookmarks&#x27;, &#x27;privacy-security&#x27;]}, &#x27;my_sluggish_slug&#x27;, &#x27;en-US&#x27;, {&#x27;de&#x27;: &#x27;DE Name set at creation time&#x27;, &#x27;en-US&#x27;: &#x27;EN-US Name set at creation time&#x27;, &#x27;fr&#x27;: &#x27;FR Name set at creation time&#x27;}, {&#x27;de&#x27;: &#x27;Summary, in german&#x27;, &#x27;en-US&#x27;: &#x27;Summary, in en-US&#x27;, &#x27;fr&#x27;: &#x27;Summary, in french&#x27;}, {&#x27;de&#x27;: &#x27;Description in german&#x27;, &#x27;en-US&#x27;: &#x27;Description in en-US&#x27;, &#x27;fr&#x27;: &#x27;Description in french&#x27;}, {&#x27;de&#x27;: &#x27;Dev comments in german&#x27;, &#x27;en-US&#x27;: &#x27;Dev comments in en-US&#x27;, &#x27;fr&#x27;: &#x27;Dev comments in french&#x27;}, {&#x27;de&#x27;: &#x27;https://addons.not-allizom.de&#x27;, &#x27;en-US&#x27;: &#x27;https://addons.not-allizom.org&#x27;, &#x27;fr&#x27;: &#x27;https://addons.not-allizom.fr&#x27;}, {&#x27;de&#x27;: &#x27;lang-de@mail.com&#x27;, &#x27;en-US&#x27;: &#x27;lang-en-us@mail.com&#x27;, &#x27;fr&#x27;: &#x27;lang-fr@mail.com&#x27;}, True, True, &#x27;https://www.patreon.com&#x27;, [&#x27;anti malware&#x27;, &#x27;anti tracker&#x27;, &#x27;antivirus&#x27;, &#x27;chat&#x27;, &#x27;container&#x27;, &#x27;content blocker&#x27;, &#x27;coupon&#x27;, &#x27;dailymotion&#x27;, &#x27;dark mode&#x27;], &#x27;all-rights-reserved&#x27;, {&#x27;de&#x27;: &#x27;DE Version notes added in API at addon creation time&#x27;, &#x27;en-US&#x27;: &#x27;EN-US Version notes added in API at addon creation time&#x27;, &#x27;fr&#x27;: &#x27;FR Version notes added in API at addon creation time&#x27;}, {&#x27;android&#x27;: {&#x27;min&#x27;: &#x27;68.0&#x27;, &#x27;max&#x27;: &#x27;*&#x27;}, &#x27;firefox&#x27;: {&#x27;min&#x27;: &#x27;58.0&#x27;, &#x27;max&#x27;: &#x27;100.*&#x27;}}]
+List of response values: [{&#x27;android&#x27;: [&#x27;experimental&#x27;, &#x27;performance&#x27;], &#x27;firefox&#x27;: [&#x27;bookmarks&#x27;, &#x27;privacy-security&#x27;]}, &#x27;my_sluggish_slug&#x27;, {&#x27;de&#x27;: &#x27;DE Name set at creation time&#x27;, &#x27;en-US&#x27;: &#x27;EN-US Name set at creation time&#x27;, &#x27;fr&#x27;: &#x27;FR Name set at creation time&#x27;}, {&#x27;de&#x27;: &#x27;Summary, in german&#x27;, &#x27;en-US&#x27;: &#x27;Summary, in en-US&#x27;, &#x27;fr&#x27;: &#x27;Summary, in french&#x27;}, {&#x27;de&#x27;: &#x27;Description in german&#x27;, &#x27;en-US&#x27;: &#x27;Description in en-US&#x27;, &#x27;fr&#x27;: &#x27;Description in french&#x27;}, {&#x27;de&#x27;: &#x27;Dev comments in german&#x27;, &#x27;en-US&#x27;: &#x27;Dev comments in en-US&#x27;, &#x27;fr&#x27;: &#x27;Dev comments in french&#x27;}, {&#x27;de&#x27;: &#x27;https://addons.not-allizom.de&#x27;, &#x27;en-US&#x27;: &#x27;https://addons.not-allizom.org&#x27;, &#x27;fr&#x27;: &#x27;https://addons.not-allizom.fr&#x27;}, {&#x27;de&#x27;: &#x27;lang-de@mail.com&#x27;, &#x27;en-US&#x27;: &#x27;lang-en-us@mail.com&#x27;, &#x27;fr&#x27;: &#x27;lang-fr@mail.com&#x27;}, True, True, &#x27;https://www.patreon.com&#x27;, [&#x27;anti malware&#x27;, &#x27;anti tracker&#x27;, &#x27;antivirus&#x27;, &#x27;chat&#x27;, &#x27;container&#x27;, &#x27;content blocker&#x27;, &#x27;coupon&#x27;, &#x27;dailymotion&#x27;, &#x27;dark mode&#x27;], &#x27;all-rights-reserved&#x27;, {&#x27;de&#x27;: &#x27;DE Version notes added in API at addon creation time&#x27;, &#x27;en-US&#x27;: &#x27;EN-US Version notes added in API at addon creation time&#x27;, &#x27;fr&#x27;: &#x27;FR Version notes added in API at addon creation time&#x27;}, {&#x27;firefox&#x27;: {&#x27;min&#x27;: &#x27;58.0&#x27;, &#x27;max&#x27;: &#x27;100.*&#x27;}, &#x27;android&#x27;: {&#x27;min&#x27;: &#x27;68.0&#x27;, &#x27;max&#x27;: &#x27;*&#x27;}}]
+<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">tests/devhub/test_addon_submissions.py::test_delete_all_extensions[Desktop]</td>
+          <td class="col-duration">252.62</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="empty log">No log output captured.</div></td></tr></tbody></table></body></html>

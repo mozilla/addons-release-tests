@@ -13,10 +13,10 @@ def test_install_uninstall_extension(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Open an extension detail page, install it and then uninstall it"""
-    selenium.get(f'{base_url}/addon/bloody-vikings/')
+    selenium.get(f'{base_url}/addon/aarafow-molla-mantinch/')
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     amo_addon_name = addon.name
-    assert amo_addon_name == 'Bloody Vikings!'
+    assert amo_addon_name == 'aarafow-molla-mantinch'
     assert addon.is_compatible
     addon.install()
     firefox.browser.wait_for_notification(
@@ -51,7 +51,7 @@ def test_enable_disable_extension(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Open an extension detail page, install it, disable it from about:addons then enable it back in AMO"""
-    selenium.get(f'{base_url}/addon/bloody-vikings/')
+    selenium.get(f'{base_url}/addon/aarafow-molla-mantinch/')
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     addon.install()
     firefox.browser.wait_for_notification(
@@ -69,7 +69,7 @@ def test_enable_disable_extension(
     # verify that about:addons marks the extension as disabled -  (disabled) appended to addon name
     wait.until(
         lambda _: about_addons.installed_addon_name[0].text
-        == 'Bloody Vikings! (disabled)'
+        == 'aarafow-molla-mantinch (disabled)'
     )
     # go back to the addon detail page on AMO to Enable the addon
     selenium.switch_to.window(selenium.window_handles[0])
@@ -79,7 +79,7 @@ def test_enable_disable_extension(
     wait.until(lambda _: 'Remove' in addon.button_text)
     # open the manage Extensions page in about:addons to verify that the extension was re-enabled
     selenium.switch_to.window(selenium.window_handles[1])
-    wait.until(lambda _: about_addons.installed_addon_name[0].text == 'Bloody Vikings!')
+    wait.until(lambda _: about_addons.installed_addon_name[0].text == 'aarafow-molla-mantinch')
 
 
 def test_install_uninstall_theme(
