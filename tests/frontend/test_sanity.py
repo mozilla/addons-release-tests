@@ -178,13 +178,17 @@ def test_about_addons_addon_stats_match_amo(selenium, base_url, wait):
         >= 7
     )
     disco_addon_name = about_addons.addon_cards_items[1].disco_addon_name.text
-    disco_rating_score = about_addons.addon_cards_items[1].rating_score
+    disco_rating_number = str(round(float(about_addons.addon_cards_items[1].rating_score), 1))
+    disco_rating_score = disco_rating_number + " Stars"
     disco_users = about_addons.addon_cards_items[1].user_count
     # clicking on the author link should open the addon detail page on AMO
     amo_detail_page = about_addons.addon_cards_items[1].click_disco_addon_author()
     wait.until(lambda _: disco_addon_name == amo_detail_page.name)
     # check that the rating and the users from about:addons are matching with AMO
-    assert disco_rating_score == amo_detail_page.stats.rating_score_tile
+    assert disco_rating_score == amo_detail_page.stats.rating_title.text
+    assert (
+            disco_rating_number in amo_detail_page.stats.rating_score_tile
+    )
     assert disco_users == amo_detail_page.stats.stats_users_count
 
 

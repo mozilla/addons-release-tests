@@ -209,6 +209,10 @@ class Detail(Base):
             By.CSS_SELECTOR,
             '.AddonMeta-rating-content .Rating--small',
         )
+        _rating_title_locator = (
+            By.CSS_SELECTOR,
+            '.AddonMeta-rating-title'
+        )
         _grouped_ratings_locator = (By.CSS_SELECTOR, '.RatingsByStar-star')
         _rating_bar_locator = (By.CSS_SELECTOR, '.RatingsByStar-barContainer')
         _rating_bar_count_locator = (By.CSS_SELECTOR, '.RatingsByStar-count')
@@ -252,6 +256,10 @@ class Detail(Base):
             return self.find_element(*self._rating_score_title_locator).get_attribute(
                 'title'
             )
+
+        @property
+        def rating_title(self):
+            return self.find_element(*self._rating_title_locator)
 
         @property
         def no_star_ratings(self):

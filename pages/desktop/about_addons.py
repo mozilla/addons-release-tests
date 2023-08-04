@@ -141,7 +141,7 @@ class AboutAddons(Page):
         _extension_summary_locator = (By.CLASS_NAME, 'disco-description-main')
         _extension_rating_locator = (
             By.CSS_SELECTOR,
-            '.disco-description-statistics five-star-rating',
+            '.disco-description-statistics moz-five-star',
         )
         _extension_users_count_locator = (By.CLASS_NAME, 'disco-user-count')
         _addon_install_button_locator = (
@@ -195,7 +195,7 @@ class AboutAddons(Page):
 
         @property
         def rating_score(self):
-            return self.disco_extension_rating.get_attribute('title')
+            return self.disco_extension_rating.get_attribute('rating')
 
         @property
         def disco_extension_users(self):
