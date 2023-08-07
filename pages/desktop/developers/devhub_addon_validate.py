@@ -29,8 +29,12 @@ class DevhubAddonValidate(Base):
     _on_this_site_checkbox = (By.CSS_SELECTOR, "#id_channel_0")
     _on_your_own_text_checkbox = (By.CSS_SELECTOR, "#id_channel_1")
     _upload_details_text = (By.CSS_SELECTOR, ".upload-details")
-    _upload_status_results = (By.ID, "upload-status-results")
+    _upload_status_results_succes = (By.ID, "upload-status-results")
+    _upload_status_results_failed = (By.CSS_SELECTOR, "div.upload-status div.status-fail strong")
+    _upload_status_bar_results_approved = (By.CSS_SELECTOR, "div.bar-success")
+    _upload_status_bar_results_failed = (By.CSS_SELECTOR, "div.bar-fail")
     _upload_status = (By.ID, "uploadstatus")
+    _upload_errors = (By.ID, "upload_errors")
 
     def wait_for_page_to_load(self):
         self.wait.until(
@@ -40,7 +44,11 @@ class DevhubAddonValidate(Base):
 
     def is_validation_approved(self):
         """Wait for addon validation to complete; if not successful, the test will fail"""
-        self.wait.until(EC.visibility_of_element_located(self._upload_status_results))
+        self.wait.until(EC.visibility_of_element_located(self._upload_status_bar_results_approved))
+
+    def is_not_validated(self):
+        """Wait for addon validation to complete; if successful, the test will fail"""
+        self.wait.until(EC.visibility_of_element_located(self._upload_status_bar_results_failed))
 
     @property
     def addon_on_your_site(self):
@@ -71,12 +79,20 @@ class DevhubAddonValidate(Base):
         return self.find_element(*self._upload_details_text)
 
     @property
-    def upload_details_results(self):
-        return self.find_element(*self._upload_status_results)
+    def upload_details_results_succes(self):
+        return self.find_element(*self._upload_status_results_succes)
+
+    @property
+    def upload_details_results_failed(self):
+        return self.find_element(*self._upload_status_results_failed)
 
     @property
     def upload_status(self):
         return self.find_element(*self._upload_status)
+
+    @property
+    def upload_errors(self):
+        return self.find_element(*self._upload_errors)
 
     def click_on_this_site_checkbox(self):
         return self.find_element(*self._on_this_site_checkbox).click()
