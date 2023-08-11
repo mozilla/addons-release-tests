@@ -623,6 +623,8 @@ class ThemeWizard(Page):
         By.CSS_SELECTOR,
         '.submission-buttons .delete-button',
     )
+    _header_area_background_locator = (By.CSS_SELECTOR, 'input#frame')
+    _header_area_text_and_icons_locator = (By.CSS_SELECTOR, 'input#tab_background_text')
 
     def wait_for_page_to_load(self):
         self.wait.until(EC.visibility_of_element_located((By.ID, 'theme-header')))
@@ -660,6 +662,20 @@ class ThemeWizard(Page):
             *self._browser_preview_header_image_locator
         ).get_attribute('href')
 
+    @property
+    def header_area_background(self):
+        return self.find_element(*self._header_area_background_locator).send
+
+    @property
+    def header_area_text_and_icons(self):
+        return self.find_element(*self._header_area_text_and_icons_locator)
+
+    def set_header_area_background_color(self, value):
+        return self.find_element(*self._header_area_background_locator).send_keys(value)
+
+    def set_header_area_text_and_icons(self, value):
+        return self.find_element(*self._header_area_text_and_icons_locator).send_keys(value)
+
     def submit_theme(self):
         self.find_element(*self._submit_theme_button_locator).click()
         return ListedAddonSubmissionForm(
@@ -669,6 +685,8 @@ class ThemeWizard(Page):
     def cancel_submission(self):
         self.find_element(*self._cancel_submission_button_locator).click()
         return SubmitAddon(self.driver, self.base_url).wait_for_page_to_load()
+
+
 
 
 class SubmissionConfirmationPage(Page):
