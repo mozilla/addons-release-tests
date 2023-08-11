@@ -51,6 +51,14 @@
   "listed_addon_reviewer_notes": "TEST ADDON: Reviewer notes set by the developer",
   "unlisted_new_version_autoapproval": "d1f90f7b2fc041cda995",
 
-  "telemetry_client_id": "06ecc8cef773a56ce40baa1ca1237184ea2c6a6a7f0485eda1ea7f4b5c317c65"
+  "telemetry_client_id": "06ecc8cef773a56ce40baa1ca1237184ea2c6a6a7f0485eda1ea7f4b5c317c65",
+
+  "on_this_site_label_message": "On this site. Your submission is publicly listed on addons.mozilla.org.",
+  "on_your_own_label_message": "On your own. After your submission is signed by Mozilla, you can download the .xpi file from the Developer Hub and distribute it to your audience. Please make sure the add-on manifest’s update_url is provided, as this is the URL where Firefox finds updates for automatic deployment to your users.",
+  "upload_status_results_failed": "Your add-on failed validation with 1 error.",
+  "addon_validation_message": "Your add-on was validated with no errors or warnings.",
+  "no_manifest_found_message": "manifest.json was not found",
+  "unsupported_format_message": "The filetype you uploaded isn't recognized.",
+  "upload_status": "100% complete"
 }
 
