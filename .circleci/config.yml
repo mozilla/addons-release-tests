@@ -6,13 +6,14 @@ jobs:
   collections_serial_tests:
     executor:
       name: win/default
+      version: "previous"
       size: "large"
     working_directory:  ~/addons-release-tests/
     steps:
       - checkout
       - run:
           name: Upgrade pip
-          command: python.exe -m pip install --upgrade pip
+          command: py -3.9 -m pip install --upgrade pip --user
       - run:
           name: Install requirements
           command: py -3.9 -m pip install --no-deps -r ./requirements.txt
@@ -36,13 +37,14 @@ jobs:
   ratings_serial_tests:
     executor:
       name: win/default
+      version: "previous"
       size: "large"
     working_directory: ~/addons-release-tests/
     steps:
       - checkout
       - run:
           name: Upgrade pip
-          command: python.exe -m pip install --upgrade pip
+          command: py -3.9 -m pip install --upgrade pip --user
       - run:
           name: Install requirements
           command: py -3.9 -m pip install --no-deps -r ./requirements.txt
@@ -66,13 +68,14 @@ jobs:
   user_serial_tests:
     executor:
       name: win/default
+      version: "previous"
       size: "large"
     working_directory: ~/addons-release-tests/
     steps:
       - checkout
       - run:
           name: Upgrade pip
-          command: python.exe -m pip install --upgrade pip
+          command: py -3.9 -m pip install --upgrade pip --user
       - run:
           name: Install requirements
           command: py -3.9 -m pip install --no-deps -r ./requirements.txt
@@ -96,13 +99,14 @@ jobs:
   frontend_parallel_tests:
     executor:
       name: win/default
+      version: "previous"
       size: "large"
     working_directory: ~/addons-release-tests/
     steps:
       - checkout
       - run:
           name: Upgrade pip
-          command: python.exe -m pip install --upgrade pip
+          command: py -3.9 -m pip install --upgrade pip --user
       - run:
           name: Install requirements
           command: py -3.9 -m pip install --no-deps -r ./requirements.txt
@@ -133,7 +137,7 @@ jobs:
       - checkout
       - run:
           name: Upgrade pip
-          command: python.exe -m pip install --upgrade pip
+          command: py -3.9 -m pip install --upgrade pip --user
       - run:
           name: Install requirements
           command: py -3.9 -m pip install --no-deps -r ./requirements.txt
@@ -157,13 +161,14 @@ jobs:
   addon_submissions_tests:
     executor:
       name: win/default
+      version: "previous"
       size: "large"
     working_directory: ~/addons-release-tests/
     steps:
       - checkout
       - run:
           name: Upgrade pip
-          command: python.exe -m pip install --upgrade pip
+          command: py -3.9 -m pip install --upgrade pip --user
       - run:
           name: Install requirements
           command: py -3.9 -m pip install --no-deps -r ./requirements.txt
@@ -187,13 +192,14 @@ jobs:
   sanity_parallel_tests:
     executor:
       name: win/default
+      version: "previous"
       size: "large"
     working_directory: ~/addons-release-tests/
     steps:
       - checkout
       - run:
           name: Upgrade pip
-          command: python.exe -m pip install --upgrade pip
+          command: py -3.9 -m pip install --upgrade pip --user
       - run:
           name: Install requirements
           command: py -3.9 -m pip install --no-deps -r ./requirements.txt
@@ -217,13 +223,14 @@ jobs:
   sanity_serial_tests:
     executor:
       name: win/default
+      version: "previous"
       size: "large"
     working_directory: ~/addons-release-tests/
     steps:
       - checkout
       - run:
           name: Upgrade pip
-          command: python.exe -m pip install --upgrade pip
+          command: py -3.9 -m pip install --upgrade pip --user
       - run:
           name: Install requirements
           command: py -3.9 -m pip install --no-deps -r ./requirements.txt
@@ -247,13 +254,14 @@ jobs:
   api_submission_tests:
     executor:
       name: win/default
+      version: "previous"
       size: "large"
     working_directory: ~/addons-release-tests/
     steps:
       - checkout
       - run:
           name: Upgrade pip
-          command: python.exe -m pip install --upgrade pip
+          command: py -3.9 -m pip install --upgrade pip --user
       - run:
           name: Install requirements
           command: py -3.9 -m pip install --no-deps -r ./requirements.txt
@@ -277,13 +285,14 @@ jobs:
   frontend_dev_parallel_tests:
     executor:
       name: win/default
+      version: "previous"
       size: "large"
     working_directory: ~/addons-release-tests/
     steps:
       - checkout
       - run:
           name: Upgrade pip
-          command: python.exe -m pip install --upgrade pip
+          command: py -3.9 -m pip install --upgrade pip --user
       - run:
           name: Install requirements
           command: py -3.9 -m pip install --no-deps -r ./requirements.txt
@@ -307,13 +316,14 @@ jobs:
   user_dev_serial_tests:
     executor:
       name: win/default
+      version: "previous"
       size: "large"
     working_directory: ~/addons-release-tests/
     steps:
       - checkout
       - run:
           name: Upgrade pip
-          command: python.exe -m pip install --upgrade pip
+          command: py -3.9 -m pip install --upgrade pip --user
       - run:
           name: Install requirements
           command: py -3.9 -m pip install --no-deps -r ./requirements.txt
@@ -337,13 +347,14 @@ jobs:
   collections_dev_serial_tests:
     executor:
       name: win/default
+      version: "previous"
       size: "large"
     working_directory:  ~/addons-release-tests/
     steps:
       - checkout
       - run:
           name: Upgrade pip
-          command: python.exe -m pip install --upgrade pip
+          command: py -3.9 -m pip install --upgrade pip --user
       - run:
           name: Install requirements
           command: py -3.9 -m pip install --no-deps -r ./requirements.txt
@@ -367,13 +378,14 @@ jobs:
   ratings_dev_serial_tests:
     executor:
       name: win/default
+      version: "previous"
       size: "large"
     working_directory: ~/addons-release-tests/
     steps:
       - checkout
       - run:
           name: Upgrade pip
-          command: python.exe -m pip install --upgrade pip
+          command: py -3.9 -m pip install --upgrade pip --user
       - run:
           name: Install requirements
           command: py -3.9 -m pip install --no-deps -r ./requirements.txt
@@ -404,7 +416,7 @@ jobs:
       - checkout
       - run:
           name: Upgrade pip
-          command: python.exe -m pip install --upgrade pip
+          command: py -3.9 -m pip install --upgrade pip --user
       - run:
           name: Install requirements
           command: py -3.9 -m pip install --no-deps -r ./requirements.txt
@@ -428,13 +440,14 @@ jobs:
   addon_submissions_dev_tests:
     executor:
       name: win/default
+      version: "previous"
       size: "large"
     working_directory: ~/addons-release-tests/
     steps:
       - checkout
       - run:
           name: Upgrade pip
-          command: python.exe -m pip install --upgrade pip
+          command: py -3.9 -m pip install --upgrade pip --user
       - run:
           name: Install requirements
           command: py -3.9 -m pip install --no-deps -r ./requirements.txt
