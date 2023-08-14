@@ -12,7 +12,7 @@ jobs:
       - checkout
       - run:
           name: Upgrade pip
-          command: C:\Program Files\Microsoft Visual Studio\Shared\Python39_64\python.exe -m pip install --upgrade pip
+          command: python.exe -m pip install --upgrade pip
       - run:
           name: Install requirements
           command: py -3.9 -m pip install --no-deps -r ./requirements.txt
@@ -42,7 +42,7 @@ jobs:
       - checkout
       - run:
           name: Upgrade pip
-          command: C:\Program Files\Microsoft Visual Studio\Shared\Python39_64\python.exe -m pip install --upgrade pip
+          command: python.exe -m pip install --upgrade pip
       - run:
           name: Install requirements
           command: py -3.9 -m pip install --no-deps -r ./requirements.txt
@@ -72,7 +72,7 @@ jobs:
       - checkout
       - run:
           name: Upgrade pip
-          command: C:\Program Files\Microsoft Visual Studio\Shared\Python39_64\python.exe -m pip install --upgrade pip
+          command: python.exe -m pip install --upgrade pip
       - run:
           name: Install requirements
           command: py -3.9 -m pip install --no-deps -r ./requirements.txt
@@ -102,7 +102,7 @@ jobs:
       - checkout
       - run:
           name: Upgrade pip
-          command: C:\Program Files\Microsoft Visual Studio\Shared\Python39_64\python.exe -m pip install --upgrade pip
+          command: python.exe -m pip install --upgrade pip
       - run:
           name: Install requirements
           command: py -3.9 -m pip install --no-deps -r ./requirements.txt
@@ -133,7 +133,7 @@ jobs:
       - checkout
       - run:
           name: Upgrade pip
-          command: C:\Program Files\Microsoft Visual Studio\Shared\Python39_64\python.exe -m pip install --upgrade pip
+          command: python.exe -m pip install --upgrade pip
       - run:
           name: Install requirements
           command: py -3.9 -m pip install --no-deps -r ./requirements.txt
@@ -163,7 +163,7 @@ jobs:
       - checkout
       - run:
           name: Upgrade pip
-          command: C:\Program Files\Microsoft Visual Studio\Shared\Python39_64\python.exe -m pip install --upgrade pip
+          command: python.exe -m pip install --upgrade pip
       - run:
           name: Install requirements
           command: py -3.9 -m pip install --no-deps -r ./requirements.txt
@@ -193,7 +193,7 @@ jobs:
       - checkout
       - run:
           name: Upgrade pip
-          command: C:\Program Files\Microsoft Visual Studio\Shared\Python39_64\python.exe -m pip install --upgrade pip
+          command: python.exe -m pip install --upgrade pip
       - run:
           name: Install requirements
           command: py -3.9 -m pip install --no-deps -r ./requirements.txt
@@ -223,7 +223,7 @@ jobs:
       - checkout
       - run:
           name: Upgrade pip
-          command: C:\Program Files\Microsoft Visual Studio\Shared\Python39_64\python.exe -m pip install --upgrade pip
+          command: python.exe -m pip install --upgrade pip
       - run:
           name: Install requirements
           command: py -3.9 -m pip install --no-deps -r ./requirements.txt
@@ -253,7 +253,7 @@ jobs:
       - checkout
       - run:
           name: Upgrade pip
-          command: C:\Program Files\Microsoft Visual Studio\Shared\Python39_64\python.exe -m pip install --upgrade pip
+          command: python.exe -m pip install --upgrade pip
       - run:
           name: Install requirements
           command: py -3.9 -m pip install --no-deps -r ./requirements.txt
@@ -283,7 +283,7 @@ jobs:
       - checkout
       - run:
           name: Upgrade pip
-          command: C:\Program Files\Microsoft Visual Studio\Shared\Python39_64\python.exe -m pip install --upgrade pip
+          command: python.exe -m pip install --upgrade pip
       - run:
           name: Install requirements
           command: py -3.9 -m pip install --no-deps -r ./requirements.txt
@@ -313,7 +313,7 @@ jobs:
       - checkout
       - run:
           name: Upgrade pip
-          command: C:\Program Files\Microsoft Visual Studio\Shared\Python39_64\python.exe -m pip install --upgrade pip
+          command: python.exe -m pip install --upgrade pip
       - run:
           name: Install requirements
           command: py -3.9 -m pip install --no-deps -r ./requirements.txt
@@ -343,7 +343,7 @@ jobs:
       - checkout
       - run:
           name: Upgrade pip
-          command: C:\Program Files\Microsoft Visual Studio\Shared\Python39_64\python.exe -m pip install --upgrade pip
+          command: python.exe -m pip install --upgrade pip
       - run:
           name: Install requirements
           command: py -3.9 -m pip install --no-deps -r ./requirements.txt
@@ -373,7 +373,7 @@ jobs:
       - checkout
       - run:
           name: Upgrade pip
-          command: C:\Program Files\Microsoft Visual Studio\Shared\Python39_64\python.exe -m pip install --upgrade pip
+          command: python.exe -m pip install --upgrade pip
       - run:
           name: Install requirements
           command: py -3.9 -m pip install --no-deps -r ./requirements.txt
@@ -404,7 +404,7 @@ jobs:
       - checkout
       - run:
           name: Upgrade pip
-          command: C:\Program Files\Microsoft Visual Studio\Shared\Python39_64\python.exe -m pip install --upgrade pip
+          command: python.exe -m pip install --upgrade pip
       - run:
           name: Install requirements
           command: py -3.9 -m pip install --no-deps -r ./requirements.txt
@@ -434,7 +434,7 @@ jobs:
       - checkout
       - run:
           name: Upgrade pip
-          command: C:\Program Files\Microsoft Visual Studio\Shared\Python39_64\python.exe -m pip install --upgrade pip
+          command: python.exe -m pip install --upgrade pip
       - run:
           name: Install requirements
           command: py -3.9 -m pip install --no-deps -r ./requirements.txt
