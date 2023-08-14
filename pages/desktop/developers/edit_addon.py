@@ -155,8 +155,8 @@ class EditAddon(Base):
             )
         )
 
-    def upload_screenshot(self, addon):
+    def upload_screenshot(self, img):
         """General method for uploading a file"""
         button = self.find_element(*self._upload_screenshot_button)
-        archive = Path(f"{os.getcwd()}/sample-addons/{addon}")
+        archive = Path(f"{os.getcwd()}/img/{img}")
         button.send_keys(str(archive))

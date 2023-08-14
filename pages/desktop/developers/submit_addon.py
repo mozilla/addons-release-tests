@@ -615,7 +615,7 @@ class ThemeWizard(Page):
     _theme_name_input_field = (By.ID, 'theme-name')
     _upload_theme_image_button_locator = (By.ID, 'header-img')
     _uploaded_image_preview_locator = (By.CLASS_NAME, 'preview.loaded')
-    _change_image_button_locator = (By.CLASS_NAME, 'reset')
+    _change_image_button_locator = (By.CSS_SELECTOR, '.reset')
     _browser_preview_locator = (By.ID, 'preview-svg-root')
     _browser_preview_header_image_locator = (By.ID, 'svg-header-img')
     _submit_theme_button_locator = (By.CLASS_NAME, 'button.upload')
@@ -625,6 +625,7 @@ class ThemeWizard(Page):
     )
     _header_area_background_locator = (By.CSS_SELECTOR, 'input#frame')
     _header_area_text_and_icons_locator = (By.CSS_SELECTOR, 'input#tab_background_text')
+    _header_image_error_locator = (By.CSS_SELECTOR, '.header-image-error li')
 
     def wait_for_page_to_load(self):
         self.wait.until(EC.visibility_of_element_located((By.ID, 'theme-header')))
@@ -639,6 +640,11 @@ class ThemeWizard(Page):
 
     def upload_theme_header(self, img):
         button = self.find_element(*self._upload_theme_image_button_locator)
+        header_img = Path(f'{os.getcwd()}/img/{img}')
+        button.send_keys(str(header_img))
+
+    def upload_through_different_header_image(self, img):
+        button = self.find_element(*self._change_image_button_locator)
         header_img = Path(f'{os.getcwd()}/img/{img}')
         button.send_keys(str(header_img))
 
@@ -664,16 +670,37 @@ class ThemeWizard(Page):
 
     @property
     def header_area_background(self):
-        return self.find_element(*self._header_area_background_locator).send
+        return self.find_element(*self._header_area_background_locator)
 
     @property
     def header_area_text_and_icons(self):
         return self.find_element(*self._header_area_text_and_icons_locator)
 
+    @property
+    def header_image_error(self):
+        return self.find_element(*self._header_image_error_locator)
+
+    def click_submit_theme_button_locator(self):
+        return self.find_element(*self._submit_theme_button_locator).click()
+
+    def wait_for_uploaded_image_preview(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._uploaded_image_preview_locator)
+        )
+        return self
+
+    def wait_for_header_image_error_message(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._header_image_error_locator)
+        )
+        return self
+
     def set_header_area_background_color(self, value):
+        self.header_area_background.clear()
         return self.find_element(*self._header_area_background_locator).send_keys(value)
 
     def set_header_area_text_and_icons(self, value):
+        self.header_area_text_and_icons.clear()
         return self.find_element(*self._header_area_text_and_icons_locator).send_keys(value)
 
     def submit_theme(self):

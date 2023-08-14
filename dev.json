@@ -201,5 +201,6 @@
   "unsupported_format_message": "The filetype you uploaded isn't recognized.",
   "no_manifest_found_message": "manifest.json was not found",
   "screenshot_uploading_error_message": "There was an error uploading your file.",
-  "screenshot_uploading_error_details_message": "Please use images smaller than 4MB."
+  "screenshot_uploading_error_details_message": "Please use images smaller than 4MB.",
+  "theme_header_imager_error": "Maximum upload size is 7.00 MB - choose a smaller background image."
 }

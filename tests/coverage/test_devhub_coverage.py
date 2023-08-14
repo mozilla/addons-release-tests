@@ -1,6 +1,6 @@
 from pages.desktop.developers.devhub_home import DevHubHome
 from pages.desktop.developers.edit_addon import EditAddon
-from pages.desktop.developers.submit_addon import ThemeWizard
+from pages.desktop.developers.submit_addon import ThemeWizard, ListedAddonSubmissionForm
 
 
 def test_upload_image_larger_than_4_mb_for_screenshots(
@@ -43,8 +43,33 @@ def test_upload_an_image_larger_than_7mb_for_themes(
     """Using the theme-wizard try to upload a header image >7 MB"""
     devhub_home = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     devhub_home.devhub_login("developer")
-    selenium.get(f'f{base_url}/developers/addon/submit/wizard-listed')
+    selenium.get(f'{base_url}/developers/addon/submit/wizard-listed')
     theme_wizard_page = ThemeWizard(selenium, base_url).wait_for_page_to_load()
     theme_wizard_page.upload_theme_header("over_4mb_picture.png")
+    theme_wizard_page.wait_for_uploaded_image_preview()
+    """The image, colors for theme can be selected"""
+    theme_wizard_page.set_header_area_background_color("rgba(230, 37, 37, 1)")
+    theme_wizard_page.set_header_area_text_and_icons("rgba(0, 0, 0, 1)")
+    """Click Finish Theme"""
+    theme_wizard_page.click_submit_theme_button_locator()
+    """An error message is displayed: Maximum upload size is 7.00 MB - choose a smaller background image."""
+    theme_wizard_page.wait_for_header_image_error_message()
+    assert (
+        theme_wizard_page.header_image_error.text
+        in variables["theme_header_imager_error"]
+    )
+    """Select a different header image"""
+    theme_wizard_page.upload_through_different_header_image("theme_header.png")
+    """Image is selected"""
+    theme_wizard_page.wait_for_uploaded_image_preview()
+    """Click Finish Theme"""
+    theme_wizard_page.click_submit_theme_button_locator()
+    """The details page (next submission step) is displayed"""
+    submit_addon_page = ListedAddonSubmissionForm(selenium, base_url).wait_for_page_to_load()
+    assert(
+        submit_addon_page.addon_name_field.is_displayed(),
+        submit_addon_page.select_license_options.is_displayed()
+    )
+
 
 
