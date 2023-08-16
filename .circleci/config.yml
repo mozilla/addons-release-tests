@@ -21,7 +21,7 @@ jobs:
           command: choco install selenium-gecko-driver -y
       - run:
           name: Install Firefox
-          command: choco install firefox-nightly --pre --ignore-checksums
+          command: choco install firefox-nightly --pre --ignore-checksums -y
       - run:
           name: Run collections serial tests
           environment:
@@ -51,7 +51,7 @@ jobs:
           command: choco install selenium-gecko-driver -y
       - run:
           name: Install Firefox
-          command: choco install firefox-nightly --pre --ignore-checksums
+          command: choco install firefox-nightly --pre --ignore-checksums -y
       - run:
           name: Run ratings serial tests
           environment:
@@ -81,7 +81,7 @@ jobs:
           command: choco install selenium-gecko-driver -y
       - run:
           name: Install Firefox
-          command: choco install firefox-nightly --pre --ignore-checksums
+          command: choco install firefox-nightly --pre --ignore-checksums -y
       - run:
           name: Run user serial tests
           environment:
@@ -111,7 +111,7 @@ jobs:
           command: choco install selenium-gecko-driver -y
       - run:
           name: Install Firefox
-          command: choco install firefox-nightly --pre --ignore-checksums
+          command: choco install firefox-nightly --pre --ignore-checksums -y
       - run:
           name: Run frontend parallel tests
           environment:
@@ -141,7 +141,7 @@ jobs:
           command: choco install selenium-gecko-driver -y
       - run:
           name: Install Firefox
-          command: choco install firefox-nightly --pre --ignore-checksums
+          command: choco install firefox-nightly --pre --ignore-checksums -y
       - run:
           name: Run devhub parallel tests
           environment:
@@ -171,7 +171,7 @@ jobs:
           command: choco install selenium-gecko-driver -y
       - run:
           name: Install Firefox
-          command: choco install firefox-nightly --pre --ignore-checksums
+          command: choco install firefox-nightly --pre --ignore-checksums -y
       - run:
           name: Run addon submissions tests
           environment:
@@ -261,7 +261,7 @@ jobs:
           command: choco install selenium-gecko-driver -y
       - run:
           name: Install Firefox
-          command: choco install firefox
+          command: choco install firefox -y
       - run:
           name: API submission tests
           environment:
