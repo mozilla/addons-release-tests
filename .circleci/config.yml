@@ -12,7 +12,7 @@ jobs:
       - checkout
       - run:
           name: Upgrade pip
-          command: C:\Program Files (x64)\Microsoft Visual Studio\Shared\Python39_64\python.exe -m pip install --upgrade pip --user
+          command: C:\Program Files\Microsoft Visual Studio\Shared\Python39_64\python.exe -m pip install --upgrade pip --user
       - run:
           name: Install requirements
           command: C:\Program Files (x64)\Microsoft Visual Studio\Shared\Python39_64\python.exe -m pip install --no-deps -r ./requirements.txt
