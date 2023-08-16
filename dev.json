@@ -202,5 +202,10 @@
   "no_manifest_found_message": "manifest.json was not found",
   "screenshot_uploading_error_message": "There was an error uploading your file.",
   "screenshot_uploading_error_details_message": "Please use images smaller than 4MB.",
-  "theme_header_imager_error": "Maximum upload size is 7.00 MB - choose a smaller background image."
+  "theme_header_imager_error": "Maximum upload size is 7.00 MB - choose a smaller background image.",
+
+  "cancel_your_review_request_message": "Canceling your review request will mark your add-on incomplete, and any versions awaiting review will be disabled.",
+  "are_you_sure_cancel_review_message": "Are you sure you wish to cancel your review request?",
+  "addon_status_incomplete": "Incomplete",
+  "addon_version_disabled_by_mozilla": "Disabled by Mozilla"
 }

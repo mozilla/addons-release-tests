@@ -203,5 +203,10 @@
   "upload_status_results_failed": "Your add-on failed validation with 1 error.",
   "unsupported_format_message": "The filetype you uploaded isn't recognized.",
   "no_manifest_found_message": "manifest.json was not found",
-  "theme_header_imager_error": "Maximum upload size is 7.00 MB - choose a smaller background image."
+  "theme_header_imager_error": "Maximum upload size is 7.00 MB - choose a smaller background image.",
+
+  "cancel_your_review_request_message": "Canceling your review request will mark your add-on incomplete, and any versions awaiting review will be disabled.",
+  "are_you_sure_cancel_review_message": "Are you sure you wish to cancel your review request?",
+  "addon_status_incomplete": "Incomplete",
+  "addon_version_disabled_by_mozilla": "Disabled by Mozilla"
 }

@@ -615,7 +615,7 @@ class ThemeWizard(Page):
     _theme_name_input_field = (By.ID, 'theme-name')
     _upload_theme_image_button_locator = (By.ID, 'header-img')
     _uploaded_image_preview_locator = (By.CLASS_NAME, 'preview.loaded')
-    _change_image_button_locator = (By.CSS_SELECTOR, '.reset')
+    _change_image_button_locator = (By.CSS_SELECTOR, '#theme-header a.reset')
     _browser_preview_locator = (By.ID, 'preview-svg-root')
     _browser_preview_header_image_locator = (By.ID, 'svg-header-img')
     _submit_theme_button_locator = (By.CLASS_NAME, 'button.upload')
@@ -692,6 +692,12 @@ class ThemeWizard(Page):
     def wait_for_header_image_error_message(self):
         self.wait.until(
             EC.visibility_of_element_located(self._header_image_error_locator)
+        )
+        return self
+
+    def wait_for_change_image_button_locator_to_be_clickable(self):
+        self.wait.until(
+            EC.element_to_be_clickable(self._change_image_button_locator)
         )
         return self
 

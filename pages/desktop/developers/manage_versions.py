@@ -54,10 +54,32 @@ class ManageVersions(Page):
     )
     _cancel_disable_version_link_locator = (By.CSS_SELECTOR, '.modal-actions .close')
     _enable_version_button_locator = (By.CSS_SELECTOR, '.file-status button')
+    _cancel_review_request_link_locator = (By.ID, 'cancel-review')
+    _request_review_button_locator = (By.CSS_SELECTOR, 'form button.link')
+    _disabled_by_mozilla_text_locator = (By.CSS_SELECTOR, '.file-status > div')
+    _addon_status_incomplete_locator = (By.CSS_SELECTOR, '.status-incomplete b')
 
     def wait_for_page_to_load(self):
         self.wait.until(EC.visibility_of_element_located(self._version_list_locator))
         return self
+
+    @staticmethod
+    def open_manage_versions_page_for_addon(selenium, base_url, addon):
+        return selenium.get(f"{base_url}/developers/addon/{addon}/versions")
+
+
+    @property
+    def disabled_by_mozilla_text(self):
+        return self.find_element(*self._disabled_by_mozilla_text_locator)
+
+    @property
+    def addon_status_incomplete(self):
+        return self.find_element(*self._addon_status_incomplete_locator)
+
+    @property
+    def request_review_button(self):
+        self.wait.until(EC.visibility_of_element_located(self._request_review_button_locator))
+        return self.find_element(*self._request_review_button_locator)
 
     @property
     def version_page_title(self):
@@ -81,6 +103,10 @@ class ManageVersions(Page):
     def invisible_status_explainer(self):
         return self.find_element(*self._invisible_explainer_text_locator).text
 
+    @property
+    def cancel_review_link(self):
+        return self.find_element(*self._cancel_review_request_link_locator)
+
     def set_addon_invisible(self):
         """Selects the Invisible option and checks that the radio button is selected"""
         el = self.find_element(*self._invisible_listing_radio_locator)
@@ -93,6 +119,9 @@ class ManageVersions(Page):
 
     def click_hide_addon(self):
         self.find_element(*self._hide_addon_button_locator).click()
+
+    def click_request_review_button(self):
+        self.find_element(*self._request_review_button_locator).click()
 
     @property
     def hide_addon_confirmation_text(self):
@@ -174,6 +203,11 @@ class ManageVersions(Page):
         self.find_element(*self._delete_addon_button_locator).click()
         return self.DeleteAddonModal(self).wait_for_region_to_load()
 
+    def cancel_review_request(self):
+        self.find_element(*self._cancel_review_request_link_locator).click()
+        return self.CancelReviewRequestModal(self).wait_for_region_to_load()
+
+
     class DeleteAddonModal(Region):
         _root_locator = (By.ID, 'modal-delete')
         _delete_confirmation_string_locator = (
@@ -207,3 +241,26 @@ class ManageVersions(Page):
             from pages.desktop.developers.addons_manage import ManageAddons
 
             return ManageAddons(self.driver, self.page.base_url).wait_for_page_to_load()
+
+    class CancelReviewRequestModal(Region):
+        _root_locator = (By.ID, 'modal-cancel')
+        _are_you_sure_message_locator = (By.CSS_SELECTOR, '#modal-cancel > form:nth-child(1) > p:nth-child(3)')
+        _cancel_your_review_request_message_locator = (By.CSS_SELECTOR, '#modal-cancel > form:nth-child(1) > p:nth-child(2)')
+        _cancel_review_request_button_locator = (By.CSS_SELECTOR, '#modal-cancel > form:nth-child(1) > p:nth-child(6) > button:nth-child(1)')
+
+        def wait_for_region_to_load(self):
+            self.wait.until(EC.visibility_of_element_located(self._root_locator))
+            return self
+
+        @property
+        def are_you_sure_message(self):
+            return self.find_element(*self._are_you_sure_message_locator)
+
+        @property
+        def cancel_your_review_request_message_locator(self):
+            return self.find_element(*self._cancel_your_review_request_message_locator)
+
+        def click_cancel_review_request_button(self):
+            self.wait.until(EC.visibility_of_element_located(self._cancel_review_request_button_locator))
+            self.find_element(*self._cancel_review_request_button_locator).click()
+            return self
