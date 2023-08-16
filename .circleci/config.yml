@@ -12,7 +12,7 @@ jobs:
       - checkout
       - run:
           name: Upgrade pip
-          command: py -3.9 -m pip install --upgrade pip --user
+          command: python.exe pip install --upgrade pip --user
       - run:
           name: Install requirements
           command: py -3.9 -m pip install --no-deps -r ./requirements.txt
