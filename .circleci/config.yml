@@ -12,10 +12,10 @@ jobs:
       - checkout
       - run:
           name: Upgrade pip
-          command: py -3.11 pip install --upgrade pip --user
+          command: python.exe pip install --upgrade pip --user
       - run:
           name: Install requirements
-          command: py -3.11 -m pip install --no-deps -r ./requirements.txt
+          command: python.exe -m pip install --no-deps -r ./requirements.txt
       - run:
           name: Install geckodriver
           command: choco install selenium-gecko-driver
