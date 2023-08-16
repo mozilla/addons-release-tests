@@ -12,10 +12,10 @@ jobs:
       - checkout
       - run:
           name: Upgrade pip
-          command: python.exe pip install --upgrade pip --user
+          command: C:\Program Files\Python39\python.exe pip install --upgrade pip --user
       - run:
           name: Install requirements
-          command: python.exe -m pip install --no-deps -r ./requirements.txt
+          command: C:\Program Files\Python39\python.exe -m pip install --no-deps -r ./requirements.txt
       - run:
           name: Install geckodriver
           command: choco install selenium-gecko-driver
