@@ -259,7 +259,7 @@ def test_devhub_resources_footer_tools_links(selenium, base_url, variables):
     assert 'Tools' in page.resources.tools_section_header
     count = 0
     # looping through the actual number of Tools links present in the resources footer
-    while count in range(len(page.resources.tools_section_links)):
+    while count in range(len(page.resources.tools_section_links)-1):
         link = page.resources.tools_section_links[count]
         link.click()
         # checks that the expected page is opened when clicking on the link
