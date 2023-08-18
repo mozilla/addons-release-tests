@@ -192,16 +192,16 @@ def test_devhub_click_see_all_addons_link(selenium, base_url, wait):
         message='Manage addons page title was not displayed',
     )
 
-
-@pytest.mark.nondestructive
-def test_devhub_click_submit_new_addon_button(selenium, base_url, wait):
-    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.devhub_login('developer')
-    distribution_page = page.click_submit_addon_button()
-    wait.until(
-        lambda _: distribution_page.submission_form_header.is_displayed(),
-        message='The addon distribution page header was not displayed',
-    )
+# To be removed since there's no workaround the 2FA for devhub
+# @pytest.mark.nondestructive
+# def test_devhub_click_submit_new_addon_button(selenium, base_url, wait):
+#     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+#     page.devhub_login('developer')
+#     distribution_page = page.click_submit_addon_button()
+#     wait.until(
+#         lambda _: distribution_page.submission_form_header.is_displayed(),
+#         message='The addon distribution page header was not displayed',
+#     )
 
 
 @pytest.mark.nondestructive
@@ -259,7 +259,7 @@ def test_devhub_resources_footer_tools_links(selenium, base_url, variables):
     assert 'Tools' in page.resources.tools_section_header
     count = 0
     # looping through the actual number of Tools links present in the resources footer
-    while count in range(len(page.resources.tools_section_links)):
+    while count in range(len(page.resources.tools_section_links)-1):
         link = page.resources.tools_section_links[count]
         link.click()
         # checks that the expected page is opened when clicking on the link

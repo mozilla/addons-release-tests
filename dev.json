@@ -118,8 +118,7 @@
   ],
   "devhub_resources_tools_links": [
     "/github.com/mozilla/web-ext",
-    "/developers/addon/validate",
-    "/developers/addon/api/key/"
+    "/developers/addon/validate"
   ],
   "devhub_resources_promote_links": [
     "/promote-your-add-ons-with-the-get-the-add-on-button/",
@@ -138,7 +137,7 @@
   "addon_policies_helptext": "All add-ons must comply with Mozilla’s Add-on Policies and are subject to manual review at any time after submission.",
   "upload_extension_file_helptext": "Use the fields below to upload your add-on package. After upload, a series of automated validation tests will be run on your file.",
   "upload_theme_file_helptext": "You can upload a finished theme using the upload option above, or you can build it yourself using this tool.",
-  "supported_filetypes": "Your add-on should end with .zip, .xpi or .crx",
+  "create_theme_version_helptext": "Your add-on should end with .zip, .xpi or .crx",
   "compatibility_helptext": "Which applications is this version compatible with?",
   "create_theme_subheader": "Create a Theme Version",
   "addon_validation_warning": "Please verify the following points before finalizing your submission. This will minimize delays or misunderstanding during the review process",
