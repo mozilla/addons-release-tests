@@ -87,15 +87,15 @@ def test_user_menu_edit_profile(base_url, selenium):
     landing_page = '.UserProfileEdit-displayName'
     page.header.click_user_menu_links(count, landing_page)
 
-
-@pytest.mark.serial
-@pytest.mark.nondestructive
-def test_user_menu_click_submit_new_addon(base_url, selenium):
-    page = Home(selenium, base_url).open().wait_for_page_to_load()
-    page.login('developer')
-    count = 3
-    landing_page = '.section header h2'
-    page.header.click_user_menu_links(count, landing_page)
+# To be replaced with is submit new addon button displayed
+# @pytest.mark.serial
+# @pytest.mark.nondestructive
+# def test_user_menu_click_submit_new_addon(base_url, selenium):
+#     page = Home(selenium, base_url).open().wait_for_page_to_load()
+#     page.login('developer')
+#     count = 3
+#     landing_page = '.section header h2'
+#     page.header.click_user_menu_links(count, landing_page)
 
 
 @pytest.mark.serial
