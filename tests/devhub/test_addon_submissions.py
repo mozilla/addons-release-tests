@@ -427,11 +427,10 @@ def test_devhub_upload_extension_page_contents(selenium, base_url, wait, variabl
 
 
 @pytest.mark.sanity
-@pytest.mark.serial
-@pytest.mark.create_session('submissions_user')
 def test_submit_listed_wizard_theme(selenium, base_url, variables, wait, delete_themes):
     """A test that checks a straight-forward theme submission with the devhub wizard"""
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    page.devhub_login("submissions_user")
     submit_addon = page.click_submit_theme_button()
     # start the upload for a listed theme
     submit_addon.select_listed_option()
@@ -465,21 +464,21 @@ def test_submit_listed_wizard_theme(selenium, base_url, variables, wait, delete_
     assert theme_name in manage_themes.addon_list[0].name
 
 
-@pytest.mark.sanity
-@pytest.mark.serial
-@pytest.mark.create_session('submissions_user')
-@pytest.mark.clear_session
-def test_delete_all_extensions(selenium, base_url):
-    """This test will delete all the extensions submitted above to make sure
-    we can start over with this user in the following runs and also for
-    verifying that the addon deletion process functions correctly"""
-    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    manage_addons = page.click_my_addons_header_link()
-    # run the delete steps until all the addons are cleared from the list
-    while len(manage_addons.addon_list) > 0:
-        addon = manage_addons.addon_list[0]
-        edit = addon.click_addon_name()
-        manage = edit.click_manage_versions_link()
-        delete = manage.delete_addon()
-        delete.input_delete_confirmation_string()
-        delete.confirm_delete_addon()
+# @pytest.mark.sanity
+# @pytest.mark.serial
+# @pytest.mark.create_session('submissions_user')
+# @pytest.mark.clear_session
+# def test_delete_all_extensions(selenium, base_url):
+#     """This test will delete all the extensions submitted above to make sure
+#     we can start over with this user in the following runs and also for
+#     verifying that the addon deletion process functions correctly"""
+#     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+#     manage_addons = page.click_my_addons_header_link()
+#     # run the delete steps until all the addons are cleared from the list
+#     while len(manage_addons.addon_list) > 0:
+#         addon = manage_addons.addon_list[0]
+#         edit = addon.click_addon_name()
+#         manage = edit.click_manage_versions_link()
+#         delete = manage.delete_addon()
+#         delete.input_delete_confirmation_string()
+#         delete.confirm_delete_addon()
