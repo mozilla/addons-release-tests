@@ -207,5 +207,7 @@
   "cancel_your_review_request_message": "Canceling your review request will mark your add-on incomplete, and any versions awaiting review will be disabled.",
   "are_you_sure_cancel_review_message": "Are you sure you wish to cancel your review request?",
   "addon_status_incomplete": "Incomplete",
-  "addon_version_disabled_by_mozilla": "Disabled by Mozilla"
+  "addon_version_disabled_by_mozilla": "Disabled by Mozilla",
+
+  "notification_box_success": "Changes successfully saved."
 }
