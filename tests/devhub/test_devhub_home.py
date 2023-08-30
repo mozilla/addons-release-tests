@@ -153,7 +153,7 @@ def test_devhub_my_addons_list_items(selenium, base_url, wait):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     page.devhub_login('developer')
     page.wait_for_page_to_load()
-    # check that logged in users can see up to 3 latest addons they've submitted
+    # check that logged-in users can see up to 3 latest addons they've submitted
     assert len(page.my_addons_list) in range(1, 4)
     for addon in page.my_addons_list:
         # verify that each addon in the list has the following items
@@ -185,35 +185,32 @@ def test_devhub_my_addons_list_approval_status(selenium, base_url):
 @pytest.mark.nondestructive
 def test_devhub_click_see_all_addons_link(selenium, base_url, wait):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.devhub_login('developer')
+    page.devhub_login('submissions_user')
     my_addons_page = page.click_see_all_addons_link()
     wait.until(
         lambda _: my_addons_page.my_addons_page_title.is_displayed(),
         message='Manage addons page title was not displayed',
     )
 
-# To be removed since there's no workaround the 2FA for devhub
-# @pytest.mark.nondestructive
-# def test_devhub_click_submit_new_addon_button(selenium, base_url, wait):
-#     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-#     page.devhub_login('developer')
-#     distribution_page = page.click_submit_addon_button()
-#     wait.until(
-#         lambda _: distribution_page.submission_form_header.is_displayed(),
-#         message='The addon distribution page header was not displayed',
-#     )
-
+@pytest.mark.nondestructive
+def test_devhub_click_submit_new_addon_button(selenium, base_url, wait):
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    page.devhub_login('submissions_user')
+    distribution_page = page.click_submit_addon_button()
+    wait.until(
+        lambda _: distribution_page.submission_form_header.is_displayed(),
+        message='The addon distribution page header was not displayed',
+    )
 
 @pytest.mark.nondestructive
 def test_devhub_click_submit_new_theme_button(selenium, base_url, wait):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.devhub_login('developer')
+    page.devhub_login('submissions_user')
     distribution_page = page.click_submit_theme_button()
     wait.until(
         lambda _: distribution_page.submission_form_header.is_displayed(),
         message='The addon distribution page header as not displayed',
     )
-
 
 @pytest.mark.nondestructive
 def test_devhub_click_first_theme_button(selenium, base_url, variables):
@@ -238,7 +235,7 @@ def test_devhub_click_first_theme_button(selenium, base_url, variables):
 @pytest.mark.nondestructive
 def test_devhub_resources_footer_documentation_links(selenium, base_url, variables):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.devhub_login('developer')
+    page.devhub_login('submissions_user')
     assert 'Documentation' in page.resources.documentation_section_header
     count = 0
     # looping through the actual number of Documentation links present in the resources footer
@@ -255,7 +252,7 @@ def test_devhub_resources_footer_documentation_links(selenium, base_url, variabl
 @pytest.mark.nondestructive
 def test_devhub_resources_footer_tools_links(selenium, base_url, variables):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.devhub_login('developer')
+    page.devhub_login('submissions_user')
     assert 'Tools' in page.resources.tools_section_header
     count = 0
     # looping through the actual number of Tools links present in the resources footer
@@ -272,7 +269,7 @@ def test_devhub_resources_footer_tools_links(selenium, base_url, variables):
 @pytest.mark.nondestructive
 def test_devhub_resources_footer_promote_links(selenium, base_url, variables):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.devhub_login('developer')
+    page.devhub_login('submissions_user')
     assert 'Promote' in page.resources.promote_section_header
     count = 0
     # looping through the actual number of Promote links present in the resources footer
@@ -289,7 +286,7 @@ def test_devhub_resources_footer_promote_links(selenium, base_url, variables):
 @pytest.mark.nondestructive
 def test_devhub_resources_join_addon_review(selenium, base_url, variables):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.devhub_login('developer')
+    page.devhub_login('submissions_user')
     assert 'Review Add-ons' in page.resources.review_addons_section_header
     assert (
         variables['devhub_resources_review_addons_text']
@@ -588,7 +585,7 @@ def test_devhub_footer_copyright_message(base_url, selenium, count, link):
 @pytest.mark.nondestructive
 def test_devhub_logout(selenium, base_url, wait):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.devhub_login('developer')
+    page.devhub_login('submissions_user')
     page.click_sign_out()
     # confirms user is no longer logged in
     wait.until(lambda _: page.header_login_button.is_displayed())

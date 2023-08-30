@@ -1,6 +1,7 @@
 import os
 import time
 import requests
+import pyotp
 
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
@@ -46,6 +47,13 @@ class Login(Base):
     RESTRICTED_USER_EMAIL = os.environ.get('RESTRICTED_USER_EMAIL')
     RESTRICTED_USER_PASSWORD = os.environ.get('RESTRICTED_USER_PASSWORD')
 
+    # KEYS FOR AUTHENTICATOR
+    DEVELOPER_USER_KEY = os.environ.get('DEV_USER_KEY')
+    RATING_USER_KEY = os.environ.get('RATING_USER_KEY')
+    SUBMISSIONS_USER_KEY = os.environ.get('SUBMISSIONS_USER_KEY')
+    API_USER_KEY = os.environ.get('API_USER_KEY')
+    STAFF_USER_KEY = os.environ.get('STAFF_USER_KEY')
+
     _email_locator = (By.NAME, 'email')
     _continue_locator = (By.CSS_SELECTOR, '.button-row button')
     _password_locator = (By.ID, 'password')
@@ -54,33 +62,36 @@ class Login(Base):
     _age_locator = (By.ID, 'age')
     _code_input_locator = (By.CSS_SELECTOR, '.tooltip-below')
     _login_card_header_locator = (By.CSS_SELECTOR, '.card header h1')
+    _2fa_input_locator = (By.CSS_SELECTOR, '.tooltip-below')
+    _confirm_2fa_button_locator = (By.ID, 'use-logged-in')
+    _error_2fa_code_locator = (By.CSS_SELECTOR, '.tooltip-below.invalid')
 
     def account(self, user):
         if user == 'reusable_user':
-            self.fxa_login(self.REUSABLE_USER_EMAIL, self.REUSABLE_USER_PASSWORD)
+            self.fxa_login(self.REUSABLE_USER_EMAIL, self.REUSABLE_USER_PASSWORD, '')
         elif user == 'admin':
-            self.fxa_login(self.ADMIN_USER_EMAIL, self.ADMIN_USER_PASSWORD)
+            self.fxa_login(self.ADMIN_USER_EMAIL, self.ADMIN_USER_PASSWORD, '')
         elif user == 'developer':
-            self.fxa_login(self.DEVELOPER_EMAIL, self.DEVELOPER_PASSWORD)
+            self.fxa_login(self.DEVELOPER_EMAIL, self.DEVELOPER_PASSWORD, self.DEVELOPER_USER_KEY)
         elif user == 'rating_user':
-            self.fxa_login(self.RATING_USER_EMAIL, self.RATING_USER_PASSWORD)
+            self.fxa_login(self.RATING_USER_EMAIL, self.RATING_USER_PASSWORD, self.RATING_USER_KEY)
         elif user == 'collection_user':
-            self.fxa_login(self.COLLECTION_USER_EMAIL, self.COLLECTION_USER_PASSWORD)
+            self.fxa_login(self.COLLECTION_USER_EMAIL, self.COLLECTION_USER_PASSWORD, '')
         elif user == 'submissions_user':
-            self.fxa_login(self.SUBMISSIONS_USER_EMAIL, self.SUBMISSIONS_USER_PASSWORD)
+            self.fxa_login(self.SUBMISSIONS_USER_EMAIL, self.SUBMISSIONS_USER_PASSWORD, self.SUBMISSIONS_USER_KEY)
         elif user == 'api_user':
-            self.fxa_login(self.API_USER_EMAIL, self.API_USER_PASSWORD)
+            self.fxa_login(self.API_USER_EMAIL, self.API_USER_PASSWORD, '')
         elif user == 'staff_user':
-            self.fxa_login(self.STAFF_USER_EMAIL, self.STAFF_USER_PASSWORD)
+            self.fxa_login(self.STAFF_USER_EMAIL, self.STAFF_USER_PASSWORD, self.STAFF_USER_KEY)
         elif user == 'restricted_user':
-            self.fxa_login(self.RESTRICTED_USER_EMAIL, self.RESTRICTED_USER_PASSWORD)
+            self.fxa_login(self.RESTRICTED_USER_EMAIL, self.RESTRICTED_USER_PASSWORD, '')
         else:
-            self.fxa_login(self.REGULAR_USER_EMAIL, self.REGULAR_USER_PASSWORD)
+            self.fxa_login(self.REGULAR_USER_EMAIL, self.REGULAR_USER_PASSWORD, '')
 
-    def fxa_login(self, email, password):
+    def fxa_login(self, email, password, key):
         self.find_element(*self._email_locator).send_keys(email)
         # sometimes, the login function fails on the 'continue_btn.click()' event with a TimeoutException
-        # triggered by the built in timeout of the 'click()' method;
+        # triggered by the built'in timeout of the 'click()' method;
         # however, the screenshot captured by the html report at test fail time shows that the click occurred
         # since the expected page has been loaded;
         # this seems to be a reoccurring issue in geckodriver as explained in
@@ -111,6 +122,26 @@ class Login(Base):
             message='There was no input added in the password field',
         )
         self.find_element(*self._login_btn_locator).click()
+        # logic for 2fa enabled accounts
+        if key != '':
+            self.wait.until(
+                EC.url_contains('signin_totp_code')
+            )
+            self.wait.until(
+                EC.visibility_of_element_located(self._2fa_input_locator)
+            )
+            time.sleep(30)
+            totp = pyotp.TOTP(key)
+            self.find_element(*self._2fa_input_locator).send_keys(totp.now())
+            self.find_element(*self._confirm_2fa_button_locator).click()
+            time.sleep(5)
+            if self.is_element_displayed(*self._error_2fa_code_locator):
+                time.sleep(470)
+                totp = pyotp.TOTP(key)
+                self.find_element(*self._2fa_input_locator).clear()
+                self.find_element(*self._2fa_input_locator).send_keys(totp.now())
+                self.find_element(*self._confirm_2fa_button_locator).click()
+
         # wait for transition between FxA page and AMO
         self.wait.until(
             EC.url_contains('addons'),
