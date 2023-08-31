@@ -185,7 +185,7 @@ def test_devhub_my_addons_list_approval_status(selenium, base_url):
 @pytest.mark.nondestructive
 def test_devhub_click_see_all_addons_link(selenium, base_url, wait):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.devhub_login('submissions_user')
+    page.devhub_login('developer')
     my_addons_page = page.click_see_all_addons_link()
     wait.until(
         lambda _: my_addons_page.my_addons_page_title.is_displayed(),

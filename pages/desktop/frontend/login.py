@@ -80,7 +80,7 @@ class Login(Base):
         elif user == 'submissions_user':
             self.fxa_login(self.SUBMISSIONS_USER_EMAIL, self.SUBMISSIONS_USER_PASSWORD, self.SUBMISSIONS_USER_KEY)
         elif user == 'api_user':
-            self.fxa_login(self.API_USER_EMAIL, self.API_USER_PASSWORD, '')
+            self.fxa_login(self.API_USER_EMAIL, self.API_USER_PASSWORD, self.API_USER_KEY)
         elif user == 'staff_user':
             self.fxa_login(self.STAFF_USER_EMAIL, self.STAFF_USER_PASSWORD, self.STAFF_USER_KEY)
         elif user == 'restricted_user':
