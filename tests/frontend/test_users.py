@@ -87,22 +87,21 @@ def test_user_menu_edit_profile(base_url, selenium):
     landing_page = '.UserProfileEdit-displayName'
     page.header.click_user_menu_links(count, landing_page)
 
-# To be replaced with is submit new addon button displayed
-# @pytest.mark.serial
-# @pytest.mark.nondestructive
-# def test_user_menu_click_submit_new_addon(base_url, selenium):
-#     page = Home(selenium, base_url).open().wait_for_page_to_load()
-#     page.login('developer')
-#     count = 3
-#     landing_page = '.section header h2'
-#     page.header.click_user_menu_links(count, landing_page)
+@pytest.mark.serial
+@pytest.mark.nondestructive
+@pytest.mark.login("developer")
+def test_user_menu_click_submit_new_addon(base_url, selenium):
+    page = Home(selenium, base_url).open().wait_for_page_to_load()
+    count = 3
+    landing_page = '.section header h2'
+    page.header.click_user_menu_links(count, landing_page)
 
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
+@pytest.mark.create_session("developer")
 def test_user_menu_click_submit_new_theme(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
-    page.login('developer')
     count = 4
     landing_page = '.section header h2'
     page.header.click_user_menu_links(count, landing_page)
@@ -110,9 +109,9 @@ def test_user_menu_click_submit_new_theme(base_url, selenium):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
+@pytest.mark.create_session("developer")
 def test_user_menu_click_manage_submissions(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
-    page.login('developer')
     count = 5
     landing_page = '.submission-type-tabs a:nth-child(1)'
     page.header.click_user_menu_links(count, landing_page)
@@ -322,9 +321,9 @@ def test_user_regular_notifications(base_url, selenium, variables):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
+@pytest.mark.create_session("developer")
 def test_user_developer_notifications(base_url, selenium, variables, wait):
     user = User(selenium, base_url).open().wait_for_page_to_load()
-    user.login('developer')
     # verifies that information messages about the scope of notifications are displayed
     assert variables['notifications_info_text'] in user.edit.notifications_info_text
     assert variables['notifications_help_text'] in user.edit.notifications_help_text
@@ -369,9 +368,10 @@ def test_user_notifications_subscriptions(base_url, selenium, wait):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
+@pytest.mark.create_session("developer")
+@pytest.mark.clear_session
 def test_user_mandatory_notifications(base_url, selenium):
     user = User(selenium, base_url).open().wait_for_page_to_load()
-    user.login('developer')
     # notifications 5 to 7 are mandatory for developers; clicking the checkboxes should have no effect
     for checkbox in user.edit.notifications_checkbox[4:7]:
         checkbox.click()

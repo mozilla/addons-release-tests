@@ -27,7 +27,7 @@ jobs:
           environment:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 1 --reruns 2
-          command: py -m pytest tests\frontend\test_collections.py --driver Firefox --variables dev.json --html=collections-test-results.html --self-contained-html
+          command: py -m pytest tests\frontend\test_collections.py --driver Firefox --variables stage.json --html=collections-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: collections-test-results.html
@@ -57,7 +57,7 @@ jobs:
           environment:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 1 --reruns 2
-          command: py -m pytest tests\frontend\test_ratings.py -m "serial" --driver Firefox --variables dev.json --html=ratings-test-results.html --self-contained-html
+          command: py -m pytest tests\frontend\test_ratings.py -m "serial" --driver Firefox --variables stage.json --html=ratings-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: ratings-test-results.html
@@ -87,7 +87,7 @@ jobs:
           environment:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 1 --reruns 2
-          command: py -m pytest tests\frontend\test_users.py --driver Firefox --variables dev.json --html=user-test-results.html --self-contained-html
+          command: py -m pytest tests\frontend\test_users.py --driver Firefox --variables stage.json --html=user-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: user-test-results.html
@@ -117,7 +117,7 @@ jobs:
           environment:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 4 --reruns 2
-          command: py -m pytest tests\frontend -m "not serial and not prod_only" --driver Firefox --variables translations.json --variables dev.json --html=frontend-parallel-test-results.html --self-contained-html
+          command: py -m pytest tests\frontend -m "not serial and not prod_only" --driver Firefox --variables translations.json --variables stage.json --html=frontend-parallel-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: frontend-parallel-test-results.html
@@ -147,7 +147,7 @@ jobs:
           environment:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 4 --reruns 2
-          command: py -m pytest tests\devhub -m "not serial and not prod_only" --driver Firefox --variables dev.json --html=devhub-parallel-test-results.html --self-contained-html
+          command: py -m pytest tests\devhub -m "not serial and not prod_only" --driver Firefox --variables stage.json --html=devhub-parallel-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: devhub-parallel-test-results.html
@@ -267,7 +267,7 @@ jobs:
           environment:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 1 --reruns 2
-          command: py -m pytest tests\api --driver Firefox --variables dev.json --html=api_submission_tests.html --self-contained-html
+          command: py -m pytest tests\api --driver Firefox --variables stage.json --html=api_submission_tests.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: api_submission_tests.html

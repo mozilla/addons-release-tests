@@ -68,12 +68,11 @@ def test_devhub_developer_agreement_checkboxes(selenium, base_url):
     assert dist_agreement.review_policies_checkbox.is_selected()
     dist_agreement.click_recaptcha_checkbox()
 
-
+@pytest.mark.login("submissions_user")
 def test_addon_distribution_page_contents(selenium, base_url, variables, wait):
     """Check the elements present on devhub addon distribution page (where the user selects
     the listed or unlisted channels to upload their addon"""
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.devhub_login('submissions_user')
     dist_page = page.click_submit_theme_button()
     wait.until(lambda _: dist_page.submission_form_header.is_displayed())
     assert (
@@ -104,11 +103,10 @@ def test_addon_distribution_page_contents(selenium, base_url, variables, wait):
         dist_page.addon_policies_link, 'Add-on Policies'
     )
 
+@pytest.mark.create_session("submissions_user")
 def test_devhub_upload_extension_page_contents(selenium, base_url, wait, variables):
     """Verify the elements present on the upload file page, where the user
     uploads and validates an addon file"""
-    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.devhub_login('submissions_user')
     selenium.get(f'{base_url}/developers/addon/submit/theme/upload-listed')
     upload_page = SubmitAddon(selenium, base_url).wait_for_page_to_load()
     upload_page.developer_notification_box.is_displayed()
@@ -118,10 +116,10 @@ def test_devhub_upload_extension_page_contents(selenium, base_url, wait, variabl
     )
     assert variables['create_theme_version_helptext'] in upload_page.accepted_file_types
 
+@pytest.mark.create_session("submissions_user")
+@pytest.mark.clear_session
 def test_upload_unsupported_file_validation_error(selenium, base_url, wait):
     """Verify validation results for errors triggered by unsupported file uploads"""
-    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.devhub_login('submissions_user')
     selenium.get(f'{base_url}/developers/addon/submit/upload-listed')
     upload_page = SubmitAddon(selenium, base_url).wait_for_page_to_load()
     file = 'tar-ext.tar'
@@ -271,10 +269,9 @@ def test_submit_mixed_addon_versions(selenium, base_url, variables, wait):
 
 @pytest.mark.sanity
 @pytest.mark.serial
+@pytest.mark.login("developer")
 def test_verify_new_unlisted_version_autoapproval(selenium, base_url, variables):
     """Uploads a new version to an existing addon and verifies that is auto-approved"""
-    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.devhub_login('developer')
     addon = variables['unlisted_new_version_autoapproval']
     # in order to upload a new version, we need to increment on the existing version number
     # to obtain the current version number, we make an API request that returns the value

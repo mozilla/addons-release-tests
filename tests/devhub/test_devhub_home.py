@@ -101,9 +101,9 @@ def test_devhub_page_get_involved(selenium, base_url, variables):
 
 
 @pytest.mark.nondestructive
+@pytest.mark.login("developer")
 def test_devhub_click_my_addons_header_link(selenium, base_url, wait):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.devhub_login('developer')
     my_addons_page = page.click_my_addons_header_link()
     # check that user is sent to the Manage addons page in devhub
     wait.until(
@@ -113,18 +113,18 @@ def test_devhub_click_my_addons_header_link(selenium, base_url, wait):
 
 
 @pytest.mark.nondestructive
+@pytest.mark.create_session("developer")
 def test_devhub_click_header_profile_icon(selenium, base_url):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.devhub_login('developer')
     user_profile = page.click_user_profile_picture()
     # verify that the user profile frontend page opens
     user_profile.wait_for_user_to_load()
 
 
 @pytest.mark.nondestructive
+@pytest.mark.create_session("developer")
 def test_devhub_logged_in_page_hero_banner(selenium, base_url, variables):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.devhub_login('developer')
     # verify the items present in the page logged in banner
     assert (
         variables['devhub_logged_in_banner_header'] in page.logged_in_hero_banner_header
@@ -149,10 +149,9 @@ def test_devhub_my_addons_section(selenium, base_url, variables):
 
 
 @pytest.mark.nondestructive
+@pytest.mark.create_session("developer")
 def test_devhub_my_addons_list_items(selenium, base_url, wait):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.devhub_login('developer')
-    page.wait_for_page_to_load()
     # check that logged-in users can see up to 3 latest addons they've submitted
     assert len(page.my_addons_list) in range(1, 4)
     for addon in page.my_addons_list:
@@ -170,10 +169,9 @@ def test_devhub_my_addons_list_items(selenium, base_url, wait):
 
 
 @pytest.mark.nondestructive
+@pytest.mark.create_session("developer")
 def test_devhub_my_addons_list_approval_status(selenium, base_url):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.devhub_login('developer')
-    page.wait_for_page_to_load()
     count = 0
     while count < len(page.my_addons_list):
         if page.my_addons_list[count].is_listed_addon():
@@ -183,9 +181,9 @@ def test_devhub_my_addons_list_approval_status(selenium, base_url):
 
 
 @pytest.mark.nondestructive
+@pytest.mark.create_session("developer")
 def test_devhub_click_see_all_addons_link(selenium, base_url, wait):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.devhub_login('developer')
     my_addons_page = page.click_see_all_addons_link()
     wait.until(
         lambda _: my_addons_page.my_addons_page_title.is_displayed(),
@@ -193,9 +191,9 @@ def test_devhub_click_see_all_addons_link(selenium, base_url, wait):
     )
 
 @pytest.mark.nondestructive
+@pytest.mark.login("submissions_user")
 def test_devhub_click_submit_new_addon_button(selenium, base_url, wait):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.devhub_login('submissions_user')
     distribution_page = page.click_submit_addon_button()
     wait.until(
         lambda _: distribution_page.submission_form_header.is_displayed(),
@@ -203,9 +201,9 @@ def test_devhub_click_submit_new_addon_button(selenium, base_url, wait):
     )
 
 @pytest.mark.nondestructive
+@pytest.mark.create_session("submissions_user")
 def test_devhub_click_submit_new_theme_button(selenium, base_url, wait):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.devhub_login('submissions_user')
     distribution_page = page.click_submit_theme_button()
     wait.until(
         lambda _: distribution_page.submission_form_header.is_displayed(),
@@ -233,9 +231,9 @@ def test_devhub_click_first_theme_button(selenium, base_url, variables):
 
 
 @pytest.mark.nondestructive
+@pytest.mark.create_session("submissions_user")
 def test_devhub_resources_footer_documentation_links(selenium, base_url, variables):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.devhub_login('submissions_user')
     assert 'Documentation' in page.resources.documentation_section_header
     count = 0
     # looping through the actual number of Documentation links present in the resources footer
@@ -250,9 +248,9 @@ def test_devhub_resources_footer_documentation_links(selenium, base_url, variabl
 
 
 @pytest.mark.nondestructive
+@pytest.mark.create_session("submissions_user")
 def test_devhub_resources_footer_tools_links(selenium, base_url, variables):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.devhub_login('submissions_user')
     assert 'Tools' in page.resources.tools_section_header
     count = 0
     # looping through the actual number of Tools links present in the resources footer
@@ -267,9 +265,9 @@ def test_devhub_resources_footer_tools_links(selenium, base_url, variables):
 
 
 @pytest.mark.nondestructive
+@pytest.mark.create_session("submissions_user")
 def test_devhub_resources_footer_promote_links(selenium, base_url, variables):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.devhub_login('submissions_user')
     assert 'Promote' in page.resources.promote_section_header
     count = 0
     # looping through the actual number of Promote links present in the resources footer
@@ -284,9 +282,10 @@ def test_devhub_resources_footer_promote_links(selenium, base_url, variables):
 
 
 @pytest.mark.nondestructive
+@pytest.mark.create_session("submissions_user")
+@pytest.mark.clear_session
 def test_devhub_resources_join_addon_review(selenium, base_url, variables):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.devhub_login('submissions_user')
     assert 'Review Add-ons' in page.resources.review_addons_section_header
     assert (
         variables['devhub_resources_review_addons_text']
@@ -297,9 +296,9 @@ def test_devhub_resources_join_addon_review(selenium, base_url, variables):
 
 
 @pytest.mark.nondestructive
+@pytest.mark.create_session("developer")
 def test_devhub_resources_write_some_code(selenium, base_url, variables):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.devhub_login('developer')
     assert 'Write Some Code' in page.resources.write_code_section_header
     assert (
         variables['devhub_resources_write_some_code_text']
@@ -310,9 +309,10 @@ def test_devhub_resources_write_some_code(selenium, base_url, variables):
 
 
 @pytest.mark.nondestructive
+@pytest.mark.create_session("developer")
+@pytest.mark.clear_session
 def test_devhub_resources_participate(selenium, base_url, variables):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.devhub_login('developer')
     assert 'More Ways to Participate' in page.resources.participate_section_header
     assert (
         variables['devhub_resources_participate_text']
@@ -398,6 +398,7 @@ def test_verify_newsletter_signup_confirmation(selenium, base_url, variables, wa
     # verify that a confirmation email was received after subscribing
     confirmation_email = page.connect.check_newsletter_signup_email(email)
     assert 'Action Required: Confirm Your Subscription' in confirmation_email
+
 
 
 @pytest.mark.nondestructive
