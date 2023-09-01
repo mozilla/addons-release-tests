@@ -566,11 +566,12 @@ def test_user_profile_open_theme_detail_page(base_url, selenium, variables):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
+@pytest.mark.login("submissions_user")
 def test_user_profile_write_review(base_url, selenium, variables, wait):
     extension = variables['detail_extension_slug']
     selenium.get(f'{base_url}/addon/{extension}')
     addon = Detail(selenium, base_url).wait_for_page_to_load()
-    addon.login('submissions_user')
+    # addon.login('submissions_user')
     # post a rating on the detail page
     addon.ratings.rating_stars[4].click()
     # navigate to the user profile page to write a review
@@ -593,9 +594,10 @@ def test_user_profile_write_review(base_url, selenium, variables, wait):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
+@pytest.mark.create_session("submissions_user")
 def test_user_profile_edit_review(base_url, selenium, variables, wait):
     user = User(selenium, base_url).open().wait_for_page_to_load()
-    user.login('submissions_user')
+    # user.login('submissions_user')
     user.edit.click_view_profile_link()
     # the review card doesn't have preload elements, so we need to wait for it to load individually
     user.view.user_reviews_section_loaded()
@@ -614,9 +616,11 @@ def test_user_profile_edit_review(base_url, selenium, variables, wait):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
+@pytest.mark.create_session("submissions_user")
+@pytest.mark.clear_session
 def test_user_profile_delete_review(base_url, selenium, variables, wait):
     user = User(selenium, base_url).open().wait_for_page_to_load()
-    user.login('submissions_user')
+    # user.login('submissions_user')
     user.edit.click_view_profile_link()
     # the review card doesn't have preload elements, so we need to wait for it to load individually
     user.view.user_reviews_section_loaded()

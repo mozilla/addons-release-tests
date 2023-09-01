@@ -5,7 +5,6 @@ from pages.desktop.developers.devhub_addon_validate import DevhubAddonValidate
 @pytest.mark.sanity
 @pytest.mark.login("developer")
 def test_validate_addon_listed(selenium, base_url, variables, wait):
-    """Go to Devhub Home page and login as the submissions_user"""
     """Go to Devhub Addon Validate page"""
     devhub_addon_validate = (
         DevhubAddonValidate(selenium, base_url).open().wait_for_page_to_load()

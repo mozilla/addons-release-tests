@@ -55,11 +55,12 @@ def test_throttled_request_update_rating_spam(selenium, base_url, variables):
 @pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.nondestructive
+@pytest.mark.login('rating_user')
 def test_rating_with_text(selenium, base_url, variables):
     extension = variables['detail_extension_slug']
     selenium.get(f'{base_url}/addon/{extension}')
     addon = Detail(selenium, base_url).wait_for_page_to_load()
-    addon.login('rating_user')
+    # addon.login('rating_user')
     addon.ratings.rating_stars[3].click()
     # waits for the write a review form to be displayed
     addon.ratings.wait_for_rating_form()
@@ -76,7 +77,7 @@ def test_rating_with_text(selenium, base_url, variables):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-@pytest.mark.login("rating_user")
+@pytest.mark.create_session("rating_user")
 def test_user_review_permalink(selenium, base_url, variables):
     extension = variables['detail_extension_slug']
     selenium.get(f'{base_url}/addon/{extension}')

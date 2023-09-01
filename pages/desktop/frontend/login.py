@@ -47,12 +47,18 @@ class Login(Base):
     RESTRICTED_USER_EMAIL = os.environ.get('RESTRICTED_USER_EMAIL')
     RESTRICTED_USER_PASSWORD = os.environ.get('RESTRICTED_USER_PASSWORD')
 
-    # KEYS FOR AUTHENTICATOR
-    DEVELOPER_USER_KEY = os.environ.get('DEV_USER_KEY')
-    RATING_USER_KEY = os.environ.get('RATING_USER_KEY')
-    SUBMISSIONS_USER_KEY = os.environ.get('SUBMISSIONS_USER_KEY')
-    API_USER_KEY = os.environ.get('API_USER_KEY')
-    STAFF_USER_KEY = os.environ.get('STAFF_USER_KEY')
+    # # KEYS FOR AUTHENTICATOR DEV
+    DEVELOPER_USER_KEY_DEV = os.environ.get('DEVELOPER_USER_KEY_DEV')
+    RATING_USER_KEY_DEV = os.environ.get('RATING_USER_KEY_DEV')
+    SUBMISSIONS_USER_KEY_DEV = os.environ.get('SUBMISSIONS_USER_KEY_DEV')
+    API_USER_KEY_DEV = os.environ.get('API_USER_KEY_DEV')
+    STAFF_USER_KEY_DEV = os.environ.get('STAFF_USER_KEY_DEV')
+
+    DEVELOPER_USER_KEY_STAGE = os.environ.get('DEVELOPER_USER_KEY_STAGE')
+    RATING_USER_KEY_STAGE = os.environ.get('RATING_USER_KEY_STAGE')
+    SUBMISSIONS_USER_KEY_STAGE = os.environ.get('SUBMISSIONS_USER_KEY_STAGE')
+    API_USER_KEY_STAGE = os.environ.get('API_USER_KEY_STAGE')
+    STAFF_USER_KEY_STAGE = os.environ.get('STAFF_USER_KEY_STAGE')
 
     _email_locator = (By.NAME, 'email')
     _continue_locator = (By.CSS_SELECTOR, '.button-row button')
@@ -72,17 +78,32 @@ class Login(Base):
         elif user == 'admin':
             self.fxa_login(self.ADMIN_USER_EMAIL, self.ADMIN_USER_PASSWORD, '')
         elif user == 'developer':
-            self.fxa_login(self.DEVELOPER_EMAIL, self.DEVELOPER_PASSWORD, self.DEVELOPER_USER_KEY)
+            if "dev.allizom" not in self.base_url:
+                self.fxa_login(self.DEVELOPER_EMAIL, self.DEVELOPER_PASSWORD, self.DEVELOPER_USER_KEY_STAGE)
+            else:
+                self.fxa_login(self.DEVELOPER_EMAIL, self.DEVELOPER_PASSWORD, self.DEVELOPER_USER_KEY_DEV)
         elif user == 'rating_user':
-            self.fxa_login(self.RATING_USER_EMAIL, self.RATING_USER_PASSWORD, self.RATING_USER_KEY)
+            if "dev.allizom" not in self.base_url:
+                self.fxa_login(self.RATING_USER_EMAIL, self.RATING_USER_PASSWORD, self.RATING_USER_KEY_STAGE)
+            else:
+                self.fxa_login(self.RATING_USER_EMAIL, self.RATING_USER_PASSWORD, self.RATING_USER_KEY_DEV)
         elif user == 'collection_user':
             self.fxa_login(self.COLLECTION_USER_EMAIL, self.COLLECTION_USER_PASSWORD, '')
         elif user == 'submissions_user':
-            self.fxa_login(self.SUBMISSIONS_USER_EMAIL, self.SUBMISSIONS_USER_PASSWORD, self.SUBMISSIONS_USER_KEY)
+            if "dev.allizom" not in self.base_url:
+                self.fxa_login(self.SUBMISSIONS_USER_EMAIL, self.SUBMISSIONS_USER_PASSWORD, self.SUBMISSIONS_USER_KEY_STAGE)
+            else:
+                self.fxa_login(self.SUBMISSIONS_USER_EMAIL, self.SUBMISSIONS_USER_PASSWORD, self.SUBMISSIONS_USER_KEY_DEV)
         elif user == 'api_user':
-            self.fxa_login(self.API_USER_EMAIL, self.API_USER_PASSWORD, self.API_USER_KEY)
+            if "dev.allizom" not in self.base_url:
+                self.fxa_login(self.API_USER_EMAIL, self.API_USER_PASSWORD, self.API_USER_KEY_STAGE)
+            else:
+                self.fxa_login(self.API_USER_EMAIL, self.API_USER_PASSWORD, self.API_USER_KEY_DEV)
         elif user == 'staff_user':
-            self.fxa_login(self.STAFF_USER_EMAIL, self.STAFF_USER_PASSWORD, self.STAFF_USER_KEY)
+            if "dev.allizom" not in self.base_url:
+                self.fxa_login(self.STAFF_USER_EMAIL, self.STAFF_USER_PASSWORD, self.STAFF_USER_KEY_STAGE)
+            else:
+                self.fxa_login(self.STAFF_USER_EMAIL, self.STAFF_USER_PASSWORD, self.STAFF_USER_KEY_DEV)
         elif user == 'restricted_user':
             self.fxa_login(self.RESTRICTED_USER_EMAIL, self.RESTRICTED_USER_PASSWORD, '')
         else:
