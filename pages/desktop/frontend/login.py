@@ -156,12 +156,15 @@ class Login(Base):
             self.find_element(*self._2fa_input_locator).send_keys(totp.now())
             self.find_element(*self._confirm_2fa_button_locator).click()
             time.sleep(5)
-            if self.is_element_displayed(*self._error_2fa_code_locator):
-                time.sleep(500)
-                totp = pyotp.TOTP(key)
-                self.find_element(*self._2fa_input_locator).clear()
-                self.find_element(*self._2fa_input_locator).send_keys(totp.now())
-                self.find_element(*self._confirm_2fa_button_locator).click()
+            for max_retries in range(0, 2):
+                if self.is_element_displayed(*self._error_2fa_code_locator):
+                    time.sleep(500)
+                    totp = pyotp.TOTP(key)
+                    self.find_element(*self._2fa_input_locator).clear()
+                    self.find_element(*self._2fa_input_locator).send_keys(totp.now())
+                    self.find_element(*self._confirm_2fa_button_locator).click()
+                else:
+                    break
 
         # wait for transition between FxA page and AMO
         self.wait.until(

@@ -41,8 +41,8 @@ class StaticPages(Base):
         return self.find_element(*self._not_found_page_locator)
 
     @property
-    def notice_message(self):
-        return self.find_element(*self._notice_text_locator)
+    def notice_messages(self):
+        return self.find_elements(*self._notice_text_locator)
 
     @property
     def page_header(self):

@@ -182,6 +182,7 @@ def test_devhub_my_addons_list_approval_status(selenium, base_url):
 
 @pytest.mark.nondestructive
 @pytest.mark.create_session("developer")
+@pytest.mark.clear_session
 def test_devhub_click_see_all_addons_link(selenium, base_url, wait):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     my_addons_page = page.click_see_all_addons_link()
@@ -201,9 +202,9 @@ def test_devhub_click_submit_new_addon_button(selenium, base_url, wait):
     )
 
 @pytest.mark.nondestructive
-@pytest.mark.create_session("submissions_user")
 def test_devhub_click_submit_new_theme_button(selenium, base_url, wait):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    page.devhub_login("submissions_user")
     distribution_page = page.click_submit_theme_button()
     wait.until(
         lambda _: distribution_page.submission_form_header.is_displayed(),
@@ -296,7 +297,7 @@ def test_devhub_resources_join_addon_review(selenium, base_url, variables):
 
 
 @pytest.mark.nondestructive
-@pytest.mark.create_session("developer")
+@pytest.mark.login("developer")
 def test_devhub_resources_write_some_code(selenium, base_url, variables):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     assert 'Write Some Code' in page.resources.write_code_section_header

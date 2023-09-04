@@ -136,7 +136,7 @@ def test_login_expired_page(base_url, selenium, variables):
     page.hero_banner.click_hero_extension_link()
     # verify the expired login page
     page = StaticPages(selenium, base_url)
-    assert 'You have been logged out.' in page.notice_message.text
+    assert 'You have been logged out.' in page.notice_messages[-1].text
     assert 'Login Expired' in page.page_header
     assert variables['static_page_login_expired_text'] in page.content.text
     # click the link for reloading the page
