@@ -68,11 +68,12 @@ def test_devhub_developer_agreement_checkboxes(selenium, base_url):
     assert dist_agreement.review_policies_checkbox.is_selected()
     dist_agreement.click_recaptcha_checkbox()
 
-@pytest.mark.login("submissions_user")
+
 def test_addon_distribution_page_contents(selenium, base_url, variables, wait):
     """Check the elements present on devhub addon distribution page (where the user selects
     the listed or unlisted channels to upload their addon"""
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    page.devhub_login("developer")
     dist_page = page.click_submit_theme_button()
     wait.until(lambda _: dist_page.submission_form_header.is_displayed())
     assert (
@@ -103,7 +104,7 @@ def test_addon_distribution_page_contents(selenium, base_url, variables, wait):
         dist_page.addon_policies_link, 'Add-on Policies'
     )
 
-@pytest.mark.create_session("submissions_user")
+@pytest.mark.login("submissions_user")
 def test_devhub_upload_extension_page_contents(selenium, base_url, wait, variables):
     """Verify the elements present on the upload file page, where the user
     uploads and validates an addon file"""
@@ -116,9 +117,10 @@ def test_devhub_upload_extension_page_contents(selenium, base_url, wait, variabl
     )
     assert variables['create_theme_version_helptext'] in upload_page.accepted_file_types
 
-@pytest.mark.create_session("submissions_user")
 def test_upload_unsupported_file_validation_error(selenium, base_url, wait):
     """Verify validation results for errors triggered by unsupported file uploads"""
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    page.devhub_login("developer")
     selenium.get(f'{base_url}/developers/addon/submit/upload-listed')
     upload_page = SubmitAddon(selenium, base_url).wait_for_page_to_load()
     file = 'tar-ext.tar'
@@ -416,7 +418,7 @@ def test_cancel_and_disable_version_during_upload(selenium, base_url, wait):
 def test_submit_listed_wizard_theme(selenium, base_url, variables, wait, delete_themes):
     """A test that checks a straight-forward theme submission with the devhub wizard"""
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.devhub_login("submissions_user")
+    page.devhub_login("developer")
     submit_addon = page.click_submit_theme_button()
     # start the upload for a listed theme
     submit_addon.select_listed_option()

@@ -56,7 +56,7 @@ def test_validate_addon_unlisted(selenium, base_url, variables, wait):
     )
     assert variables["upload_status"] in devhub_addon_validate.upload_status.text
 
-@pytest.mark.sanity
+
 @pytest.mark.create_session("submissions_user")
 def test_validate_unlisted_addon_option_no_manifest_found(selenium, base_url, variables, wait):
     """Go to Devhub Addon Validate page"""
@@ -123,7 +123,7 @@ def test_validate_listed_addon_option_unsupported_format(selenium, base_url, var
     )
 
 
-@pytest.mark.sanity
+
 @pytest.mark.create_session("submissions_user")
 @pytest.mark.clear_session
 def test_validate_unlisted_addon_option_unsupported_format(selenium, base_url, variables, wait):

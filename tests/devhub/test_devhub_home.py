@@ -122,9 +122,9 @@ def test_devhub_click_header_profile_icon(selenium, base_url):
 
 
 @pytest.mark.nondestructive
-@pytest.mark.create_session("developer")
 def test_devhub_logged_in_page_hero_banner(selenium, base_url, variables):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    page.devhub_login("regular_user")
     # verify the items present in the page logged in banner
     assert (
         variables['devhub_logged_in_banner_header'] in page.logged_in_hero_banner_header
@@ -232,9 +232,9 @@ def test_devhub_click_first_theme_button(selenium, base_url, variables):
 
 
 @pytest.mark.nondestructive
-@pytest.mark.create_session("submissions_user")
 def test_devhub_resources_footer_documentation_links(selenium, base_url, variables):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    page.devhub_login("regular_user")
     assert 'Documentation' in page.resources.documentation_section_header
     count = 0
     # looping through the actual number of Documentation links present in the resources footer
@@ -297,9 +297,9 @@ def test_devhub_resources_join_addon_review(selenium, base_url, variables):
 
 
 @pytest.mark.nondestructive
-@pytest.mark.login("developer")
 def test_devhub_resources_write_some_code(selenium, base_url, variables):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    page.devhub_login("developer")
     assert 'Write Some Code' in page.resources.write_code_section_header
     assert (
         variables['devhub_resources_write_some_code_text']
@@ -310,10 +310,9 @@ def test_devhub_resources_write_some_code(selenium, base_url, variables):
 
 
 @pytest.mark.nondestructive
-@pytest.mark.create_session("developer")
-@pytest.mark.clear_session
 def test_devhub_resources_participate(selenium, base_url, variables):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    page.devhub_login("regular_user")
     assert 'More Ways to Participate' in page.resources.participate_section_header
     assert (
         variables['devhub_resources_participate_text']
