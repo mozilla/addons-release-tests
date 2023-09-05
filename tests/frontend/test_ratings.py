@@ -530,7 +530,6 @@ def test_delete_developer_reply_to_review(selenium, base_url, variables):
 @pytest.mark.serial
 @pytest.mark.nondestructive
 @pytest.mark.create_session("developer")
-@pytest.mark.clear_session
 def test_developers_cannot_rate_their_own_addons(selenium, base_url, variables):
     """Log in as an addon developer and try to post a review to your own addon; the request should fail"""
     extension = variables["dev_reply_review"]

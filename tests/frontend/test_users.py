@@ -67,7 +67,6 @@ def test_user_menu_view_profile(base_url, selenium):
 @pytest.mark.serial
 @pytest.mark.nondestructive
 @pytest.mark.create_session("regular_user")
-@pytest.mark.clear_session
 def test_user_menu_edit_profile(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.login("regular_user")
@@ -134,7 +133,6 @@ def test_user_developer_notifications(base_url, selenium, variables, wait):
 @pytest.mark.serial
 @pytest.mark.nondestructive
 @pytest.mark.create_session("developer")
-@pytest.mark.clear_session
 def test_user_mandatory_notifications(base_url, selenium):
     user = User(selenium, base_url).open().wait_for_page_to_load()
     # user.login("developer")
@@ -351,7 +349,6 @@ def test_user_regular_has_no_role(base_url, selenium):
 
 @pytest.mark.serial
 @pytest.mark.create_session("reusable_user")
-@pytest.mark.clear_session
 def test_user_regular_notifications(base_url, selenium, variables):
     user = User(selenium, base_url).open().wait_for_page_to_load()
     # regular users can only opt in/out for 2 notifications

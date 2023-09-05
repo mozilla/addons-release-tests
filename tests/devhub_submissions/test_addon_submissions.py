@@ -277,7 +277,6 @@ def test_submit_mixed_addon_versions(selenium, base_url, variables, wait):
 
 @pytest.mark.sanity
 @pytest.mark.serial
-@pytest.mark.fail
 def test_verify_new_unlisted_version_autoapproval(selenium, base_url, variables):
     """Uploads a new version to an existing addon and verifies that is auto-approved"""
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()

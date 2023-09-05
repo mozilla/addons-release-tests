@@ -83,12 +83,13 @@ def test_validate_unlisted_addon_option_no_manifest_found(
 
 
 @pytest.mark.sanity
+@pytest.mark.create_session("submissions_user")
 def test_validate_listed_addon_option_no_manifest_found(
     selenium, base_url, variables, wait
 ):
     """Go to Devhub Addon Validate page"""
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.devhub_login("submissions_user")
+    # page.devhub_login("submissions_user")
     devhub_addon_validate = (
         DevhubAddonValidate(selenium, base_url).open().wait_for_page_to_load()
     )
@@ -108,6 +109,7 @@ def test_validate_listed_addon_option_no_manifest_found(
 
 
 @pytest.mark.sanity
+@pytest.mark.create_session("submissions_user")
 def test_validate_listed_addon_option_unsupported_format(
     selenium, base_url, variables, wait
 ):
