@@ -18,9 +18,9 @@ from pages.desktop.frontend.language_tools import LanguageTools
 def test_language_tools_landing_page(selenium, base_url, variables):
     page = LanguageTools(selenium, base_url).open().wait_for_page_to_load()
     # verify the information present on the landing page
-    assert variables['language_tools_page_header'] in page.language_tools_header
-    assert variables['dictionaries_info'] in page.dictionaries_info_text
-    assert variables['language_packs_info'] in page.language_packs_info_text
+    assert variables["language_tools_page_header"] in page.language_tools_header
+    assert variables["dictionaries_info"] in page.dictionaries_info_text
+    assert variables["language_packs_info"] in page.language_packs_info_text
     # we don't always know the number of supported languages in advance,
     # but we can make sure we are in close range to what we always supported
     assert len(page.supported_languages_list) in range(120, 140)
@@ -40,10 +40,10 @@ def test_install_language_pack(
     firefox.browser.wait_for_notification(
         firefox_notifications.AddOnInstallConfirmation
     ).install()
-    assert 'Remove' in lang_pack_detail.button_text
+    assert "Remove" in lang_pack_detail.button_text
     # uninstall the language pack and check that install button changes state
     lang_pack_detail.install()
-    assert 'Add to Firefox' in lang_pack_detail.button_text
+    assert "Add to Firefox" in lang_pack_detail.button_text
 
 
 @pytest.mark.sanity
@@ -60,10 +60,10 @@ def test_install_dictionary(
     firefox.browser.wait_for_notification(
         firefox_notifications.AddOnInstallConfirmation
     ).install()
-    assert 'Remove' in dictionary_detail.button_text
+    assert "Remove" in dictionary_detail.button_text
     # uninstall the dictionary and check that install button changes state
     dictionary_detail.install()
-    assert 'Add to Firefox' in dictionary_detail.button_text
+    assert "Add to Firefox" in dictionary_detail.button_text
 
 
 @pytest.mark.sanity
@@ -71,54 +71,54 @@ def test_install_dictionary(
 def test_install_extension(
     selenium, base_url, variables, firefox, firefox_notifications
 ):
-    extension = variables['install_extension']
-    selenium.get(f'{base_url}/addon/{extension}')
+    extension = variables["install_extension"]
+    selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     addon.install()
     firefox.browser.wait_for_notification(
         firefox_notifications.AddOnInstallConfirmation
     ).install()
-    assert 'Remove' in addon.button_text
+    assert "Remove" in addon.button_text
     # uninstall the extension and check that install button changes state
     addon.install()
-    assert 'Add to Firefox' in addon.button_text
+    assert "Add to Firefox" in addon.button_text
 
 
 @pytest.mark.sanity
 @pytest.mark.prod_only
 def test_install_theme(selenium, base_url, variables, firefox, firefox_notifications):
-    extension = variables['install_theme']
-    selenium.get(f'{base_url}/addon/{extension}')
+    extension = variables["install_theme"]
+    selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     addon.install()
     firefox.browser.wait_for_notification(
         firefox_notifications.AddOnInstallConfirmation
     ).install()
-    assert 'Remove' in addon.button_text
+    assert "Remove" in addon.button_text
     # uninstall the theme and check that install button changes state
     addon.install()
-    assert 'Install Theme' in addon.button_text
+    assert "Install Theme" in addon.button_text
 
 
 @pytest.mark.prod_only
 @pytest.mark.skip(
-    reason='Still investigating why this test has started failing recently'
+    reason="Still investigating why this test has started failing recently"
 )
 def test_about_addons_search(selenium, base_url):
-    selenium.get('about:addons')
+    selenium.get("about:addons")
     about_addons = AboutAddons(selenium).wait_for_page_to_load()
-    amo_search_results = about_addons.search_box('privacy')
+    amo_search_results = about_addons.search_box("privacy")
     # verify that the query string is registered in AMO search results page title
-    amo_search_results.wait_for_contextcard_update('privacy')
+    amo_search_results.wait_for_contextcard_update("privacy")
     # verify that the search query produced results (this is a popular query so we expect
     # to see the first page of results to be fully populated, i.e. 25 items)
     amo_search_results.search_results_list_loaded(25)
-    assert 'privacy' in amo_search_results.result_list.search_results[0].name.lower()
+    assert "privacy" in amo_search_results.result_list.search_results[0].name.lower()
 
 
 @pytest.mark.prod_only
 def test_about_addons_find_more_addons(selenium, base_url, wait):
-    selenium.get('about:addons')
+    selenium.get("about:addons")
     about_addons = AboutAddons(selenium).wait_for_page_to_load()
     amo_home = about_addons.click_find_more_addons()
     # checks that the button redirects correctly to AMO homepage
@@ -127,7 +127,7 @@ def test_about_addons_find_more_addons(selenium, base_url, wait):
 
 @pytest.mark.prod_only
 def test_about_addons_addon_cards(selenium, base_url, wait):
-    selenium.get('about:addons')
+    selenium.get("about:addons")
     about_addons = AboutAddons(selenium)
     # waits for the list of addon cards to be loaded (currently we have minimum 7 cards)
     wait.until(
@@ -154,7 +154,7 @@ def test_about_addons_addon_cards(selenium, base_url, wait):
 
 @pytest.mark.prod_only
 def test_about_addons_addon_cards_author_link(selenium, base_url, wait):
-    selenium.get('about:addons')
+    selenium.get("about:addons")
     about_addons = AboutAddons(selenium)
     # waiting for the addon cards data to be retrieved (the author names in this case)
     wait.until(
@@ -170,7 +170,7 @@ def test_about_addons_addon_cards_author_link(selenium, base_url, wait):
 
 @pytest.mark.prod_only
 def test_about_addons_addon_stats_match_amo(selenium, base_url, wait):
-    selenium.get('about:addons')
+    selenium.get("about:addons")
     about_addons = AboutAddons(selenium)
     # waiting for the addon cards data to be retrieved (the author names in this case)
     wait.until(
@@ -178,7 +178,9 @@ def test_about_addons_addon_stats_match_amo(selenium, base_url, wait):
         >= 7
     )
     disco_addon_name = about_addons.addon_cards_items[1].disco_addon_name.text
-    disco_rating_number = str(round(float(about_addons.addon_cards_items[1].rating_score), 1))
+    disco_rating_number = str(
+        round(float(about_addons.addon_cards_items[1].rating_score), 1)
+    )
     disco_rating_score = disco_rating_number + " Stars"
     disco_users = about_addons.addon_cards_items[1].user_count
     # clicking on the author link should open the addon detail page on AMO
@@ -186,9 +188,7 @@ def test_about_addons_addon_stats_match_amo(selenium, base_url, wait):
     wait.until(lambda _: disco_addon_name == amo_detail_page.name)
     # check that the rating and the users from about:addons are matching with AMO
     assert disco_rating_score == amo_detail_page.stats.rating_title.text
-    assert (
-            disco_rating_number in amo_detail_page.stats.rating_score_tile
-    )
+    assert disco_rating_number in amo_detail_page.stats.rating_score_tile
     assert disco_users == amo_detail_page.stats.stats_users_count
 
 
@@ -196,7 +196,7 @@ def test_about_addons_addon_stats_match_amo(selenium, base_url, wait):
 def test_about_addons_install_extension(
     selenium, base_url, wait, firefox, firefox_notifications
 ):
-    selenium.get('about:addons')
+    selenium.get("about:addons")
     about_addons = AboutAddons(selenium)
     # waiting for the addon cards data to be retrieved (the install buttons in this case)
     wait.until(
@@ -232,7 +232,7 @@ def test_about_addons_install_extension(
 def test_about_addons_install_theme(
     selenium, base_url, wait, firefox, firefox_notifications
 ):
-    selenium.get('about:addons')
+    selenium.get("about:addons")
     about_addons = AboutAddons(selenium)
     # waiting for the addon cards data to be retrieved (the install buttons in this case)
     wait.until(
@@ -241,7 +241,7 @@ def test_about_addons_install_theme(
     disco_theme_name = about_addons.addon_cards_items[0].disco_addon_name.text
     # make a note of the image source of the theme we are about to install
     disco_theme_image = about_addons.addon_cards_items[0].theme_image.get_attribute(
-        'src'
+        "src"
     )
     # install the recommended theme
     about_addons.addon_cards_items[0].install_button.click()
@@ -250,7 +250,7 @@ def test_about_addons_install_theme(
     ).install()
     about_addons.click_themes_side_button()
     # check that installed theme should be first on the manage Themes page
-    assert 'true' in about_addons.enabled_theme_active_status
+    assert "true" in about_addons.enabled_theme_active_status
     assert disco_theme_image == about_addons.enabled_theme_image
     try:
         assert disco_theme_name in about_addons.installed_addon_name[0].text
@@ -271,23 +271,24 @@ def test_detail_page_taar_recommendations(selenium, base_url):
     foolproof, hence the list with potential addons that trigger recommendations (at least at
     the moment when the test was first created). If we are lucky and the first addon receives results,
     the verification will stop there, otherwise the test will continue to loop through the other options
-    until results are received or, finally, fail the test with the assumption that TAAR is broken"""
+    until results are received or, finally, fail the test with the assumption that TAAR is broken
+    """
     potential_addons = [
-        'enhancer-for-youtube',
-        'adblocker-ultimate',
-        'facebook-container',
-        'darkreader',
-        'bitwarden-password-manager',
-        'cookie-autodelete',
+        "enhancer-for-youtube",
+        "adblocker-ultimate",
+        "facebook-container",
+        "darkreader",
+        "bitwarden-password-manager",
+        "cookie-autodelete",
     ]
     count = 0
     while count < len(potential_addons):
-        selenium.get(f'{base_url}/addon/{potential_addons[count]}')
+        selenium.get(f"{base_url}/addon/{potential_addons[count]}")
         addon_detail = Detail(selenium, base_url).wait_for_page_to_load()
         try:
             # if TAAR responds, the recommendation section header should have this title
             assert (
-                'Other users with this extension also installed'
+                "Other users with this extension also installed"
                 in addon_detail.recommendations.addon_recommendations_header
             )
             assert len(addon_detail.recommendations.recommendations_results_item) == 4
@@ -297,7 +298,7 @@ def test_detail_page_taar_recommendations(selenium, base_url):
     # if we reach the end of the list without TAAR results, then the test should fail
     else:
         pytest.fail(
-            'There were no recommendations returned for any of the potential addons. Maybe TAAR is broken?'
+            "There were no recommendations returned for any of the potential addons. Maybe TAAR is broken?"
         )
 
 
@@ -306,15 +307,15 @@ def test_discovery_taar_recommendations(base_url, variables):
     """The scope of this test is to verify if the addons manager recommendations page returns
     extensions from the TAAR service based on a 'telemetry-client-id'"""
     request = requests.get(
-        url=f'{base_url}/api/v5/discovery/',
-        params={'telemetry-client-id': variables['telemetry_client_id']},
+        url=f"{base_url}/api/v5/discovery/",
+        params={"telemetry-client-id": variables["telemetry_client_id"]},
     )
     # make a list with only the extensions returned by the discovery API;
     # we exclude themes because they are not recommended by default
     recommendations = [
-        item['is_recommendation']
-        for item in request.json()['results']
-        if item['addon']['type'] == 'extension'
+        item["is_recommendation"]
+        for item in request.json()["results"]
+        if item["addon"]["type"] == "extension"
     ]
     # determine if the list created before contains at least one recommended extension;
     # it is not mandatory for all extensions to be TAAR recommendations, but we need to have

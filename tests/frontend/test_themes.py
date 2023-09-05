@@ -7,31 +7,31 @@ from selenium.webdriver.support.select import Select
 
 
 @pytest.mark.parametrize(
-    'count, category',
+    "count, category",
     enumerate(
         [
-            'Abstract',
-            'Causes',
-            'Fashion',
-            'Film and TV',
-            'Firefox',
-            'Foxkeh',
-            'Holiday',
-            'Music',
-            'Nature',
-            'Other',
-            'Scenery',
-            'Seasonal',
-            'Solid',
-            'Sports',
-            'Websites',
+            "Abstract",
+            "Causes",
+            "Fashion",
+            "Film and TV",
+            "Firefox",
+            "Foxkeh",
+            "Holiday",
+            "Music",
+            "Nature",
+            "Other",
+            "Scenery",
+            "Seasonal",
+            "Solid",
+            "Sports",
+            "Websites",
         ]
     ),
 )
 @pytest.mark.nondestructive
 def test_themes_categories(base_url, selenium, count, category):
     themes = Themes(selenium, base_url).open()
-    assert 'Categories' in themes.categories.categories_list_header.text
+    assert "Categories" in themes.categories.categories_list_header.text
     # clicking through each Theme Category
     assert category in themes.categories.category_list[count].category_button_name
     themes.categories.category_list[count].click()
@@ -39,7 +39,7 @@ def test_themes_categories(base_url, selenium, count, category):
     # checking that search results within that category are sorted correctly
     category_results.wait_for_contextcard_update(category)
     select = Select(category_results.filter_by_sort)
-    assert 'Most Users' in select.first_selected_option.text
+    assert "Most Users" in select.first_selected_option.text
 
 
 @pytest.mark.sanity
@@ -47,8 +47,8 @@ def test_themes_categories(base_url, selenium, count, category):
 def test_themes_landing_header(base_url, selenium):
     themes = Themes(selenium, base_url).open()
     # checking that 'Themes' is underlined in the header menu
-    assert 'Themes' in themes.header.is_active_link
-    assert 'Themes' in themes.title
+    assert "Themes" in themes.header.is_active_link
+    assert "Themes" in themes.title
     assert "Change your browser's appearance" in themes.header_summary
 
 
@@ -57,7 +57,7 @@ def test_themes_landing_header(base_url, selenium):
 def test_recommended_themes(base_url, selenium):
     themes = Themes(selenium, base_url).open()
     shelf_items = themes.shelves.recommended_addons.list
-    assert 'Recommended themes' in themes.shelves.recommended_addons.card_header
+    assert "Recommended themes" in themes.shelves.recommended_addons.card_header
     # the following statements are checking that each shelf has three themes
     # and each theme has a name, preview and number of users
     assert len(shelf_items) == 3
@@ -72,19 +72,19 @@ def test_recommended_themes(base_url, selenium):
 def test_browse_more_recommended_themes(base_url, selenium):
     themes = Themes(selenium, base_url).open()
     themes.shelves.recommended_addons.browse_all()
-    assert 'type=statictheme' in selenium.current_url
+    assert "type=statictheme" in selenium.current_url
     search_results = Search(selenium, base_url)
     select = Select(search_results.filter_by_badging)
-    assert select.first_selected_option.text == 'Recommended'
+    assert select.first_selected_option.text == "Recommended"
     for result in search_results.result_list.search_results:
-        assert 'Recommended' in result.promoted_badge_label
+        assert "Recommended" in result.promoted_badge_label
 
 
 @pytest.mark.nondestructive
 def test_top_rated_themes(base_url, selenium):
     themes = Themes(selenium, base_url).open()
     shelf_items = themes.shelves.top_rated_addons.list
-    assert 'Top rated themes' in themes.shelves.top_rated_addons.card_header
+    assert "Top rated themes" in themes.shelves.top_rated_addons.card_header
     # the following statements are checking that each shelf has three themes
     # and each theme has a name, preview and number of users
     assert len(shelf_items) == 3
@@ -99,7 +99,7 @@ def test_top_rated_themes(base_url, selenium):
 def test_browse_more_top_rated_themes(base_url, selenium):
     themes = Themes(selenium, base_url).open()
     themes.shelves.top_rated_addons.browse_all()
-    assert 'sort=rating&type=statictheme' in selenium.current_url
+    assert "sort=rating&type=statictheme" in selenium.current_url
     search_results = Search(selenium, base_url)
     ratings = search_results.result_list.themes
     for rating in ratings:
@@ -110,7 +110,7 @@ def test_browse_more_top_rated_themes(base_url, selenium):
 def test_trending_themes(base_url, selenium):
     themes = Themes(selenium, base_url).open()
     shelf_items = themes.shelves.trending_addons.list
-    assert 'Trending themes' in themes.shelves.trending_addons.card_header
+    assert "Trending themes" in themes.shelves.trending_addons.card_header
     # the following statements are checking that each shelf has three themes
     # and each theme has a name, preview and number of users
     assert len(shelf_items) == 3
@@ -125,7 +125,7 @@ def test_trending_themes(base_url, selenium):
 def test_browse_more_trending_themes(base_url, selenium):
     themes = Themes(selenium, base_url).open()
     themes.shelves.trending_addons.browse_all()
-    assert 'sort=hotness&type=statictheme' in selenium.current_url
+    assert "sort=hotness&type=statictheme" in selenium.current_url
     search_results = Search(selenium, base_url)
     # trending add-ons don't have a predictable order so we
     # check that search results are displayed for this sort type

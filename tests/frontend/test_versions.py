@@ -13,7 +13,7 @@ from scripts import reusables
 
 @pytest.mark.nondestructive
 def test_addon_name_in_header(selenium, base_url, variables):
-    selenium.get(variables['addon_version_page_url'])
+    selenium.get(variables["addon_version_page_url"])
     page = Versions(selenium, base_url)
     addon_name = page.versions_page_header.text.split()[0]
     addon_detail_page = page.rating_card.click_addon_title()
@@ -24,25 +24,25 @@ def test_addon_name_in_header(selenium, base_url, variables):
 def test_versions_counter(selenium, base_url, variables):
     # this test verifies that the number of versions displayed
     # in the header is the same as the number of elements in the version list
-    selenium.get(variables['addon_version_page_url'])
+    selenium.get(variables["addon_version_page_url"])
     page = Versions(selenium, base_url)
     text = page.versions_page_header.text
-    text = text.split('-')[-1][1:]
-    text = text.split('versions')[0][:-1]
+    text = text.split("-")[-1][1:]
+    text = text.split("versions")[0][:-1]
     assert int(text) == len(page.versions_list)
 
 
 @pytest.mark.nondestructive
 def test_notice_message(selenium, base_url, variables):
-    selenium.get(variables['addon_version_page_url'])
+    selenium.get(variables["addon_version_page_url"])
     page = Versions(selenium, base_url)
     assert page.notice_message.is_displayed()
-    assert variables['version_page_notice_message'] in page.notice_message.text
+    assert variables["version_page_notice_message"] in page.notice_message.text
 
 
 @pytest.mark.nondestructive
 def test_ratings_card(selenium, base_url, variables):
-    selenium.get(variables['addon_version_page_url'])
+    selenium.get(variables["addon_version_page_url"])
     page = Versions(selenium, base_url)
     # verify if ratings card is present
     assert page.rating_card.root.is_displayed()
@@ -50,30 +50,29 @@ def test_ratings_card(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 def test_license_link(selenium, base_url, variables):
-    selenium.get(variables['addon_version_page_url'])
+    selenium.get(variables["addon_version_page_url"])
     page = Versions(selenium, base_url)
 
     for i in range(len(page.versions_list)):
         if page.versions_list[i].license_link is not False:  # if link exists
-
             if (
-                page.versions_list[i].license_link.text == 'Custom License'
+                page.versions_list[i].license_link.text == "Custom License"
             ):  # if link exists and is 'Custom License'
                 page.versions_list[i].license_link.click()
                 page.wait.until(
                     EC.visibility_of_element_located(
-                        (By.CLASS_NAME, 'AddonInfo-info-html')
+                        (By.CLASS_NAME, "AddonInfo-info-html")
                     )
                 )
 
             else:  # if link exists and is not 'Custom License'
-                expected_link = page.versions_list[i].license_link.get_attribute('href')
-                if 'http' or 'https' in expected_link:
+                expected_link = page.versions_list[i].license_link.get_attribute("href")
+                if "http" or "https" in expected_link:
                     # full url example-> https://example.com/something/something
                     # turn into-> example.com/something/something
-                    expected_link = expected_link.split('//')[1]
+                    expected_link = expected_link.split("//")[1]
                     # turn into-> example.com
-                expected_link = expected_link.split('/')[0]
+                expected_link = expected_link.split("/")[0]
                 page.versions_list[i].license_link.click()
                 assert expected_link in selenium.current_url
 
@@ -81,21 +80,21 @@ def test_license_link(selenium, base_url, variables):
             page.driver.back()
             page.driver.refresh()
         else:  # if link does not exist
-            assert 'All Rights Reserved' in page.versions_list[i].license_text
+            assert "All Rights Reserved" in page.versions_list[i].license_text
 
 
 @pytest.mark.nondestructive
 def test_current_version(selenium, base_url, variables):
     addon_url = f'addon/{variables["addon_version_install"]}/'
     # get info from api
-    response = requests.get(f'{base_url}/api/v5/addons/{addon_url}')
-    addon_version = response.json()['current_version']['version']
+    response = requests.get(f"{base_url}/api/v5/addons/{addon_url}")
+    addon_version = response.json()["current_version"]["version"]
     addon_size = reusables.convert_bytes(
-        response.json()['current_version']['file']['size']
+        response.json()["current_version"]["file"]["size"]
     )
-    api_date = response.json()['current_version']['file']['created'][:10]
+    api_date = response.json()["current_version"]["file"]["created"][:10]
     # process the date to have the same format as in frontend
-    api_date = datetime.strptime(api_date, '%Y-%m-%d')
+    api_date = datetime.strptime(api_date, "%Y-%m-%d")
     api_processed_date = datetime.strftime(api_date, "%b %#d, %Y")
     # verify info displayed in page
     page = Versions(selenium, base_url)
@@ -115,7 +114,7 @@ def test_version_install_warning(selenium, base_url, variables):
         assert variables["install_warning_message"] in version.warning_message.text
         version.warning_learn_more_button.click()
         page.driver.switch_to.window(page.driver.window_handles[1])
-        page.wait_for_title_update('Add-on Badges')
+        page.wait_for_title_update("Add-on Badges")
         page.driver.switch_to.window(page.driver.window_handles[0])
 
 
@@ -123,7 +122,7 @@ def test_version_install_warning(selenium, base_url, variables):
 def test_add_to_firefox_button(
     selenium, base_url, variables, firefox, firefox_notifications
 ):
-    selenium.get(variables['addon_version_page_url'])
+    selenium.get(variables["addon_version_page_url"])
     page = Versions(selenium, base_url)
     page.versions_list[0].add_to_firefox_button.click()
     firefox.browser.wait_for_notification(
@@ -133,11 +132,11 @@ def test_add_to_firefox_button(
         firefox_notifications.AddOnInstallComplete
     ).close()
     # check if add button changed into remove button
-    assert 'Remove' in page.versions_list[0].add_to_firefox_button.text
+    assert "Remove" in page.versions_list[0].add_to_firefox_button.text
     # click remove button
     page.versions_list[0].add_to_firefox_button.click()
     # check if remove button changed back into add button
-    assert 'Add' in page.versions_list[0].add_to_firefox_button.text
+    assert "Add" in page.versions_list[0].add_to_firefox_button.text
 
 
 @pytest.mark.nondestructive
@@ -156,7 +155,7 @@ def test_version_download_file(
         ).install()
     except TimeoutException as error:
         # check that the timeout message is raised by the AddOnInstallConfirmation class
-        assert error.msg == 'AddOnInstallConfirmation was not shown.'
+        assert error.msg == "AddOnInstallConfirmation was not shown."
         firefox.browser.wait_for_notification(
             firefox_notifications.AddOnInstallBlocked
         ).allow()
@@ -169,8 +168,8 @@ def test_version_download_file(
     # go to the addon detail page and check that the button states have changed
     addon_detail = page.rating_card.click_addon_title()
     # check if add button changed into remove button
-    assert 'Remove' in addon_detail.button_text
+    assert "Remove" in addon_detail.button_text
     # click Remove button (i s the same as the install button)
     addon_detail.install()
     # check if remove button changed back into add button
-    assert 'Add to Firefox' in addon_detail.button_text
+    assert "Add to Firefox" in addon_detail.button_text
