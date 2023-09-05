@@ -17,43 +17,29 @@ from pages.desktop.frontend.users import User
 @pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.nondestructive
+@pytest.mark.login("regular_user")
 def test_login(selenium, base_url, wait):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
-    user = "regular_user"
-    page.login(user)
     # the AMO header state changed after the transition from FxA so we have to
     # reassign it to another variable because 'page' can become stale at this point
     username = Home(selenium, base_url).wait_for_page_to_load()
     # verifies that the user display_name is visible after log in
-    username.header.user_header_display_name(user)
+    username.header.user_header_display_name("regular_user")
 
 
 @pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.nondestructive
+@pytest.mark.create_session("regular_user")
 def test_logout(base_url, selenium):
     """User can logout"""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
-    user = "regular_user"
-    page.login(user)
     page.logout()
 
-
 @pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.nondestructive
-def test_register_new_account(base_url, selenium, wait):
-    page = Home(selenium, base_url).open().wait_for_page_to_load()
-    page.register()
-    # reassign AMO homepage it to another variable because 'page' can become stale at this point
-    username = Home(selenium, base_url).wait_for_page_to_load()
-    # check that a new user has been created (default user prefix should be 'Firefox user')
-    username.header.user_header_display_name("Firefox user")
-
-
-@pytest.mark.sanity
-@pytest.mark.serial
-@pytest.mark.nondestructive
+@pytest.mark.create_session("regular_user")
 def test_user_menu_collections_link(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.login("regular_user")
@@ -67,6 +53,7 @@ def test_user_menu_collections_link(base_url, selenium):
 @pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.nondestructive
+@pytest.mark.create_session("regular_user")
 def test_user_menu_view_profile(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.login("regular_user")
@@ -79,6 +66,8 @@ def test_user_menu_view_profile(base_url, selenium):
 @pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.nondestructive
+@pytest.mark.create_session("regular_user")
+@pytest.mark.clear_session
 def test_user_menu_edit_profile(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.login("regular_user")
@@ -87,6 +76,16 @@ def test_user_menu_edit_profile(base_url, selenium):
     landing_page = ".UserProfileEdit-displayName"
     page.header.click_user_menu_links(count, landing_page)
 
+@pytest.mark.sanity
+@pytest.mark.serial
+@pytest.mark.nondestructive
+def test_register_new_account(base_url, selenium, wait):
+    page = Home(selenium, base_url).open().wait_for_page_to_load()
+    page.register()
+    # reassign AMO homepage it to another variable because 'page' can become stale at this point
+    username = Home(selenium, base_url).wait_for_page_to_load()
+    # check that a new user has been created (default user prefix should be 'Firefox user')
+    username.header.user_header_display_name("Firefox user")
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
@@ -148,27 +147,6 @@ def test_user_mandatory_notifications(base_url, selenium):
     # checks that the mandatory notification checkboxes are still selected
     for checkbox in user.edit.notifications_checkbox[4:7]:
         assert checkbox.is_selected()
-
-
-# @pytest.mark.serial
-# @pytest.mark.nondestructive
-# def test_user_menu_click_submit_new_theme(base_url, selenium):
-#     page = Home(selenium, base_url).open().wait_for_page_to_load()
-#     page.login("developer")
-#     count = 4
-#     landing_page = '.section header h2'
-#     page.header.click_user_menu_links(count, landing_page)
-#
-#
-# @pytest.mark.serial
-# @pytest.mark.nondestructive
-# def test_user_menu_click_manage_submissions(base_url, selenium):
-#     page = Home(selenium, base_url).open().wait_for_page_to_load()
-#     page.login("developer")
-#     count = 5
-#     landing_page = '.submission-type-tabs a:nth-child(1)'
-#     page.header.click_user_menu_links(count, landing_page)
-
 
 @pytest.mark.sanity
 @pytest.mark.serial
@@ -329,7 +307,7 @@ def test_user_delete_profile(base_url, selenium):
 
 
 @pytest.mark.serial
-@pytest.mark.login("reusable_user")
+@pytest.mark.create_session("reusable_user")
 def test_user_account_manage_section(base_url, selenium, variables):
     user = User(selenium, base_url).open().wait_for_page_to_load()
     email = Login(selenium, base_url)
@@ -635,7 +613,6 @@ def test_user_profile_edit_review(base_url, selenium, variables, wait):
 @pytest.mark.serial
 @pytest.mark.nondestructive
 @pytest.mark.create_session("submissions_user")
-@pytest.mark.clear_session
 def test_user_profile_delete_review(base_url, selenium, variables, wait):
     user = User(selenium, base_url).open().wait_for_page_to_load()
     # user.login('submissions_user')

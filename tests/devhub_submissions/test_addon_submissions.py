@@ -9,11 +9,11 @@ from pages.desktop.developers.submit_addon import (
 from scripts import reusables
 from api import api_helpers, payloads
 
-
+@pytest.mark.login("regular_user")
 def test_devhub_developer_agreement_page_contents(selenium, base_url, variables, wait):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     # use an account that hasn't accepted the agreement before
-    page.devhub_login('regular_user')
+    # page.devhub_login('regular_user')
     page.wait_for_page_to_load()
     dist_agreement = page.click_submit_theme_button()
     assert (
@@ -38,11 +38,11 @@ def test_devhub_developer_agreement_page_contents(selenium, base_url, variables,
     page = DevHubHome(selenium, base_url).wait_for_page_to_load()
     assert page.page_logo.is_displayed()
 
-
+@pytest.mark.create_session("regular_user")
 def test_devhub_developer_agreement_page_links(selenium, base_url):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     # use an account that hasn't accepted the agreement before
-    page.devhub_login('regular_user')
+    # page.devhub_login('regular_user')
     dist_agreement = page.click_submit_theme_button()
     # check that the distribution agreement link opens the correct Extension workshop page
     dist_agreement.click_extension_workshop_article_link(
@@ -56,11 +56,11 @@ def test_devhub_developer_agreement_page_links(selenium, base_url):
     # verify that the Dev Account info link opens an Extension Workshop article page
     dist_agreement.click_dev_accounts_info_link()
 
-
+@pytest.mark.create_session("regular_user")
 def test_devhub_developer_agreement_checkboxes(selenium, base_url):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     # use an account that hasn't accepted the agreement before
-    page.devhub_login('regular_user')
+    # page.devhub_login('regular_user')
     dist_agreement = page.click_submit_theme_button()
     dist_agreement.distribution_agreement_checkbox.click()
     assert dist_agreement.distribution_agreement_checkbox.is_selected()
@@ -68,12 +68,12 @@ def test_devhub_developer_agreement_checkboxes(selenium, base_url):
     assert dist_agreement.review_policies_checkbox.is_selected()
     dist_agreement.click_recaptcha_checkbox()
 
-
+@pytest.mark.login("submissions_user")
 def test_addon_distribution_page_contents(selenium, base_url, variables, wait):
     """Check the elements present on devhub addon distribution page (where the user selects
     the listed or unlisted channels to upload their addon"""
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.devhub_login("developer")
+    # page.devhub_login('submissions_user')
     dist_page = page.click_submit_theme_button()
     wait.until(lambda _: dist_page.submission_form_header.is_displayed())
     assert (
@@ -104,10 +104,12 @@ def test_addon_distribution_page_contents(selenium, base_url, variables, wait):
         dist_page.addon_policies_link, 'Add-on Policies'
     )
 
-@pytest.mark.login("submissions_user")
+@pytest.mark.create_session("submissions_user")
 def test_devhub_upload_extension_page_contents(selenium, base_url, wait, variables):
     """Verify the elements present on the upload file page, where the user
     uploads and validates an addon file"""
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    # page.devhub_login('submissions_user')
     selenium.get(f'{base_url}/developers/addon/submit/theme/upload-listed')
     upload_page = SubmitAddon(selenium, base_url).wait_for_page_to_load()
     upload_page.developer_notification_box.is_displayed()
@@ -117,10 +119,11 @@ def test_devhub_upload_extension_page_contents(selenium, base_url, wait, variabl
     )
     assert variables['create_theme_version_helptext'] in upload_page.accepted_file_types
 
+@pytest.mark.create_session("submissions_user")
 def test_upload_unsupported_file_validation_error(selenium, base_url, wait):
     """Verify validation results for errors triggered by unsupported file uploads"""
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.devhub_login("developer")
+    # page.devhub_login('submissions_user')
     selenium.get(f'{base_url}/developers/addon/submit/upload-listed')
     upload_page = SubmitAddon(selenium, base_url).wait_for_page_to_load()
     file = 'tar-ext.tar'
@@ -135,12 +138,13 @@ def test_upload_unsupported_file_validation_error(selenium, base_url, wait):
         in upload_page.validation_failed_reason[0].text
     )
 
+
 @pytest.mark.sanity
 @pytest.mark.serial
 # The first test starts the browser with a normal login in order to store de session cookie
+@pytest.mark.login('submissions_user')
 def test_submit_unlisted_addon(selenium, base_url, variables, wait):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.devhub_login("submissions_user")
     submit_addon = page.click_submit_addon_button()
     # start the upload for an unlisted addon
     submit_addon.select_unlisted_option()
@@ -163,7 +167,7 @@ def test_submit_unlisted_addon(selenium, base_url, variables, wait):
     wait.until(lambda _: 'Unlisted-addon-auto' in manage_addons.addon_list[0].name)
 
 @pytest.mark.serial
-@pytest.mark.login("submissions_user")
+@pytest.mark.create_session('submissions_user')
 def test_verify_first_version_autoapproval(selenium, base_url, variables, wait):
     """This test will wait (for max 5 minutes) until the status of an add-on changes to approved"""
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
@@ -174,10 +178,11 @@ def test_verify_first_version_autoapproval(selenium, base_url, variables, wait):
     version_status.wait_for_version_autoapproval('Approved')
 
 @pytest.mark.sanity
+@pytest.mark.serial
+@pytest.mark.create_session('submissions_user')
 def test_submit_listed_addon(selenium, base_url, variables, wait):
     """Test covering the process of uploading a listed addon"""
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.devhub_login("submissions_user")
     submit_addon = page.click_submit_addon_button()
     # start the upload for a listed addon
     submit_addon.select_listed_option()
@@ -224,6 +229,7 @@ def test_submit_listed_addon(selenium, base_url, variables, wait):
     edit_listing = confirmation_page.click_edit_listing_button()
     assert addon_name in edit_listing.name
 
+
 @pytest.mark.serial
 @pytest.mark.create_session('submissions_user')
 def test_addon_last_modified_date(selenium, base_url):
@@ -236,6 +242,7 @@ def test_addon_last_modified_date(selenium, base_url):
     edit_addon = page.my_addons_list[0].click_my_addon_edit_link()
     # check the last modified date on the Edit listing page
     assert reusables.current_date() == edit_addon.last_modified_date
+
 
 @pytest.mark.serial
 @pytest.mark.create_session('submissions_user')
@@ -267,11 +274,14 @@ def test_submit_mixed_addon_versions(selenium, base_url, variables, wait):
     # verify that the unlisted addon badge is now visible on the edit details page
     assert edit_addon.unlisted_version_tooltip.is_displayed()
 
+
 @pytest.mark.sanity
 @pytest.mark.serial
-@pytest.mark.login("developer")
+@pytest.mark.fail
 def test_verify_new_unlisted_version_autoapproval(selenium, base_url, variables):
     """Uploads a new version to an existing addon and verifies that is auto-approved"""
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    page.devhub_login('developer')
     addon = variables['unlisted_new_version_autoapproval']
     # in order to upload a new version, we need to increment on the existing version number
     # to obtain the current version number, we make an API request that returns the value
@@ -418,7 +428,7 @@ def test_cancel_and_disable_version_during_upload(selenium, base_url, wait):
 def test_submit_listed_wizard_theme(selenium, base_url, variables, wait, delete_themes):
     """A test that checks a straight-forward theme submission with the devhub wizard"""
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.devhub_login("developer")
+    page.devhub_login("submissions_user")
     submit_addon = page.click_submit_theme_button()
     # start the upload for a listed theme
     submit_addon.select_listed_option()
@@ -454,12 +464,13 @@ def test_submit_listed_wizard_theme(selenium, base_url, variables, wait, delete_
 
 @pytest.mark.sanity
 @pytest.mark.serial
+@pytest.mark.create_session('submissions_user')
+@pytest.mark.clear_session
 def test_delete_all_extensions(selenium, base_url):
     """This test will delete all the extensions submitted above to make sure
     we can start over with this user in the following runs and also for
     verifying that the addon deletion process functions correctly"""
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.devhub_login("submissions_user")
     manage_addons = page.click_my_addons_header_link()
     # run the delete steps until all the addons are cleared from the list
     while len(manage_addons.addon_list) > 0:
