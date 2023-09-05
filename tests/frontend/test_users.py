@@ -17,9 +17,9 @@ from pages.desktop.frontend.users import User
 @pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.nondestructive
-@pytest.mark.login("regular_user")
 def test_login(selenium, base_url, wait):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
+    page.login("regular_user")
     # the AMO header state changed after the transition from FxA so we have to
     # reassign it to another variable because 'page' can become stale at this point
     username = Home(selenium, base_url).wait_for_page_to_load()
@@ -30,16 +30,15 @@ def test_login(selenium, base_url, wait):
 @pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.nondestructive
-@pytest.mark.create_session("regular_user")
 def test_logout(base_url, selenium):
     """User can logout"""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
+    page.login("regular_user")
     page.logout()
 
 @pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.nondestructive
-@pytest.mark.create_session("regular_user")
 def test_user_menu_collections_link(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.login("regular_user")
@@ -53,7 +52,6 @@ def test_user_menu_collections_link(base_url, selenium):
 @pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.nondestructive
-@pytest.mark.create_session("regular_user")
 def test_user_menu_view_profile(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.login("regular_user")
@@ -66,7 +64,6 @@ def test_user_menu_view_profile(base_url, selenium):
 @pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.nondestructive
-@pytest.mark.create_session("regular_user")
 def test_user_menu_edit_profile(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.login("regular_user")
@@ -91,7 +88,6 @@ def test_register_new_account(base_url, selenium, wait):
 @pytest.mark.login("developer")
 def test_user_menu_click_user_menu_links(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
-    # page.login("developer")
     # Click Submit New Add-on
     count = 3
     landing_page = ".section header h2"
@@ -112,8 +108,8 @@ def test_user_menu_click_user_menu_links(base_url, selenium):
 @pytest.mark.nondestructive
 @pytest.mark.create_session("developer")
 def test_user_developer_notifications(base_url, selenium, variables, wait):
+    Home(selenium, base_url).open().wait_for_page_to_load()
     user = User(selenium, base_url).open().wait_for_page_to_load()
-    # user.login("developer")
     # verifies that information messages about the scope of notifications are displayed
     assert variables["notifications_info_text"] in user.edit.notifications_info_text
     assert variables["notifications_help_text"] in user.edit.notifications_help_text
@@ -134,8 +130,8 @@ def test_user_developer_notifications(base_url, selenium, variables, wait):
 @pytest.mark.nondestructive
 @pytest.mark.create_session("developer")
 def test_user_mandatory_notifications(base_url, selenium):
+    Home(selenium, base_url).open().wait_for_page_to_load()
     user = User(selenium, base_url).open().wait_for_page_to_load()
-    # user.login("developer")
     # notifications 5 to 7 are mandatory for developers; clicking the checkboxes should have no effect
     for checkbox in user.edit.notifications_checkbox[4:7]:
         checkbox.click()
@@ -171,7 +167,7 @@ def test_user_edit_profile(base_url, selenium, variables):
 
 @pytest.mark.sanity
 @pytest.mark.serial
-@pytest.mark.create_session("reusable_user")
+@pytest.mark.create_session('reusable_user')
 def test_user_view_profile(base_url, selenium, variables):
     user = User(selenium, base_url).open().wait_for_page_to_load()
     # opens the View profile page
@@ -190,7 +186,7 @@ def test_user_view_profile(base_url, selenium, variables):
 
 
 @pytest.mark.serial
-@pytest.mark.create_session("reusable_user")
+@pytest.mark.create_session('reusable_user')
 def test_user_change_profile_picture(base_url, selenium, wait):
     user = User(selenium, base_url).open().wait_for_page_to_load()
     # opens the View profile page
@@ -218,7 +214,7 @@ def test_user_change_profile_picture(base_url, selenium, wait):
 
 
 @pytest.mark.serial
-@pytest.mark.create_session("reusable_user")
+@pytest.mark.create_session('reusable_user')
 def test_user_delete_profile_picture(base_url, selenium):
     user = User(selenium, base_url).open().wait_for_page_to_load()
     user.edit.delete_profile_picture()
@@ -235,7 +231,7 @@ def test_user_delete_profile_picture(base_url, selenium):
 
 
 @pytest.mark.serial
-@pytest.mark.create_session("reusable_user")
+@pytest.mark.create_session('reusable_user')
 def test_user_update_profile(base_url, selenium, variables):
     user = User(selenium, base_url).open().wait_for_page_to_load()
     updated_name = "new_display_name"
@@ -257,7 +253,7 @@ def test_user_update_profile(base_url, selenium, variables):
 
 
 @pytest.mark.serial
-@pytest.mark.create_session("reusable_user")
+@pytest.mark.create_session('reusable_user')
 def test_user_update_url(base_url, selenium, variables):
     user = User(selenium, base_url).open().wait_for_page_to_load()
     initial_page_url = selenium.current_url
@@ -289,7 +285,7 @@ def test_user_update_url(base_url, selenium, variables):
 
 @pytest.mark.sanity
 @pytest.mark.serial
-@pytest.mark.create_session("reusable_user")
+@pytest.mark.create_session('reusable_user')
 def test_user_delete_profile(base_url, selenium):
     user = User(selenium, base_url).open().wait_for_page_to_load()
     user.edit.delete_account()
@@ -305,7 +301,7 @@ def test_user_delete_profile(base_url, selenium):
 
 
 @pytest.mark.serial
-@pytest.mark.create_session("reusable_user")
+@pytest.mark.login("reusable_user")
 def test_user_account_manage_section(base_url, selenium, variables):
     user = User(selenium, base_url).open().wait_for_page_to_load()
     email = Login(selenium, base_url)
@@ -335,10 +331,11 @@ def test_user_data_for_deleted_profile(base_url, selenium):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-@pytest.mark.create_session("reusable_user")
+@pytest.mark.create_session('reusable_user')
+@pytest.mark.clear_session
 def test_user_regular_has_no_role(base_url, selenium):
+    Home(selenium, base_url).open().wait_for_page_to_load()
     user = User(selenium, base_url).open().wait_for_page_to_load()
-    # user.login("regular_user")
     user.edit.click_view_profile_link()
     # check that we do not display role badges for regular users
     with pytest.raises(NoSuchElementException):
@@ -348,9 +345,9 @@ def test_user_regular_has_no_role(base_url, selenium):
 
 
 @pytest.mark.serial
-@pytest.mark.create_session("reusable_user")
 def test_user_regular_notifications(base_url, selenium, variables):
     user = User(selenium, base_url).open().wait_for_page_to_load()
+    user.login("reusable_user")
     # regular users can only opt in/out for 2 notifications
     assert len(user.edit.notification_text) == 2
     count = 0

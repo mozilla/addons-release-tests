@@ -281,7 +281,7 @@ def test_verify_new_unlisted_version_autoapproval(selenium, base_url, variables)
     """Uploads a new version to an existing addon and verifies that is auto-approved"""
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     page.devhub_login('developer')
-    addon = variables['unlisted_new_version_autoapproval']
+    addon = variables['unlisted_new_version_auto_approval']
     # in order to upload a new version, we need to increment on the existing version number
     # to obtain the current version number, we make an API request that returns the value
     auth = selenium.get_cookie('sessionid')['value']
@@ -464,7 +464,6 @@ def test_submit_listed_wizard_theme(selenium, base_url, variables, wait, delete_
 @pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.create_session('submissions_user')
-@pytest.mark.clear_session
 def test_delete_all_extensions(selenium, base_url):
     """This test will delete all the extensions submitted above to make sure
     we can start over with this user in the following runs and also for

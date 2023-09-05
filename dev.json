@@ -154,7 +154,7 @@
   "listed_addon_description_en": "Listed add-on description set at add-on creation time",
   "listed_addon_privacy_policy_en": "Listed add-on privacy policy",
   "listed_addon_reviewer_notes": "TEST ADDON: Reviewer notes set by the developer",
-  "unlisted_new_version_autoapproval": "d609df39d1c44671b0e1",
+  "unlisted_new_version_auto_approval": "d609df39d1c44671b0e1",
 
   "duplicate_guid": "@contain-facebook",
   "approved_addon_with_sources": "jswszwpeoc",
