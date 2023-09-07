@@ -60,7 +60,7 @@ def test_devhub_developer_agreement_page_links(selenium, base_url):
 def test_devhub_developer_agreement_checkboxes(selenium, base_url):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     # use an account that hasn't accepted the agreement before
-    # page.devhub_login('regular_user')
+    page.devhub_login('regular_user')
     dist_agreement = page.click_submit_theme_button()
     dist_agreement.distribution_agreement_checkbox.click()
     assert dist_agreement.distribution_agreement_checkbox.is_selected()

@@ -192,7 +192,7 @@ def test_devhub_click_see_all_addons_link(selenium, base_url, wait):
 
 
 @pytest.mark.nondestructive
-@pytest.mark.login("submissions_user")
+@pytest.mark.create_session("developer")
 def test_devhub_click_submit_new_addon_button(selenium, base_url, wait):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     distribution_page = page.click_submit_addon_button()
@@ -205,7 +205,7 @@ def test_devhub_click_submit_new_addon_button(selenium, base_url, wait):
 @pytest.mark.nondestructive
 def test_devhub_click_submit_new_theme_button(selenium, base_url, wait):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.devhub_login("submissions_user")
+    page.devhub_login("developer")
     distribution_page = page.click_submit_theme_button()
     wait.until(
         lambda _: distribution_page.submission_form_header.is_displayed(),
@@ -251,7 +251,7 @@ def test_devhub_resources_footer_documentation_links(selenium, base_url, variabl
 
 
 @pytest.mark.nondestructive
-@pytest.mark.create_session("submissions_user")
+@pytest.mark.create_session("developer")
 def test_devhub_resources_footer_tools_links(selenium, base_url, variables):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     assert "Tools" in page.resources.tools_section_header
@@ -268,7 +268,7 @@ def test_devhub_resources_footer_tools_links(selenium, base_url, variables):
 
 
 @pytest.mark.nondestructive
-@pytest.mark.create_session("submissions_user")
+@pytest.mark.create_session("developer")
 def test_devhub_resources_footer_promote_links(selenium, base_url, variables):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     assert "Promote" in page.resources.promote_section_header
@@ -285,7 +285,7 @@ def test_devhub_resources_footer_promote_links(selenium, base_url, variables):
 
 
 @pytest.mark.nondestructive
-@pytest.mark.create_session("submissions_user")
+@pytest.mark.create_session("developer")
 def test_devhub_resources_join_addon_review(selenium, base_url, variables):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     assert "Review Add-ons" in page.resources.review_addons_section_header
@@ -586,7 +586,7 @@ def test_devhub_footer_copyright_message(base_url, selenium, count, link):
 @pytest.mark.nondestructive
 def test_devhub_logout(selenium, base_url, wait):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.devhub_login("submissions_user")
+    page.devhub_login("developer")
     page.click_sign_out()
     # confirms user is no longer logged in
     wait.until(lambda _: page.header_login_button.is_displayed())
