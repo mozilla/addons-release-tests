@@ -68,77 +68,6 @@ def test_devhub_developer_agreement_checkboxes(selenium, base_url):
     assert dist_agreement.review_policies_checkbox.is_selected()
     dist_agreement.click_recaptcha_checkbox()
 
-@pytest.mark.login("submissions_user")
-def test_addon_distribution_page_contents(selenium, base_url, variables, wait):
-    """Check the elements present on devhub addon distribution page (where the user selects
-    the listed or unlisted channels to upload their addon"""
-    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    # page.devhub_login('submissions_user')
-    dist_page = page.click_submit_theme_button()
-    wait.until(lambda _: dist_page.submission_form_header.is_displayed())
-    assert (
-        variables['devhub_submit_addon_distribution_header']
-        in dist_page.submission_form_subheader.text
-    )
-    # checks that the listed option is selected by default
-    assert dist_page.listed_option_radiobutton.is_selected()
-    assert variables['listed_option_helptext'] in dist_page.listed_option_helptext
-    assert (
-        variables['unlisted_option_helptext'] in dist_page.unlisted_option_helptext.text
-    )
-    # check that the 'update_url', 'distribution' and 'policies' links opens the correct Extension Workshop page
-    dist_page.click_extension_workshop_article_link(
-        dist_page.update_url_link, 'Updating your extension'
-    )
-    assert (
-        variables['distribution_and_signing_helptext']
-        in dist_page.distribution_and_signing_helptext.text
-    )
-    dist_page.click_extension_workshop_article_link(
-        dist_page.distribution_and_signing_link, 'Signing and distributing your add-on'
-    )
-    assert (
-        variables['addon_policies_helptext'] in dist_page.addon_policies_helptext.text
-    )
-    dist_page.click_extension_workshop_article_link(
-        dist_page.addon_policies_link, 'Add-on Policies'
-    )
-
-@pytest.mark.create_session("submissions_user")
-def test_devhub_upload_extension_page_contents(selenium, base_url, wait, variables):
-    """Verify the elements present on the upload file page, where the user
-    uploads and validates an addon file"""
-    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    # page.devhub_login('submissions_user')
-    selenium.get(f'{base_url}/developers/addon/submit/theme/upload-listed')
-    upload_page = SubmitAddon(selenium, base_url).wait_for_page_to_load()
-    upload_page.developer_notification_box.is_displayed()
-    assert (
-        variables['upload_extension_file_helptext']
-        in upload_page.file_upload_helptext[0].text
-    )
-    assert variables['create_theme_version_helptext'] in upload_page.accepted_file_types
-
-@pytest.mark.create_session("submissions_user")
-def test_upload_unsupported_file_validation_error(selenium, base_url, wait):
-    """Verify validation results for errors triggered by unsupported file uploads"""
-    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    # page.devhub_login('submissions_user')
-    selenium.get(f'{base_url}/developers/addon/submit/upload-listed')
-    upload_page = SubmitAddon(selenium, base_url).wait_for_page_to_load()
-    file = 'tar-ext.tar'
-    upload_page.upload_addon(file)
-    wait.until(lambda _: upload_page.failed_validation_bar.is_displayed())
-    # check that the validation results show the following 'error specific' components
-    assert f'Error with {file}' in upload_page.validation_status_title
-    upload_page.click_validation_support_link()
-    assert 'Your add-on failed validation' in upload_page.validation_failed_message
-    assert (
-        "The filetype you uploaded isn't recognized"
-        in upload_page.validation_failed_reason[0].text
-    )
-
-
 @pytest.mark.sanity
 @pytest.mark.serial
 # The first test starts the browser with a normal login in order to store de session cookie
@@ -229,6 +158,112 @@ def test_submit_listed_addon(selenium, base_url, variables, wait):
     edit_listing = confirmation_page.click_edit_listing_button()
     assert addon_name in edit_listing.name
 
+@pytest.mark.sanity
+@pytest.mark.serial
+def test_verify_new_unlisted_version_autoapproval(selenium, base_url, variables):
+    """Uploads a new version to an existing addon and verifies that is auto-approved"""
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    page.devhub_login('developer')
+    addon = variables['unlisted_new_version_auto_approval']
+    # in order to upload a new version, we need to increment on the existing version number
+    # to obtain the current version number, we make an API request that returns the value
+    auth = selenium.get_cookie('sessionid')['value']
+    version_string = api_helpers.get_addon_version_string(base_url, addon, auth)
+    # create a new addon version with the incremented versio number
+    manifest = {
+        'manifest_version': 2,
+        'theme': {'frame': '#083af0', 'tab_background_text': '#ffffff'},
+        'version': f'{float(version_string) + 1}',
+        'name': 'New version auto-approval',
+    }
+    api_helpers.make_addon(manifest)
+    # go to the unlisted distribution page to submit a new version
+    selenium.get(f'{base_url}/developers/addon/{addon}/versions/submit/')
+    submit_version = SubmitAddon(selenium).wait_for_page_to_load()
+    submit_version.upload_addon('make-addon.zip')
+    # wait for the validation to finish and check if it is successful
+    submit_version.is_validation_successful()
+    assert submit_version.success_validation_message.is_displayed()
+    submit_version.click_continue()
+    confirmation_page = SubmissionConfirmationPage(selenium)
+    assert (
+        variables['unlisted_submission_confirmation']
+        in confirmation_page.submission_confirmation_messages[0].text
+    )
+    # open the manage versions page for the addon and wait for the latest version to be auto-approved
+    selenium.get(f'{base_url}/developers/addon/{addon}/versions')
+    version_status = ManageVersions(selenium).wait_for_page_to_load()
+    version_status.wait_for_version_autoapproval('Approved')
+
+@pytest.mark.create_session("submissions_user")
+def test_addon_distribution_page_contents(selenium, base_url, variables, wait):
+    """Check the elements present on devhub addon distribution page (where the user selects
+    the listed or unlisted channels to upload their addon"""
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    # page.devhub_login('submissions_user')
+    dist_page = page.click_submit_theme_button()
+    wait.until(lambda _: dist_page.submission_form_header.is_displayed())
+    assert (
+        variables['devhub_submit_addon_distribution_header']
+        in dist_page.submission_form_subheader.text
+    )
+    # checks that the listed option is selected by default
+    assert dist_page.listed_option_radiobutton.is_selected()
+    assert variables['listed_option_helptext'] in dist_page.listed_option_helptext
+    assert (
+        variables['unlisted_option_helptext'] in dist_page.unlisted_option_helptext.text
+    )
+    # check that the 'update_url', 'distribution' and 'policies' links opens the correct Extension Workshop page
+    dist_page.click_extension_workshop_article_link(
+        dist_page.update_url_link, 'Updating your extension'
+    )
+    assert (
+        variables['distribution_and_signing_helptext']
+        in dist_page.distribution_and_signing_helptext.text
+    )
+    dist_page.click_extension_workshop_article_link(
+        dist_page.distribution_and_signing_link, 'Signing and distributing your add-on'
+    )
+    assert (
+        variables['addon_policies_helptext'] in dist_page.addon_policies_helptext.text
+    )
+    dist_page.click_extension_workshop_article_link(
+        dist_page.addon_policies_link, 'Add-on Policies'
+    )
+
+@pytest.mark.create_session("submissions_user")
+def test_devhub_upload_extension_page_contents(selenium, base_url, wait, variables):
+    """Verify the elements present on the upload file page, where the user
+    uploads and validates an addon file"""
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    # page.devhub_login('submissions_user')
+    selenium.get(f'{base_url}/developers/addon/submit/theme/upload-listed')
+    upload_page = SubmitAddon(selenium, base_url).wait_for_page_to_load()
+    upload_page.developer_notification_box.is_displayed()
+    assert (
+        variables['upload_extension_file_helptext']
+        in upload_page.file_upload_helptext[0].text
+    )
+    assert variables['create_theme_version_helptext'] in upload_page.accepted_file_types
+
+@pytest.mark.create_session("submissions_user")
+def test_upload_unsupported_file_validation_error(selenium, base_url, wait):
+    """Verify validation results for errors triggered by unsupported file uploads"""
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    # page.devhub_login('submissions_user')
+    selenium.get(f'{base_url}/developers/addon/submit/upload-listed')
+    upload_page = SubmitAddon(selenium, base_url).wait_for_page_to_load()
+    file = 'tar-ext.tar'
+    upload_page.upload_addon(file)
+    wait.until(lambda _: upload_page.failed_validation_bar.is_displayed())
+    # check that the validation results show the following 'error specific' components
+    assert f'Error with {file}' in upload_page.validation_status_title
+    upload_page.click_validation_support_link()
+    assert 'Your add-on failed validation' in upload_page.validation_failed_message
+    assert (
+        "The filetype you uploaded isn't recognized"
+        in upload_page.validation_failed_reason[0].text
+    )
 
 @pytest.mark.serial
 @pytest.mark.create_session('submissions_user')
@@ -273,44 +308,6 @@ def test_submit_mixed_addon_versions(selenium, base_url, variables, wait):
     edit_addon = manage_addons.addon_list[0].click_addon_name()
     # verify that the unlisted addon badge is now visible on the edit details page
     assert edit_addon.unlisted_version_tooltip.is_displayed()
-
-
-@pytest.mark.sanity
-@pytest.mark.serial
-def test_verify_new_unlisted_version_autoapproval(selenium, base_url, variables):
-    """Uploads a new version to an existing addon and verifies that is auto-approved"""
-    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.devhub_login('developer')
-    addon = variables['unlisted_new_version_auto_approval']
-    # in order to upload a new version, we need to increment on the existing version number
-    # to obtain the current version number, we make an API request that returns the value
-    auth = selenium.get_cookie('sessionid')['value']
-    version_string = api_helpers.get_addon_version_string(base_url, addon, auth)
-    # create a new addon version with the incremented versio number
-    manifest = {
-        'manifest_version': 2,
-        'theme': {'frame': '#083af0', 'tab_background_text': '#ffffff'},
-        'version': f'{float(version_string) + 1}',
-        'name': 'New version auto-approval',
-    }
-    api_helpers.make_addon(manifest)
-    # go to the unlisted distribution page to submit a new version
-    selenium.get(f'{base_url}/developers/addon/{addon}/versions/submit/')
-    submit_version = SubmitAddon(selenium).wait_for_page_to_load()
-    submit_version.upload_addon('make-addon.zip')
-    # wait for the validation to finish and check if it is successful
-    submit_version.is_validation_successful()
-    assert submit_version.success_validation_message.is_displayed()
-    submit_version.click_continue()
-    confirmation_page = SubmissionConfirmationPage(selenium)
-    assert (
-        variables['unlisted_submission_confirmation']
-        in confirmation_page.submission_confirmation_messages[0].text
-    )
-    # open the manage versions page for the addon and wait for the latest version to be auto-approved
-    selenium.get(f'{base_url}/developers/addon/{addon}/versions')
-    version_status = ManageVersions(selenium).wait_for_page_to_load()
-    version_status.wait_for_version_autoapproval('Approved')
 
 @pytest.mark.parametrize(
     'addon_name, description',
