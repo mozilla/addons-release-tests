@@ -195,12 +195,21 @@ class SubmitAddon(Page):
 
     @property
     def listed_option_radiobutton(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._listed_option_locator)
+        )
         return self.find_element(*self._listed_option_locator)
 
     def select_listed_option(self):
+        self.wait.until(
+            EC.element_to_be_clickable(self._listed_option_locator)
+        )
         self.find_element(*self._listed_option_locator).click()
 
     def select_unlisted_option(self):
+        self.wait.until(
+            EC.element_to_be_clickable(self._unlisted_option_locator)
+        )
         self.find_element(*self._unlisted_option_locator).click()
 
     @property

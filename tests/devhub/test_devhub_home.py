@@ -50,9 +50,9 @@ def test_click_blog(selenium, base_url):
 
 @pytest.mark.sanity
 @pytest.mark.nondestructive
+@pytest.mark.login("developer")
 def test_devhub_login(selenium, base_url, wait):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.devhub_login("developer")
     # verifies that the user has been logged in by looking at the user icon
     wait.until(lambda _: page.user_avatar.is_displayed())
 
@@ -203,9 +203,9 @@ def test_devhub_click_submit_new_addon_button(selenium, base_url, wait):
 
 
 @pytest.mark.nondestructive
+@pytest.mark.create_session("developer")
 def test_devhub_click_submit_new_theme_button(selenium, base_url, wait):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.devhub_login("developer")
     distribution_page = page.click_submit_theme_button()
     wait.until(
         lambda _: distribution_page.submission_form_header.is_displayed(),
@@ -298,9 +298,9 @@ def test_devhub_resources_join_addon_review(selenium, base_url, variables):
 
 
 @pytest.mark.nondestructive
+@pytest.mark.create_session("developer")
 def test_devhub_resources_write_some_code(selenium, base_url, variables):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.devhub_login("developer")
     assert "Write Some Code" in page.resources.write_code_section_header
     assert (
         variables["devhub_resources_write_some_code_text"]
@@ -584,9 +584,10 @@ def test_devhub_footer_copyright_message(base_url, selenium, count, link):
 
 @pytest.mark.sanity
 @pytest.mark.nondestructive
+@pytest.mark.create_session("developer")
 def test_devhub_logout(selenium, base_url, wait):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.devhub_login("developer")
+    # page.devhub_login("developer")
     page.click_sign_out()
     # confirms user is no longer logged in
     wait.until(lambda _: page.header_login_button.is_displayed())

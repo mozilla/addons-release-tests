@@ -8,8 +8,6 @@ from pages.desktop.developers.manage_versions import ManageVersions
 @pytest.mark.login("developer")
 def test_set_addon_invisible(selenium, base_url, variables, wait):
     """Set an addon Invisible and then reset the status to Visible"""
-    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    # page.devhub_login("developer")
     selenium.get(f"{base_url}/developers/addon/invisible_addon_auto/versions")
     manage_version = ManageVersions(selenium, base_url).wait_for_page_to_load()
     # check that the Listing visibility section has the necessary information for developers
@@ -46,8 +44,6 @@ def test_set_addon_invisible(selenium, base_url, variables, wait):
 def test_disable_enable_version(selenium, base_url, variables, wait):
     """Check that developers cand disable and re-enable addon versions;
     This test works with an addon having a single version submitted and Approved"""
-    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    # page.devhub_login("developer")
     selenium.get(f"{base_url}/developers/addon/disable_version_auto/versions")
     manage_version = ManageVersions(selenium, base_url).wait_for_page_to_load()
     # had to use a time.sleep here because I couldn't get an explicit wait to work on the button

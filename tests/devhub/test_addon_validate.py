@@ -1,7 +1,6 @@
 import pytest
 
 from pages.desktop.developers.devhub_addon_validate import DevhubAddonValidate
-from pages.desktop.developers.devhub_home import DevHubHome
 
 
 @pytest.mark.sanity

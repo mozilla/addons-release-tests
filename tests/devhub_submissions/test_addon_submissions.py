@@ -12,8 +12,6 @@ from api import api_helpers, payloads
 @pytest.mark.login("regular_user")
 def test_devhub_developer_agreement_page_contents(selenium, base_url, variables, wait):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    # use an account that hasn't accepted the agreement before
-    # page.devhub_login('regular_user')
     page.wait_for_page_to_load()
     dist_agreement = page.click_submit_theme_button()
     assert (
@@ -41,8 +39,6 @@ def test_devhub_developer_agreement_page_contents(selenium, base_url, variables,
 @pytest.mark.create_session("regular_user")
 def test_devhub_developer_agreement_page_links(selenium, base_url):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    # use an account that hasn't accepted the agreement before
-    # page.devhub_login('regular_user')
     dist_agreement = page.click_submit_theme_button()
     # check that the distribution agreement link opens the correct Extension workshop page
     dist_agreement.click_extension_workshop_article_link(
@@ -60,7 +56,6 @@ def test_devhub_developer_agreement_page_links(selenium, base_url):
 def test_devhub_developer_agreement_checkboxes(selenium, base_url):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     # use an account that hasn't accepted the agreement before
-    # page.devhub_login('regular_user')
     dist_agreement = page.click_submit_theme_button()
     dist_agreement.distribution_agreement_checkbox.click()
     assert dist_agreement.distribution_agreement_checkbox.is_selected()
@@ -68,12 +63,75 @@ def test_devhub_developer_agreement_checkboxes(selenium, base_url):
     assert dist_agreement.review_policies_checkbox.is_selected()
     dist_agreement.click_recaptcha_checkbox()
 
-@pytest.mark.login("submissions_user")
+@pytest.mark.sanity
+def test_submit_listed_wizard_theme(selenium, base_url, variables, wait, delete_themes):
+    """A test that checks a straight-forward theme submission with the devhub wizard"""
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    page.devhub_login("submissions_user")
+    submit_addon = page.click_submit_theme_button()
+    # start the upload for a listed theme
+    submit_addon.select_listed_option()
+    submit_addon.click_continue()
+    create_theme = submit_addon.click_create_theme_button()
+    theme_name = f'wizard_theme_{reusables.get_random_string(5)}'
+    create_theme.set_theme_name(theme_name)
+    create_theme.upload_theme_header('theme_header.png')
+    wait.until(lambda _: create_theme.uploaded_image_preview.is_displayed())
+    # make a note of the image source uploaded as the theme header
+    uploaded_img_source = create_theme.uploaded_image_source
+    # verify that the uploaded image is applied in the browser preview
+    assert uploaded_img_source == create_theme.browser_preview_image
+    theme_details = create_theme.submit_theme()
+    # check that the name set earlier carried over
+    assert theme_name in theme_details.addon_name_field.get_attribute('value')
+    theme_details.set_addon_summary('Theme summary')
+    # select a category for the theme
+    theme_details.select_theme_categories(0)
+    # set up a license for the theme based on 'Yes'[0]/'No'[1] options
+    theme_details.select_theme_licence_sharing_rights(1)
+    theme_details.select_theme_license_commercial_use(1)
+    theme_details.select_theme_license_creation_rights(1)
+    # check that the resulted license is 'All Rights Reserved'
+    assert 'All Rights Reserved' in theme_details.generated_theme_license.text
+    confirmation_page = theme_details.submit_addon()
+    # verify that the theme preview has been generated after submission
+    wait.until(lambda _: confirmation_page.generated_theme_preview.is_displayed())
+    manage_themes = confirmation_page.click_manage_listing_button()
+    # check that the submitted theme appears in the user's themes list
+    assert theme_name in manage_themes.addon_list[0].name
+
+@pytest.mark.sanity
+@pytest.mark.serial
+# The first test starts the browser with a normal login in order to store de session cookie
+@pytest.mark.login('submissions_user')
+def test_submit_unlisted_addon(selenium, base_url, variables, wait):
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    submit_addon = page.click_submit_addon_button()
+    # start the upload for an unlisted addon
+    submit_addon.select_unlisted_option()
+    submit_addon.click_continue()
+    # select an addon to upload
+    submit_addon.upload_addon('unlisted-addon.zip')
+    submit_addon.is_validation_successful()
+    assert submit_addon.success_validation_message.is_displayed()
+    # on submit source code page, select 'No' as we do not test source code upload here
+    source = submit_addon.click_continue_upload_button()
+    source.select_no_to_omit_source()
+    confirmation_page = source.continue_unlisted_submission()
+    assert (
+        variables['unlisted_submission_confirmation']
+        in confirmation_page.submission_confirmation_messages[0].text
+    )
+    manage_addons = confirmation_page.click_manage_listing_button()
+    manage_addons.sort_by_created()
+    # checking that the latest add-on created is the one just submitted
+    wait.until(lambda _: 'Unlisted-addon-auto' in manage_addons.addon_list[0].name)
+
+@pytest.mark.create_session("submissions_user")
 def test_addon_distribution_page_contents(selenium, base_url, variables, wait):
     """Check the elements present on devhub addon distribution page (where the user selects
     the listed or unlisted channels to upload their addon"""
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    # page.devhub_login('submissions_user')
     dist_page = page.click_submit_theme_button()
     wait.until(lambda _: dist_page.submission_form_header.is_displayed())
     assert (
@@ -108,8 +166,6 @@ def test_addon_distribution_page_contents(selenium, base_url, variables, wait):
 def test_devhub_upload_extension_page_contents(selenium, base_url, wait, variables):
     """Verify the elements present on the upload file page, where the user
     uploads and validates an addon file"""
-    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    # page.devhub_login('submissions_user')
     selenium.get(f'{base_url}/developers/addon/submit/theme/upload-listed')
     upload_page = SubmitAddon(selenium, base_url).wait_for_page_to_load()
     upload_page.developer_notification_box.is_displayed()
@@ -122,8 +178,6 @@ def test_devhub_upload_extension_page_contents(selenium, base_url, wait, variabl
 @pytest.mark.create_session("submissions_user")
 def test_upload_unsupported_file_validation_error(selenium, base_url, wait):
     """Verify validation results for errors triggered by unsupported file uploads"""
-    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    # page.devhub_login('submissions_user')
     selenium.get(f'{base_url}/developers/addon/submit/upload-listed')
     upload_page = SubmitAddon(selenium, base_url).wait_for_page_to_load()
     file = 'tar-ext.tar'
@@ -137,34 +191,6 @@ def test_upload_unsupported_file_validation_error(selenium, base_url, wait):
         "The filetype you uploaded isn't recognized"
         in upload_page.validation_failed_reason[0].text
     )
-
-
-@pytest.mark.sanity
-@pytest.mark.serial
-# The first test starts the browser with a normal login in order to store de session cookie
-@pytest.mark.login('submissions_user')
-def test_submit_unlisted_addon(selenium, base_url, variables, wait):
-    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    submit_addon = page.click_submit_addon_button()
-    # start the upload for an unlisted addon
-    submit_addon.select_unlisted_option()
-    submit_addon.click_continue()
-    # select an addon to upload
-    submit_addon.upload_addon('unlisted-addon.zip')
-    submit_addon.is_validation_successful()
-    assert submit_addon.success_validation_message.is_displayed()
-    # on submit source code page, select 'No' as we do not test source code upload here
-    source = submit_addon.click_continue_upload_button()
-    source.select_no_to_omit_source()
-    confirmation_page = source.continue_unlisted_submission()
-    assert (
-        variables['unlisted_submission_confirmation']
-        in confirmation_page.submission_confirmation_messages[0].text
-    )
-    manage_addons = confirmation_page.click_manage_listing_button()
-    manage_addons.sort_by_created()
-    # checking that the latest add-on created is the one just submitted
-    wait.until(lambda _: 'Unlisted-addon-auto' in manage_addons.addon_list[0].name)
 
 @pytest.mark.serial
 @pytest.mark.create_session('submissions_user')
@@ -421,45 +447,6 @@ def test_cancel_and_disable_version_during_upload(selenium, base_url, wait):
     delete = canceled_version.delete_addon()
     delete.input_delete_confirmation_string()
     delete.confirm_delete_addon()
-
-
-@pytest.mark.sanity
-def test_submit_listed_wizard_theme(selenium, base_url, variables, wait, delete_themes):
-    """A test that checks a straight-forward theme submission with the devhub wizard"""
-    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.devhub_login("submissions_user")
-    submit_addon = page.click_submit_theme_button()
-    # start the upload for a listed theme
-    submit_addon.select_listed_option()
-    submit_addon.click_continue()
-    create_theme = submit_addon.click_create_theme_button()
-    theme_name = f'wizard_theme_{reusables.get_random_string(5)}'
-    create_theme.set_theme_name(theme_name)
-    create_theme.upload_theme_header('theme_header.png')
-    wait.until(lambda _: create_theme.uploaded_image_preview.is_displayed())
-    # make a note of the image source uploaded as the theme header
-    uploaded_img_source = create_theme.uploaded_image_source
-    # verify that the uploaded image is applied in the browser preview
-    assert uploaded_img_source == create_theme.browser_preview_image
-    theme_details = create_theme.submit_theme()
-    # check that the name set earlier carried over
-    assert theme_name in theme_details.addon_name_field.get_attribute('value')
-    theme_details.set_addon_summary('Theme summary')
-    # select a category for the theme
-    theme_details.select_theme_categories(0)
-    # set up a license for the theme based on 'Yes'[0]/'No'[1] options
-    theme_details.select_theme_licence_sharing_rights(1)
-    theme_details.select_theme_license_commercial_use(1)
-    theme_details.select_theme_license_creation_rights(1)
-    # check that the resulted license is 'All Rights Reserved'
-    assert 'All Rights Reserved' in theme_details.generated_theme_license.text
-    confirmation_page = theme_details.submit_addon()
-    # verify that the theme preview has been generated after submission
-    wait.until(lambda _: confirmation_page.generated_theme_preview.is_displayed())
-    manage_themes = confirmation_page.click_manage_listing_button()
-    # check that the submitted theme appears in the user's themes list
-    assert theme_name in manage_themes.addon_list[0].name
-
 
 @pytest.mark.sanity
 @pytest.mark.serial
