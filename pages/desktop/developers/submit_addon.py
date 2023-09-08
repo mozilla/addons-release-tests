@@ -115,6 +115,9 @@ class SubmitAddon(Page):
 
     @property
     def distribution_agreement_checkbox(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._distribution_agreement_checkbox_locator)
+        )
         return self.find_element(*self._distribution_agreement_checkbox_locator)
 
     @property

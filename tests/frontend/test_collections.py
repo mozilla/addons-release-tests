@@ -373,7 +373,6 @@ def test_confirm_delete_dialog(selenium, base_url, variables):
 @pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.create_session("collection_user")
-@pytest.mark.clear_session
 def test_delete_collection(selenium, base_url, variables):
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
     # make a note of the collection name in My Collections list

@@ -38,6 +38,18 @@ class Base(Page):
         )
         return self
 
+    def wait_for_element_to_be_displayed(self, element):
+        self.wait.until(
+            EC.visibility_of_element_located(element)
+        )
+        return self
+
+    def wait_for_element_to_be_clickable(self, element):
+        self.wait.until(
+            EC.element_to_be_clickable(element)
+        )
+        return self
+
     @property
     def header(self):
         return Header(self)

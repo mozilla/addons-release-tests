@@ -110,6 +110,7 @@ class DevHubHome(Base):
 
     @property
     def page_logo(self):
+        self.wait_for_element_to_be_displayed(self._logo_locator)
         return self.find_element(*self._logo_locator)
 
     def extension_workshop_is_loaded(self):
@@ -121,9 +122,11 @@ class DevHubHome(Base):
 
     @property
     def extension_workshop(self):
+        self.wait_for_element_to_be_displayed(self._ext_workshop_link_locator)
         return self.find_element(*self._ext_workshop_link_locator)
 
     def click_documentation(self):
+        self.wait_for_element_to_be_clickable(self._documentation_link_locator)
         self.find_element(*self._documentation_link_locator).click()
         self.wait.until(
             EC.text_to_be_present_in_element(
@@ -134,17 +137,21 @@ class DevHubHome(Base):
         )
 
     def click_support(self):
+        self.wait_for_element_to_be_clickable(self._blog_link_locator)
         self.find_element(*self._support_link_locator).click()
 
     def click_blog(self):
+        self.wait_for_element_to_be_clickable(self._blog_link_locator)
         self.find_element(*self._blog_link_locator).click()
         self.wait.until(EC.visibility_of_element_located((By.ID, 'site-title')))
 
     @property
     def header_login_button(self):
+        self.wait_for_element_to_be_displayed(self._fxa_login_button_locator)
         return self.find_element(*self._fxa_login_button_locator)
 
     def click_header_login_button(self):
+        self.wait_for_element_to_be_clickable(self._fxa_login_button_locator)
         self.find_element(*self._fxa_login_button_locator).click()
         from pages.desktop.frontend.login import Login
 
@@ -152,6 +159,7 @@ class DevHubHome(Base):
 
     @property
     def sign_out_link(self):
+        self.wait_for_element_to_be_displayed(self._sign_out_link_locator)
         return self.find_element(*self._sign_out_link_locator)
 
     def click_sign_out(self):
@@ -159,6 +167,7 @@ class DevHubHome(Base):
 
     @property
     def user_avatar(self):
+        self.wait_for_element_to_be_displayed(self._user_logged_in_avatar_locator)
         return self.find_element(*self._user_logged_in_avatar_locator)
 
     def devhub_login(self, user):
@@ -177,44 +186,55 @@ class DevHubHome(Base):
 
     @property
     def devhub_overview_title(self):
+        self.wait_for_element_to_be_displayed(self._page_overview_title_locator)
         return self.find_element(*self._page_overview_title_locator).text
 
     @property
     def devhub_overview_summary(self):
+        self.wait_for_element_to_be_displayed(self._page_overview_summary_locator)
         return self.find_element(*self._page_overview_summary_locator).text
 
     def click_overview_learn_how_button(self):
+        self.wait_for_element_to_be_clickable(self._learn_how_button_locator)
         self.find_element(*self._learn_how_button_locator).click()
 
     @property
     def devhub_content_title(self):
+        self.wait_for_element_to_be_displayed(self._page_content_title_locator)
         return self.find_element(*self._page_content_title_locator).text
 
     @property
     def devhub_content_summary(self):
+        self.wait_for_element_to_be_displayed(self._page_content_summary_locator)
         return self.find_element(*self._page_content_summary_locator).text
 
     @property
     def devhub_content_image(self):
+        self.wait_for_element_to_be_displayed(self._page_content_featured_image_locator)
         return self.find_element(*self._page_content_featured_image_locator)
 
     @property
     def devhub_get_involved_title(self):
+        self.wait_for_element_to_be_displayed(self._get_involved_title_locator)
         return self.find_element(*self._get_involved_title_locator).text
 
     @property
     def devhub_get_involved_summary(self):
+        self.wait_for_element_to_be_displayed(self._get_involved_summary_locator)
         return self.find_element(*self._get_involved_summary_locator).text
 
     @property
     def devhub_get_involved_link(self):
+        self.wait_for_element_to_be_displayed(self._dev_community_link_locator)
         return self.find_element(*self._dev_community_link_locator)
 
     @property
     def devhub_get_involved_image(self):
+        self.wait_for_element_to_be_displayed(self._get_involved_image_locator)
         return self.find_element(*self._get_involved_image_locator)
 
     def click_content_login_link(self):
+        self.wait_for_element_to_be_clickable(self._page_content_login_link_locator)
         self.find_element(*self._page_content_login_link_locator).click()
 
     @property
@@ -234,37 +254,45 @@ class DevHubHome(Base):
         return User(self.driver, self.base_url)
 
     def click_my_addons_header_link(self):
+        self.wait_for_element_to_be_clickable(self._my_addons_header_link_locator)
         self.find_element(*self._my_addons_header_link_locator).click()
         return ManageAddons(self.driver, self.base_url)
 
     @property
     def logged_in_hero_banner_header(self):
+        self.wait_for_element_to_be_displayed(self._logged_in_hero_banner_header_locator)
         return self.find_element(*self._logged_in_hero_banner_header_locator).text
 
     @property
     def my_addons_section_header(self):
+        self.wait_for_element_to_be_displayed(self._my_addons_section_header_locator)
         return self.find_element(*self._my_addons_section_header_locator)
 
     @property
     def my_addons_section_paragraph(self):
+        self.wait_for_element_to_be_displayed(self._my_addons_section_paragraph_locator)
         return self.find_element(*self._my_addons_section_paragraph_locator)
 
     @property
     def logged_in_hero_banner_text(self):
+        self.wait_for_element_to_be_displayed(self._logged_in_hero_banner_text_locator)
         return self.find_element(*self._logged_in_hero_banner_text_locator).text
 
     def click_logged_in_hero_banner_extension_workshop_link(self):
         self.find_element(*self._logged_in_hero_banner_link_locator).click()
 
     def click_see_all_addons_link(self):
+        self.wait_for_element_to_be_clickable(self._submit_addon_button_locator)
         self.find_element(*self._see_all_addons_link_locator).click()
         return ManageAddons(self.driver, self.base_url)
 
     def click_submit_addon_button(self):
+        self.wait_for_element_to_be_clickable(self._submit_addon_button_locator)
         self.find_element(*self._submit_addon_button_locator).click()
         return SubmitAddon(self.driver, self.base_url)
 
     def click_submit_theme_button(self):
+        self.wait_for_element_to_be_displayed(self._submit_theme_button_locator)
         self.find_element(*self._submit_theme_button_locator).click()
         return SubmitAddon(self.driver, self.base_url)
 
@@ -287,6 +315,7 @@ class DevHubHome(Base):
 
     @property
     def products_links(self):
+        self.wait_for_element_to_be_displayed(self._footer_products_section_locator)
         element = self.find_element(*self._footer_products_section_locator)
         return element.find_elements(*self._footer_links_locator)
 
@@ -592,6 +621,9 @@ class ResourcesFooter(Region):
 
     @property
     def review_addons_section_info_text(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._addon_review_info_text_locator)
+        )
         return self.find_element(*self._addon_review_info_text_locator).text
 
     def click_join_addon_review_link(self):
@@ -599,10 +631,16 @@ class ResourcesFooter(Region):
 
     @property
     def write_code_section_header(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._write_code_section_header_locator)
+        )
         return self.find_element(*self._write_code_section_header_locator).text
 
     @property
     def write_code_section_info_text(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._write_code_info_text_locator)
+        )
         return self.find_element(*self._write_code_info_text_locator).text
 
     def click_write_code_section_link(self):
@@ -610,10 +648,16 @@ class ResourcesFooter(Region):
 
     @property
     def participate_section_header(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._participate_section_header_locator)
+        )
         return self.find_element(*self._participate_section_header_locator).text
 
     @property
     def participate_section_info_text(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._participate_info_text_locator)
+        )
         return self.find_element(*self._participate_info_text_locator).text
 
     def click_participate_section_link(self):

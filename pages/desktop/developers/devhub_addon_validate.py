@@ -52,55 +52,69 @@ class DevhubAddonValidate(Base):
 
     @property
     def addon_on_your_site(self):
+        self.wait_for_element_to_be_displayed(self._addon_on_your_site)
         return self.find_element(*self._addon_on_your_site)
 
     @property
     def addon_on_your_own(self):
+        self.wait_for_element_to_be_displayed(self._addon_on_your_own)
         return self.find_element(*self._addon_on_your_own)
 
     @property
     def create_addon_paragraph(self):
+        self.wait_for_element_to_be_displayed(self._create_addon_paragraph)
         return self.find_element(*self._create_addon_paragraph)
 
     @property
     def list_addon_label(self):
+        self.wait_for_element_to_be_displayed(self._list_addon_label)
         return self.find_element(*self._list_addon_label)
 
     @property
     def on_this_site_checkbox(self):
+        self.wait_for_element_to_be_displayed(self._on_this_site_checkbox)
         return self.find_element(*self._on_this_site_checkbox)
 
     @property
     def on_your_own_text_checkbox(self):
+        self.wait_for_element_to_be_displayed(self._on_your_own_text_checkbox)
         return self.find_element(*self._on_your_own_text_checkbox)
 
     @property
     def upload_details_text(self):
+        self.wait_for_element_to_be_displayed(self._upload_details_text)
         return self.find_element(*self._upload_details_text)
 
     @property
     def upload_details_results_succes(self):
+        self.wait_for_element_to_be_displayed(self._upload_status_results_succes)
         return self.find_element(*self._upload_status_results_succes)
 
     @property
     def upload_details_results_failed(self):
+        self.wait_for_element_to_be_displayed(self._upload_status_results_failed)
         return self.find_element(*self._upload_status_results_failed)
 
     @property
     def upload_status(self):
+        self.wait_for_element_to_be_displayed(self._upload_status)
         return self.find_element(*self._upload_status)
 
     @property
     def upload_errors(self):
+        self.wait_for_element_to_be_displayed(self._upload_errors)
         return self.find_element(*self._upload_errors)
 
     def click_on_this_site_checkbox(self):
+        self.wait_for_element_to_be_clickable(self._on_this_site_checkbox)
         return self.find_element(*self._on_this_site_checkbox).click()
 
     def click_on_your_own_text_checkbox(self):
+        self.wait_for_element_to_be_clickable(self._on_your_own_text_checkbox)
         return self.find_element(*self._on_your_own_text_checkbox).click()
 
     def click_upload_addon_button(self):
+        self.wait_for_element_to_be_clickable(self._upload_addon_button)
         self.find_element(*self._upload_addon_button).click()
 
     def upload_file(self, addon):
