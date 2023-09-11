@@ -3,6 +3,7 @@ import pytest
 from pages.desktop.developers.devhub_addon_validate import DevhubAddonValidate
 from pages.desktop.developers.devhub_home import DevHubHome
 
+
 @pytest.mark.sanity
 @pytest.mark.login("developer")
 def test_validate_addon_listed(selenium, base_url, variables, wait):
@@ -31,6 +32,7 @@ def test_validate_addon_listed(selenium, base_url, variables, wait):
     )
     assert variables["upload_status"] in devhub_addon_validate.upload_status.text
 
+
 @pytest.mark.sanity
 @pytest.mark.create_session("developer")
 def test_validate_listed_addon_option_no_manifest_found(
@@ -55,10 +57,11 @@ def test_validate_listed_addon_option_no_manifest_found(
         in devhub_addon_validate.upload_errors.text
     )
 
+
 @pytest.mark.sanity
 @pytest.mark.create_session("developer")
 def test_validate_listed_addon_option_unsupported_format(
-        selenium, base_url, variables, wait
+    selenium, base_url, variables, wait
 ):
     DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     """Go to Devhub Addon Validate page"""
@@ -71,13 +74,15 @@ def test_validate_listed_addon_option_unsupported_format(
     devhub_addon_validate.upload_file("unsupported-format-addon.jpg")
     devhub_addon_validate.is_not_validated()
     assert (
-            variables["upload_status_results_failed"]
-            in devhub_addon_validate.upload_details_results_failed.text
+        variables["upload_status_results_failed"]
+        in devhub_addon_validate.upload_details_results_failed.text
     )
     assert (
-            variables["unsupported_format_message"]
-            in devhub_addon_validate.upload_errors.text
+        variables["unsupported_format_message"]
+        in devhub_addon_validate.upload_errors.text
     )
+
+
 @pytest.mark.sanity
 @pytest.mark.create_session("developer")
 def test_validate_addon_unlisted(selenium, base_url, variables, wait):
@@ -128,6 +133,7 @@ def test_validate_unlisted_addon_option_no_manifest_found(
         variables["no_manifest_found_message"]
         in devhub_addon_validate.upload_errors.text
     )
+
 
 @pytest.mark.sanity
 @pytest.mark.login("developer")
