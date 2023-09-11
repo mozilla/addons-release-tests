@@ -23,7 +23,7 @@ from scripts.reusables import get_random_string
     [
         "Flagfox",
         "Video DownloadHelper",
-        "uBlock Origin",
+        "Not the uBlock Origin you're looking for",
         "Facebook Container",
         "Tree Style Tab",
         "Two little birds",
