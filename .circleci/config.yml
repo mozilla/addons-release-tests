@@ -87,7 +87,7 @@ jobs:
           environment:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 1 --reruns 2
-          command: py -m pytest tests\frontend\test_users.py --driver Firefox --variables stage.json --html=user-test-results.html --self-contained-html
+          command: py -m pytest tests\frontend\test_users.py -m "serial" --driver Firefox --variables stage.json --html=user-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: user-test-results.html
@@ -177,7 +177,7 @@ jobs:
           environment:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 1 --reruns 2
-          command: py -m pytest tests\devhub\test_addon_submissions.py --driver Firefox --variables stage.json --html=submissions-test-results.html --self-contained-html
+          command: py -m pytest tests\devhub_submissions\test_addon_submissions.py --driver Firefox --variables stage.json --html=submissions-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: submissions-test-results.html
@@ -447,7 +447,7 @@ jobs:
           environment:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 1 --reruns 2
-          command: py -m pytest tests\devhub\test_addon_submissions.py --driver Firefox --variables dev.json --html=submissions-dev-test-results.html --self-contained-html
+          command: py -m pytest tests\devhub_submissions\test_addon_submissions.py --driver Firefox --variables dev.json --html=submissions-dev-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: submissions-dev-test-results.html

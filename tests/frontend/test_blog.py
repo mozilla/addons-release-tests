@@ -160,11 +160,11 @@ def test_addon_card_recommendation_badge_link(base_url, selenium, variables):
             child_window = page.driver.window_handles[1]
             page.driver.switch_to.window(child_window)
             page.wait.until(
-                EC.visibility_of_element_located((By.CLASS_NAME, 'sumo-page-heading'))
+                EC.visibility_of_element_located((By.CLASS_NAME, "sumo-page-heading"))
             )
             assert (
-                'Add-on Badges'
-                in page.driver.find_element(By.CLASS_NAME, 'sumo-page-heading').text
+                "Add-on Badges"
+                in page.driver.find_element(By.CLASS_NAME, "sumo-page-heading").text
             )
             page.driver.switch_to.window(initial_window)
 
@@ -184,13 +184,13 @@ def test_blog_install_addon(
         firefox_notifications.AddOnInstallConfirmation
     ).install()
     # verify about:addons to make sure the add-on was installed;
-    selenium.get('about:addons')
+    selenium.get("about:addons")
     selenium.find_element(By.CSS_SELECTOR, 'button[name = "extension"]').click()
     try:
         wait.until(
             lambda _: addon_name
-            in selenium.find_element(By.CSS_SELECTOR, '.addon-name a').text,
-            message='The addon names did not match; checking summary next',
+            in selenium.find_element(By.CSS_SELECTOR, ".addon-name a").text,
+            message="The addon names did not match; checking summary next",
         )
     # there is an inconsistency between AMO and about:addons concerning addon names;
     # while on AMO the add-on name can be modified in DevHub, about:addons takes the
@@ -199,7 +199,7 @@ def test_blog_install_addon(
     except TimeoutException:
         assert (
             addon_summary
-            in selenium.find_element(By.CLASS_NAME, 'addon-description').text
+            in selenium.find_element(By.CLASS_NAME, "addon-description").text
         )
 
 

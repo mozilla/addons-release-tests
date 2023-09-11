@@ -15,12 +15,12 @@ from pages.desktop.frontend.login import Login
 DESKTOP = (1920, 1080)
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def base_url(base_url, variables):
-    return variables['base_url']
+    return variables["base_url"]
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def sensitive_url(request, base_url):
     # Override sensitive url check
     return False
@@ -45,34 +45,34 @@ def firefox_options(firefox_options, base_url, variables):
     """
     # for prod installation tests, we do not need to set special prefs, so we
     # separate the browser set-up based on the AMO environments
-    if base_url == 'https://addons.mozilla.org':
-        firefox_options.add_argument('-headless')
-        firefox_options.log.level = 'trace'
+    if base_url == "https://addons.mozilla.org":
+        firefox_options.add_argument("-headless")
+        firefox_options.log.level = "trace"
         firefox_options.set_preference(
-            'extensions.getAddons.discovery.api_url',
-            'https://services.addons.mozilla.org/api/v4/discovery/?lang=%LOCALE%&edition=%DISTRIBUTION%',
+            "extensions.getAddons.discovery.api_url",
+            "https://services.addons.mozilla.org/api/v4/discovery/?lang=%LOCALE%&edition=%DISTRIBUTION%",
         )
-        firefox_options.set_preference('extensions.getAddons.cache.enabled', True)
+        firefox_options.set_preference("extensions.getAddons.cache.enabled", True)
     else:
-        firefox_options.set_preference('extensions.install.requireBuiltInCerts', False)
-        firefox_options.set_preference('xpinstall.signatures.required', False)
-        firefox_options.set_preference('xpinstall.signatures.dev-root', True)
-        firefox_options.set_preference('extensions.webapi.testing', True)
-        firefox_options.set_preference('ui.popup.disable_autohide', True)
-        firefox_options.set_preference('devtools.console.stdout.content', True)
+        firefox_options.set_preference("extensions.install.requireBuiltInCerts", False)
+        firefox_options.set_preference("xpinstall.signatures.required", False)
+        firefox_options.set_preference("xpinstall.signatures.dev-root", True)
+        firefox_options.set_preference("extensions.webapi.testing", True)
+        firefox_options.set_preference("ui.popup.disable_autohide", True)
+        firefox_options.set_preference("devtools.console.stdout.content", True)
         firefox_options.set_preference(
-            'extensions.getAddons.discovery.api_url',
-            'https://services.addons.allizom.org/api/v4/discovery/?lang=%LOCALE%&edition=%DISTRIBUTION%',
+            "extensions.getAddons.discovery.api_url",
+            "https://services.addons.allizom.org/api/v4/discovery/?lang=%LOCALE%&edition=%DISTRIBUTION%",
         )
         firefox_options.set_preference(
-            'extensions.getAddons.get.url',
-            'https://services.addons.allizom.org/api/v4/addons/search/?guid=%IDS%&lang=%LOCALE%',
+            "extensions.getAddons.get.url",
+            "https://services.addons.allizom.org/api/v4/addons/search/?guid=%IDS%&lang=%LOCALE%",
         )
         firefox_options.set_preference(
-            'extensions.update.url', variables['extensions_update_url']
+            "extensions.update.url", variables["extensions_update_url"]
         )
-        firefox_options.add_argument('-headless')
-        firefox_options.log.level = 'trace'
+        firefox_options.add_argument("-headless")
+        firefox_options.log.level = "trace"
     return firefox_options
 
 
@@ -82,18 +82,18 @@ def firefox_notifications(notifications):
 
 
 @pytest.fixture(
-    scope='function',
+    scope="function",
     params=[DESKTOP],
-    ids=['Desktop'],
+    ids=["Desktop"],
 )
 def selenium(selenium, base_url, session_auth, request):
     """Fixture to set a custom resolution for tests running on Desktop
     and handle browser sessions when needed"""
     selenium.set_window_size(*request.param)
     # establishing actions  based on markers
-    create_session = request.node.get_closest_marker('create_session')
-    login = request.node.get_closest_marker('login')
-    clear_session = request.node.get_closest_marker('clear_session')
+    create_session = request.node.get_closest_marker("create_session")
+    login = request.node.get_closest_marker("login")
+    clear_session = request.node.get_closest_marker("clear_session")
     # this is used when we want to open an AMO page with a sessionid
     # cookie (i.e. a logged-in user) already set
     if create_session:
@@ -113,18 +113,18 @@ def selenium(selenium, base_url, session_auth, request):
         home = Home(selenium, base_url).open().wait_for_page_to_load()
         home.header.click_login()
         home.wait.until(
-            EC.visibility_of_element_located((By.NAME, 'email')),
-            message=f'FxA email input field was not displayed in {selenium.current_url}',
+            EC.visibility_of_element_located((By.NAME, "email")),
+            message=f"FxA email input field was not displayed in {selenium.current_url}",
         )
         user = login.args[0]
         Login(selenium, base_url).account(user)
         home.wait.until(
-            EC.url_contains('addons'),
-            message=f'AMO could not be loaded in {selenium.current_url}',
+            EC.url_contains("addons"),
+            message=f"AMO could not be loaded in {selenium.current_url}",
         )
-        session_cookie = selenium.get_cookie('sessionid')
-        with open(user + '.txt', 'w') as file:
-            file.write(session_cookie['value'])
+        session_cookie = selenium.get_cookie("sessionid")
+        with open(user + ".txt", "w") as file:
+            file.write(session_cookie["value"])
     yield selenium
 
     # delete the user session and files created for a test suite;
@@ -132,43 +132,43 @@ def selenium(selenium, base_url, session_auth, request):
     if clear_session:
         # clear session by calling the DELETE session API
         delete_session = requests.delete(
-            url=f'{base_url}/api/v5/accounts/session/',
-            headers={'Authorization': f'Session {session_auth}'},
+            url=f"{base_url}/api/v5/accounts/session/",
+            headers={"Authorization": f"Session {session_auth}"},
         )
         assert (
             delete_session.status_code == 200
-        ), f'Actual status code was {delete_session.status_code}'
+        ), f"Actual status code was {delete_session.status_code}"
         # test that session was invalidated correctly by trying to access the account with the deleted session
         get_user = requests.get(
-            url=f'{base_url}/api/v5/accounts/profile/',
-            headers={'Authorization': f'Session {session_auth}'},
+            url=f"{base_url}/api/v5/accounts/profile/",
+            headers={"Authorization": f"Session {session_auth}"},
         )
         assert (
             get_user.status_code == 401
-        ), f'Actual status code was {get_user.status_code}'
+        ), f"Actual status code was {get_user.status_code}"
         assert (
-            'Valid user session not found matching the provided session key.'
+            "Valid user session not found matching the provided session key."
             in get_user.text
-        ), f'Actual response message was {get_user.text}'
+        ), f"Actual response message was {get_user.text}"
         user_file = create_session.args[0]
-        if os.path.exists(f'{user_file}.txt'):
-            os.remove(f'{user_file}.txt')
+        if os.path.exists(f"{user_file}.txt"):
+            os.remove(f"{user_file}.txt")
         else:
             # fail if the file does not exist
             raise FileNotFoundError("The file does not exist")
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def session_auth(request):
     """Fixture that reads and returns the sessionid cookie; to be used as a
     standalone fixture for in API tests that require authentication and
     also complements the selenium fixture  when we want to start
     the browser with an active user session"""
-    marker = request.node.get_closest_marker('create_session')
+    marker = request.node.get_closest_marker("create_session")
     # the user file is passed in the test as a marker argument
     if marker:
         user_file = marker.args[0]
-        with open(f'{user_file}.txt', 'r') as file:
+        with open(f"{user_file}.txt", "r") as file:
             sessionid = str(file.read())
         return sessionid
 

@@ -13,10 +13,10 @@ def test_install_uninstall_extension(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Open an extension detail page, install it and then uninstall it"""
-    selenium.get(f'{base_url}/addon/aarafow-molla-mantinch/')
+    selenium.get(f"{base_url}/addon/aarafow-molla-mantinch/")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     amo_addon_name = addon.name
-    assert amo_addon_name == 'aarafow-molla-mantinch'
+    assert amo_addon_name == "aarafow-molla-mantinch"
     assert addon.is_compatible
     addon.install()
     firefox.browser.wait_for_notification(
@@ -26,10 +26,10 @@ def test_install_uninstall_extension(
         firefox_notifications.AddOnInstallComplete
     ).close()
     # check that the install button state changed to "Remove"
-    assert 'Remove' in addon.button_text
+    assert "Remove" in addon.button_text
     # open the manage Extensions page in about:addons to verify that the extension was installed correctly
-    selenium.switch_to.new_window('tab')
-    selenium.get('about:addons')
+    selenium.switch_to.new_window("tab")
+    selenium.get("about:addons")
     about_addons = AboutAddons(selenium).wait_for_page_to_load()
     about_addons.click_extensions_side_button()
     wait.until(lambda _: amo_addon_name == about_addons.installed_addon_name[0].text)
@@ -38,7 +38,7 @@ def test_install_uninstall_extension(
     # reused the 'install()` method although the next step reflects an uninstall action.
     addon.install()
     # check that the install button state changed back to "Add to Firefox"
-    wait.until(lambda _: 'Add to Firefox' in addon.button_text)
+    wait.until(lambda _: "Add to Firefox" in addon.button_text)
     # open the manage Extensions page in about:addons to verify that the extension is no longer in the list
     selenium.switch_to.window(selenium.window_handles[1])
     with pytest.raises(IndexError):
@@ -51,7 +51,7 @@ def test_enable_disable_extension(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Open an extension detail page, install it, disable it from about:addons then enable it back in AMO"""
-    selenium.get(f'{base_url}/addon/aarafow-molla-mantinch/')
+    selenium.get(f"{base_url}/addon/aarafow-molla-mantinch/")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     addon.install()
     firefox.browser.wait_for_notification(
@@ -61,35 +61,37 @@ def test_enable_disable_extension(
         firefox_notifications.AddOnInstallComplete
     ).close()
     # open the manage Extensions page in about:addons and Disable the extension
-    selenium.switch_to.new_window('tab')
-    selenium.get('about:addons')
+    selenium.switch_to.new_window("tab")
+    selenium.get("about:addons")
     about_addons = AboutAddons(selenium).wait_for_page_to_load()
     about_addons.click_extensions_side_button()
     about_addons.disable_extension()
     # verify that about:addons marks the extension as disabled -  (disabled) appended to addon name
     wait.until(
         lambda _: about_addons.installed_addon_name[0].text
-        == 'aarafow-molla-mantinch (disabled)'
+        == "aarafow-molla-mantinch (disabled)"
     )
     # go back to the addon detail page on AMO to Enable the addon
     selenium.switch_to.window(selenium.window_handles[0])
-    assert addon.button_text == 'Enable'
+    assert addon.button_text == "Enable"
     addon.install()
     # check that the install button state changed back to "Remove"
-    wait.until(lambda _: 'Remove' in addon.button_text)
+    wait.until(lambda _: "Remove" in addon.button_text)
     # open the manage Extensions page in about:addons to verify that the extension was re-enabled
     selenium.switch_to.window(selenium.window_handles[1])
-    wait.until(lambda _: about_addons.installed_addon_name[0].text == 'aarafow-molla-mantinch')
+    wait.until(
+        lambda _: about_addons.installed_addon_name[0].text == "aarafow-molla-mantinch"
+    )
 
 
 def test_install_uninstall_theme(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Open a theme detail page, install it and then uninstall it"""
-    selenium.get(f'{base_url}/addon/japanese-tattoo/')
+    selenium.get(f"{base_url}/addon/japanese-tattoo/")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     amo_theme_name = addon.name
-    assert amo_theme_name == 'Japanese Tattoo'
+    assert amo_theme_name == "Japanese Tattoo"
     assert addon.is_compatible
     addon.install()
     firefox.browser.wait_for_notification(
@@ -99,10 +101,10 @@ def test_install_uninstall_theme(
         firefox_notifications.AddOnInstallComplete
     ).close()
     # check that the install button state changed to "Remove"
-    assert 'Remove' in addon.button_text
+    assert "Remove" in addon.button_text
     # open the manage Themes page in about:addons to verify that the theme was installed correctly
-    selenium.switch_to.new_window('tab')
-    selenium.get('about:addons')
+    selenium.switch_to.new_window("tab")
+    selenium.get("about:addons")
     about_addons = AboutAddons(selenium).wait_for_page_to_load()
     about_addons.click_themes_side_button()
     wait.until(lambda _: amo_theme_name == about_addons.installed_addon_name[0].text)
@@ -111,7 +113,7 @@ def test_install_uninstall_theme(
     # reused the 'install()` method although the next step reflects an uninstall action.
     addon.install()
     # check that the install button state changed back to "Install Theme"
-    wait.until(lambda _: 'Install Theme' in addon.button_text)
+    wait.until(lambda _: "Install Theme" in addon.button_text)
     # open the manage Themes page in about:addons to verify that the theme is no longer in the list
     selenium.switch_to.window(selenium.window_handles[1])
     assert amo_theme_name not in [el.text for el in about_addons.installed_addon_name]
@@ -121,10 +123,10 @@ def test_install_uninstall_dictionary(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Open a dictionary detail page, install it and then uninstall it"""
-    selenium.get(f'{base_url}/addon/release_dictionary/')
+    selenium.get(f"{base_url}/addon/release_dictionary/")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     amo_dict_name = addon.name
-    assert amo_dict_name == 'release dictionary'
+    assert amo_dict_name == "release dictionary"
     assert addon.is_compatible
     addon.install()
     firefox.browser.wait_for_notification(
@@ -134,10 +136,10 @@ def test_install_uninstall_dictionary(
         firefox_notifications.AddOnInstallComplete
     ).close()
     # check that the install button state changed to "Remove"
-    assert 'Remove' in addon.button_text
+    assert "Remove" in addon.button_text
     # open the manage Dictionaries page in about:addons to verify that the dictionary was installed correctly
-    selenium.switch_to.new_window('tab')
-    selenium.get('about:addons')
+    selenium.switch_to.new_window("tab")
+    selenium.get("about:addons")
     about_addons = AboutAddons(selenium).wait_for_page_to_load()
     about_addons.click_dictionaries_side_button()
     wait.until(lambda _: amo_dict_name == about_addons.installed_addon_name[0].text)
@@ -146,7 +148,7 @@ def test_install_uninstall_dictionary(
     # reused the 'install()` method although the next step reflects an uninstall action.
     addon.install()
     # check that the install button state changed back to "Add to Firefox"
-    wait.until(lambda _: 'Add to Firefox' in addon.button_text)
+    wait.until(lambda _: "Add to Firefox" in addon.button_text)
     # open the manage Dictionaries page in about:addons to verify that the dictionary is no longer in the list
     selenium.switch_to.window(selenium.window_handles[1])
     with pytest.raises(IndexError):
@@ -157,10 +159,10 @@ def test_install_uninstall_langpack(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Open a language pack detail page, install it and then uninstall it"""
-    selenium.get(f'{base_url}/addon/release-langpack/')
+    selenium.get(f"{base_url}/addon/release-langpack/")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     amo_langpack_name = addon.name
-    assert amo_langpack_name == 'Release lang pack'
+    assert amo_langpack_name == "Release lang pack"
     assert addon.is_compatible
     addon.install()
     firefox.browser.wait_for_notification(
@@ -170,10 +172,10 @@ def test_install_uninstall_langpack(
         firefox_notifications.AddOnInstallComplete
     ).close()
     # check that the install button state changed to "Remove"
-    assert 'Remove' in addon.button_text
+    assert "Remove" in addon.button_text
     # open the manage Language page in about:addons to verify that the langpack was installed correctly
-    selenium.switch_to.new_window('tab')
-    selenium.get('about:addons')
+    selenium.switch_to.new_window("tab")
+    selenium.get("about:addons")
     about_addons = AboutAddons(selenium).wait_for_page_to_load()
     about_addons.click_language_side_button()
     wait.until(lambda _: amo_langpack_name == about_addons.installed_addon_name[0].text)
@@ -182,7 +184,7 @@ def test_install_uninstall_langpack(
     # reused the 'install()` method although the next step reflects an uninstall action.
     addon.install()
     # check that the install button state changed back to "Add to Firefox"
-    wait.until(lambda _: 'Add to Firefox' in addon.button_text)
+    wait.until(lambda _: "Add to Firefox" in addon.button_text)
     # open the manage Language page in about:addons to verify that the langpack is no longer in the list
     selenium.switch_to.window(selenium.window_handles[1])
     with pytest.raises(IndexError):
@@ -194,7 +196,7 @@ def test_install_uninstall_langpack(
 def test_about_addons_install_extension(
     selenium, base_url, wait, firefox, firefox_notifications
 ):
-    selenium.get('about:addons')
+    selenium.get("about:addons")
     about_addons = AboutAddons(selenium)
     # waiting for the addon cards data to be retrieved (the install buttons in this case)
     wait.until(
@@ -229,7 +231,7 @@ def test_about_addons_install_extension(
 def test_about_addons_install_theme(
     selenium, base_url, wait, firefox, firefox_notifications
 ):
-    selenium.get('about:addons')
+    selenium.get("about:addons")
     about_addons = AboutAddons(selenium)
     # waiting for the addon cards data to be retrieved (the install buttons in this case)
     wait.until(
@@ -238,7 +240,7 @@ def test_about_addons_install_theme(
     disco_theme_name = about_addons.addon_cards_items[0].disco_addon_name.text
     # make a note of the image source of the theme we are about to install
     disco_theme_image = about_addons.addon_cards_items[0].theme_image.get_attribute(
-        'src'
+        "src"
     )
     # install the recommended theme
     about_addons.addon_cards_items[0].install_button.click()
@@ -248,7 +250,7 @@ def test_about_addons_install_theme(
     about_addons.click_themes_side_button()
     # check that installed theme should be first on the manage Themes page
     assert disco_theme_name in about_addons.installed_addon_name[0].text
-    assert 'true' in about_addons.enabled_theme_active_status
+    assert "true" in about_addons.enabled_theme_active_status
 
 
 @pytest.mark.sanity
@@ -257,8 +259,8 @@ def test_about_addons_extension_updates(
 ):
     """Install an addon from AMO and check for updates in addons manager;
     this test is set up to be able to run on each AMO environment"""
-    extension = variables['extension_version_updates']
-    selenium.get(f'{base_url}/addon/{extension}/versions/')
+    extension = variables["extension_version_updates"]
+    selenium.get(f"{base_url}/addon/{extension}/versions/")
     versions = Versions(selenium, base_url).wait_for_page_to_load()
     # make a note of the latest version number - this should be visible once the addon updates
     latest_version = versions.latest_version_number
@@ -272,7 +274,7 @@ def test_about_addons_extension_updates(
         ).install()
     except TimeoutException as error:
         # check that the timeout message is raised by the AddOnInstallConfirmation class
-        assert error.msg == 'AddOnInstallConfirmation was not shown.'
+        assert error.msg == "AddOnInstallConfirmation was not shown."
         firefox.browser.wait_for_notification(
             firefox_notifications.AddOnInstallBlocked
         ).allow()
@@ -280,14 +282,14 @@ def test_about_addons_extension_updates(
             firefox_notifications.AddOnInstallConfirmation
         ).install()
     # go to addons manager and locate the installed addon
-    selenium.get('about:addons')
+    selenium.get("about:addons")
     about_addons = AboutAddons(selenium)
     about_addons.click_extensions_side_button()
     about_addons.installed_addon_cards[0].click()
     # trigger a manual update check to receive the latest addon version
     about_addons.click_options_button()
     action = ActionChains(selenium)
-    action.send_keys('c').perform()
+    action.send_keys("c").perform()
     # compare the updated version to the latest version from AMO and make sure they match
     wait.until(
         lambda _: latest_version == about_addons.installed_version_number,

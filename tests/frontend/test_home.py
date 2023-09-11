@@ -15,8 +15,8 @@ from scripts import reusables
 def test_click_header_extensions(base_url, selenium):
     page = Home(selenium, base_url).open()
     ext_page = page.header.click_extensions()
-    assert 'Extensions' in ext_page.title
-    assert 'Extensions' in selenium.title
+    assert "Extensions" in ext_page.title
+    assert "Extensions" in selenium.title
     assert page.header.extensions_button_active.is_displayed()
 
 
@@ -25,8 +25,8 @@ def test_click_header_extensions(base_url, selenium):
 def test_click_header_themes(base_url, selenium):
     page = Home(selenium, base_url).open()
     themes_page = page.header.click_themes()
-    assert 'Themes' in themes_page.text
-    assert 'Themes' in selenium.title
+    assert "Themes" in themes_page.text
+    assert "Themes" in selenium.title
     assert page.header.themes_button_active.is_displayed()
 
 
@@ -46,7 +46,7 @@ def test_logo_routes_to_homepage(base_url, selenium):
 def test_firefox_addons_blog_link(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.header.click_firefox_addons_blog()
-    page.wait_for_current_url('/blog/')
+    page.wait_for_current_url("/blog/")
 
 
 @pytest.mark.sanity
@@ -54,7 +54,7 @@ def test_firefox_addons_blog_link(base_url, selenium):
 def test_developer_hub_link(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.header.click_developer_hub()
-    assert '/developers/' in selenium.current_url
+    assert "/developers/" in selenium.current_url
 
 
 @pytest.mark.sanity
@@ -62,16 +62,16 @@ def test_developer_hub_link(base_url, selenium):
 def test_extension_workshop_link(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.header.click_extension_workshop()
-    assert 'extensionworkshop' in selenium.current_url
+    assert "extensionworkshop" in selenium.current_url
 
 
 @pytest.mark.sanity
 @pytest.mark.parametrize(
-    'count, title',
+    "count, title",
     enumerate(
         [
-            'Dictionaries and Language Packs',
-            'Add-ons for Firefox Android',
+            "Dictionaries and Language Packs",
+            "Add-ons for Firefox Android",
         ]
     ),
 )
@@ -92,9 +92,9 @@ def test_primary_hero(base_url, selenium):
     assert page.hero_banner.primary_hero_image.is_displayed()
     # we have either Recommended, either By Firefox add-ons in the primary hero
     try:
-        assert 'Recommended'.upper() in page.hero_banner.primary_hero_title
+        assert "Recommended".upper() in page.hero_banner.primary_hero_title
     except AssertionError:
-        assert 'By Firefox'.upper() in page.hero_banner.primary_hero_title
+        assert "By Firefox".upper() in page.hero_banner.primary_hero_title
     hero_extension = page.hero_banner.primary_hero_extension_name
     assert page.hero_banner.primary_hero_extension_summary.is_displayed()
     # clicks on the Get extension button and checks that the correct detail page opens
@@ -106,15 +106,15 @@ def test_primary_hero(base_url, selenium):
 def test_secondary_hero_message(base_url, selenium, variables):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     assert (
-        variables['secondary_hero_title'] in page.secondary_hero.secondary_hero_headline
+        variables["secondary_hero_title"] in page.secondary_hero.secondary_hero_headline
     )
     assert (
-        variables['secondary_hero_summary']
+        variables["secondary_hero_summary"]
         in page.secondary_hero.secondary_hero_description
     )
     # checks that the message link opens the Extensions landing page
     extensions = page.secondary_hero.see_all_extensions()
-    assert 'Extensions' in extensions.title
+    assert "Extensions" in extensions.title
 
 
 @pytest.mark.sanity
@@ -128,12 +128,12 @@ def test_secondary_hero_modules(base_url, selenium):
 
 
 @pytest.mark.parametrize(
-    'count, module',
+    "count, module",
     enumerate(
         [
-            'First module',
-            'Second module',
-            'Third module',
+            "First module",
+            "Second module",
+            "Third module",
         ]
     ),
 )
@@ -152,7 +152,7 @@ def test_click_module_link(base_url, selenium, count, module):
 def test_browse_all_recommended_extensions(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.recommended_extensions.browse_all()
-    assert 'type=extension' in selenium.current_url
+    assert "type=extension" in selenium.current_url
     search_page = Search(selenium, base_url)
     for result in search_page.result_list.search_results:
         assert result.promoted_badge
@@ -195,7 +195,7 @@ def test_home_popular_themes_shelf(base_url, selenium):
         assert item.name.is_displayed()
         assert item.addon_icon_preview.is_displayed()
         assert item.addon_users_preview.is_displayed()
-        users_list.append(item.addon_users_preview.text.split()[0].replace(',', ''))
+        users_list.append(item.addon_users_preview.text.split()[0].replace(",", ""))
     # verifies that themes are correctly ordered in shelf (by users)
     assert users_list == sorted(users_list, reverse=True)
 
@@ -234,15 +234,15 @@ def test_home_see_more_links(base_url, selenium):
 
 
 @pytest.mark.parametrize(
-    'count, category',
+    "count, category",
     enumerate(
         [
-            'Abstract',
-            'Nature',
-            'Film',
-            'Scenery',
-            'Music',
-            'Seasonal',
+            "Abstract",
+            "Nature",
+            "Film",
+            "Scenery",
+            "Music",
+            "Seasonal",
         ]
     ),
 )
@@ -251,7 +251,7 @@ def test_home_see_more_links(base_url, selenium):
 def test_theme_categories_shelf(base_url, selenium, count, category):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     # verifying the elements present in the homepage Theme Category shelf
-    assert 'Change the way Firefox looks' in page.theme_category.shelf_summary
+    assert "Change the way Firefox looks" in page.theme_category.shelf_summary
     categories = page.theme_category.list
     categories[count].category_icon.is_displayed()
     assert category in categories[count].name
@@ -267,38 +267,38 @@ def test_theme_categories_shelf(base_url, selenium, count, category):
 def test_mozilla_footer_link(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.footer.mozilla_link.click()
-    assert 'mozilla.org' in selenium.current_url
+    assert "mozilla.org" in selenium.current_url
     page.wait.until(
-        EC.visibility_of_element_located((By.CSS_SELECTOR, '.c-navigation-logo-image')),
-        message='The chosen element could not be loaded on the Mozilla webpage',
+        EC.visibility_of_element_located((By.CSS_SELECTOR, ".c-navigation-logo-image")),
+        message="The chosen element could not be loaded on the Mozilla webpage",
     )
 
 
 @pytest.mark.parametrize(
-    'count, link',
+    "count, link",
     enumerate(
         [
-            ['about', '#about'],
-            ['blog', '.blog-entries'],
-            ['extensionworkshop', '.grid-container h1'],
-            ['developers', '.DevHub-Navigation-Logo'],
-            ['add-on-policies', '.page-hero-description h1'],
-            ['blog.mozilla.org', '.featured-posts'],
-            ['discourse', '.category-list'],
-            ['Contact_us', '.main-page-content'],
-            ['review_guide', '#review-guide'],
+            ["about", "#about"],
+            ["blog", ".blog-entries"],
+            ["extensionworkshop", ".grid-container h1"],
+            ["developers", ".DevHub-Navigation-Logo"],
+            ["add-on-policies", ".page-hero-description h1"],
+            ["blog.mozilla.org", ".featured-posts"],
+            ["discourse", ".category-list"],
+            ["Contact_us", ".main-page-content"],
+            ["review_guide", "#review-guide"],
         ]
     ),
     ids=[
-        'About',
-        'Firefox Add-ons Blog',
-        'Extension Workshop',
-        'Developer Hub',
-        'Developer Policies',
-        'Community Blog',
-        'Forum',
-        'Report a bug',
-        'Review Guide',
+        "About",
+        "Firefox Add-ons Blog",
+        "Extension Workshop",
+        "Developer Hub",
+        "Developer Policies",
+        "Community Blog",
+        "Forum",
+        "Report a bug",
+        "Review Guide",
     ],
 )
 @pytest.mark.sanity
@@ -314,18 +314,18 @@ def test_addons_footer_links(base_url, selenium, count, link):
 
 
 @pytest.mark.parametrize(
-    'count, link',
+    "count, link",
     enumerate(
         [
-            ['firefox/new', '#download-button-thanks'],
-            ['firefox/browsers/mobile/', '#android-download'],
-            ['firefox/enterprise/', '#primary-download-button'],
+            ["firefox/new", "#download-button-thanks"],
+            ["firefox/browsers/mobile/", "#android-download"],
+            ["firefox/enterprise/", "#primary-download-button"],
         ]
     ),
     ids=[
-        'Firefox Desktop',
-        'Firefox Mobile',
-        'Firefox Enterprise',
+        "Firefox Desktop",
+        "Firefox Mobile",
+        "Firefox Enterprise",
     ],
 )
 @pytest.mark.nondestructive
@@ -341,22 +341,22 @@ def test_browsers_footer_links(base_url, selenium, count, link):
 
 
 @pytest.mark.parametrize(
-    'count, link',
+    "count, link",
     enumerate(
         [
-            ['firefox/browsers/', '.mzp-c-split-body h1'],
-            ['products/vpn/', '.c-sub-navigation-title'],
-            ['relay.firefox.com/', '.Layout_logo__V4UCI'],
-            ['monitor.firefox', '.monitor-logo'],
-            ['getpocket.com', '.mzp-t-product-pocket'],
+            ["firefox/browsers/", ".mzp-c-split-body h1"],
+            ["products/vpn/", ".c-sub-navigation-title"],
+            ["relay.firefox.com/", ".Layout_logo__V4UCI"],
+            ["monitor.firefox", ".monitor-logo"],
+            ["getpocket.com", ".mzp-t-product-pocket"],
         ]
     ),
     ids=[
-        'Browsers',
-        'VPN',
-        'Relay',
-        'Monitor',
-        'Pocket',
+        "Browsers",
+        "VPN",
+        "Relay",
+        "Monitor",
+        "Pocket",
     ],
 )
 @pytest.mark.sanity
@@ -372,18 +372,18 @@ def test_products_footer_links(base_url, selenium, count, link):
 
 
 @pytest.mark.parametrize(
-    'count, link',
+    "count, link",
     enumerate(
         [
-            'twitter.com',
-            'instagram.com',
-            'youtube.com',
+            "twitter.com",
+            "instagram.com",
+            "youtube.com",
         ]
     ),
     ids=[
-        'Firefox on Twitter',
-        'Firefox on Instagram',
-        'Firefox on YouTube',
+        "Firefox on Twitter",
+        "Firefox on Instagram",
+        "Firefox on YouTube",
     ],
 )
 @pytest.mark.sanity
@@ -395,18 +395,18 @@ def test_social_footer_links(base_url, selenium, count, link):
 
 
 @pytest.mark.parametrize(
-    'count, link',
+    "count, link",
     enumerate(
         [
-            ['privacy/websites/', '.privacy-title'],
-            ['privacy/websites/', '.privacy-title'],
-            ['legal/terms/mozilla', '#websites-communications-terms-of-use'],
+            ["privacy/websites/", ".privacy-title"],
+            ["privacy/websites/", ".privacy-title"],
+            ["legal/terms/mozilla", "#websites-communications-terms-of-use"],
         ]
     ),
     ids=[
-        'Privacy',
-        'Cookies',
-        'Legal',
+        "Privacy",
+        "Cookies",
+        "Legal",
     ],
 )
 @pytest.mark.sanity
@@ -422,16 +422,16 @@ def test_legal_footer_links(base_url, selenium, count, link):
 
 
 @pytest.mark.parametrize(
-    'count, link',
+    "count, link",
     enumerate(
         [
-            ['/about/legal/', '.mzp-c-article-title'],
-            ['/licenses/by-sa/3.0/', '.cc-license-title'],
+            ["/about/legal/", ".mzp-c-article-title"],
+            ["/licenses/by-sa/3.0/", ".cc-license-title"],
         ]
     ),
     ids=[
-        'Legal',
-        'Creative Commons License',
+        "Legal",
+        "Creative Commons License",
     ],
 )
 @pytest.mark.sanity
@@ -448,20 +448,20 @@ def test_copyright_footer_links(base_url, selenium, count, link):
 
 
 @pytest.mark.parametrize(
-    'language, locale, translation',
+    "language, locale, translation",
     [
-        ('Français', 'fr', 'Extensions'),
-        ('Deutsch', 'de', 'Erweiterungen'),
-        ('中文 (简体)', 'zh-CN', '扩展'),
-        ('Русский', 'ru', 'Расширения'),
-        ('עברית', 'he', 'הרחבות'),
+        ("Français", "fr", "Extensions"),
+        ("Deutsch", "de", "Erweiterungen"),
+        ("中文 (简体)", "zh-CN", "扩展"),
+        ("Русский", "ru", "Расширения"),
+        ("עברית", "he", "הרחבות"),
     ],
     ids=[
-        'HomePage French Translation',
-        'HomePage German Translation',
-        'HomePage Chinese Translation',
-        'HomePage Russian Translation',
-        'HomePage Hebrew Translation',
+        "HomePage French Translation",
+        "HomePage German Translation",
+        "HomePage Chinese Translation",
+        "HomePage Russian Translation",
+        "HomePage Hebrew Translation",
     ],
 )
 @pytest.mark.sanity
@@ -469,5 +469,5 @@ def test_copyright_footer_links(base_url, selenium, count, link):
 def test_change_language(base_url, selenium, language, locale, translation):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.footer.language_picker(language)
-    assert f'{locale}/firefox' in selenium.current_url
+    assert f"{locale}/firefox" in selenium.current_url
     assert translation in page.header.extensions_text
