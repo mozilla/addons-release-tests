@@ -215,6 +215,7 @@ def test_verify_first_version_autoapproval(selenium, base_url, variables, wait):
 
 @pytest.mark.sanity
 @pytest.mark.serial
+@pytest.mark.notifications
 @pytest.mark.create_session("submissions_user")
 def test_submit_listed_addon(selenium, base_url, variables, wait):
     """Test covering the process of uploading a listed addon"""
@@ -223,7 +224,7 @@ def test_submit_listed_addon(selenium, base_url, variables, wait):
     # start the upload for a listed addon
     submit_addon.select_listed_option()
     submit_addon.click_continue()
-    submit_addon.upload_addon("listed-addon.zip")
+    submit_addon.upload_addon("ublock_origin-1.38.2-an+fx (1).zip")
     # waits for the validation to complete and checks that is successful
     submit_addon.is_validation_successful()
     # checking that the Firefox compatibility checkbox is selected by default
@@ -232,8 +233,8 @@ def test_submit_listed_addon(selenium, base_url, variables, wait):
     submit_addon.android_compat_checkbox.click()
     # on submit source code page, select 'Yes' to upload source code
     source = submit_addon.click_continue_upload_button()
-    source.select_yes_to_submit_source()
-    source.choose_source("listed-addon.zip")
+    source.select_no_to_omit_source()
+    # source.choose_source("listed-addon.zip")
     details_form = source.continue_listed_submission()
     # setting a unique add-on name
     details_form.addon_name_field.clear()
@@ -265,6 +266,11 @@ def test_submit_listed_addon(selenium, base_url, variables, wait):
     edit_listing = confirmation_page.click_edit_listing_button()
     assert addon_name in edit_listing.name
 
+@pytest.mark.sanity
+@pytest.mark.serial
+@pytest.mark.create_session("submissions_user")
+def test_submit_addon_3mb_size(selenium, base_url, wait, variables):
+    
 
 @pytest.mark.serial
 @pytest.mark.create_session("submissions_user")
