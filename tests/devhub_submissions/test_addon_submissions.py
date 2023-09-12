@@ -232,7 +232,8 @@ def test_submit_listed_addon(selenium, base_url, variables, wait):
     submit_addon.android_compat_checkbox.click()
     # on submit source code page, select 'Yes' to upload source code
     source = submit_addon.click_continue_upload_button()
-    source.select_no_to_omit_source()
+    source.select_yes_to_submit_source()
+    source.choose_source("listed-addon.zip")
     # source.choose_source("listed-addon.zip")
     details_form = source.continue_listed_submission()
     # setting a unique add-on name

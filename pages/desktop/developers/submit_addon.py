@@ -276,7 +276,7 @@ class SubmitAddon(Page):
 
     def is_validation_successful(self):
         """Wait for addon validation to complete; if not successful, the test will fail"""
-        WebDriverWait(self, 20).until(
+        self.wait.until(
             EC.visibility_of_element_located(self._addon_validation_success_locator)
         )
 
