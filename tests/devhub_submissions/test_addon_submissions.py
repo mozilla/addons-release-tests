@@ -234,6 +234,7 @@ def test_submit_listed_addon(selenium, base_url, variables, wait):
     source = submit_addon.click_continue_upload_button()
     source.select_yes_to_submit_source()
     source.choose_source("listed-addon.zip")
+    # source.choose_source("listed-addon.zip")
     details_form = source.continue_listed_submission()
     # setting a unique add-on name
     details_form.addon_name_field.clear()
@@ -265,6 +266,57 @@ def test_submit_listed_addon(selenium, base_url, variables, wait):
     edit_listing = confirmation_page.click_edit_listing_button()
     assert addon_name in edit_listing.name
 
+@pytest.mark.sanity
+@pytest.mark.serial
+@pytest.mark.create_session("submissions_user")
+def test_submit_addon_3mb_size(selenium, base_url, wait, variables):
+    """Test covering the process of uploading a listed addon with 3-4 mb in size"""
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    submit_addon = page.click_submit_addon_button()
+    # start the upload for a listed addon
+    submit_addon.select_listed_option()
+    submit_addon.click_continue()
+    submit_addon.upload_addon("listed_addon_with_img.zip")
+    # waits for the validation to complete and checks that is successful
+    submit_addon.is_validation_successful()
+    # checking that the Firefox compatibility checkbox is selected by default
+    assert submit_addon.firefox_compat_checkbox.is_selected()
+    # select the Android compatibility checkbox
+    submit_addon.android_compat_checkbox.click()
+    # on submit source code page, select 'Yes' to upload source code
+    source = submit_addon.click_continue_upload_button()
+    source.select_no_to_omit_source()
+    # source.choose_source("listed-addon.zip")
+    details_form = source.continue_listed_submission()
+    # setting a unique add-on name
+    details_form.addon_name_field.clear()
+    addon_name = f"Listed-{reusables.current_date()}-{reusables.get_random_string(5)}"
+    details_form.set_addon_name(addon_name)
+    details_form.set_addon_summary(variables["listed_addon_summary_en"])
+    details_form.set_addon_description(variables["listed_addon_description_en"])
+    # marks an add-on as experimental
+    details_form.is_experimental.click()
+    # flag add-on for payment requirements
+    details_form.requires_payment.click()
+    # reusables.scroll_into_view(selenium, details_form.categories_section)
+    # set Firefox and Android categories for the addon
+    details_form.select_firefox_categories(0)
+    details_form.select_android_categories(0)
+    details_form.email_input_field("some-mail@mail.com")
+    details_form.support_site_input_field("https://example.com")
+    # set an addon license from the available list
+    details_form.select_license_options[0].click()
+    details_form.set_privacy_policy(variables["listed_addon_privacy_policy_en"])
+    details_form.set_reviewer_notes(variables["listed_addon_reviewer_notes"])
+    # submit the add-on details
+    confirmation_page = details_form.submit_addon()
+    assert (
+            variables["listed_submission_confirmation"]
+            in confirmation_page.submission_confirmation_messages[0].text
+    )
+    # go to the addon edit listing page and check that it was created
+    edit_listing = confirmation_page.click_edit_listing_button()
+    assert addon_name in edit_listing.name
 
 @pytest.mark.serial
 @pytest.mark.create_session("submissions_user")
