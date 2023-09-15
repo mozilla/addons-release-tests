@@ -38,41 +38,50 @@ class StaticPages(Base):
 
     @property
     def not_found_page(self):
+        self.wait.until(EC.visibility_of_element_located(self._not_found_page_locator))
         return self.find_element(*self._not_found_page_locator)
 
     @property
     def notice_messages(self):
+        self.wait.until(EC.visibility_of_element_located(self._notice_text_locator))
         return self.find_elements(*self._notice_text_locator)
 
     @property
     def page_header(self):
+        self.wait.until(EC.visibility_of_element_located(self._page_header_locator))
         return self.find_element(*self._page_header_locator).text
 
     @property
     def content(self):
+        self.wait.until(EC.visibility_of_element_located(self._content_locator))
         return self.find_element(*self._content_locator)
 
     # ------- Review Guidelines page
     @property
     def forum_link(self):
+        self.wait.until(EC.visibility_of_element_located(self._review_guidelines_page_forum_link_locator))
         return self.find_element(*self._review_guidelines_page_forum_link_locator)
 
     # ------- About Firefox Add-ons page
     @property
     def page_links(self):
+        self.wait.until(EC.visibility_of_element_located(self._content_card_links_locator))
         return self.find_elements(*self._content_card_links_locator)
 
     @property
     def thunderbird_link(self):
+        self.wait.until(EC.visibility_of_element_located(self._thunderbird_link_locator))
         return self.find_element(*self._thunderbird_link_locator)
 
     @property
     def seamonkey_link(self):
+        self.wait.until(EC.visibility_of_element_located(self._seamonkey_link_locator))
         return self.find_element(*self._seamonkey_link_locator)
 
     @property
     def get_involved_links(self):
         # add all the links except 'wiki'
+        self.wait.until(EC.visibility_of_element_located(self._get_involved_links_locator))
         links = self.find_elements(*self._get_involved_links_locator)
         # add the 'wiki' link
         links.append(self.find_elements(*self._content_card_links_locator)[10])
@@ -80,32 +89,39 @@ class StaticPages(Base):
 
     @property
     def report_an_issue_links(self):
+        self.wait.until(EC.visibility_of_element_located(self._content_card_links_locator))
         return self.find_elements(*self._content_card_links_locator)[11:15]
 
     @property
     def get_support_links(self):
+        self.wait.until(EC.visibility_of_element_located(self._content_card_links_locator))
         return self.find_elements(*self._content_card_links_locator)[15:]
 
     # ------- Blocked Add-on page
     @property
     def addon_policies_link(self):
+        self.wait.until(EC.visibility_of_element_located(self._blocked_addon_page_links_locator))
         return self.find_elements(*self._blocked_addon_page_links_locator)[0]
 
     @property
     def certain_criteria_link(self):
+        self.wait.until(EC.visibility_of_element_located(self._blocked_addon_page_links_locator))
         return self.find_elements(*self._blocked_addon_page_links_locator)[1]
 
     @property
     def this_support_article_link(self):
+        self.wait.until(EC.visibility_of_element_located(self._blocked_addon_page_links_locator))
         return self.find_elements(*self._blocked_addon_page_links_locator)[2]
 
     # ------- Login Expired page
     @property
     def logged_out_notice_message(self):
+        self.wait.until(EC.visibility_of_element_located(self._logged_out_notice_locator))
         return self.find_element(*self._logged_out_notice_locator)
 
     @property
     def click_reload_page_link(self):
+        self.wait.until(EC.element_to_be_clickable(self._reload_the_page_link_locator))
         self.find_element(*self._reload_the_page_link_locator).click()
         self.wait.until(
             EC.visibility_of_element_located((By.CSS_SELECTOR, '.AddonTitle'))

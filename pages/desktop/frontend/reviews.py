@@ -2,6 +2,7 @@ from pypom import Region
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as expected
+from selenium.webdriver.support import expected_conditions as EC
 
 from pages.desktop.base import Base
 
@@ -31,6 +32,7 @@ class Reviews(Base):
 
     @property
     def reviews_page_title(self):
+        self.wait_for_element_to_be_displayed(self._review_count_title_locator)
         return self.find_element(*self._review_count_title_locator).text
 
     @property
@@ -41,38 +43,47 @@ class Reviews(Base):
 
     @property
     def filter_by_score(self):
+        self.wait_for_element_to_be_displayed(self._filter_by_score_locator)
         return self.find_element(*self._filter_by_score_locator)
 
     @property
     def user_review_permalink(self):
+        self.wait_for_element_to_be_displayed(self._user_review_permalink_locator)
         return self.find_element(*self._user_review_permalink_locator).text
 
     @property
     def addon_summary_card(self):
+        self.wait_for_element_to_be_displayed(self._addon_summary_card_locator)
         return self.find_element(*self._addon_summary_card_locator)
 
     @property
     def edit_review_score(self):
+        self.wait_for_element_to_be_displayed(self._editable_rating_stars_locator)
         return self.find_elements(*self._editable_rating_stars_locator)
 
     @property
     def selected_score_highlight(self):
+        self.wait_for_element_to_be_displayed(self._score_star_highlight_locator)
         return self.find_elements(*self._score_star_highlight_locator)
 
     @property
     def reviews_list(self):
+        self.wait_for_element_to_be_displayed(self._reviews_list_locator)
         return self.find_elements(*self._reviews_list_locator)
 
     @property
     def score_bars(self):
+        self.wait_for_element_to_be_displayed(self._rating_score_bars_locator)
         return self.find_elements(*self._rating_score_bars_locator)
 
     @property
     def bar_rating_score(self):
+        self.wait_for_element_to_be_displayed(self._bar_rating_score_locator)
         return self.find_elements(*self._bar_rating_score_locator)
 
     @property
     def featured_review_section(self):
+        self.wait_for_element_to_be_displayed(self._featured_review_card_locator)
         el = self.find_element(*self._featured_review_card_locator)
         return self.FeaturedReview(self, el)
 
@@ -83,18 +94,22 @@ class Reviews(Base):
 
         @property
         def author(self):
+            self.wait.until(EC.visibility_of_element_located(self._author_locator))
             return self.find_element(*self._author_locator)
 
         @property
         def body(self):
+            self.wait.until(EC.visibility_of_element_located(self._body_locator))
             return self.find_element(*self._body_locator)
 
         @property
         def rating_stars(self):
+            self.wait.until(EC.visibility_of_element_located(self._rating_stars_locator))
             return self.find_element(*self._rating_stars_locator)
 
     @property
     def review_items(self):
+        self.wait.until(EC.visibility_of_element_located(self._reviews_list_locator))
         items = self.find_elements(*self._reviews_list_locator)
         return [self.UserReview(self, el) for el in items]
 
@@ -132,28 +147,35 @@ class Reviews(Base):
 
         @property
         def rating_stars(self):
+            self.wait.until(EC.visibility_of_element_located(self._rating_stars_locator))
             return self.find_element(*self._rating_stars_locator)
 
         @property
         def rating_user(self):
+            self.wait.until(EC.visibility_of_element_located(self._rating_user_locator))
             return self.find_element(*self._rating_user_locator)
 
         @property
         def posting_date(self):
-            return self.find_element(*self._rating_permalink_locator)
+            self.wait.until(EC.visibility_of_element_located(self._rating_user_locator))
+            return self.find_element(*self._rating_user_locator)
 
         @property
         def selected_star(self):
+            self.wait.until(EC.visibility_of_element_located(self._selected_star_locator))
             return self.find_elements(*self._selected_star_locator)
 
         @property
         def review_body(self):
+            self.wait.until(EC.visibility_of_element_located(self._review_body_locator))
             return self.find_element(*self._review_body_locator).text
 
         def click_confirm_delete_button(self):
+            self.wait.until(EC.element_to_be_clickable(self._delete_confirm_locator))
             self.find_element(*self._delete_confirm_locator).click()
 
         def click_flag_review(self):
+            self.wait.until(EC.element_to_be_clickable(self._flag_review_button_locator))
             self.find_element(*self._flag_review_button_locator).click()
             self.wait.until(
                 expected.visibility_of_element_located(
@@ -164,6 +186,7 @@ class Reviews(Base):
 
         @property
         def flag_review_option(self):
+            self.wait.until(EC.visibility_of_element_located(self._flag_review_menu_options))
             return self.find_elements(*self._flag_review_menu_options)
 
         def select_flag_option(self, count):
@@ -186,6 +209,7 @@ class Reviews(Base):
 
         @property
         def flag_review_success_text(self):
+            self.wait.until(EC.visibility_of_element_located(self._flag_review_success_text))
             return self.find_elements(*self._flag_review_success_text)
 
         @property
@@ -208,12 +232,15 @@ class Reviews(Base):
             )
 
         def reply_text_input(self, value):
+            self.wait.until(EC.visibility_of_element_located(self._review_reply_textarea_locator))
             self.find_element(*self._review_reply_textarea_locator).send_keys(value)
 
         def clear_developer_reply_text_field(self):
+            self.wait.until(EC.visibility_of_element_located(self._review_reply_textarea_locator))
             self.find_element(*self._review_reply_textarea_locator).clear()
 
         def publish_reply(self):
+            self.wait.until(EC.element_to_be_clickable(self._publish_reply_button_locator))
             self.find_element(*self._publish_reply_button_locator).click()
             self.wait.until(
                 expected.visibility_of_element_located(self._dev_reply_header_locator),
@@ -222,8 +249,10 @@ class Reviews(Base):
 
         @property
         def posted_reply_text(self):
+            self.wait.until(EC.visibility_of_element_located(self._reply_text_locator))
             return self.find_element(*self._reply_text_locator).text
 
         @property
         def dev_reply_header(self):
+            self.wait.until(EC.visibility_of_element_located(self._dev_reply_header_locator))
             return self.find_element(*self._dev_reply_header_locator)

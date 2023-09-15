@@ -171,6 +171,7 @@ class Header(Region):
     _active_link_locator = (By.CLASS_NAME, 'SectionLinks-link--active')
 
     def click_extensions(self):
+        self.wait.until(EC.element_to_be_clickable(self._extensions_locator))
         self.find_element(*self._extensions_locator).click()
         from pages.desktop.frontend.extensions import Extensions
 
@@ -178,18 +179,22 @@ class Header(Region):
 
     @property
     def extensions_text(self):
+        self.wait.until(EC.visibility_of_element_located(self._extensions_locator))
         return self.find_element(*self._extensions_locator).text
 
     @property
     def extensions_button_active(self):
         """Checks that the 'Extensions' menu button is highlighted when selected"""
+        self.wait.until(EC.visibility_of_element_located(self._extensions_active_button_locator))
         return self.find_element(*self._extensions_active_button_locator)
 
     @property
     def themes_link(self):
+        self.wait.until(EC.visibility_of_element_located(self._themes_locator))
         return self.find_element(*self._themes_locator)
 
     def click_themes(self):
+        self.wait.until(EC.element_to_be_clickable(self._themes_locator))
         self.find_element(*self._themes_locator).click()
         from pages.desktop.frontend.themes import Themes
 
@@ -198,9 +203,11 @@ class Header(Region):
     @property
     def themes_button_active(self):
         """Checks that the 'Themes' menu button is highlighted when selected"""
+        self.wait.until(EC.visibility_of_element_located(self._themes_active_button_locator))
         return self.find_element(*self._themes_active_button_locator)
 
     def click_title(self):
+        self.wait.until(EC.element_to_be_clickable(self._themes_active_button_locator))
         self.find_element(*self._header_title_locator).click()
         from pages.desktop.frontend.home import Home
 
@@ -208,9 +215,11 @@ class Header(Region):
 
     @property
     def login_button(self):
+        self.wait.until(EC.visibility_of_element_located(self._login_locator))
         return self.find_element(*self._login_locator)
 
     def click_login(self):
+        self.wait.until(EC.element_to_be_clickable(self._login_locator))
         self.find_element(*self._login_locator).click()
         from pages.desktop.frontend.login import Login
 
@@ -255,6 +264,7 @@ class Header(Region):
         )
 
     def user_menu_link(self, count):
+        self.wait.until(EC.visibility_of_element_located(self._user_menu_links_locator))
         return self.find_elements(*self._user_menu_links_locator)[count]
 
     def click_user_menu_links(self, count, landing_page):
@@ -287,14 +297,17 @@ class Header(Region):
 
     @property
     def more_menu_link(self):
+        self.wait.until(EC.visibility_of_element_located(self._more_menu_locator))
         return self.find_element(*self._more_menu_locator)
 
     @property
     def more_menu_dropdown_sections(self):
+        self.wait.until(EC.visibility_of_element_located(self._more_dropdown_sections_locator))
         return self.find_elements(*self._more_dropdown_sections_locator)
 
     @property
     def more_menu_dropdown_links(self):
+        self.wait.until(EC.visibility_of_element_located(self._more_dropdown_links_locator))
         return self.find_elements(*self._more_dropdown_links_locator)
 
     def more_menu(self, item=None):
@@ -313,9 +326,11 @@ class Header(Region):
 
     @property
     def developer_hub_link(self):
+        self.wait.until(EC.visibility_of_element_located(self._devhub_locator))
         return self.find_element(*self._devhub_locator)
 
     def click_developer_hub(self):
+        self.wait.until(EC.element_to_be_clickable(self._devhub_locator))
         self.find_element(*self._devhub_locator).click()
         self.wait.until(
             EC.number_of_windows_to_be(2),
@@ -330,9 +345,11 @@ class Header(Region):
 
     @property
     def extension_workshop_link(self):
+        self.wait.until(EC.visibility_of_element_located(self._extension_workshop_locator))
         return self.find_element(*self._extension_workshop_locator)
 
     def click_extension_workshop(self):
+        self.wait.until(EC.element_to_be_clickable(self._extension_workshop_locator))
         self.find_element(*self._extension_workshop_locator).click()
         self.wait.until(
             EC.number_of_windows_to_be(2),
@@ -347,9 +364,11 @@ class Header(Region):
 
     @property
     def firefox_addons_blog_link(self):
+        self.wait.until(EC.visibility_of_element_located(self._blog_link_locator))
         return self.find_element(*self._blog_link_locator)
 
     def click_firefox_addons_blog(self):
+        self.wait.until(EC.element_to_be_clickable(self._blog_link_locator))
         self.find_element(*self._blog_link_locator).click()
 
     @property
@@ -376,9 +395,11 @@ class Header(Region):
 
         @property
         def search_field(self):
+            self.wait.until(EC.visibility_of_element_located(self._query_field_locator))
             return self.find_element(*self._query_field_locator)
 
         def search_for(self, term, execute=True):
+            self.wait.until(EC.visibility_of_element_located(self._search_textbox_locator))
             textbox = self.find_element(*self._search_textbox_locator)
             textbox.click()
             textbox.send_keys(term)
@@ -410,6 +431,7 @@ class Header(Region):
 
         @property
         def highlighted_suggestion(self):
+            self.wait.until(EC.visibility_of_element_located(self._highlighted_selected_locator))
             return self.find_element(*self._highlighted_selected_locator)
 
         class SearchSuggestionItem(Region):
@@ -419,10 +441,12 @@ class Header(Region):
 
             @property
             def name(self):
+                self.wait.until(EC.visibility_of_element_located(self._item_name_locator))
                 return self.find_element(*self._item_name_locator).text
 
             @property
             def addon_icon(self):
+                self.wait.until(EC.visibility_of_element_located(self._item_icon_locator))
                 return self.find_element(*self._item_icon_locator)
 
             @property
@@ -456,41 +480,50 @@ class Footer(Region):
 
     @property
     def addon_links(self):
+        self.wait.until(EC.visibility_of_element_located(self._footer_amo_links_locator))
         element = self.find_element(*self._footer_amo_links_locator)
         return element.find_elements(*self._footer_links_locator)
 
     @property
     def browsers_links(self):
+        self.wait.until(EC.visibility_of_element_located(self._footer_browsers_links_locator))
         element = self.find_element(*self._footer_browsers_links_locator)
         return element.find_elements(*self._footer_links_locator)
 
     @property
     def products_links(self):
+        self.wait.until(EC.visibility_of_element_located(self._footer_products_links_locator))
         element = self.find_element(*self._footer_products_links_locator)
         return element.find_elements(*self._footer_links_locator)
 
     @property
     def mozilla_link(self):
+        self.wait.until(EC.visibility_of_element_located(self._footer_mozilla_link_locator))
         return self.find_element(*self._footer_mozilla_link_locator)
 
     @property
     def social_links(self):
+        self.wait.until(EC.visibility_of_element_located(self._footer_social_locator))
         element = self.find_element(*self._footer_social_locator)
         return element.find_elements(By.CSS_SELECTOR, 'li a')
 
     @property
     def legal_links(self):
+        self.wait.until(EC.visibility_of_element_located(self._footer_legal_locator))
         element = self.find_element(*self._footer_legal_locator)
         return element.find_elements(By.CSS_SELECTOR, 'li a')
 
     @property
     def copyright_links(self):
+        self.wait.until(EC.visibility_of_element_located(self._footer_copyright_links_locator))
         return self.find_elements(*self._footer_copyright_links_locator)
 
     @property
     def copyright_message(self):
+        self.wait.until(EC.visibility_of_element_located(self._copyright_message_locator))
         return self.find_element(*self._copyright_message_locator)
 
     def language_picker(self, value):
+        self.wait.until(EC.visibility_of_element_located(self._language_picker_locator))
         select = Select(self.find_element(*self._language_picker_locator))
         select.select_by_visible_text(value)

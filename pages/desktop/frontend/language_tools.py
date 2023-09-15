@@ -23,24 +23,30 @@ class LanguageTools(Base):
 
     @property
     def language_tools_header(self):
+        self.wait.until(EC.visibility_of_element_located(self._language_tools_header_locator))
         return self.find_element(*self._language_tools_header_locator).text
 
     @property
     def language_packs_info_text(self):
+        self.wait.until(EC.visibility_of_element_located(self._langpacks_info_text_locator))
         return self.find_element(*self._langpacks_info_text_locator).text
 
     @property
     def dictionaries_info_text(self):
+        self.wait.until(EC.visibility_of_element_located(self._dictionaries_info_text_locator))
         return self.find_element(*self._dictionaries_info_text_locator).text
 
     @property
     def supported_languages_list(self):
+        self.wait.until(EC.visibility_of_element_located(self._language_list_column_locator))
         return self.find_elements(*self._language_list_column_locator)
 
     @property
     def available_language_packs(self):
+        self.wait.until(EC.visibility_of_element_located(self._langpacks_list_column_locator))
         return self.find_elements(*self._langpacks_list_column_locator)
 
     @property
     def available_dictionaries(self):
+        self.wait.until(EC.visibility_of_element_located(self._dictionaries_list_column_locator))
         return self.find_elements(*self._dictionaries_list_column_locator)

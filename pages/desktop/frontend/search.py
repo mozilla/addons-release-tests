@@ -44,6 +44,7 @@ class Search(Page):
 
     @property
     def results_info(self):
+        self.wait.until(EC.visibility_of_element_located(self._context_card_locator))
         return self.find_element(*self._context_card_locator)
 
     @property
@@ -52,28 +53,35 @@ class Search(Page):
 
     @property
     def filter_by_sort(self):
+        self.wait.until(EC.visibility_of_element_located(self._search_filters_sort_locator))
         return self.find_element(*self._search_filters_sort_locator)
 
     @property
     def filter_by_type(self):
+        self.wait.until(EC.visibility_of_element_located(self._search_filters_type_locator))
         return self.find_element(*self._search_filters_type_locator)
 
     @property
     def filter_by_os(self):
+        self.wait.until(EC.visibility_of_element_located(self._search_filters_os_locator))
         return self.find_element(*self._search_filters_os_locator)
 
     @property
     def filter_by_badging(self):
+        self.wait.until(EC.visibility_of_element_located(self._search_filters_badging_locator))
         return self.find_element(*self._search_filters_badging_locator)
 
     @property
     def recommended_filter(self) -> object:
+        self.wait.until(EC.visibility_of_element_located(self._recommended_checkbox_locator))
         return self.find_element(*self._recommended_checkbox_locator)
 
     def next_page(self):
+        self.wait.until(EC.visibility_of_element_located(self._pagination_next_locator))
         self.find_element(*self._pagination_next_locator).click()
 
     def previous_page(self):
+        self.wait.until(EC.element_to_be_clickable(self._pagination_previous_locator))
         self.find_element(*self._pagination_previous_locator).click()
 
     @property
@@ -92,20 +100,24 @@ class Search(Page):
 
         @property
         def search_results(self):
+            self.wait.until(EC.visibility_of_element_located(self._result_locator))
             items = self.find_elements(*self._result_locator)
             return [self.ResultListItems(self, el) for el in items]
 
         @property
         def themes(self):
+            self.wait.until(EC.visibility_of_element_located(self._theme_locator))
             items = self.find_elements(*self._theme_locator)
             return [self.ResultListItems(self, el) for el in items]
 
         @property
         def extension(self):
+            self.wait.until(EC.visibility_of_element_located(self._extension_locator))
             items = self.find_elements(*self._extension_locator)
             return [self.ResultListItems(self, el) for el in items]
 
         def click_search_result(self, count):
+            self.wait.until(EC.element_to_be_clickable(self._result_link_locator))
             self.find_elements(*self._result_link_locator)[count].click()
             from pages.desktop.frontend.details import Detail
 
@@ -125,10 +137,12 @@ class Search(Page):
 
             @property
             def search_name(self):
+                self.wait.until(EC.visibility_of_element_located(self._search_item_name_locator))
                 return self.find_element(*self._search_item_name_locator)
 
             @property
             def name(self):
+                self.wait.until(EC.visibility_of_element_located(self._search_item_name_locator))
                 return self.find_element(*self._search_item_name_locator).text
 
             def link(self):
@@ -143,33 +157,40 @@ class Search(Page):
 
             @property
             def users(self):
+                self.wait.until(EC.visibility_of_element_located(self._users_number_locator))
                 users = self.find_element(*self._users_number_locator).text
                 return int(users.split()[0].replace(',', '').replace('users', ''))
 
             @property
             def rating(self):
                 """Returns the rating"""
+                self.wait.until(EC.visibility_of_element_located(self._rating_locator))
                 rating = self.find_element(*self._rating_locator).get_property('title')
                 return float(rating.split()[1])
 
             @property
             def search_result_icon(self):
+                self.wait.until(EC.visibility_of_element_located(self._icon_locator))
                 return self.find_element(*self._icon_locator)
 
             @property
             def search_result_rating_stars(self):
+                self.wait.until(EC.visibility_of_element_located(self._rating_stars_locator))
                 return self.find_element(*self._rating_stars_locator)
 
             @property
             def search_result_author(self):
+                self.wait.until(EC.visibility_of_element_located(self._author_locator))
                 return self.find_element(*self._author_locator)
 
             @property
             def search_result_users(self):
+                self.wait.until(EC.visibility_of_element_located(self._users_locator))
                 return self.find_element(*self._users_locator)
 
             @property
             def search_result_summary(self):
+                self.wait.until(EC.visibility_of_element_located(self._summary_locator))
                 return self.find_element(*self._summary_locator)
 
             @property
@@ -182,4 +203,5 @@ class Search(Page):
 
             @property
             def promoted_badge_label(self):
+                self.wait.until(EC.visibility_of_element_located(self._promoted_badge_label_locator))
                 return self.find_element(*self._promoted_badge_label_locator).text

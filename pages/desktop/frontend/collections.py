@@ -31,20 +31,24 @@ class Collections(Base):
 
     @property
     def list(self):
+        self.wait.until(EC.visibility_of_element_located(self._collection_item_locator))
         """Represents the list of collections form My Collections page"""
         items = self.find_elements(*self._collection_item_locator)
         return [self.Collection(self, el) for el in items]
 
     @property
     def collections_list_header(self):
+        self.wait.until(EC.visibility_of_element_located(self._my_collections_list_header_locator))
         return self.find_element(*self._my_collections_list_header_locator).text
 
     @property
     def collections_summary_card_header(self):
+        self.wait.until(EC.visibility_of_element_located(self._collections_card_header_locator))
         return self.find_element(*self._collections_card_header_locator).text
 
     @property
     def collections_card_summary(self):
+        self.wait.until(EC.visibility_of_element_located(self._collections_card_summary_locator))
         return self.find_element(*self._collections_card_summary_locator).text
 
     def select_collection(self, count):
@@ -60,6 +64,7 @@ class Collections(Base):
 
     @property
     def create_collection_button(self):
+        self.wait.until(EC.visibility_of_element_located(self._collections_create_button_locator))
         return self.find_element(*self._collections_create_button_locator)
 
     def click_create_collection(self):
@@ -84,14 +89,17 @@ class Collections(Base):
 
         @property
         def name(self):
+            self.wait.until(EC.visibility_of_element_located(self._name_locator))
             return self.find_element(*self._name_locator)
 
         @property
         def link(self):
+            self.wait.until(EC.visibility_of_element_located(self._link_locator))
             return self.find_element(*self._link_locator)
 
         @property
         def number_of_addons(self):
+            self.wait.until(EC.visibility_of_element_located(self._addon_number_locator))
             return self.find_element(*self._addon_number_locator)
 
         @property
@@ -127,16 +135,20 @@ class Collections(Base):
 
         @property
         def name_value(self):
+            self.wait.until(EC.visibility_of_element_located(self._name_input_locator))
             return self.find_element(*self._name_input_locator)
 
         def set_description(self, value):
+            self.wait.until(EC.visibility_of_element_located(self._description_input_locator))
             self.find_element(*self._description_input_locator).send_keys(value)
 
         def clear_description(self):
+            self.wait.until(EC.visibility_of_element_located(self._description_input_locator))
             self.find_element(*self._description_input_locator).clear()
 
         @property
         def description_value(self):
+            self.wait.until(EC.visibility_of_element_located(self._description_input_locator))
             return self.find_element(*self._description_input_locator).text
 
         def set_slug(self, value):
@@ -144,18 +156,22 @@ class Collections(Base):
 
         @property
         def slug_value(self):
+            self.wait.until(EC.visibility_of_element_located(self._description_input_locator))
             return self.find_element(*self._description_input_locator).text
 
         @property
         def slug_label_element(self):
+            self.wait.until(EC.visibility_of_element_located(self._slug_input_locator))
             return self.find_element(*self._slug_input_locator)
 
         @property
         def cancel_creation(self):
+            self.wait.until(EC.visibility_of_element_located(self._cancel_button_locator))
             return self.find_element(*self._cancel_button_locator)
 
         @property
         def create_button_disabled(self):
+            self.wait.until(EC.visibility_of_element_located(self._create_button_disabled_locator))
             return self.find_element(*self._create_button_disabled_locator)
 
         def save_collection(self):
@@ -192,6 +208,7 @@ class Collections(Base):
 
             @property
             def header(self):
+                self.wait.until(EC.visibility_of_element_located(self._header_locator))
                 return self.find_element(*self._header_locator)
 
             def search(self, term):
@@ -218,6 +235,7 @@ class Collections(Base):
 
                 @property
                 def name(self):
+                    self.wait.until(EC.visibility_of_element_located(self._item_name_locator))
                     return self.find_element(*self._item_name_locator)
 
         @property
@@ -246,6 +264,7 @@ class Collections(Base):
 
         @property
         def edit_addons_list(self):
+            self.wait.until(EC.visibility_of_element_located(self._edit_collection_addons_list_locator))
             items = self.find_elements(*self._edit_collection_addons_list_locator)
             return [self.EditAddonsList(self, el) for el in items]
 
@@ -279,6 +298,7 @@ class Collections(Base):
 
             @property
             def edit_list_addon_name(self):
+                self.wait.until(EC.visibility_of_element_located(self._edit_list_addon_name_locator))
                 return self.find_element(*self._edit_list_addon_name_locator).text
 
             def click_add_note(self):
@@ -296,6 +316,7 @@ class Collections(Base):
 
             @property
             def note_input_value(self):
+                self.wait.until(EC.visibility_of_element_located(self._add_note_textarea_locator))
                 return self.find_element(*self._add_note_textarea_locator).text
 
             def click_save_note(self):
@@ -307,6 +328,7 @@ class Collections(Base):
 
             @property
             def note_text(self):
+                self.wait.until(EC.visibility_of_element_located(self._note_text_locator))
                 return self.find_element(*self._note_text_locator).text
 
             def click_edit_note(self):
@@ -317,6 +339,7 @@ class Collections(Base):
                 )
 
             def click_delete_note(self):
+                self.wait.until(EC.element_to_be_clickable(self._delete_addon_note_button_locator))
                 self.find_element(*self._delete_addon_note_button_locator).click()
                 # waiting for the comment textarea to be closed after the note is deleted
                 try:
@@ -391,33 +414,41 @@ class Collections(Base):
 
         @property
         def collection_name(self):
+            self.wait.until(EC.visibility_of_element_located(self._name_locator))
             return self.find_element(*self._name_locator).text
 
         @property
         def collection_description(self):
+            self.wait.until(EC.visibility_of_element_located(self._summary_locator))
             return self.find_element(*self._summary_locator)
 
         @property
         def collection_addons_number(self):
+            self.wait.until(EC.visibility_of_element_located(self._addon_count_locator))
             return self.find_element(*self._addon_count_locator)
 
         @property
         def collection_creator(self):
+            self.wait.until(EC.visibility_of_element_located(self._collection_creator_locator))
             return self.find_element(*self._collection_creator_locator)
 
         @property
         def collection_last_update_date(self):
+            self.wait.until(EC.visibility_of_element_located(self._last_modified_date_locator))
             return self.find_element(*self._last_modified_date_locator)
 
         @property
         def collection_stats(self):
+            self.wait.until(EC.visibility_of_element_located(self._stats_data_locator))
             return self.find_elements(*self._stats_data_locator)
 
         @property
         def collection_addons_list(self):
+            self.wait.until(EC.visibility_of_element_located(self._collection_addons_list_locator))
             return self.find_elements(*self._collection_addons_list_locator)
 
         def click_edit_collection_button(self):
+            self.wait.until(EC.element_to_be_clickable(self._edit_button_locator))
             self.find_element(*self._edit_button_locator).click()
             self.wait.until(
                 lambda _: self.is_element_displayed(
@@ -456,13 +487,16 @@ class Collections(Base):
 
         @property
         def confirm_delete_dialog_message(self):
+            self.wait.until(EC.visibility_of_element_located(self._confirm_delete_dialog_locator))
             return self.find_element(*self._confirm_delete_dialog_locator)
 
         @property
         def cancel_delete_collection_button(self):
+            self.wait.until(EC.visibility_of_element_located(self._cancel_delete_button_locator))
             return self.find_element(*self._cancel_delete_button_locator)
 
         def cancel_delete_collection(self):
+            self.wait.until(EC.element_to_be_clickable(self._cancel_delete_button_locator))
             self.find_element(*self._cancel_delete_button_locator).click()
             self.wait.until(
                 EC.element_to_be_clickable(self._delete_button_locator),
@@ -471,12 +505,15 @@ class Collections(Base):
 
         @property
         def confirm_delete_collection_button(self):
+            self.wait.until(EC.visibility_of_element_located(self._confirm_delete_button_locator))
             return self.find_element(*self._confirm_delete_button_locator)
 
         def confirm_delete_collection(self):
+            self.wait.until(EC.element_to_be_clickable(self._confirm_delete_button_locator))
             self.find_element(*self._confirm_delete_button_locator).click()
             return Collections(self.driver, self.page).wait_for_page_to_load()
 
         @property
         def sort_addons(self):
+            self.wait.until(EC.visibility_of_element_located(self._collection_addons_sort_locator))
             return self.find_element(*self._collection_addons_sort_locator)

@@ -34,6 +34,7 @@ class AboutAddons(Page):
         return self
 
     def search_box(self, value):
+        self.wait.until(EC.visibility_of_element_located(self._search_box_locator))
         search_field = self.find_element(*self._search_box_locator)
         search_field.send_keys(value)
         # send Enter to initiate search redirection to AMO
@@ -49,6 +50,7 @@ class AboutAddons(Page):
         return Search(self.driver, self.base_url).wait_for_page_to_load()
 
     def click_extensions_side_button(self):
+        self.wait.until(EC.element_to_be_clickable(self._extension_tab_button_locator))
         self.find_element(*self._extension_tab_button_locator).click()
         self.wait.until(
             EC.text_to_be_present_in_element(
@@ -57,6 +59,7 @@ class AboutAddons(Page):
         )
 
     def click_themes_side_button(self):
+        self.wait.until(EC.element_to_be_clickable(self._theme_tab_button_locator))
         self.find_element(*self._theme_tab_button_locator).click()
         self.wait.until(
             EC.text_to_be_present_in_element(
@@ -65,6 +68,7 @@ class AboutAddons(Page):
         )
 
     def click_dictionaries_side_button(self):
+        self.wait.until(EC.element_to_be_clickable(self._dictionary_tab_button_locator))
         self.find_element(*self._dictionary_tab_button_locator).click()
         self.wait.until(
             EC.text_to_be_present_in_element(
@@ -73,6 +77,7 @@ class AboutAddons(Page):
         )
 
     def click_language_side_button(self):
+        self.wait.until(EC.element_to_be_clickable(self._langpack_tab_button_locator))
         self.find_element(*self._langpack_tab_button_locator).click()
         self.wait.until(
             EC.text_to_be_present_in_element(
@@ -81,38 +86,46 @@ class AboutAddons(Page):
         )
 
     def disable_extension(self):
+        self.wait.until(EC.element_to_be_clickable(self._extension_disable_toggle_locator))
         self.find_element(*self._extension_disable_toggle_locator).click()
 
     @property
     def installed_addon_cards(self):
+        self.wait.until(EC.visibility_of_element_located(self._installed_addon_cards_locator))
         return self.find_elements(*self._installed_addon_cards_locator)
 
     @property
     def installed_addon_name(self):
+        self.wait.until(EC.visibility_of_element_located(self._installed_addon_name_locator))
         return self.find_elements(*self._installed_addon_name_locator)
 
     @property
     def installed_addon_author_name(self):
+        self.wait.until(EC.visibility_of_element_located(self._installed_addon_author_locator))
         return self.find_element(*self._installed_addon_author_locator).text
 
     @property
     def enabled_theme_active_status(self):
         """Verifies if a theme is enabled"""
+        self.wait.until(EC.visibility_of_element_located(self._enabled_theme_status_locator))
         el = self.find_elements(*self._enabled_theme_status_locator)
         return el[0].get_attribute('active')
 
     @property
     def enabled_theme_image(self):
+        self.wait.until(EC.visibility_of_element_located(self._enabled_theme_image_locator))
         return self.find_elements(*self._enabled_theme_image_locator)[0].get_attribute(
             'src'
         )
 
     @property
     def addon_cards_items(self):
+        self.wait.until(EC.visibility_of_element_located(self._addon_cards_locator))
         items = self.find_elements(*self._addon_cards_locator)
         return [self.AddonCards(self, el) for el in items]
 
     def click_find_more_addons(self):
+        self.wait.until(EC.element_to_be_clickable(self._find_more_addons_button_locator))
         self.find_element(*self._find_more_addons_button_locator).click()
         # this button opens AMO homepage in a new tab
         self.wait.until(
@@ -126,11 +139,13 @@ class AboutAddons(Page):
 
     @property
     def installed_version_number(self):
+        self.wait.until(EC.visibility_of_element_located(self._installed_extension_version_locator))
         return self.find_element(
             *self._installed_extension_version_locator
         ).text.replace('Version\n', '')
 
     def click_options_button(self):
+        self.wait.until(EC.element_to_be_clickable(self._options_button_locator))
         self.find_element(*self._options_button_locator).click()
 
     class AddonCards(Region):
@@ -160,18 +175,22 @@ class AboutAddons(Page):
 
         @property
         def theme_image(self):
+            self.wait.until(EC.visibility_of_element_located(self._theme_image_locator))
             return self.find_element(*self._theme_image_locator)
 
         @property
         def extension_image(self):
+            self.wait.until(EC.visibility_of_element_located(self._extension_icon_locator))
             return self.find_element(*self._extension_icon_locator)
 
         @property
         def disco_addon_name(self):
+            self.wait.until(EC.visibility_of_element_located(self._disco_addon_name_locator))
             return self.find_element(*self._disco_addon_name_locator)
 
         @property
         def disco_addon_author(self):
+            self.wait.until(EC.visibility_of_element_located(self._disco_addon_author_locator))
             return self.find_element(*self._disco_addon_author_locator)
 
         def click_disco_addon_author(self):
@@ -187,10 +206,12 @@ class AboutAddons(Page):
 
         @property
         def disco_extension_summary(self):
+            self.wait.until(EC.visibility_of_element_located(self._extension_summary_locator))
             return self.find_element(*self._extension_summary_locator).text
 
         @property
         def disco_extension_rating(self):
+            self.wait.until(EC.visibility_of_element_located(self._extension_rating_locator))
             return self.find_element(*self._extension_rating_locator)
 
         @property
@@ -199,6 +220,7 @@ class AboutAddons(Page):
 
         @property
         def disco_extension_users(self):
+            self.wait.until(EC.visibility_of_element_located(self._extension_users_count_locator))
             return self.find_element(*self._extension_users_count_locator)
 
         @property
@@ -209,4 +231,5 @@ class AboutAddons(Page):
 
         @property
         def install_button(self):
+            self.wait.until(EC.visibility_of_element_located(self._addon_install_button_locator))
             return self.find_element(*self._addon_install_button_locator)

@@ -36,61 +36,73 @@ class Home(Base):
 
     @property
     def primary_hero(self):
+        self.wait.until(EC.visibility_of_element_located(self._hero_locator))
         return self.find_element(*self._hero_locator)
 
     @property
     def hero_banner(self):
+        self.wait.until(EC.visibility_of_element_located(self._hero_locator))
         el = self.find_element(*self._hero_locator)
         return self.PrimaryHero(self, el)
 
     @property
     def addon_shelf_titles(self):
+        self.wait.until(EC.visibility_of_element_located(self._shelves_titles_locator))
         return [
             title.text for title in self.find_elements(*self._shelves_titles_locator)
         ]
 
     @property
     def popular_extensions(self):
+        self.wait.until(EC.visibility_of_element_located(self._popular_extensions_locator))
         el = self.find_element(*self._popular_extensions_locator)
         return self.Extensions(self, el)
 
     @property
     def recommended_extensions(self):
+        self.wait.until(EC.visibility_of_element_located(self._recommended_extensions_locator))
         el = self.find_element(*self._recommended_extensions_locator)
         return self.Extensions(self, el)
 
     @property
     def recommended_themes(self):
+        self.wait.until(EC.visibility_of_element_located(self._recommended_themes_locator))
         el = self.find_element(*self._recommended_themes_locator)
         return self.Themes(self, el)
 
     @property
     def popular_themes(self):
+        self.wait.until(EC.visibility_of_element_located(self._popular_themes_locator))
         el = self.find_element(*self._popular_themes_locator)
         return self.Themes(self, el)
 
     @property
     def toprated_themes(self):
+        self.wait.until(EC.visibility_of_element_located(self._toprated_themes_locator))
         el = self.find_element(*self._toprated_themes_locator)
         return self.Themes(self, el)
 
     @property
     def theme_category(self):
+        self.wait.until(EC.visibility_of_element_located(self._themes_category_locator))
         el = self.find_element(*self._themes_category_locator)
         return self.ThemeCategory(self, el)
 
     @property
     def secondary_hero(self):
+        self.wait.until(EC.visibility_of_element_located(self._secondary_hero_locator))
         el = self.find_element(*self._secondary_hero_locator)
         return self.SecondaryHero(self, el)
 
     @property
     def featured_collections(self):
+        self.wait.until(EC.visibility_of_element_located(self._featured_collections_locator))
         el = self.find_element(*self._featured_collections_locator)
         return self.Extensions(self, el)
 
     @property
     def see_more_links_in_shelves(self):
+        self.wait.until(EC.visibility_of_element_located(self._shelves_see_more_links_locator))
         return self.find_elements(*self._shelves_see_more_links_locator)
 
     def click_see_more_links(self, count):
@@ -136,11 +148,13 @@ class Home(Base):
 
         @property
         def list(self):
+            self.wait.until(EC.visibility_of_element_located(self._home_theme_category_locator))
             items = self.find_elements(*self._home_theme_category_locator)
             return [self.CategoryDetail(self.page, el) for el in items]
 
         @property
         def shelf_summary(self):
+            self.wait.until(EC.visibility_of_element_located(self._shelf_summary_locator))
             return self.find_element(*self._shelf_summary_locator).text
 
         class CategoryDetail(Region):
@@ -153,10 +167,12 @@ class Home(Base):
 
             @property
             def name(self):
+                self.wait.until(EC.visibility_of_element_located(self._category_name_locator))
                 return self.find_element(*self._category_name_locator).text
 
             @property
             def category_icon(self):
+                self.wait.until(EC.visibility_of_element_located(self._category_icon_locator))
                 return self.find_element(*self._category_icon_locator)
 
             def click(self):
@@ -172,10 +188,12 @@ class Home(Base):
 
         @property
         def list(self):
+            self.wait.until(EC.visibility_of_element_located(self._extensions_locator))
             items = self.find_elements(*self._extensions_locator)
             return [Home.PromoShelvesAddons(self.page, el) for el in items]
 
         def browse_all(self):
+            self.wait.until(EC.visibility_of_element_located(self._browse_all_locator))
             self.find_element(*self._browse_all_locator).click()
             from pages.desktop.frontend.search import Search
 
@@ -184,9 +202,11 @@ class Home(Base):
 
         @property
         def card_header(self):
+            self.wait.until(EC.visibility_of_element_located(self._promo_card_header_locator))
             return self.find_element(*self._promo_card_header_locator).text
 
         def see_collection_details(self):
+            self.wait.until(EC.visibility_of_element_located(self._browse_all_locator))
             self.find_element(*self._browse_all_locator).click()
             # TODO: add additional validations when I'm covering collections
 
@@ -197,10 +217,12 @@ class Home(Base):
 
         @property
         def list(self):
+            self.wait.until(EC.visibility_of_element_located(self._themes_locator))
             items = self.find_elements(*self._themes_locator)
             return [Home.PromoShelvesAddons(self.page, el) for el in items]
 
         def browse_all(self):
+            self.wait.until(EC.visibility_of_element_located(self._browse_all_locator))
             self.find_element(*self._browse_all_locator).click()
             from pages.desktop.frontend.search import Search
 
@@ -209,6 +231,7 @@ class Home(Base):
 
         @property
         def card_header(self):
+            self.wait.until(EC.visibility_of_element_located(self._promo_card_header_locator))
             return self.find_element(*self._promo_card_header_locator).text
 
     class PromoShelvesAddons(Region):
@@ -220,9 +243,11 @@ class Home(Base):
 
         @property
         def name(self):
+            self.wait.until(EC.visibility_of_element_located(self._addon_name_locator))
             return self.find_element(*self._addon_name_locator)
 
         def click(self):
+            self.wait.until(EC.element_to_be_clickable(self._addon_link_locator))
             self.find_element(*self._addon_link_locator).click()
             from pages.desktop.frontend.extensions import Extensions
 
@@ -230,14 +255,17 @@ class Home(Base):
 
         @property
         def addon_icon_preview(self):
+            self.wait.until(EC.visibility_of_element_located(self._addon_icon_locator))
             return self.find_element(*self._addon_icon_locator)
 
         @property
         def addon_users_preview(self):
+            self.wait.until(EC.visibility_of_element_located(self._addon_users_locator))
             return self.find_element(*self._addon_users_locator)
 
         @property
         def addon_rating_preview(self):
+            self.wait.until(EC.visibility_of_element_located(self._addon_rating_locator))
             return self.find_element(*self._addon_rating_locator)
 
         def shelf_item_elements(self, item):
@@ -256,25 +284,31 @@ class Home(Base):
 
         @property
         def primary_hero_banner(self):
+            self.wait.until(EC.visibility_of_element_located(self._hero_locator))
             return self.find_element(*self._hero_locator)
 
         @property
         def primary_hero_image(self):
+            self.wait.until(EC.visibility_of_element_located(self._hero_image_locator))
             return self.find_element(*self._hero_image_locator)
 
         @property
         def primary_hero_title(self):
+            self.wait.until(EC.visibility_of_element_located(self._hero_title_locator))
             return self.find_element(*self._hero_title_locator).text
 
         @property
         def primary_hero_extension_name(self):
+            self.wait.until(EC.visibility_of_element_located(self._hero_extension_name_locator))
             return self.find_element(*self._hero_extension_name_locator).text
 
         @property
         def primary_hero_extension_summary(self):
+            self.wait.until(EC.visibility_of_element_located(self._hero_extension_summary_locator))
             return self.find_element(*self._hero_extension_summary_locator)
 
         def click_hero_extension_link(self):
+            self.wait.until(EC.element_to_be_clickable(self._extension_button_locator))
             self.find_element(*self._extension_button_locator).click()
             return Detail(self.driver, self.page.base_url).wait_for_page_to_load()
 
@@ -289,13 +323,16 @@ class Home(Base):
 
         @property
         def secondary_hero_headline(self):
+            self.wait.until(EC.visibility_of_element_located(self._secondary_headline_locator))
             return self.find_element(*self._secondary_headline_locator).text
 
         @property
         def secondary_hero_description(self):
+            self.wait.until(EC.visibility_of_element_located(self._secondary_description_locator))
             return self.find_element(*self._secondary_description_locator).text
 
         def see_all_extensions(self):
+            self.wait.until(EC.element_to_be_clickable(self._see_all_extensions_locator))
             self.find_element(*self._see_all_extensions_locator).click()
             from pages.desktop.frontend.extensions import Extensions
 
@@ -303,6 +340,7 @@ class Home(Base):
 
         @property
         def secondary_hero_modules(self):
+            self.wait.until(EC.visibility_of_element_located(self._modules_locator))
             element = self.find_elements(*self._modules_locator)
             return [self.SecondaryHeroModules(self.page, el) for el in element]
 
@@ -317,10 +355,12 @@ class Home(Base):
 
             @property
             def module_icon(self):
+                self.wait.until(EC.visibility_of_element_located(self._module_icon_locator))
                 return self.find_element(*self._module_icon_locator)
 
             @property
             def module_description(self):
+                self.wait.until(EC.visibility_of_element_located(self._module_description_locator))
                 return self.find_element(*self._module_description_locator)
 
             def click_secondary_module_link(self):
