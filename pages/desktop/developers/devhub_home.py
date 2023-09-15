@@ -240,6 +240,7 @@ class DevHubHome(Base):
     @property
     def user_profile_icon(self):
         # get the 'alt' attribute to determine if img is uploaded by the user and is not the default avatar
+        self.wait_for_element_to_be_displayed(self._user_profile_picture_locator)
         return self.find_element(*self._user_profile_picture_locator).get_attribute(
             'alt'
         )
@@ -279,6 +280,7 @@ class DevHubHome(Base):
         return self.find_element(*self._logged_in_hero_banner_text_locator).text
 
     def click_logged_in_hero_banner_extension_workshop_link(self):
+        self.wait_for_element_to_be_clickable(self._logged_in_hero_banner_link_locator)
         self.find_element(*self._logged_in_hero_banner_link_locator).click()
 
     def click_see_all_addons_link(self):
@@ -292,7 +294,7 @@ class DevHubHome(Base):
         return SubmitAddon(self.driver, self.base_url)
 
     def click_submit_theme_button(self):
-        self.wait_for_element_to_be_displayed(self._submit_theme_button_locator)
+        self.wait_for_element_to_be_clickable(self._submit_theme_button_locator)
         self.find_element(*self._submit_theme_button_locator).click()
         return SubmitAddon(self.driver, self.base_url)
 
@@ -340,10 +342,16 @@ class DevHubHome(Base):
 
         @property
         def my_addon_icon(self):
+            self.wait.until(
+                EC.visibility_of_element_located(self._my_addon_icon_locator)
+            )
             return self.find_element(*self._my_addon_icon_locator)
 
         @property
         def my_addon_name(self):
+            self.wait.until(
+                EC.visibility_of_element_located(self._my_addon_name_locator)
+            )
             return self.find_element(*self._my_addon_name_locator)
 
         def click_my_addon_edit_link(self):
@@ -352,22 +360,37 @@ class DevHubHome(Base):
 
         @property
         def my_addon_version_number(self):
+            self.wait.until(
+                EC.visibility_of_element_located(self._my_addon_version_number_locator)
+            )
             return self.find_element(*self._my_addon_version_number_locator)
 
         @property
         def my_addon_version_status(self):
+            self.wait.until(
+                EC.visibility_of_element_located(self._my_addon_version_status_locator)
+            )
             return self.find_element(*self._my_addon_version_status_locator)
 
         @property
         def my_addon_rating_text(self):
+            self.wait.until(
+                EC.visibility_of_element_located(self._my_addon_rating_text_locator)
+            )
             return self.find_element(*self._my_addon_rating_text_locator)
 
         @property
         def my_addon_rating_stars(self):
+            self.wait.until(
+                EC.visibility_of_element_located(self._my_addon_rating_stars_locator)
+            )
             return self.find_element(*self._my_addon_rating_stars_locator)
 
         @property
         def my_addon_last_modified_date(self):
+            self.wait.until(
+                EC.visibility_of_element_located(self._my_addon_last_modified_date_locator)
+            )
             return self.find_element(*self._my_addon_last_modified_date_locator)
 
         @property
@@ -448,40 +471,70 @@ class ConnectFooter(Region):
 
     @property
     def connect_footer_title(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._connect_footer_title_locator)
+        )
         return self.find_element(*self._connect_footer_title_locator).text
 
     @property
     def connect_twitter_title(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._twitter_column_title_locator)
+        )
         return self.find_element(*self._twitter_column_title_locator).text
 
     @property
     def twitter_links(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._twitter_links_locator)
+        )
         return self.find_elements(*self._twitter_links_locator)
 
     @property
     def connect_more_title(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._more_column_title_locator)
+        )
         return self.find_element(*self._more_column_title_locator).text
 
     @property
     def more_connect_links(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._more_contact_links_locator)
+        )
         return self.find_elements(*self._more_contact_links_locator)
 
     @property
     def newsletter_section_header(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._newsletter_header_locator)
+        )
         return self.find_element(*self._newsletter_header_locator).text
 
     @property
     def newsletter_info_text(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._newsletter_info_text_locator)
+        )
         return self.find_element(*self._newsletter_info_text_locator).text
 
     def newsletter_email_input_field(self, email):
+        self.wait.until(
+            EC.element_to_be_clickable(self._newsletter_email_input_field_locator)
+        )
         self.find_element(*self._newsletter_email_input_field_locator).send_keys(email)
 
     @property
     def newsletter_sign_up(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._newsletter_sign_up_button_locator)
+        )
         return self.find_element(*self._newsletter_sign_up_button_locator)
 
     def click_privacy_checkbox(self):
+        self.wait.until(
+            EC.element_to_be_clickable(self._newsletter_privacy_checkbox_locator)
+        )
         self.find_element(*self._newsletter_privacy_checkbox_locator).click()
 
     def click_newsletter_privacy_notice_link(self):
@@ -495,12 +548,18 @@ class ConnectFooter(Region):
 
     @property
     def newsletter_signup_confirmation_header(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._newsletter_sign_up_confirmation_header_locator)
+        )
         return self.find_element(
             *self._newsletter_sign_up_confirmation_header_locator
         ).text
 
     @property
     def newsletter_signup_confirmation_message(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._newsletter_sign_up_confirmation_message_locator)
+        )
         return self.find_element(
             *self._newsletter_sign_up_confirmation_message_locator
         ).text
@@ -590,33 +649,54 @@ class ResourcesFooter(Region):
 
     @property
     def documentation_section_header(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._documentation_section_header_locator)
+        )
         return self.find_element(*self._documentation_section_header_locator).text
 
     @property
     def documentation_section_links(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._documentation_section_locator)
+        )
         el = self.find_element(*self._documentation_section_locator)
         return el.find_elements(*self._resources_footer_section_links)
 
     @property
     def tools_section_header(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._tools_section_header_locator)
+        )
         return self.find_element(*self._tools_section_header_locator).text
 
     @property
     def tools_section_links(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._tools_section_locator)
+        )
         el = self.find_element(*self._tools_section_locator)
         return el.find_elements(*self._resources_footer_section_links)
 
     @property
     def promote_section_header(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._promote_section_header_locator)
+        )
         return self.find_element(*self._promote_section_header_locator).text
 
     @property
     def promote_section_links(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._promote_section_locator)
+        )
         el = self.find_element(*self._promote_section_locator)
         return el.find_elements(*self._resources_footer_section_links)
 
     @property
     def review_addons_section_header(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._addon_review_section_header_locator)
+        )
         return self.find_element(*self._addon_review_section_header_locator).text
 
     @property
@@ -661,4 +741,7 @@ class ResourcesFooter(Region):
         return self.find_element(*self._participate_info_text_locator).text
 
     def click_participate_section_link(self):
+        self.wait.until(
+            EC.element_to_be_clickable(self._participate_link_locator)
+        )
         self.find_element(*self._participate_link_locator).click()

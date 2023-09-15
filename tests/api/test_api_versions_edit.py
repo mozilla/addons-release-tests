@@ -726,6 +726,7 @@ def test_edit_version_valid_compatibility_values(
         url=f"{base_url}{_addon_create}{addon}",
         headers={"Authorization": f"Session {session_auth}"},
     )
+    print(request)
     # get the version id of the version we want to edit
     version = request.json()["current_version"]["id"]
     payload = {**payloads.edit_version_details, "compatibility": request_value}

@@ -29,10 +29,12 @@ class EditAddon(Base):
 
     @property
     def name(self):
+        self.wait_for_element_to_be_displayed(self._addon_name_locator)
         return self.find_element(*self._addon_name_locator).text
 
     @property
     def listed_addon_status(self):
+        self.wait_for_element_to_be_displayed(self._listed_addon_status_locator)
         return self.find_element(*self._listed_addon_status_locator).text
 
     def click_upload_version_link(self):
@@ -43,6 +45,7 @@ class EditAddon(Base):
 
     @property
     def unlisted_version_tooltip(self):
+        self.wait_for_element_to_be_displayed(self._unlisted_version_tooltip_locator)
         return self.find_element(*self._unlisted_version_tooltip_locator)
 
     @property
@@ -59,6 +62,7 @@ class EditAddon(Base):
         return final_date
 
     def click_manage_versions_link(self):
+        self.wait_for_element_to_be_clickable(self._manage_versions_link_locator)
         self.find_element(*self._manage_versions_link_locator).click()
         from pages.desktop.developers.manage_versions import ManageVersions
 

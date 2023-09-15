@@ -95,22 +95,27 @@ class SubmitAddon(Page):
 
     @property
     def my_addons_page_logo(self):
+        self.wait.until(EC.visibility_of_element_located(self._my_addons_page_logo_locator))
         return self.find_element(*self._my_addons_page_logo_locator)
 
     @property
     def submission_form_header(self):
+        self.wait.until(EC.visibility_of_element_located(self._submission_form_header_locator))
         return self.find_element(*self._submission_form_header_locator)
 
     @property
     def submission_form_subheader(self):
+        self.wait.until(EC.visibility_of_element_located(self._addon_distribution_header_locator))
         return self.find_element(*self._addon_distribution_header_locator)
 
     @property
     def developer_notification_box(self):
+        self.wait.until(EC.visibility_of_element_located(self._developer_notification_box_locator))
         return self.find_element(*self._developer_notification_box_locator)
 
     @property
     def distribution_page_explainer(self):
+        self.wait.until(EC.visibility_of_element_located(self._distribution_page_explainer_locator))
         return self.find_element(*self._distribution_page_explainer_locator).text
 
     @property
@@ -122,14 +127,17 @@ class SubmitAddon(Page):
 
     @property
     def distribution_agreement_article_link(self):
+        self.wait.until(EC.visibility_of_element_located(self._distribution_agreement_link_locator))
         return self.find_element(*self._distribution_agreement_link_locator)
 
     @property
     def review_policies_checkbox(self):
+        self.wait.until(EC.visibility_of_element_located(self._review_policies_checkbox_locator))
         return self.find_element(*self._review_policies_checkbox_locator)
 
     @property
     def review_policies_article_link(self):
+        self.wait.until(EC.visibility_of_element_located(self._review_policies_link_locator))
         return self.find_element(*self._review_policies_link_locator)
 
     def click_extension_workshop_article_link(self, link, text):
@@ -151,10 +159,12 @@ class SubmitAddon(Page):
 
     @property
     def user_consent_text(self):
+        self.wait.until(EC.visibility_of_element_located(self._user_consent_text_locator))
         return self.find_element(*self._user_consent_text_locator).text
 
     @property
     def recaptcha(self):
+        self.wait.until(EC.visibility_of_element_located(self._recaptcha_locator))
         return self.find_element(*self._recaptcha_locator)
 
     def click_recaptcha_checkbox(self):
@@ -165,10 +175,12 @@ class SubmitAddon(Page):
 
     @property
     def accept_agreement(self):
+        self.wait.until(EC.visibility_of_element_located(self._accept_agreement_button))
         return self.find_element(*self._accept_agreement_button)
 
     @property
     def cancel_agreement(self):
+        self.wait.until(EC.visibility_of_element_located(self._cancel_agreement_button))
         return self.find_element(*self._cancel_agreement_button)
 
     def click_dev_accounts_info_link(self):
@@ -183,10 +195,12 @@ class SubmitAddon(Page):
 
     @property
     def listed_option_helptext(self):
+        self.wait.until(EC.visibility_of_element_located(self._listed_option_helptext_locator))
         return self.find_element(*self._listed_option_helptext_locator).text
 
     @property
     def unlisted_option_helptext(self):
+        self.wait.until(EC.visibility_of_element_located(self._unlisted_option_helptext_locator))
         return self.find_element(*self._unlisted_option_helptext_locator)
 
     @property
@@ -214,6 +228,7 @@ class SubmitAddon(Page):
 
     @property
     def distribution_and_signing_helptext(self):
+        self.wait.until(EC.visibility_of_element_located(self._distribution_and_signing_helptext_locator))
         return self.find_element(*self._distribution_and_signing_helptext_locator)
 
     @property
@@ -222,6 +237,7 @@ class SubmitAddon(Page):
 
     @property
     def addon_policies_helptext(self):
+        self.wait.until(EC.visibility_of_element_located(self._addon_policies_helptext_locator))
         return self.find_element(*self._addon_policies_helptext_locator)
 
     @property
@@ -238,6 +254,7 @@ class SubmitAddon(Page):
 
     @property
     def file_upload_helptext(self):
+        self.wait.until(EC.visibility_of_element_located(self._file_upload_process_helptext_locator))
         return self.find_elements(*self._file_upload_process_helptext_locator)
 
     def upload_addon(self, addon):
@@ -248,26 +265,32 @@ class SubmitAddon(Page):
 
     @property
     def accepted_file_types(self):
+        self.wait.until(EC.visibility_of_element_located(self._accepted_file_types_locator))
         return self.find_element(*self._accepted_file_types_locator).text
 
     @property
     def compatibility_helptext(self):
+        self.wait.until(EC.visibility_of_element_located(self._compatibility_helptext_locator))
         return self.find_elements(*self._compatibility_helptext_locator)[0].text
 
     @property
     def compatibility_error_message(self):
+        self.wait.until(EC.visibility_of_element_located(self._compatibility_error_message_locator))
         return self.find_element(*self._compatibility_error_message_locator).text
 
     @property
     def firefox_compat_checkbox(self):
+        self.wait.until(EC.visibility_of_element_located(self._firefox_compat_checkbox_locator))
         return self.find_element(*self._firefox_compat_checkbox_locator)
 
     @property
     def android_compat_checkbox(self):
+        self.wait.until(EC.visibility_of_element_located(self._android_compat_checkbox_locator))
         return self.find_element(*self._android_compat_checkbox_locator)
 
     @property
     def create_theme_subheader(self):
+        self.wait.until(EC.visibility_of_element_located(self._create_theme_subheader_locator))
         return self.find_element(*self._create_theme_subheader_locator).text
 
     def click_create_theme_button(self):
@@ -282,10 +305,12 @@ class SubmitAddon(Page):
 
     @property
     def failed_validation_bar(self):
+        self.wait.until(EC.visibility_of_element_located(self._validation_fail_bar_locator))
         return self.find_element(*self._validation_fail_bar_locator)
 
     @property
     def validation_status_title(self):
+        self.wait.until(EC.visibility_of_element_located(self._validation_status_text_locator))
         return self.find_element(*self._validation_status_text_locator).text
 
     def click_validation_support_link(self):
@@ -303,14 +328,17 @@ class SubmitAddon(Page):
 
     @property
     def validation_failed_message(self):
+        self.wait.until(EC.visibility_of_element_located(self._validation_failed_message_locator))
         return self.find_element(*self._validation_failed_message_locator).text
 
     @property
     def validation_failed_reason(self):
+        self.wait.until(EC.visibility_of_element_located(self._validation_fail_reason_locator))
         return self.find_elements(*self._validation_fail_reason_locator)
 
     @property
     def validation_warning_message(self):
+        self.wait.until(EC.visibility_of_element_located(self._validation_warning_message_locator))
         return self.find_element(*self._validation_warning_message_locator).text
 
     def click_validation_summary(self):
@@ -326,6 +354,7 @@ class SubmitAddon(Page):
 
     @property
     def success_validation_message(self):
+        self.wait.until(EC.visibility_of_element_located(self._validation_success_message_locator))
         return self.find_element(*self._validation_success_message_locator)
 
     def click_continue_upload_button(self):
@@ -350,30 +379,37 @@ class ValidationResults(Page):
 
     @property
     def validation_results_header(self):
+        self.wait.until(EC.visibility_of_element_located(self._validation_results_header_locator))
         return self.find_element(*self._validation_results_header_locator).text
 
     @property
     def validation_summary_shelf(self):
+        self.wait.until(EC.visibility_of_element_located(self._validation_results_header_locator))
         return self.find_element(*self._validation_summary_shelf_locator)
 
     @property
     def validation_general_results(self):
+        self.wait.until(EC.visibility_of_element_located(self._validation_general_results_locator))
         return self.find_element(*self._validation_general_results_locator)
 
     @property
     def validation_security_results(self):
+        self.wait.until(EC.visibility_of_element_located(self._validation_security_results_locator))
         return self.find_element(*self._validation_security_results_locator)
 
     @property
     def validation_extension_results(self):
+        self.wait.until(EC.visibility_of_element_located(self._validation_extension_results_locator))
         return self.find_element(*self._validation_extension_results_locator)
 
     @property
     def validation_localization_results(self):
+        self.wait.until(EC.visibility_of_element_located(self._validation_localization_results_locator))
         return self.find_element(*self._validation_localization_results_locator)
 
     @property
     def validation_compatibility_results(self):
+        self.wait.until(EC.visibility_of_element_located(self._validation_compatibility_results_locator))
         return self.find_element(*self._validation_compatibility_results_locator)
 
 
@@ -406,9 +442,11 @@ class UploadSource(Page):
 
     @property
     def submit_source_page_header(self):
+        self.wait.until(EC.visibility_of_element_located(self._submit_source_code_page_header_locator))
         return self.find_element(*self._submit_source_code_page_header_locator).text
 
     def select_yes_to_submit_source(self):
+        self.wait.until(EC.visibility_of_element_located(self._yes_submit_source_radio_button_locator))
         self.find_element(*self._yes_submit_source_radio_button_locator).click()
 
     def select_no_to_omit_source(self):
@@ -433,6 +471,7 @@ class UploadSource(Page):
 
     @property
     def source_upload_fail_message(self):
+        self.wait.until(EC.visibility_of_element_located(self._upload_source_error_message_locator))
         return self.find_element(*self._upload_source_error_message_locator).text
 
     def click_cancel_and_disable_version(self):
@@ -440,6 +479,7 @@ class UploadSource(Page):
 
     @property
     def cancel_and_disable_explainer_text(self):
+        self.wait.until(EC.visibility_of_element_located(self._cancel_and_disable_explainer_text_locator))
         return self.find_element(*self._cancel_and_disable_explainer_text_locator).text
 
     def click_do_not_cancel_version(self):
@@ -518,6 +558,7 @@ class ListedAddonSubmissionForm(Page):
 
     @property
     def addon_name_field(self):
+        self.wait.until(EC.visibility_of_element_located(self._addon_name_field_locator))
         return self.find_element(*self._addon_name_field_locator)
 
     def edit_addon_slug(self, value):
@@ -535,6 +576,7 @@ class ListedAddonSubmissionForm(Page):
 
     @property
     def summary_character_count(self):
+        self.wait.until(EC.visibility_of_element_located(self._summary_character_count_locator))
         return self.find_element(*self._summary_character_count_locator).text
 
     def set_addon_description(self, value):
@@ -542,14 +584,17 @@ class ListedAddonSubmissionForm(Page):
 
     @property
     def is_experimental(self):
+        self.wait.until(EC.visibility_of_element_located(self._is_experimental_checkbox_locator))
         return self.find_element(*self._is_experimental_checkbox_locator)
 
     @property
     def requires_payment(self):
+        self.wait.until(EC.visibility_of_element_located(self._requires_payment_checkbox_locator))
         return self.find_element(*self._requires_payment_checkbox_locator)
 
     @property
     def categories_section(self):
+        self.wait.until(EC.visibility_of_element_located(self._categories_section_locator))
         return self.find_element(*self._categories_section_locator)
 
     def select_firefox_categories(self, count):
@@ -569,24 +614,30 @@ class ListedAddonSubmissionForm(Page):
 
     @property
     def select_license_options(self):
+        self.wait.until(EC.visibility_of_element_located(self._license_options_locator))
         return self.find_elements(*self._license_options_locator)
 
     def license_option_names(self, count, value):
         return self.select_license_options[count].get_attribute(value)
 
     def license_details_link(self):
+        self.wait.until(EC.visibility_of_element_located(self._license_details_link_locator))
         self.find_element(*self._license_details_link_locator).click()
 
     def set_custom_license_name(self, value):
+        self.wait.until(EC.visibility_of_element_located(self._custom_license_name_locator))
         self.find_element(*self._custom_license_name_locator).send_keys(value)
 
     def set_custom_license_text(self, value):
+        self.wait.until(EC.visibility_of_element_located(self._custom_license_text_locator))
         self.find_element(*self._custom_license_text_locator).send_keys(value)
 
     def select_theme_licence_sharing_rights(self, count):
+        self.wait.until(EC.visibility_of_element_located(self._theme_licence_sharing_rights_locator))
         self.find_elements(*self._theme_licence_sharing_rights_locator)[count].click()
 
     def select_theme_license_commercial_use(self, count):
+        self.wait.until(EC.visibility_of_element_located(self._theme_license_commercial_use_locator))
         self.find_elements(*self._theme_license_commercial_use_locator)[count].click()
 
     def select_theme_license_creation_rights(self, count):
@@ -594,15 +645,19 @@ class ListedAddonSubmissionForm(Page):
 
     @property
     def generated_theme_license(self):
+        self.wait.until(EC.visibility_of_element_located(self._selected_theme_license_locator))
         return self.find_element(*self._selected_theme_license_locator)
 
     def open_theme_licenses_list(self):
+        self.wait.until(EC.visibility_of_element_located(self._open_theme_licenses_list_locator))
         self.find_element(*self._open_theme_licenses_list_locator).click()
 
     def select_theme_license_from_list(self):
+        self.wait.until(EC.visibility_of_element_located(self._theme_licenses_list_locator))
         self.find_elements(*self._theme_licenses_list_locator)
 
     def set_privacy_policy(self, value):
+        self.wait.until(EC.element_to_be_clickable(self._privacy_policy_checkbox_locator))
         self.find_element(*self._privacy_policy_checkbox_locator).click()
         self.find_element(*self._privacy_policy_textarea_locator).send_keys(value)
 
@@ -642,6 +697,7 @@ class ThemeWizard(Page):
 
     @property
     def wizard_header(self):
+        self.wait.until(EC.visibility_of_element_located(self._wizard_header_locator))
         return self.find_element(*self._wizard_header_locator).text
 
     def set_theme_name(self, value):
@@ -654,6 +710,7 @@ class ThemeWizard(Page):
 
     @property
     def uploaded_image_preview(self):
+        self.wait.until(EC.visibility_of_element_located(self._uploaded_image_preview_locator))
         return self.find_element(*self._uploaded_image_preview_locator)
 
     @property
@@ -663,6 +720,7 @@ class ThemeWizard(Page):
 
     @property
     def browser_preview(self):
+        self.wait.until(EC.visibility_of_element_located(self._browser_preview_locator))
         return self.find_element(*self._browser_preview_locator)
 
     @property
@@ -705,19 +763,23 @@ class SubmissionConfirmationPage(Page):
 
     @property
     def submission_confirmation_messages(self):
+        self.wait.until(EC.visibility_of_element_located(self._confirmation_messages_locator))
         return self.find_elements(*self._confirmation_messages_locator)
 
     def click_manage_listing_button(self):
+        self.wait.until(EC.element_to_be_clickable(self._manage_listing_button_locator))
         self.find_element(*self._manage_listing_button_locator).click()
         from pages.desktop.developers.addons_manage import ManageAddons
 
         return ManageAddons(self.driver, self.base_url).wait_for_page_to_load()
 
     def click_edit_version_button(self):
+        self.wait.until(EC.element_to_be_clickable(self._edit_version_button_locator))
         self.find_element(*self._edit_version_button_locator).click()
         return ManageVersions(self.driver, self.base_url)
 
     def click_edit_listing_button(self):
+        self.wait.until(EC.element_to_be_clickable(self._edit_listing_button_locator))
         self.find_element(*self._edit_listing_button_locator).click()
         from pages.desktop.developers.edit_addon import EditAddon
 
@@ -725,4 +787,5 @@ class SubmissionConfirmationPage(Page):
 
     @property
     def generated_theme_preview(self):
+        self.wait.until(EC.visibility_of_element_located(self._theme_preview_locator))
         return self.find_element(*self._theme_preview_locator)

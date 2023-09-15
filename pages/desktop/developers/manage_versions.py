@@ -61,10 +61,12 @@ class ManageVersions(Page):
 
     @property
     def version_page_title(self):
+        self.wait.until(EC.visibility_of_element_located(self._addon_name_title_locator))
         return self.find_element(*self._addon_name_title_locator).text
 
     @property
     def listing_visibility_section(self):
+        self.wait.until(EC.visibility_of_element_located(self._listing_visibility_section_locator))
         return self.find_element(*self._listing_visibility_section_locator).text
 
     def set_addon_visible(self):
@@ -75,10 +77,12 @@ class ManageVersions(Page):
 
     @property
     def visible_status_explainer(self):
+        self.wait.until(EC.visibility_of_element_located(self._visible_explainer_text_locator))
         return self.find_element(*self._visible_explainer_text_locator).text
 
     @property
     def invisible_status_explainer(self):
+        self.wait.until(EC.visibility_of_element_located(self._invisible_explainer_text_locator))
         return self.find_element(*self._invisible_explainer_text_locator).text
 
     def set_addon_invisible(self):
@@ -96,6 +100,7 @@ class ManageVersions(Page):
 
     @property
     def hide_addon_confirmation_text(self):
+        self.wait.until(EC.visibility_of_element_located(self._hide_addon_confirmation_text_locator))
         return self.find_element(*self._hide_addon_confirmation_text_locator).text
 
     def cancel_hide_addon_process(self):
@@ -105,18 +110,22 @@ class ManageVersions(Page):
 
     @property
     def addon_listed_status(self):
+        self.wait.until(EC.visibility_of_element_located(self._addon_listed_status_locator))
         return self.find_element(*self._addon_listed_status_locator).text
 
     @property
     def incomplete_status(self):
+        self.wait.until(EC.visibility_of_element_located(self._incomplete_status_locator))
         return self.find_element(*self._incomplete_status_locator)
 
     @property
     def current_version_status(self):
+        self.wait.until(EC.visibility_of_element_located(self._current_version_status_locator))
         return self.find_element(*self._current_version_status_locator).text
 
     @property
     def version_approval_status(self):
+        self.wait.until(EC.visibility_of_element_located(self._version_approval_status_locator))
         return self.find_elements(*self._version_approval_status_locator)
 
     def click_delete_disable_version(self):
@@ -130,23 +139,29 @@ class ManageVersions(Page):
 
     @property
     def delete_disable_version_helptext(self):
+        self.wait.until(EC.visibility_of_element_located(self._delete_version_help_text_locator))
         return self.find_element(*self._delete_version_help_text_locator).text
 
     @property
     def delete_disable_version_warning(self):
+        self.wait.until(EC.visibility_of_element_located(self._delete_version_warning_locator))
         return self.find_element(*self._delete_version_warning_locator).text
 
     def click_delete_version_button(self):
+        self.wait.until(EC.element_to_be_clickable(self._delete_version_button_locator))
         self.find_element(*self._delete_version_button_locator).click()
 
     def click_disable_version_button(self):
+        self.wait.until(EC.element_to_be_clickable(self._disable_version_button_locator))
         self.find_element(*self._disable_version_button_locator).click()
 
     def click_cancel_version_delete_link(self):
+        self.wait.until(EC.element_to_be_clickable(self._cancel_disable_version_link_locator))
         return self.find_element(*self._cancel_disable_version_link_locator).click()
 
     def click_enable_version(self):
         """Allows developers to re-enable a version that was previously disabled"""
+        self.wait.until(EC.element_to_be_clickable(self._enable_version_button_locator))
         self.find_element(*self._enable_version_button_locator).click()
 
     def wait_for_version_autoapproval(self, value):

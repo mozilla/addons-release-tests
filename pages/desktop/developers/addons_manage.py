@@ -27,10 +27,12 @@ class ManageAddons(Base):
 
     @property
     def my_addons_page_logo(self):
+        self.wait_for_element_to_be_displayed(self._my_addons_page_logo)
         return self.find_element(*self._my_addons_page_logo)
 
     @property
     def my_addons_page_title(self):
+        self.wait_for_element_to_be_displayed(self._page_title_locator)
         return self.find_element(*self._page_title_locator)
 
     def click_on_my_themes(self):
@@ -47,6 +49,7 @@ class ManageAddons(Base):
 
     @property
     def addon_list(self):
+        self.wait_for_element_to_be_displayed(self._addon_items_locator)
         items = self.find_elements(*self._addon_items_locator)
         return [self.AddonDetails(self, el) for el in items]
 
@@ -56,8 +59,14 @@ class ManageAddons(Base):
 
         @property
         def name(self):
+            self.wait.until(
+                EC.visibility_of_element_located(self._addon_name_locator)
+            )
             return self.find_element(*self._addon_name_locator).text
 
         def click_addon_name(self):
+            self.wait.until(
+                EC.element_to_be_clickable(self._addon_edit_link_locator)
+            )
             self.find_element(*self._addon_edit_link_locator).click()
             return EditAddon(self.driver, self.page.base_url).wait_for_page_to_load()
