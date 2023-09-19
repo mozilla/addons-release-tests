@@ -219,7 +219,6 @@ class Header(Region):
         return self.find_element(*self._login_locator)
 
     def click_login(self):
-        self.wait.until(EC.element_to_be_clickable(self._login_locator))
         self.find_element(*self._login_locator).click()
         from pages.desktop.frontend.login import Login
 

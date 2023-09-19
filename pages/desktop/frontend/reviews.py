@@ -104,12 +104,10 @@ class Reviews(Base):
 
         @property
         def rating_stars(self):
-            self.wait.until(EC.visibility_of_element_located(self._rating_stars_locator))
             return self.find_element(*self._rating_stars_locator)
 
     @property
     def review_items(self):
-        self.wait.until(EC.visibility_of_element_located(self._reviews_list_locator))
         items = self.find_elements(*self._reviews_list_locator)
         return [self.UserReview(self, el) for el in items]
 
@@ -147,7 +145,6 @@ class Reviews(Base):
 
         @property
         def rating_stars(self):
-            self.wait.until(EC.visibility_of_element_located(self._rating_stars_locator))
             return self.find_element(*self._rating_stars_locator)
 
         @property

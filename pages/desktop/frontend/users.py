@@ -144,14 +144,10 @@ class User(Base):
 
         @property
         def user_profile_icon(self):
-            self.wait.until(EC.visibility_of_element_located(self._user_profile_image_locator))
             return self.find_element(*self._user_profile_image_locator)
 
         @property
         def icon_source(self):
-            self.wait.until(
-                EC.visibility_of_element_located(self._user_profile_image_locator)
-            )
             return self.user_profile_icon.get_attribute('src')
 
         @property
@@ -206,7 +202,6 @@ class User(Base):
 
         @property
         def user_biography(self):
-            self.wait.until(EC.visibility_of_element_located(self._user_biography_locator))
             return self.find_element(*self._user_biography_locator).text
 
         @property
@@ -280,7 +275,6 @@ class User(Base):
 
         @property
         def themes_pagination(self):
-            self.wait.until(EC.visibility_of_element_located(self._themes_pagination_locator))
             return self.find_element(*self._themes_pagination_locator)
 
         def themes_next_page(self):
@@ -300,7 +294,6 @@ class User(Base):
 
         @property
         def user_review_items(self):
-            self.wait.until(EC.visibility_of_element_located(self._user_review_list_locator))
             items = self.find_elements(*self._user_review_list_locator)
             reviews = Reviews(self.driver, self.page.base_url).wait_for_page_to_load()
             return [reviews.UserReview(self, el) for el in items]
@@ -537,7 +530,6 @@ class User(Base):
             ).get_attribute('src')
 
         def delete_profile_picture(self):
-            self.wait.until(EC.element_to_be_clickable(self._delete_picture_button_locator))
             self.find_element(*self._delete_picture_button_locator).click()
             self.wait.until(
                 EC.element_to_be_clickable(self._confirm_delete_picture_locator)
@@ -600,7 +592,6 @@ class User(Base):
 
         @property
         def submit_changes_button_disabled(self):
-            self.wait.until(EC.visibility_of_element_located(self._edit_profile_submit_disabled_button_locator))
             return self.find_element(*self._edit_profile_submit_disabled_button_locator)
 
         def update_profile(self):
