@@ -107,7 +107,7 @@ def test_current_version(selenium, base_url, variables):
 @pytest.mark.nondestructive
 def test_version_install_warning(selenium, base_url, variables):
     selenium.get(
-        f'{base_url}/en-US/firefox/addon/{variables["non_recommended_addon"]}/versions/'
+        f'{base_url}/en-US/firefox/addon/{variables["non_recommended_addon_frontend"]}/versions/'
     )
     page = Versions(selenium, base_url)
     for version in page.versions_list:
