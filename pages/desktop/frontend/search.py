@@ -106,7 +106,6 @@ class Search(Page):
 
         @property
         def themes(self):
-            self.wait.until(EC.visibility_of_element_located(self._theme_locator))
             items = self.find_elements(*self._theme_locator)
             return [self.ResultListItems(self, el) for el in items]
 

@@ -207,7 +207,6 @@ class Header(Region):
         return self.find_element(*self._themes_active_button_locator)
 
     def click_title(self):
-        self.wait.until(EC.element_to_be_clickable(self._themes_active_button_locator))
         self.find_element(*self._header_title_locator).click()
         from pages.desktop.frontend.home import Home
 
@@ -215,7 +214,6 @@ class Header(Region):
 
     @property
     def login_button(self):
-        self.wait.until(EC.visibility_of_element_located(self._login_locator))
         return self.find_element(*self._login_locator)
 
     def click_login(self):
@@ -301,12 +299,10 @@ class Header(Region):
 
     @property
     def more_menu_dropdown_sections(self):
-        self.wait.until(EC.visibility_of_element_located(self._more_dropdown_sections_locator))
         return self.find_elements(*self._more_dropdown_sections_locator)
 
     @property
     def more_menu_dropdown_links(self):
-        self.wait.until(EC.visibility_of_element_located(self._more_dropdown_links_locator))
         return self.find_elements(*self._more_dropdown_links_locator)
 
     def more_menu(self, item=None):

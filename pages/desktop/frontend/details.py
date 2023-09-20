@@ -46,7 +46,6 @@ class Detail(Base):
         the exact addon name, especially when we want to use it in comparisons.
         The following method makes sure that we only return the addon name without authors"""
         # get the name + authors
-        self.wait_for_element_to_be_displayed(self._addon_name_locator)
         el = self.find_element(*self._addon_name_locator).text
         # isolate the authors text
         authors = self.find_element(By.CSS_SELECTOR, '.AddonTitle-author').text
@@ -130,7 +129,6 @@ class Detail(Base):
 
     @property
     def authors(self):
-        self.wait_for_element_to_be_displayed(self._addon_icon_locator)
         return self.find_element(*self._addon_author_locator)
 
     @property

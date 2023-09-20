@@ -88,7 +88,6 @@ class RatingStats(Region):
 
     @property
     def number_of_half_filled_stars(self):
-        self.wait.until(EC.visibility_of_element_located(self._half_filled_stars_locator))
         return len(self.find_elements(*self._half_filled_stars_locator))
 
     @property

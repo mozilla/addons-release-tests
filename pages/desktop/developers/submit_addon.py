@@ -280,7 +280,6 @@ class SubmitAddon(Page):
 
     @property
     def firefox_compat_checkbox(self):
-        self.wait.until(EC.visibility_of_element_located(self._firefox_compat_checkbox_locator))
         return self.find_element(*self._firefox_compat_checkbox_locator)
 
     @property

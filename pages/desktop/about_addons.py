@@ -96,7 +96,6 @@ class AboutAddons(Page):
 
     @property
     def installed_addon_name(self):
-        self.wait.until(EC.visibility_of_element_located(self._installed_addon_name_locator))
         return self.find_elements(*self._installed_addon_name_locator)
 
     @property

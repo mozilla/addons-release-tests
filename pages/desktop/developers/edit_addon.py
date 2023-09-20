@@ -34,7 +34,6 @@ class EditAddon(Base):
 
     @property
     def listed_addon_status(self):
-        self.wait_for_element_to_be_displayed(self._listed_addon_status_locator)
         return self.find_element(*self._listed_addon_status_locator).text
 
     def click_upload_version_link(self):

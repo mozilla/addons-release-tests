@@ -49,7 +49,6 @@ class ManageAddons(Base):
 
     @property
     def addon_list(self):
-        self.wait_for_element_to_be_displayed(self._addon_items_locator)
         items = self.find_elements(*self._addon_items_locator)
         return [self.AddonDetails(self, el) for el in items]
 

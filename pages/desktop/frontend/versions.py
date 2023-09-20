@@ -49,7 +49,6 @@ class Versions(Base):
 
     @property
     def versions_list(self):
-        self.wait_for_element_to_be_displayed(self._versions_list_locator)
         items = self.find_elements(*self._versions_list_locator)
         return [self.VersionCard(self, el) for el in items]
 
