@@ -700,13 +700,13 @@ def test_edit_version_invalid_compatibility_format(base_url, session_auth, value
         (
             ["android", "firefox"],
             {
-                "android": {"min": "48.0", "max": "*"},
+                "android": {"min": "119.0a1", "max": "*"},
                 "firefox": {"min": "42.0", "max": "*"},
             },
         ),
         (["firefox"], {"firefox": {"min": "42.0", "max": "*"}}),
         ({"firefox": {"min": "65.0"}}, {"firefox": {"min": "65.0", "max": "*"}}),
-        ({"android": {"max": "95.0"}}, {"android": {"min": "48.0", "max": "95.0"}}),
+        ({"android": {"max": "95.0"}}, {"android": {"min": "119.0a1", "max": "*"}}),
     ],
     ids=[
         "Compatibility in list format, valid apps (firefox and android)",
