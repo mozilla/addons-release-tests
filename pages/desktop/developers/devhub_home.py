@@ -294,6 +294,7 @@ class DevHubHome(Base):
         return SubmitAddon(self.driver, self.base_url)
 
     def click_submit_theme_button(self):
+        self.wait_for_element_to_be_displayed(self._submit_theme_button_locator)
         self.find_element(*self._submit_theme_button_locator).click()
         return SubmitAddon(self.driver, self.base_url)
 

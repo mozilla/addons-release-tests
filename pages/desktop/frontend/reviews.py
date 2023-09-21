@@ -83,6 +83,7 @@ class Reviews(Base):
 
     @property
     def featured_review_section(self):
+        self.wait_for_element_to_be_displayed()
         el = self.find_element(*self._featured_review_card_locator)
         return self.FeaturedReview(self, el)
 
@@ -103,6 +104,7 @@ class Reviews(Base):
 
         @property
         def rating_stars(self):
+            self.wait.until(EC.visibility_of_element_located(self._rating_stars_locator))
             return self.find_element(*self._rating_stars_locator)
 
     @property
