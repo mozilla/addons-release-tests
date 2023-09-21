@@ -384,6 +384,7 @@ def test_flag_review_menu_options(selenium, base_url, variables):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
+@pytest.mark.create_session("rating_user")
 def test_click_on_review_posting_time_link(selenium, base_url, variables):
     # this test checks that if we go to all reviews page and clik on a review's posting time link (ex: 2 months ago)
     # it displays the review in a different section from the others
