@@ -30,7 +30,10 @@ class DevhubAddonValidate(Base):
     _on_your_own_text_checkbox = (By.CSS_SELECTOR, "#id_channel_1")
     _upload_details_text = (By.CSS_SELECTOR, ".upload-details")
     _upload_status_results_succes = (By.ID, "upload-status-results")
-    _upload_status_results_failed = (By.CSS_SELECTOR, "div.upload-status div.status-fail strong")
+    _upload_status_results_failed = (
+        By.CSS_SELECTOR,
+        "div.upload-status div.status-fail strong",
+    )
     _upload_status_bar_results_approved = (By.CSS_SELECTOR, "div.bar-success")
     _upload_status_bar_results_failed = (By.CSS_SELECTOR, "div.bar-fail")
     _upload_status = (By.ID, "uploadstatus")
@@ -44,11 +47,15 @@ class DevhubAddonValidate(Base):
 
     def is_validation_approved(self):
         """Wait for addon validation to complete; if not successful, the test will fail"""
-        self.wait.until(EC.visibility_of_element_located(self._upload_status_bar_results_approved))
+        self.wait.until(
+            EC.visibility_of_element_located(self._upload_status_bar_results_approved)
+        )
 
     def is_not_validated(self):
         """Wait for addon validation to complete; if successful, the test will fail"""
-        self.wait.until(EC.visibility_of_element_located(self._upload_status_bar_results_failed))
+        self.wait.until(
+            EC.visibility_of_element_located(self._upload_status_bar_results_failed)
+        )
 
     @property
     def addon_on_your_site(self):

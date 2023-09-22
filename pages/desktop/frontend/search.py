@@ -7,29 +7,29 @@ from selenium.webdriver.support import expected_conditions as EC
 
 
 class Search(Page):
-    _context_card_locator = (By.CLASS_NAME, 'SearchContextCard-header')
-    _search_box_locator = (By.CLASS_NAME, 'AutoSearchInput-query')
-    _submit_button_locator = (By.CLASS_NAME, 'AutoSearchInput-submit-button')
-    _search_filters_sort_locator = (By.ID, 'SearchFilters-Sort')
-    _search_filters_type_locator = (By.ID, 'SearchFilters-AddonType')
-    _search_filters_os_locator = (By.ID, 'SearchFilters-OperatingSystem')
-    _search_filters_badging_locator = (By.ID, 'SearchFilters-Badging')
-    _recommended_checkbox_locator = (By.ID, 'SearchFilters-Recommended')
-    _pagination_next_locator = (By.CSS_SELECTOR, '.Paginate-item--next')
-    _pagination_previous_locator = (By.CLASS_NAME, 'Paginate-item--previous')
-    _selected_page_locator = (By.CLASS_NAME, 'Paginate-page-number')
+    _context_card_locator = (By.CLASS_NAME, "SearchContextCard-header")
+    _search_box_locator = (By.CLASS_NAME, "AutoSearchInput-query")
+    _submit_button_locator = (By.CLASS_NAME, "AutoSearchInput-submit-button")
+    _search_filters_sort_locator = (By.ID, "SearchFilters-Sort")
+    _search_filters_type_locator = (By.ID, "SearchFilters-AddonType")
+    _search_filters_os_locator = (By.ID, "SearchFilters-OperatingSystem")
+    _search_filters_badging_locator = (By.ID, "SearchFilters-Badging")
+    _recommended_checkbox_locator = (By.ID, "SearchFilters-Recommended")
+    _pagination_next_locator = (By.CSS_SELECTOR, ".Paginate-item--next")
+    _pagination_previous_locator = (By.CLASS_NAME, "Paginate-item--previous")
+    _selected_page_locator = (By.CLASS_NAME, "Paginate-page-number")
 
     def wait_for_page_to_load(self):
         self.wait.until(
-            expected.invisibility_of_element_located((By.CLASS_NAME, 'LoadingText')),
-            message='Search page could not be loaded',
+            expected.invisibility_of_element_located((By.CLASS_NAME, "LoadingText")),
+            message="Search page could not be loaded",
         )
         return self
 
     def wait_for_contextcard_update(self, value):
         self.wait.until(
             expected.text_to_be_present_in_element(
-                (By.CLASS_NAME, 'SearchContextCard-header'), value
+                (By.CLASS_NAME, "SearchContextCard-header"), value
             ),
             message=f'Expected search term "{value}" not found in "{self.find_element(*self._context_card_locator).text}"',
         )
@@ -39,7 +39,7 @@ class Search(Page):
         contains a certain number of items"""
         self.wait.until(
             lambda _: len(self.result_list.search_results) >= count,
-            message=f'Expected search results to be {count} but the list returned {len(self.result_list.search_results)}',
+            message=f"Expected search results to be {count} but the list returned {len(self.result_list.search_results)}",
         )
 
     @property
@@ -53,27 +53,37 @@ class Search(Page):
 
     @property
     def filter_by_sort(self):
-        self.wait.until(EC.visibility_of_element_located(self._search_filters_sort_locator))
+        self.wait.until(
+            EC.visibility_of_element_located(self._search_filters_sort_locator)
+        )
         return self.find_element(*self._search_filters_sort_locator)
 
     @property
     def filter_by_type(self):
-        self.wait.until(EC.visibility_of_element_located(self._search_filters_type_locator))
+        self.wait.until(
+            EC.visibility_of_element_located(self._search_filters_type_locator)
+        )
         return self.find_element(*self._search_filters_type_locator)
 
     @property
     def filter_by_os(self):
-        self.wait.until(EC.visibility_of_element_located(self._search_filters_os_locator))
+        self.wait.until(
+            EC.visibility_of_element_located(self._search_filters_os_locator)
+        )
         return self.find_element(*self._search_filters_os_locator)
 
     @property
     def filter_by_badging(self):
-        self.wait.until(EC.visibility_of_element_located(self._search_filters_badging_locator))
+        self.wait.until(
+            EC.visibility_of_element_located(self._search_filters_badging_locator)
+        )
         return self.find_element(*self._search_filters_badging_locator)
 
     @property
     def recommended_filter(self) -> object:
-        self.wait.until(EC.visibility_of_element_located(self._recommended_checkbox_locator))
+        self.wait.until(
+            EC.visibility_of_element_located(self._recommended_checkbox_locator)
+        )
         return self.find_element(*self._recommended_checkbox_locator)
 
     def next_page(self):
@@ -88,15 +98,15 @@ class Search(Page):
     def page_number(self):
         self.wait.until(
             lambda _: self.is_element_displayed(*self._selected_page_locator),
-            message='Pagination items were not loaded',
+            message="Pagination items were not loaded",
         )
         return self.find_element(*self._selected_page_locator).text
 
     class SearchResultList(Region):
-        _result_locator = (By.CLASS_NAME, 'SearchResult')
-        _result_link_locator = (By.CLASS_NAME, 'SearchResult-link')
-        _theme_locator = (By.CLASS_NAME, 'SearchResult--theme')
-        _extension_locator = (By.CLASS_NAME, 'SearchResult-name')
+        _result_locator = (By.CLASS_NAME, "SearchResult")
+        _result_link_locator = (By.CLASS_NAME, "SearchResult-link")
+        _theme_locator = (By.CLASS_NAME, "SearchResult--theme")
+        _extension_locator = (By.CLASS_NAME, "SearchResult-name")
 
         @property
         def search_results(self):
@@ -123,25 +133,29 @@ class Search(Page):
             return Detail(self.driver, self.page.base_url).wait_for_page_to_load()
 
         class ResultListItems(Region):
-            _rating_locator = (By.CSS_SELECTOR, '.Rating--small')
-            _search_item_name_locator = (By.CSS_SELECTOR, '.SearchResult-link')
-            _promoted_badge_locator = (By.CSS_SELECTOR, '.PromotedBadge')
-            _promoted_badge_label_locator = (By.CSS_SELECTOR, '.PromotedBadge-label')
-            _users_locator = (By.CLASS_NAME, 'SearchResult-users')
-            _users_number_locator = (By.CLASS_NAME, 'SearchResult-users-text')
-            _icon_locator = (By.CLASS_NAME, 'SearchResult-icon')
-            _rating_stars_locator = (By.CLASS_NAME, 'SearchResult-rating')
-            _author_locator = (By.CLASS_NAME, 'SearchResult-author')
-            _summary_locator = (By.CLASS_NAME, 'SearchResult-summary')
+            _rating_locator = (By.CSS_SELECTOR, ".Rating--small")
+            _search_item_name_locator = (By.CSS_SELECTOR, ".SearchResult-link")
+            _promoted_badge_locator = (By.CSS_SELECTOR, ".PromotedBadge")
+            _promoted_badge_label_locator = (By.CSS_SELECTOR, ".PromotedBadge-label")
+            _users_locator = (By.CLASS_NAME, "SearchResult-users")
+            _users_number_locator = (By.CLASS_NAME, "SearchResult-users-text")
+            _icon_locator = (By.CLASS_NAME, "SearchResult-icon")
+            _rating_stars_locator = (By.CLASS_NAME, "SearchResult-rating")
+            _author_locator = (By.CLASS_NAME, "SearchResult-author")
+            _summary_locator = (By.CLASS_NAME, "SearchResult-summary")
 
             @property
             def search_name(self):
-                self.wait.until(EC.visibility_of_element_located(self._search_item_name_locator))
+                self.wait.until(
+                    EC.visibility_of_element_located(self._search_item_name_locator)
+                )
                 return self.find_element(*self._search_item_name_locator)
 
             @property
             def name(self):
-                self.wait.until(EC.visibility_of_element_located(self._search_item_name_locator))
+                self.wait.until(
+                    EC.visibility_of_element_located(self._search_item_name_locator)
+                )
                 return self.find_element(*self._search_item_name_locator).text
 
             def link(self):
@@ -156,15 +170,17 @@ class Search(Page):
 
             @property
             def users(self):
-                self.wait.until(EC.visibility_of_element_located(self._users_number_locator))
+                self.wait.until(
+                    EC.visibility_of_element_located(self._users_number_locator)
+                )
                 users = self.find_element(*self._users_number_locator).text
-                return int(users.split()[0].replace(',', '').replace('users', ''))
+                return int(users.split()[0].replace(",", "").replace("users", ""))
 
             @property
             def rating(self):
                 """Returns the rating"""
                 self.wait.until(EC.visibility_of_element_located(self._rating_locator))
-                rating = self.find_element(*self._rating_locator).get_property('title')
+                rating = self.find_element(*self._rating_locator).get_property("title")
                 return float(rating.split()[1])
 
             @property
@@ -174,7 +190,9 @@ class Search(Page):
 
             @property
             def search_result_rating_stars(self):
-                self.wait.until(EC.visibility_of_element_located(self._rating_stars_locator))
+                self.wait.until(
+                    EC.visibility_of_element_located(self._rating_stars_locator)
+                )
                 return self.find_element(*self._rating_stars_locator)
 
             @property
@@ -196,11 +214,13 @@ class Search(Page):
             def promoted_badge(self):
                 WebDriverWait(self.driver, 10).until(
                     EC.visibility_of_element_located(self._promoted_badge_locator),
-                    message='Promoted badge was not found for these search results',
+                    message="Promoted badge was not found for these search results",
                 )
                 return self
 
             @property
             def promoted_badge_label(self):
-                self.wait.until(EC.visibility_of_element_located(self._promoted_badge_label_locator))
+                self.wait.until(
+                    EC.visibility_of_element_located(self._promoted_badge_label_locator)
+                )
                 return self.find_element(*self._promoted_badge_label_locator).text

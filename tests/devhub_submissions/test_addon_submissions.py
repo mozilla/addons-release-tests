@@ -266,6 +266,7 @@ def test_submit_listed_addon(selenium, base_url, variables, wait):
     edit_listing = confirmation_page.click_edit_listing_button()
     assert addon_name in edit_listing.name
 
+
 @pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.create_session("submissions_user")
@@ -311,12 +312,13 @@ def test_submit_addon_3mb_size(selenium, base_url, wait, variables):
     # submit the add-on details
     confirmation_page = details_form.submit_addon()
     assert (
-            variables["listed_submission_confirmation"]
-            in confirmation_page.submission_confirmation_messages[0].text
+        variables["listed_submission_confirmation"]
+        in confirmation_page.submission_confirmation_messages[0].text
     )
     # go to the addon edit listing page and check that it was created
     edit_listing = confirmation_page.click_edit_listing_button()
     assert addon_name in edit_listing.name
+
 
 @pytest.mark.serial
 @pytest.mark.create_session("submissions_user")

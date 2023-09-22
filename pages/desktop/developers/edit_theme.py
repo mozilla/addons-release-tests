@@ -10,8 +10,8 @@ class EditTheme(Base):
     been approved.
     """
 
-    _root_locator = (By.CLASS_NAME, 'section')
-    _edit_addon_navbar_locator = (By.CLASS_NAME, 'edit-addon-nav')
+    _root_locator = (By.CLASS_NAME, "section")
+    _edit_addon_navbar_locator = (By.CLASS_NAME, "edit-addon-nav")
 
     def wait_for_page_to_load(self):
         self.wait.until(
