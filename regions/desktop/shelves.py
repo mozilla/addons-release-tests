@@ -1,6 +1,7 @@
 from pypom import Region
 
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
 
 
 class Shelves(Region):
@@ -11,16 +12,19 @@ class Shelves(Region):
 
     @property
     def recommended_addons(self):
+        self.wait.until(EC.visibility_of_element_located(self._recommended_addons_locator))
         el = self.find_element(*self._recommended_addons_locator)
         return self.ShelfList(self, el)
 
     @property
     def top_rated_addons(self):
+        self.wait.until(EC.visibility_of_element_located(self._top_rated_locator))
         el = self.find_element(*self._top_rated_locator)
         return self.ShelfList(self, el)
 
     @property
     def trending_addons(self):
+        self.wait.until(EC.visibility_of_element_located(self._trending_addons_locator))
         el = self.find_element(*self._trending_addons_locator)
         return self.ShelfList(self, el)
 
@@ -31,14 +35,17 @@ class Shelves(Region):
 
         @property
         def list(self):
+            self.wait.until(EC.visibility_of_element_located(self._addon_item_locator))
             items = self.find_elements(*self._addon_item_locator)
             return [self.ShelfDetail(self.page, el) for el in items]
 
         @property
         def card_header(self):
+            self.wait.until(EC.visibility_of_element_located(self._promo_card_header_locator))
             return self.find_element(*self._promo_card_header_locator).text
 
         def browse_all(self):
+            self.wait.until(EC.element_to_be_clickable(self._browse_all_locator))
             self.find_element(*self._browse_all_locator).click()
             from pages.desktop.frontend.search import Search
 
@@ -52,12 +59,15 @@ class Shelves(Region):
 
             @property
             def name(self):
+                self.wait.until(EC.visibility_of_element_located(self._addon_name_locator))
                 return self.find_element(*self._addon_name_locator).text
 
             @property
             def addon_icon_preview(self):
+                self.wait.until(EC.visibility_of_element_located(self._addon_icon_locator))
                 return self.find_element(*self._addon_icon_locator)
 
             @property
             def addon_users_preview(self):
+                self.wait.until(EC.visibility_of_element_located(self._addon_users_locator))
                 return self.find_element(*self._addon_users_locator)

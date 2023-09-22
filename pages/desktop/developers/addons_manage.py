@@ -8,16 +8,15 @@ from pages.desktop.developers.edit_addon import EditAddon
 
 
 class ManageAddons(Base):
-
-    _my_addons_page_logo = (By.CSS_SELECTOR, '.site-titles')
-    _page_title_locator = (By.CSS_SELECTOR, '.hero > h1')
+    _my_addons_page_logo = (By.CSS_SELECTOR, ".site-titles")
+    _page_title_locator = (By.CSS_SELECTOR, ".hero > h1")
     _my_themes_section_button_locator = (
         By.CSS_SELECTOR,
-        '.submission-type-tabs > a:nth-child(2)',
+        ".submission-type-tabs > a:nth-child(2)",
     )
-    _sort_by_created_locator = (By.LINK_TEXT, 'Created')
-    _addon_items_locator = (By.CLASS_NAME, 'item.addon')
-    _submit_addon_button_locator = (By.CSS_SELECTOR, '#submit-addon > a')
+    _sort_by_created_locator = (By.LINK_TEXT, "Created")
+    _addon_items_locator = (By.CLASS_NAME, "item.addon")
+    _submit_addon_button_locator = (By.CSS_SELECTOR, "#submit-addon > a")
 
     def wait_for_page_to_load(self):
         self.wait.until(
@@ -27,10 +26,12 @@ class ManageAddons(Base):
 
     @property
     def my_addons_page_logo(self):
+        self.wait_for_element_to_be_displayed(self._my_addons_page_logo)
         return self.find_element(*self._my_addons_page_logo)
 
     @property
     def my_addons_page_title(self):
+        self.wait_for_element_to_be_displayed(self._page_title_locator)
         return self.find_element(*self._page_title_locator)
 
     def click_on_my_themes(self):
@@ -38,8 +39,8 @@ class ManageAddons(Base):
         self.wait.until(
             lambda _: self.find_element(
                 *self._my_themes_section_button_locator
-            ).get_attribute('class')
-            == 'active'
+            ).get_attribute("class")
+            == "active"
         )
 
     def sort_by_created(self):
@@ -51,13 +52,15 @@ class ManageAddons(Base):
         return [self.AddonDetails(self, el) for el in items]
 
     class AddonDetails(Region):
-        _addon_name_locator = (By.CSS_SELECTOR, '.item.addon .info > h3')
-        _addon_edit_link_locator = (By.CSS_SELECTOR, '.item.addon .info > h3 > a')
+        _addon_name_locator = (By.CSS_SELECTOR, ".item.addon .info > h3")
+        _addon_edit_link_locator = (By.CSS_SELECTOR, ".item.addon .info > h3 > a")
 
         @property
         def name(self):
+            self.wait.until(EC.visibility_of_element_located(self._addon_name_locator))
             return self.find_element(*self._addon_name_locator).text
 
         def click_addon_name(self):
+            self.wait.until(EC.element_to_be_clickable(self._addon_edit_link_locator))
             self.find_element(*self._addon_edit_link_locator).click()
             return EditAddon(self.driver, self.page.base_url).wait_for_page_to_load()
