@@ -287,9 +287,6 @@ class Home(Base):
 
         @property
         def addon_rating_preview(self):
-            self.wait.until(
-                EC.visibility_of_element_located(self._addon_rating_locator)
-            )
             return self.find_element(*self._addon_rating_locator)
 
         def shelf_item_elements(self, item):

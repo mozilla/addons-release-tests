@@ -110,7 +110,6 @@ class Search(Page):
 
         @property
         def search_results(self):
-            self.wait.until(EC.visibility_of_element_located(self._result_locator))
             items = self.find_elements(*self._result_locator)
             return [self.ResultListItems(self, el) for el in items]
 
