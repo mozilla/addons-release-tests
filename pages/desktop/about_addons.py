@@ -119,9 +119,6 @@ class AboutAddons(Page):
 
     @property
     def enabled_theme_image(self):
-        self.wait.until(
-            EC.visibility_of_element_located(self._enabled_theme_image_locator)
-        )
         return self.find_elements(*self._enabled_theme_image_locator)[0].get_attribute(
             "src"
         )
