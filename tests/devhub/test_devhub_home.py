@@ -562,7 +562,7 @@ def test_change_devhub_language(base_url, selenium, language, locale, translatio
     enumerate(
         [
             ["/about/legal/", ".mzp-c-article-title"],
-            ["/licenses/by-sa/3.0/", ".cc-license-title"],
+            ["/licenses/by-sa/3.0/", ".identity-logo"],
         ]
     ),
     ids=[
