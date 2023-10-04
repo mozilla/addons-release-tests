@@ -464,7 +464,6 @@ workflows:
       - frontend_parallel_tests
       - devhub_parallel_tests
       - addon_submissions_tests
-      - api_submission_tests
   # scheduled in CircleCI Project settings to run each Wednesdays at 05:00 UTC
   scheduled_stage_release_run:
     when:
