@@ -84,7 +84,7 @@ def listed_addon_details(uuid):
                 'fr': 'FR Version notes added in API at addon creation time',
             },
             'compatibility': {
-                'android': {'min': '68.0', 'max': '*'},
+                'android': {'min': '119.0a1', 'max': '*'},
                 'firefox': {'min': '58.0', 'max': '100.*'},
             },
         },
@@ -133,6 +133,12 @@ edit_addon_details = {
         'en-US': 'lang-en-us-edited@mail.com',
         'fr': 'lang-fr@mail.com',
         'ro': 'lang-ro@mail.com',
+    },
+    'support_url': {
+        'de': 'https://donate.mozilla.org',
+        'en-US': 'https://donate.mozilla.org',
+        'fr': 'https://donate.mozilla.org',
+        'ro': 'https://donate.mozilla.org'
     },
     'is_experimental': False,
     'requires_payment': False,

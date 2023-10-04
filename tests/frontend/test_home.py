@@ -426,7 +426,7 @@ def test_legal_footer_links(base_url, selenium, count, link):
     enumerate(
         [
             ["/about/legal/", ".mzp-c-article-title"],
-            ["/licenses/by-sa/3.0/", ".cc-license-title"],
+            ["/licenses/by-sa/3.0/", ".identity-logo"],
         ]
     ),
     ids=[

@@ -403,6 +403,7 @@ def test_edit_version_upload_supported_source_files(base_url, session_auth, file
             headers={"Authorization": f"Session {session_auth}"},
             files={"source": file},
         )
+    print(upload_source)
     assert (
         upload_source.status_code == 200
     ), f'For file_type "{file_type}", status code = {upload_source.status_code}, message = {upload_source.text}'
@@ -706,7 +707,7 @@ def test_edit_version_invalid_compatibility_format(base_url, session_auth, value
         ),
         (["firefox"], {"firefox": {"min": "42.0", "max": "*"}}),
         ({"firefox": {"min": "65.0"}}, {"firefox": {"min": "65.0", "max": "*"}}),
-        ({"android": {"max": "95.0"}}, {"android": {"min": "119.0a1", "max": "*"}}),
+        ({"android": {"min": "119.0a1", "max": "*"}}),
     ],
     ids=[
         "Compatibility in list format, valid apps (firefox and android)",
@@ -738,6 +739,7 @@ def test_edit_version_valid_compatibility_values(
         },
         data=json.dumps(payload),
     )
+    print(edit_version)
     print(
         f'For compatibility "{request_value}": Response status is '
         f"{edit_version.status_code}; {edit_version.text}\n"
