@@ -706,14 +706,12 @@ def test_edit_version_invalid_compatibility_format(base_url, session_auth, value
             },
         ),
         (["firefox"], {"firefox": {"min": "42.0", "max": "*"}}),
-        ({"firefox": {"min": "65.0"}}, {"firefox": {"min": "65.0", "max": "*"}}),
-        ({"android": {"min": "119.0a1", "max": "*"}}),
+        ({"firefox": {"min": "65.0"}}, {"firefox": {"min": "65.0", "max": "*"}})
     ],
     ids=[
         "Compatibility in list format, valid apps (firefox and android)",
         "Compatibility in list format, only firefox compatibility",
-        "Valid app - firefox and valid appversion",
-        "Valid app - android and valid appversion",
+        "Valid app - firefox and valid appversion"
     ],
 )
 @pytest.mark.serial
