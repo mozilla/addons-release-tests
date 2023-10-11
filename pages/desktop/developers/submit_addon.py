@@ -68,12 +68,14 @@ class SubmitAddon(Page):
     _change_distribution_link_locator = (By.CSS_SELECTOR, ".addon-submit-distribute a")
     _continue_button_locator = (By.CSS_SELECTOR, ".addon-submission-field button")
     _file_upload_process_helptext_locator = (By.CSS_SELECTOR, ".new-addon-file p")
-    _upload_file_button_locator = (By.CSS_SELECTOR, ".invisible-upload input")
+    _upload_file_button_locator = (By.CSS_SELECTOR, "#upload-addon")
     _accepted_file_types_locator = (By.CLASS_NAME, "upload-details")
     _compatibility_helptext_locator = (By.CSS_SELECTOR, ".compatible-apps label")
     _compatibility_error_message_locator = (By.CSS_SELECTOR, ".errorlist li")
     _firefox_compat_checkbox_locator = (By.CSS_SELECTOR, ".app.firefox input")
     _android_compat_checkbox_locator = (By.CSS_SELECTOR, ".app.android input")
+    _android_compat_pop_up = (By.ID, "modal-confirm-android-compatibility")
+    _android_compat_yes_button = (By.CSS_SELECTOR, "#modal-confirm-android-compatibility > form > div > button")
     _create_theme_subheader_locator = (
         By.CSS_SELECTOR,
         ".addon-create-theme-section h3",
@@ -322,6 +324,20 @@ class SubmitAddon(Page):
         return self.find_element(*self._android_compat_checkbox_locator)
 
     @property
+    def android_compat_pop_up(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._android_compat_pop_up)
+        )
+        return self.find_element(*self._android_compat_pop_up)
+
+    @property
+    def android_compat_yes_button(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._android_compat_yes_button)
+        )
+        return self.find_element(*self._android_compat_yes_button)
+
+    @property
     def create_theme_subheader(self):
         self.wait.until(
             EC.visibility_of_element_located(self._create_theme_subheader_locator)
@@ -501,9 +517,9 @@ class UploadSource(Page):
     )
     _cancel_version_confirm_button_locator = (
         By.CSS_SELECTOR,
-        ".modal-actions .delete-button",
+        ".modal-confirm-submission-cancel .delete-button",
     )
-    _do_not_cancel_version_link_locator = (By.CSS_SELECTOR, ".modal-actions a")
+    _do_not_cancel_version_link_locator = (By.CSS_SELECTOR, "#modal-confirm-submission-cancel > form > div > a")
 
     @property
     def submit_source_page_header(self):

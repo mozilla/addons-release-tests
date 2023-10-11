@@ -230,6 +230,8 @@ def test_submit_listed_addon(selenium, base_url, variables, wait):
     assert submit_addon.firefox_compat_checkbox.is_selected()
     # select the Android compatibility checkbox
     submit_addon.android_compat_checkbox.click()
+    submit_addon.android_compat_pop_up.is_displayed()
+    submit_addon.android_compat_yes_button.click()
     # on submit source code page, select 'Yes' to upload source code
     source = submit_addon.click_continue_upload_button()
     source.select_yes_to_submit_source()
@@ -284,6 +286,8 @@ def test_submit_addon_3mb_size(selenium, base_url, wait, variables):
     assert submit_addon.firefox_compat_checkbox.is_selected()
     # select the Android compatibility checkbox
     submit_addon.android_compat_checkbox.click()
+    submit_addon.android_compat_pop_up.is_displayed()
+    submit_addon.android_compat_yes_button.click()
     # on submit source code page, select 'Yes' to upload source code
     source = submit_addon.click_continue_upload_button()
     source.select_no_to_omit_source()
