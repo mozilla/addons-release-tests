@@ -68,7 +68,7 @@ def test_devhub_developer_agreement_checkboxes(selenium, base_url):
 
 
 @pytest.mark.sanity
-def test_submit_listed_wizard_theme(selenium, base_url, variables, wait, delete_themes):
+def test_submit_listed_wizard_theme_tc_id_c97500(selenium, base_url, variables, wait, delete_themes):
     """A test that checks a straight-forward theme submission with the devhub wizard"""
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     page.devhub_login("submissions_user")
@@ -109,7 +109,7 @@ def test_submit_listed_wizard_theme(selenium, base_url, variables, wait, delete_
 @pytest.mark.serial
 # The first test starts the browser with a normal login in order to store de session cookie
 @pytest.mark.login("submissions_user")
-def test_submit_unlisted_addon(selenium, base_url, variables, wait):
+def test_submit_unlisted_addon_tc_id_c14886(selenium, base_url, variables, wait):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     submit_addon = page.click_submit_addon_button()
     # start the upload for an unlisted addon
@@ -134,7 +134,7 @@ def test_submit_unlisted_addon(selenium, base_url, variables, wait):
 
 
 @pytest.mark.create_session("submissions_user")
-def test_addon_distribution_page_contents(selenium, base_url, variables, wait):
+def test_addon_distribution_page_contents_tc_id_c14882(selenium, base_url, variables, wait):
     """Check the elements present on devhub addon distribution page (where the user selects
     the listed or unlisted channels to upload their addon"""
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
@@ -216,7 +216,7 @@ def test_verify_first_version_autoapproval(selenium, base_url, variables, wait):
 @pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.create_session("submissions_user")
-def test_submit_listed_addon(selenium, base_url, variables, wait):
+def test_submit_listed_addon_tc_id_c4369(selenium, base_url, variables, wait):
     """Test covering the process of uploading a listed addon"""
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     submit_addon = page.click_submit_addon_button()
@@ -270,7 +270,7 @@ def test_submit_listed_addon(selenium, base_url, variables, wait):
 @pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.create_session("submissions_user")
-def test_submit_addon_3mb_size(selenium, base_url, wait, variables):
+def test_submit_addon_3mb_size_tc_id_c2274214(selenium, base_url, wait, variables):
     """Test covering the process of uploading a listed addon with 3-4 mb in size"""
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     submit_addon = page.click_submit_addon_button()
@@ -336,7 +336,7 @@ def test_addon_last_modified_date(selenium, base_url):
 
 @pytest.mark.serial
 @pytest.mark.create_session("submissions_user")
-def test_submit_mixed_addon_versions(selenium, base_url, variables, wait):
+def test_submit_mixed_addon_versions_tc_id_c14981(selenium, base_url, variables, wait):
     """Uploads an unlisted version to an exiting listed addon"""
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     my_addons = page.click_my_addons_header_link()
@@ -367,7 +367,7 @@ def test_submit_mixed_addon_versions(selenium, base_url, variables, wait):
 
 @pytest.mark.sanity
 @pytest.mark.serial
-def test_verify_new_unlisted_version_autoapproval(selenium, base_url, variables):
+def test_verify_new_unlisted_version_autoapproval_tc_id_C4372(selenium, base_url, variables):
     """Uploads a new version to an existing addon and verifies that is auto-approved"""
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     page.devhub_login("developer")
@@ -422,7 +422,7 @@ def test_verify_new_unlisted_version_autoapproval(selenium, base_url, variables)
 )
 @pytest.mark.serial
 @pytest.mark.create_session("submissions_user")
-def test_submit_unicode_addon(
+def test_submit_unicode_addon_tc_id_c4590(
     selenium, base_url, variables, wait, addon_name, description
 ):
     """Test covering the process of uploading addons with non-ASCII characters"""
@@ -459,7 +459,7 @@ def test_submit_unicode_addon(
 
 @pytest.mark.serial
 @pytest.mark.create_session("submissions_user")
-def test_addon_validation_warning(selenium, base_url, variables, wait):
+def test_addon_validation_warning_tc_id_c2283005(selenium, base_url, variables, wait):
     """Test validation results when addons trigger some warnings"""
     selenium.get(f"{base_url}/developers/addon/submit/upload-listed")
     submit_addon = SubmitAddon(selenium, base_url).wait_for_page_to_load()

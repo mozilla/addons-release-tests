@@ -6,7 +6,7 @@ from pages.desktop.developers.manage_versions import ManageVersions
 
 
 @pytest.mark.login("developer")
-def test_set_addon_invisible(selenium, base_url, variables, wait):
+def test_set_addon_invisible_tc_id_c4371(selenium, base_url, variables, wait):
     """Set an addon Invisible and then reset the status to Visible"""
     selenium.get(f"{base_url}/developers/addon/invisible_addon_auto/versions")
     manage_version = ManageVersions(selenium, base_url).wait_for_page_to_load()
@@ -41,7 +41,7 @@ def test_set_addon_invisible(selenium, base_url, variables, wait):
 
 
 @pytest.mark.create_session("developer")
-def test_disable_enable_version(selenium, base_url, variables, wait):
+def test_disable_enable_version_tc_id_c159074(selenium, base_url, variables, wait):
     """Check that developers cand disable and re-enable addon versions;
     This test works with an addon having a single version submitted and Approved"""
     selenium.get(f"{base_url}/developers/addon/disable_version_auto/versions")

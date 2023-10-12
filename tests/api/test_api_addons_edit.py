@@ -27,7 +27,7 @@ _addon_create = "/api/v5/addons/addon/"
 
 @pytest.mark.serial
 @pytest.mark.create_session("api_user")
-def test_upload_listed_extension(base_url, session_auth):
+def test_upload_listed_extension_tc_id_c4369(base_url, session_auth):
     with open("sample-addons/listed-addon.zip", "rb") as file:
         upload = requests.post(
             url=f"{base_url}{_upload}",
