@@ -10,9 +10,10 @@ from scripts import reusables
 from api import api_helpers, payloads
 
 
-@pytest.mark.login("regular_user")
+
 def test_devhub_developer_agreement_page_contents(selenium, base_url, variables, wait):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    page.devhub_login("regular_user")
     page.wait_for_page_to_load()
     dist_agreement = page.click_submit_theme_button()
     assert (
@@ -38,9 +39,9 @@ def test_devhub_developer_agreement_page_contents(selenium, base_url, variables,
     assert page.page_logo.is_displayed()
 
 
-@pytest.mark.create_session("regular_user")
 def test_devhub_developer_agreement_page_links(selenium, base_url):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    page.devhub_login("regular_user")
     dist_agreement = page.click_submit_theme_button()
     # check that the distribution agreement link opens the correct Extension workshop page
     dist_agreement.click_extension_workshop_article_link(
@@ -55,9 +56,9 @@ def test_devhub_developer_agreement_page_links(selenium, base_url):
     dist_agreement.click_dev_accounts_info_link()
 
 
-@pytest.mark.create_session("regular_user")
 def test_devhub_developer_agreement_checkboxes(selenium, base_url):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    page.devhub_login("regular_user")
     # use an account that hasn't accepted the agreement before
     dist_agreement = page.click_submit_theme_button()
     dist_agreement.distribution_agreement_checkbox.click()
