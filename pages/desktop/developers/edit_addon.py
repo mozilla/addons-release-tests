@@ -1,5 +1,8 @@
+import os
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
+from pathlib import Path
 
 from pages.desktop.base import Base
 from pages.desktop.developers.submit_addon import SubmitAddon
@@ -22,6 +25,12 @@ class EditAddon(Base):
         By.CSS_SELECTOR,
         "#edit-addon-nav ul:nth-child(1) li:nth-child(3)",
     )
+    _edit_addon_media_button_locator = (By.CSS_SELECTOR, "#edit-addon-media a")
+    _edit_addon_media_section_locator = (By.CSS_SELECTOR, "#edit-addon-media")
+    _edit_addon_describe_section_locator = (By.CSS_SELECTOR, "#addon-edit-describe")
+    _add_screenshot_button_locator = (By.CSS_SELECTOR, "div.invisible-upload:nth-child(6) > a")
+    _edit_previews_error_strong_locator = (By.CSS_SELECTOR, ".error > strong")
+    _edit_previews_explicit_error_locator = (By.CSS_SELECTOR, ".error > ul >li")
 
     def wait_for_page_to_load(self):
         self.wait.until(lambda _: self.is_element_displayed(*self._addon_name_locator))
@@ -59,6 +68,41 @@ class EditAddon(Base):
         # get only the first three letters in the month to have a uniform date structure
         final_date = site_date.replace(month, month[0:3])
         return final_date
+
+    @property
+    def edit_addon_media_button(self):
+        self.wait_for_element_to_be_displayed(self._edit_addon_media_button_locator)
+        return self.find_element(*self._edit_addon_media_button_locator)
+
+    @property
+    def edit_addon_media_section(self):
+        self.wait_for_element_to_be_displayed(self._edit_addon_media_section_locator)
+        return self.find_element(*self._edit_addon_media_section_locator)
+
+    @property
+    def edit_addon_describe_section(self):
+        self.wait_for_element_to_be_displayed(self._edit_addon_describe_section_locator)
+        return self.find_element(*self._edit_addon_describe_section_locator)
+
+    @property
+    def screenshot_upload(self):
+        self.wait_for_element_to_be_displayed(self._add_screenshot_button_locator)
+        return self.find_element(*self._add_screenshot_button_locator)
+
+    @property
+    def edit_preview_error_strong(self):
+        self.wait_for_element_to_be_displayed(self._edit_previews_error_strong_locator)
+        return self.find_element(*self._edit_previews_error_strong_locator)
+
+    @property
+    def edit_preview_explicit_error(self):
+        self.wait_for_element_to_be_displayed(self._edit_previews_explicit_error_locator)
+        return self.find_element(*self._edit_previews_explicit_error_locator)
+
+    def screenshot_file_upload(self, img):
+        button = self.find_element(*self._add_screenshot_button_locator)
+        archive = Path(f"{os.getcwd()}/sample-addons/{img}")
+        button.send_keys(str(archive))
 
     def click_manage_versions_link(self):
         self.wait_for_element_to_be_clickable(self._manage_versions_link_locator)
