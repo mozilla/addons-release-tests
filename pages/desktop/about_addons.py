@@ -189,9 +189,6 @@ class AboutAddons(Page):
 
         @property
         def extension_image(self):
-            self.wait.until(
-                EC.visibility_of_element_located(self._extension_icon_locator)
-            )
             return self.find_element(*self._extension_icon_locator)
 
         @property
