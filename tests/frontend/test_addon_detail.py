@@ -21,7 +21,7 @@ from scripts import reusables
 
 @pytest.mark.sanity
 @pytest.mark.nondestructive
-def test_extension_meta_card(selenium, base_url, variables):
+def test_extension_meta_card_tc_id_c392798(selenium, base_url, variables):
     # Checks addon essential data (name, icon, author name, summary)
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
@@ -184,7 +184,7 @@ def test_higher_firefox_incompatibility(selenium, base_url, variables):
 
 
 @pytest.mark.nondestructive
-def test_platform_incompatibility(selenium, base_url, variables):
+def test_platform_incompatibility_tc_id_c4453(selenium, base_url, variables):
     extension = variables["incompatible_platform"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url)
@@ -298,7 +298,7 @@ def test_stats_rating_counts_compare(selenium, base_url, variables):
 
 @pytest.mark.sanity
 @pytest.mark.nondestructive
-def test_contribute_button(selenium, base_url, variables):
+def test_contribute_button_tc_id_c4402(selenium, base_url, variables):
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url)
@@ -315,7 +315,7 @@ def test_contribute_button(selenium, base_url, variables):
 
 
 @pytest.mark.nondestructive
-def test_extension_permissions(selenium, base_url, variables):
+def test_extension_permissions_tc_id_c139966(selenium, base_url, variables):
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url)
@@ -661,7 +661,7 @@ def test_screenshot_ui_navigation(selenium, base_url, variables):
 
 
 @pytest.mark.nondestructive
-def test_screenshot_keyboard_navigation(selenium, base_url, variables):
+def test_screenshot_keyboard_navigation_tc_id_c4535(selenium, base_url, variables):
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -788,7 +788,7 @@ def test_click_addon_recommendations(selenium, base_url, variables):
 
 @pytest.mark.sanity
 @pytest.mark.nondestructive
-def test_theme_detail_page(selenium, base_url, variables):
+def test_theme_detail_page_tc_id_c95590(selenium, base_url, variables):
     extension = variables["theme_detail_page"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
