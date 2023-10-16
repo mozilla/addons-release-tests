@@ -535,7 +535,7 @@ def test_user_profile_themes_card(base_url, selenium, variables):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-def test_user_profile_open_extension_detail_page(base_url, selenium, variables):
+def test_user_profile_open_extension_detail_page_tc_id_c4350(base_url, selenium, variables):
     page = variables["developer_profile"]
     selenium.get(f"{base_url}/user/{page}")
     extension = Search(selenium, base_url).wait_for_page_to_load()
@@ -548,7 +548,7 @@ def test_user_profile_open_extension_detail_page(base_url, selenium, variables):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-def test_user_profile_open_theme_detail_page(base_url, selenium, variables):
+def test_user_profile_open_theme_detail_page_tc_id_c95590(base_url, selenium, variables):
     artist = variables["theme_artist_profile"]
     selenium.get(f"{base_url}/user/{artist}")
     theme = Search(selenium, base_url).wait_for_page_to_load()

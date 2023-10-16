@@ -14,7 +14,7 @@ from scripts import reusables
 @pytest.mark.serial
 @pytest.mark.sanity
 @pytest.mark.nondestructive
-def test_collection_meta_card(selenium, base_url, variables):
+def test_collection_meta_card_tc_id_c4475(selenium, base_url, variables):
     public_collection = variables["public_collection"]
     selenium.get(f"{base_url}/collections{public_collection}")
     collection = Collections(selenium, base_url).wait_for_page_to_load()
@@ -31,7 +31,7 @@ def test_collection_meta_card(selenium, base_url, variables):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-def test_collection_addon_count_is_correct(selenium, base_url, variables):
+def test_collection_addon_count_is_correct_tc_id_c4478(selenium, base_url, variables):
     public_collection = variables["public_collection"]
     selenium.get(f"{base_url}/collections{public_collection}")
     collection = Collections(selenium, base_url).wait_for_page_to_load()
@@ -44,7 +44,7 @@ def test_collection_addon_count_is_correct(selenium, base_url, variables):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-def test_collection_creator_and_modified_date(selenium, base_url, variables, wait):
+def test_collection_creator_and_modified_date_tc_id_c4478(selenium, base_url, variables, wait):
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
     collections.login("collection_user")
     collections.select_collection(0)
@@ -71,7 +71,7 @@ def test_collection_creator_and_modified_date(selenium, base_url, variables, wai
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-def test_my_collections_page_items(selenium, base_url, variables):
+def test_my_collections_page_items_tc_id_c4478(selenium, base_url, variables):
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
     collections.login("collection_user")
     # checking that various elements are present on the user collections page
@@ -105,7 +105,7 @@ def test_select_collection_from_list(selenium, base_url, wait):
 @pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.login("collection_user")
-def test_create_collection(selenium, base_url, variables, wait):
+def test_create_collection_tc_id_c125543(selenium, base_url, variables, wait):
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
     collections.click_create_collection()
     # using random strings to make sure we're always getting a unique URL,
@@ -127,7 +127,7 @@ def test_create_collection(selenium, base_url, variables, wait):
 @pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.create_session("collection_user")
-def test_add_addons_to_collection(selenium, base_url, variables, wait):
+def test_add_addons_to_collection_tc_id_c125542(selenium, base_url, variables, wait):
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
     collections.select_collection(0)
     collections.collection_detail.click_edit_collection_button()
@@ -266,7 +266,7 @@ def test_collection_sort_addons_by_date_added(selenium, base_url, variables, wai
 
 @pytest.mark.serial
 @pytest.mark.create_session("collection_user")
-def test_collection_edit_metadata(selenium, base_url, variables, wait):
+def test_collection_edit_metadata_tc_id_c4469(selenium, base_url, variables, wait):
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
     collections.select_collection(0)
     collections.collection_detail.click_edit_collection_button()
@@ -298,7 +298,7 @@ def test_collection_edit_metadata(selenium, base_url, variables, wait):
 @pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.create_session("collection_user")
-def test_add_to_collection_in_addon_detail_page(selenium, base_url, variables, wait):
+def test_add_to_collection_in_addon_detail_page_tc_id_c125541(selenium, base_url, variables, wait):
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
     # make a note of the collection name to be used for this test
     collection_name = collections.list[0].name.text
@@ -418,7 +418,7 @@ def test_create_collection_from_addon_detail_page(selenium, base_url, variables,
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-def test_collection_sort_addons_by_name(selenium, base_url, variables):
+def test_collection_sort_addons_by_name_tc_id_c4477(selenium, base_url, variables):
     public_collection = variables["public_collection"]
     selenium.get(f"{base_url}/collections{public_collection}")
     collection = Collections(selenium, base_url).wait_for_page_to_load()
@@ -435,7 +435,7 @@ def test_collection_sort_addons_by_name(selenium, base_url, variables):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-def test_collection_sort_addons_by_popularity(selenium, base_url, variables):
+def test_collection_sort_addons_by_popularity_tc_id_c4477(selenium, base_url, variables):
     public_collection = variables["public_collection"]
     selenium.get(f"{base_url}/collections{public_collection}")
     collection = Collections(selenium, base_url).wait_for_page_to_load()

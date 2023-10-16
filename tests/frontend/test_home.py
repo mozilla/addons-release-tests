@@ -173,7 +173,7 @@ def test_home_recommended_extensions_shelf_tc_id_c95105(base_url, selenium):
 
 
 @pytest.mark.nondestructive
-def test_home_see_more_popular_themes(base_url, selenium):
+def test_home_see_more_popular_themes_tc_id_c95589(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.popular_themes.browse_all()
     sort = "users"
@@ -201,7 +201,7 @@ def test_home_popular_themes_shelf(base_url, selenium):
 
 
 @pytest.mark.nondestructive
-def test_home_see_more_recommended_themes(base_url, selenium):
+def test_home_see_more_recommended_themes_tc_id_c95589(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.recommended_themes.browse_all()
     assert "type=statictheme" in selenium.current_url
