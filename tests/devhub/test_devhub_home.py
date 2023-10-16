@@ -413,10 +413,11 @@ def test_devhub_mozilla_footer_link(base_url, selenium):
     enumerate(
         [
             "about",
-            "blog.mozilla.org",
+            "/blog",
             "extensionworkshop",
             "developers",
             "add-on-policies",
+            "addons",
             "discourse",
             "/about",
             "review_guide",
@@ -428,6 +429,7 @@ def test_devhub_mozilla_footer_link(base_url, selenium):
         "DevHub Footer - Addons section -  Extension Workshop",
         "DevHub Footer - Addons section -  Developer Hub",
         "DevHub Footer - Addons section -  Developer Policies",
+        "DevHub Footer - Addons section -  Community Blog",
         "DevHub Footer - Addons section -  Forum",
         "DevHub Footer - Addons section -  Report a bug",
         "DevHub Footer - Addons section -  Review Guide",

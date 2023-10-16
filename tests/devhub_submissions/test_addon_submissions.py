@@ -10,9 +10,10 @@ from scripts import reusables
 from api import api_helpers, payloads
 
 
-@pytest.mark.login("regular_user")
+
 def test_devhub_developer_agreement_page_contents(selenium, base_url, variables, wait):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    page.devhub_login("regular_user")
     page.wait_for_page_to_load()
     dist_agreement = page.click_submit_theme_button()
     assert (
@@ -38,9 +39,9 @@ def test_devhub_developer_agreement_page_contents(selenium, base_url, variables,
     assert page.page_logo.is_displayed()
 
 
-@pytest.mark.create_session("regular_user")
 def test_devhub_developer_agreement_page_links(selenium, base_url):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    page.devhub_login("regular_user")
     dist_agreement = page.click_submit_theme_button()
     # check that the distribution agreement link opens the correct Extension workshop page
     dist_agreement.click_extension_workshop_article_link(
@@ -55,9 +56,9 @@ def test_devhub_developer_agreement_page_links(selenium, base_url):
     dist_agreement.click_dev_accounts_info_link()
 
 
-@pytest.mark.create_session("regular_user")
 def test_devhub_developer_agreement_checkboxes(selenium, base_url):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    page.devhub_login("regular_user")
     # use an account that hasn't accepted the agreement before
     dist_agreement = page.click_submit_theme_button()
     dist_agreement.distribution_agreement_checkbox.click()
@@ -230,6 +231,8 @@ def test_submit_listed_addon_tc_id_c4369(selenium, base_url, variables, wait):
     assert submit_addon.firefox_compat_checkbox.is_selected()
     # select the Android compatibility checkbox
     submit_addon.android_compat_checkbox.click()
+    submit_addon.android_compat_pop_up.is_displayed()
+    submit_addon.android_compat_yes_button.click()
     # on submit source code page, select 'Yes' to upload source code
     source = submit_addon.click_continue_upload_button()
     source.select_yes_to_submit_source()
@@ -284,6 +287,8 @@ def test_submit_addon_3mb_size_tc_id_c2274214(selenium, base_url, wait, variable
     assert submit_addon.firefox_compat_checkbox.is_selected()
     # select the Android compatibility checkbox
     submit_addon.android_compat_checkbox.click()
+    submit_addon.android_compat_pop_up.is_displayed()
+    submit_addon.android_compat_yes_button.click()
     # on submit source code page, select 'Yes' to upload source code
     source = submit_addon.click_continue_upload_button()
     source.select_no_to_omit_source()
