@@ -43,7 +43,7 @@ def test_upload_listed_extension(base_url, session_auth):
     uuid = resp['uuid']
     payload = payloads.listed_addon_details(uuid)
     # sleep to allow the first request to be processed
-    time.sleep(5)
+    time.sleep(10)
     create_addon = requests.post(
         url=f'{base_url}{_addon_create}',
         headers={
@@ -52,6 +52,7 @@ def test_upload_listed_extension(base_url, session_auth):
         },
         data=json.dumps(payload),
     )
+    print(create_addon)
     create_addon.raise_for_status()
     response = create_addon.json()
     print(json.dumps(response, indent=2))
