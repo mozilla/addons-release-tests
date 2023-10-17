@@ -219,6 +219,30 @@ class ManageVersions(Page):
         self.find_element(*self._delete_addon_button_locator).click()
         return self.DeleteAddonModal(self).wait_for_region_to_load()
 
+    class CancelReviewRequestModal(Region):
+        _root_locator = (By.ID, 'modal-cancel')
+        _are_you_sure_message_locator = (By.CSS_SELECTOR, '#modal-cancel > form:nth-child(1) > p:nth-child(3)')
+        _cancel_your_review_request_message_locator = (By.CSS_SELECTOR, '#modal-cancel > form:nth-child(1) > p:nth-child(2)')
+        _cancel_review_request_button_locator = (By.CSS_SELECTOR, '#modal-cancel > form:nth-child(1) > p:nth-child(6) > button:nth-child(1)')
+
+        def wait_for_region_to_load(self):
+            self.wait.until(EC.visibility_of_element_located(self._root_locator))
+            return self
+
+        @property
+        def are_you_sure_message(self):
+            return self.find_element(*self._are_you_sure_message_locator)
+
+        @property
+        def cancel_your_review_request_message_locator(self):
+            return self.find_element(*self._cancel_your_review_request_message_locator)
+
+        def click_cancel_review_request_button(self):
+            self.wait.until(EC.visibility_of_element_located(self._cancel_review_request_button_locator))
+            self.find_element(*self._cancel_review_request_button_locator).click()
+            return self
+
+
     class DeleteAddonModal(Region):
         _root_locator = (By.ID, "modal-delete")
         _delete_confirmation_string_locator = (
