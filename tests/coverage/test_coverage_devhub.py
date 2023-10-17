@@ -3,6 +3,37 @@ import time
 
 from selenium.webdriver.support import expected_conditions as EC
 from pages.desktop.developers.edit_addon import EditAddon
+from pages.desktop.developers.devhub_home import DevHubHome
+from pages.desktop.developers.manage_versions import ManageVersions
+from pages.desktop.developers.submit_addon import ListedAddonSubmissionForm, SubmissionConfirmationPage, ThemeWizard
+from pages.desktop.developers.edit_addon import EditAddon
+from pages.desktop.frontend.details import Detail
+from pages.desktop.developers.manage_authors_and_license import ManageAuthorsAndLicenses
+from scripts import reusables
+
+
+
+def submit_addon_method(selenium, base_url):
+    devhub_page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    devhub_page.devhub_login("developer")
+    submit_addon = devhub_page.click_submit_addon_button()
+    submit_addon.select_listed_option()
+    submit_addon.click_continue()
+    submit_addon.upload_addon("listed-addon.zip")
+    submit_addon.is_validation_successful()
+    assert submit_addon.success_validation_message.is_displayed()
+    source = submit_addon.click_continue_upload_button()
+    source.select_no_to_omit_source()
+    confirmation_page = source.continue_listed_submission()
+    random_string = reusables.get_random_string(10)
+    summary = reusables.get_random_string(10)
+    confirmation_page.set_addon_name(random_string)
+    confirmation_page.set_addon_summary(summary)
+    confirmation_page.select_firefox_categories(1)
+    confirmation_page.select_license_options[0].click()
+    confirmation_page.submit_addon()
+    return f"listed-addon{random_string}"
+
 
 # @pytest.mark.coverage
 # @pytest.mark.login("developer")
