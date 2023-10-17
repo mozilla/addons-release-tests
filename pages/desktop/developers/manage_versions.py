@@ -55,6 +55,10 @@ class ManageVersions(Page):
     _cancel_disable_version_link_locator = (By.CSS_SELECTOR, ".modal-actions .close")
     _enable_version_button_locator = (By.CSS_SELECTOR, ".file-status button")
 
+    @staticmethod
+    def open_manage_versions_page_for_addon(selenium, base_url, addon):
+        return selenium.get(f"{base_url}/developers/addon/{addon}/versions")
+
     def wait_for_page_to_load(self):
         self.wait.until(EC.visibility_of_element_located(self._version_list_locator))
         return self

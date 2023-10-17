@@ -132,6 +132,7 @@ def test_disable_an_addon_at_submission(selenium, base_url, wait, variables):
     delete_addon_modal.input_delete_confirmation_string()
     delete_addon_modal.confirm_delete_addon()
 
+@pytest.mark.coverage
 def test_change_the_license(selenium, base_url, variables, wait):
     # Test Case: C1901412 AMO Coverage > Devhub
     """Submit a new add-on"""

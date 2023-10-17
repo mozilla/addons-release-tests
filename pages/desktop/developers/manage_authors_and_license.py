@@ -9,7 +9,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 class ManageAuthorsAndLicenses(Page):
     _radio_button_mozilla_public_license_selector = (By.XPATH, '//*[@data-name="Mozilla Public License 2.0"]')
-    _radio_button_gnu_general_public_license_selector = (By.XPATH, '//*[@data-name="GNU General Public License v2.0"]')
+    _radio_button_gnu_general_public_license_selector = (By.ID, 'authors_pending_confirmation')
     _save_changes_button_selector = (By.CSS_SELECTOR, 'div.listing-footer button')
     _notification_box_success_selector = (By.CSS_SELECTOR, '.notification-box')
 
