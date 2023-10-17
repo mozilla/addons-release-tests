@@ -29,14 +29,14 @@ from scripts.reusables import get_random_string
         'Two little birds',
     ],
 )
-def test_search_suggestion_term_is_higher(base_url, selenium, variables, term):
+def test_search_suggestion_term_is_higher_tc_id_c4481(base_url, selenium, variables, term):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     suggestions = page.search.search_for(term, execute=False)
     assert suggestions[0].name == term
 
 
 @pytest.mark.nondestructive
-def test_special_chars_dont_break_suggestions(base_url, selenium, variables):
+def test_special_chars_dont_break_suggestions_tc_id_c4489(base_url, selenium, variables):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     term = variables['search_term']
     special_chars_term = f'${term[:4]}ç{term[4:]}%ç√®å'
@@ -49,7 +49,7 @@ def test_special_chars_dont_break_suggestions(base_url, selenium, variables):
     reason='There is an issue with search on stage - #16610', strict=False
 )
 @pytest.mark.nondestructive
-def test_uppercase_has_same_suggestions(base_url, selenium, variables):
+def test_uppercase_has_same_suggestions_tc_id_c4491(base_url, selenium, variables):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     term = variables['search_term']
     first_suggestions_list = page.search.search_for(term, execute=False)
@@ -63,7 +63,7 @@ def test_uppercase_has_same_suggestions(base_url, selenium, variables):
 
 
 @pytest.mark.nondestructive
-def test_esc_key_closes_suggestion_list(base_url, selenium, variables):
+def test_esc_key_closes_suggestion_list_tc_id_c4486(base_url, selenium, variables):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     term = variables['search_term']
     page.search.search_for(term, execute=False)
@@ -100,7 +100,7 @@ def test_long_terms_dont_break_suggestions(base_url, selenium):
 
 
 @pytest.mark.nondestructive
-def test_suggestions_change_by_query(base_url, selenium):
+def test_suggestions_change_by_query_tc_id_c4487(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     term = 'pass'
     suggestions = page.search.search_for(term, execute=False)
@@ -114,7 +114,7 @@ def test_suggestions_change_by_query(base_url, selenium):
 
 
 @pytest.mark.nondestructive
-def test_select_result_with_enter_key(base_url, selenium, variables):
+def test_select_result_with_enter_key_tc_id_c4484(base_url, selenium, variables):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     term = variables['search_term']
     page.search.search_for(term, execute=False)
@@ -129,7 +129,7 @@ def test_select_result_with_enter_key(base_url, selenium, variables):
 
 @pytest.mark.sanity
 @pytest.mark.nondestructive
-def test_select_result_with_click(base_url, selenium, variables):
+def test_select_result_with_click_tc_id_c4485(base_url, selenium, variables):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     term = variables['search_term']
     suggestions = page.search.search_for(term, execute=False)
@@ -203,7 +203,7 @@ def test_search_loads_and_navigates_to_correct_page(base_url, selenium):
 
 @pytest.mark.sanity
 @pytest.mark.nondestructive
-def test_blank_search_loads_results(base_url, selenium):
+def test_blank_search_loads_results_tc_id_c97496(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     search_page = page.search.search_for('', execute=True)
     results = search_page.result_list.search_results
@@ -244,7 +244,7 @@ def test_filter_default(base_url, selenium, variables):
 
 @pytest.mark.sanity
 @pytest.mark.nondestructive
-def test_filter_by_users(base_url, selenium):
+def test_filter_by_users_tc_id_c92462(base_url, selenium):
     Home(selenium, base_url).open().wait_for_page_to_load()
     term = 'fox'
     sort = 'users'
@@ -261,7 +261,7 @@ def test_filter_by_users(base_url, selenium):
 @pytest.mark.parametrize(
     'category, sort_attr', [['Top Rated', 'rating'], ['Trending', 'hotness']]
 )
-def test_filter_by_rating_and_hotness(base_url, selenium, category, sort_attr):
+def test_filter_by_rating_and_hotness_tc_id_c92462(base_url, selenium, category, sort_attr):
     """Test searching for an addon and sorting."""
     Home(selenium, base_url).open().wait_for_page_to_load()
     addon_name = 'fox'
@@ -277,7 +277,7 @@ def test_filter_by_rating_and_hotness(base_url, selenium, category, sort_attr):
 
 @pytest.mark.sanity
 @pytest.mark.nondestructive
-def test_filter_extensions(base_url, selenium):
+def test_filter_extensions_tc_id_c92462(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     term = 'fox'
     page.search.search_for(term)
@@ -290,7 +290,7 @@ def test_filter_extensions(base_url, selenium):
 
 @pytest.mark.sanity
 @pytest.mark.nondestructive
-def test_top_rated_recommended_addons(base_url, selenium, variables):
+def test_top_rated_recommended_addons_tc_id_c92462(base_url, selenium, variables):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     search_page = page.search.search_for(variables['search_term'])
     # apply filters and then search again
@@ -309,7 +309,7 @@ def test_top_rated_recommended_addons(base_url, selenium, variables):
 
 
 @pytest.mark.nondestructive
-def test_top_rated_recommended_extensions(base_url, selenium, variables):
+def test_top_rated_recommended_extensions_tc_id_c92462(base_url, selenium, variables):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     search_page = page.search.search_for(variables['search_term'])
     # apply filters and then search again
@@ -330,7 +330,7 @@ def test_top_rated_recommended_extensions(base_url, selenium, variables):
 
 
 @pytest.mark.nondestructive
-def test_top_rated_recommended_themes(base_url, selenium, variables):
+def test_top_rated_recommended_themes_tc_id_c92462(base_url, selenium, variables):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     search_page = page.search.search_for(variables['search_term'])
     # apply filters and then search again
@@ -353,7 +353,7 @@ def test_top_rated_recommended_themes(base_url, selenium, variables):
 
 
 @pytest.mark.nondestructive
-def test_most_users_recommended_addons(base_url, selenium, variables):
+def test_most_users_recommended_addons_tc_id_c92462(base_url, selenium, variables):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     search_page = page.search.search_for('')
     # apply filters and then search term
@@ -373,7 +373,7 @@ def test_most_users_recommended_addons(base_url, selenium, variables):
 
 
 @pytest.mark.nondestructive
-def test_most_users_by_firefox_addons(base_url, selenium, variables):
+def test_most_users_by_firefox_addons_tc_id_c92462(base_url, selenium, variables):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     search_page = page.search.search_for('')
     # apply filters and then search term

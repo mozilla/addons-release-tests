@@ -9,7 +9,7 @@ from pages.desktop.frontend.details import Detail
 from pages.desktop.frontend.versions import Versions
 
 
-def test_install_uninstall_extension(
+def test_install_uninstall_extension_tc_id_c393003(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Open an extension detail page, install it and then uninstall it"""
@@ -82,7 +82,7 @@ def test_enable_disable_extension(
     wait.until(lambda _: about_addons.installed_addon_name[0].text == 'aarafow-molla-mantinch')
 
 
-def test_install_uninstall_theme(
+def test_install_uninstall_theme_tc_id_C95591(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Open a theme detail page, install it and then uninstall it"""
@@ -117,7 +117,7 @@ def test_install_uninstall_theme(
     assert amo_theme_name not in [el.text for el in about_addons.installed_addon_name]
 
 
-def test_install_uninstall_dictionary(
+def test_install_uninstall_dictionary_tc_id_c4508(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Open a dictionary detail page, install it and then uninstall it"""
@@ -153,7 +153,7 @@ def test_install_uninstall_dictionary(
         wait.until(lambda _: amo_dict_name == about_addons.installed_addon_name[0].text)
 
 
-def test_install_uninstall_langpack(
+def test_install_uninstall_langpack_tc_id_c4508(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Open a language pack detail page, install it and then uninstall it"""

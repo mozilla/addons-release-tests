@@ -122,7 +122,7 @@ def test_devhub_click_header_profile_icon(selenium, base_url):
 
 
 @pytest.mark.nondestructive
-def test_devhub_logged_in_page_hero_banner(selenium, base_url, variables):
+def test_devhub_logged_in_page_hero_banner_tc_id_C15072(selenium, base_url, variables):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     page.devhub_login("regular_user")
     # verify the items present in the page logged in banner
@@ -136,7 +136,7 @@ def test_devhub_logged_in_page_hero_banner(selenium, base_url, variables):
 
 
 @pytest.mark.nondestructive
-def test_devhub_my_addons_section(selenium, base_url, variables):
+def test_devhub_my_addons_section_tc_id_C15072(selenium, base_url, variables):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     page.devhub_login("regular_user")
     page.wait_for_page_to_load()
@@ -193,7 +193,7 @@ def test_devhub_click_see_all_addons_link(selenium, base_url, wait):
 
 @pytest.mark.nondestructive
 @pytest.mark.create_session("developer")
-def test_devhub_click_submit_new_addon_button(selenium, base_url, wait):
+def test_devhub_click_submit_new_addon_button_tc_id_c14882(selenium, base_url, wait):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     distribution_page = page.click_submit_addon_button()
     wait.until(
@@ -234,7 +234,7 @@ def test_devhub_click_first_theme_button(selenium, base_url, variables):
 
 
 @pytest.mark.nondestructive
-def test_devhub_resources_footer_documentation_links(selenium, base_url, variables):
+def test_devhub_resources_footer_documentation_links_tc_id_C15072(selenium, base_url, variables):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     page.devhub_login("regular_user")
     assert "Documentation" in page.resources.documentation_section_header
@@ -252,7 +252,7 @@ def test_devhub_resources_footer_documentation_links(selenium, base_url, variabl
 
 @pytest.mark.nondestructive
 @pytest.mark.create_session("developer")
-def test_devhub_resources_footer_tools_links(selenium, base_url, variables):
+def test_devhub_resources_footer_tools_links_tc_id_C15072(selenium, base_url, variables):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     assert "Tools" in page.resources.tools_section_header
     count = 0
@@ -269,7 +269,7 @@ def test_devhub_resources_footer_tools_links(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 @pytest.mark.create_session("developer")
-def test_devhub_resources_footer_promote_links(selenium, base_url, variables):
+def test_devhub_resources_footer_promote_links_tc_id_C15072(selenium, base_url, variables):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     assert "Promote" in page.resources.promote_section_header
     count = 0
@@ -587,7 +587,7 @@ def test_devhub_footer_copyright_message(base_url, selenium, count, link):
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 @pytest.mark.create_session("developer")
-def test_devhub_logout(selenium, base_url, wait):
+def test_devhub_logout_tc_id_c15075(selenium, base_url, wait):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     # page.devhub_login("developer")
     page.click_sign_out()
