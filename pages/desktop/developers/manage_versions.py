@@ -54,6 +54,7 @@ class ManageVersions(Page):
     )
     _cancel_disable_version_link_locator = (By.CSS_SELECTOR, ".modal-actions .close")
     _enable_version_button_locator = (By.CSS_SELECTOR, ".file-status button")
+    _cancel_review_request_link_locator = (By.CSS_SELECTOR, "")
 
     @staticmethod
     def open_manage_versions_page_for_addon(selenium, base_url, addon):
@@ -218,6 +219,10 @@ class ManageVersions(Page):
     def delete_addon(self):
         self.find_element(*self._delete_addon_button_locator).click()
         return self.DeleteAddonModal(self).wait_for_region_to_load()
+
+    def cancel_review_request(self):
+        self.find_element(*self._cancel_review_request_link_locator).click()
+        return self.CancelReviewRequestModal(self).wait_for_region_to_load()
 
     class CancelReviewRequestModal(Region):
         _root_locator = (By.ID, 'modal-cancel')
