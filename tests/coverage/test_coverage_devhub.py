@@ -1,12 +1,8 @@
 import pytest
-import time
 
-from selenium.webdriver.support import expected_conditions as EC
-from pages.desktop.developers.edit_addon import EditAddon
 from pages.desktop.developers.devhub_home import DevHubHome
 from pages.desktop.developers.manage_versions import ManageVersions
-from pages.desktop.developers.submit_addon import ListedAddonSubmissionForm, SubmissionConfirmationPage, ThemeWizard
-from pages.desktop.developers.edit_addon import EditAddon
+from pages.desktop.developers.submit_addon import ListedAddonSubmissionForm, SubmissionConfirmationPage
 from pages.desktop.frontend.details import Detail
 from pages.desktop.developers.manage_authors_and_license import ManageAuthorsAndLicenses
 from scripts import reusables
