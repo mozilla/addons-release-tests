@@ -11,28 +11,26 @@ jobs:
     steps:
       - checkout
       - run:
-        - checkout
-        - run:
-            name: Upgrade pip
-            command: py -m pip install --upgrade pip --user
-        - run:
-            name: Install requirements
-            command: py -m pip install --no-deps -r ./requirements.txt
-        - run:
-            name: Install geckodriver
-            command: choco install selenium-gecko-driver -y
-        - run:
-            name: Install Firefox
-            command: choco install firefox-nightly --pre --ignore-checksums -y
-        - run:
-            name: Run collections serial tests
-            environment:
-              MOZ_HEADLESS: 1
-              PYTEST_ADDOPTS: -n 1 --reruns 2
-            command: py -m pytest tests\coverage\test_coverage_devhub.py --driver Firefox --variables stage.json --html=coverage-devhub-tests-results.html --self-contained-html
-            no_output_timeout: 30m
-        - store_artifacts:
-            path: coverage-devhub-tests-results.html
+          name: Upgrade pip
+          command: py -m pip install --upgrade pip --user
+      - run:
+          name: Install requirements
+          command: py -m pip install --no-deps -r ./requirements.txt
+      - run:
+          name: Install geckodriver
+          command: choco install selenium-gecko-driver -y
+      - run:
+          name: Install Firefox
+          command: choco install firefox-nightly --pre --ignore-checksums -y
+      - run:
+          name: Run coverage devhub tests
+          environment:
+            MOZ_HEADLESS: 1
+            PYTEST_ADDOPTS: -n 1 --reruns 2
+          command: py -m pytest tests\coverage\test_coverage_devhub.py --driver Firefox --variables stage.json --html=coverage-devhub-tests-results.html --self-contained-html
+          no_output_timeout: 30m
+      - store_artifacts:
+          path: coverage-devhub-tests-results.html
 
   # run collections tests in a separate serial job to make serial workflows more granular
   collections_serial_tests:
