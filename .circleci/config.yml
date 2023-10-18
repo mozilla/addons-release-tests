@@ -29,10 +29,10 @@ jobs:
             environment:
               MOZ_HEADLESS: 1
               PYTEST_ADDOPTS: -n 1 --reruns 2
-            command: py -m pytest tests\coverage\test_coverage_devhub.py --driver Firefox --variables stage.json --html=coverage-devhub-test-results.html --self-contained-html
+            command: py -m pytest tests\coverage\test_coverage_devhub.py --driver Firefox --variables stage.json --html=coverage-devhub-tests-results.html --self-contained-html
             no_output_timeout: 30m
         - store_artifacts:
-            path: coverage-devhub-test-results.html
+            path: coverage-devhub-tests-results.html
 
   # run collections tests in a separate serial job to make serial workflows more granular
   collections_serial_tests:
