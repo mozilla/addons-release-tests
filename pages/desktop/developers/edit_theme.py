@@ -18,6 +18,9 @@ class EditTheme(Base):
             lambda _: self.is_element_displayed(*self._edit_addon_navbar_locator)
         )
         return self
+    @staticmethod
+    def open_edit_page(addon_slug, base_url, selenium):
+        selenium.get(f"{base_url}/developers/addon/{addon_slug}/edit")
 
     @property
     def name(self):

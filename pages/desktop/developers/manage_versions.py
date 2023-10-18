@@ -30,6 +30,7 @@ class ManageVersions(Page):
     _hide_addon_button_locator = (By.CSS_SELECTOR, "#modal-disable p button")
     _hide_addon_cancel_link_locator = (By.CSS_SELECTOR, "#modal-disable p a")
 
+    _disabled_by_mozilla_locator = (By.CSS_SELECTOR, ".file-status > div")
     _incomplete_status_locator = (By.CSS_SELECTOR, ".status-incomplete b")
     _addon_listed_status_locator = (By.CSS_SELECTOR, ".addon-listed-status b")
     _delete_addon_button_locator = (By.CLASS_NAME, "delete-button.delete-addon")
@@ -54,6 +55,13 @@ class ManageVersions(Page):
     )
     _cancel_disable_version_link_locator = (By.CSS_SELECTOR, ".modal-actions .close")
     _enable_version_button_locator = (By.CSS_SELECTOR, ".file-status button")
+    _cancel_request_review_button_locator = (By.ID, "cancel-review")
+    _request_review_button_locator = (By.CSS_SELECTOR, ".version-status-actions > form")
+
+
+    @staticmethod
+    def open_manage_versions_page_for_addon(selenium, base_url, addon):
+        return selenium.get(f"{base_url}/developers/addon/{addon}/versions")
 
     def wait_for_page_to_load(self):
         self.wait.until(EC.visibility_of_element_located(self._version_list_locator))
@@ -73,11 +81,45 @@ class ManageVersions(Page):
         )
         return self.find_element(*self._listing_visibility_section_locator).text
 
+    @property
+    def cancel_request_review_button(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._cancel_request_review_button_locator)
+        )
+        return self.find_element(*self._cancel_request_review_button_locator)
+
+    @property
+    def request_review_button(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._request_review_button_locator)
+        )
+        return self.find_element(*self._request_review_button_locator)
+
+    def click_request_review_button(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._request_review_button_locator)
+        )
+        return self.find_element(*self._request_review_button_locator).click()
+
     def set_addon_visible(self):
         """Selects the Visible option and checks that the radio button is selected"""
         el = self.find_element(*self._visible_listing_radio_locator)
         el.click()
         assert el.is_selected()
+
+    @property
+    def incomplete_status_text(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._incomplete_status_locator)
+        )
+        return self.find_element(*self._incomplete_status_locator)
+
+    @property
+    def disabled_by_mozilla_text(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._disabled_by_mozilla_locator)
+        )
+        return self.find_element(*self._disabled_by_mozilla_locator)
 
     @property
     def visible_status_explainer(self):
@@ -214,6 +256,34 @@ class ManageVersions(Page):
     def delete_addon(self):
         self.find_element(*self._delete_addon_button_locator).click()
         return self.DeleteAddonModal(self).wait_for_region_to_load()
+
+    def click_cancel_review_request(self):
+        self.find_element(*self._cancel_request_review_button_locator).click()
+        return self.CancelReviewRequestModal(self).wait_for_region_to_load()
+
+    class CancelReviewRequestModal(Region):
+        _root_locator = (By.ID, 'modal-cancel')
+        _are_you_sure_message_locator = (By.CSS_SELECTOR, '#modal-cancel > form:nth-child(1) > p:nth-child(3)')
+        _cancel_your_review_request_message_locator = (By.CSS_SELECTOR, '#modal-cancel > form:nth-child(1) > p:nth-child(2)')
+        _cancel_review_request_button_locator = (By.CSS_SELECTOR, '#modal-cancel > form:nth-child(1) > p:nth-child(6) > button:nth-child(1)')
+
+        def wait_for_region_to_load(self):
+            self.wait.until(EC.visibility_of_element_located(self._root_locator))
+            return self
+
+        @property
+        def are_you_sure_message(self):
+            return self.find_element(*self._are_you_sure_message_locator)
+
+        @property
+        def cancel_your_review_request_message_locator(self):
+            return self.find_element(*self._cancel_your_review_request_message_locator)
+
+        def click_cancel_review_request_button(self):
+            self.wait.until(EC.visibility_of_element_located(self._cancel_review_request_button_locator))
+            self.find_element(*self._cancel_review_request_button_locator).click()
+            return self
+
 
     class DeleteAddonModal(Region):
         _root_locator = (By.ID, "modal-delete")
