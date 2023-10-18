@@ -519,6 +519,7 @@ class UploadSource(Page):
         By.CSS_SELECTOR,
         ".modal-confirm-submission-cancel .delete-button",
     )
+    _yes_cancel_and_disable_version = (By.CSS_SELECTOR, "button.delete-button:nth-child(1)")
     _do_not_cancel_version_link_locator = (By.CSS_SELECTOR, "#modal-confirm-submission-cancel > form > div > a")
 
     @property
@@ -581,7 +582,7 @@ class UploadSource(Page):
         return self.find_element(*self._do_not_cancel_version_link_locator).click()
 
     def confirm_cancel_and_disable_version(self):
-        self.find_element(*self._cancel_version_confirm_button_locator).click()
+        self.find_element(*self._yes_cancel_and_disable_version).click()
         return ManageVersions(self.driver, self.base_url).wait_for_page_to_load()
 
 
@@ -650,6 +651,9 @@ class ListedAddonSubmissionForm(Page):
 
     def set_addon_name(self, value):
         self.find_element(*self._addon_name_field_locator).send_keys(value)
+
+    def clear_addon_name(self):
+        self.find_element(*self._addon_name_field_locator).clear()
 
     @property
     def addon_name_field(self):

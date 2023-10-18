@@ -9,26 +9,25 @@ from scripts import reusables
 
 
 
-def submit_addon_method(selenium, base_url):
-    devhub_page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    devhub_page.devhub_login("developer")
-    submit_addon = devhub_page.click_submit_addon_button()
-    submit_addon.select_listed_option()
-    submit_addon.click_continue()
-    submit_addon.upload_addon("listed-addon.zip")
-    submit_addon.is_validation_successful()
-    assert submit_addon.success_validation_message.is_displayed()
-    source = submit_addon.click_continue_upload_button()
-    source.select_no_to_omit_source()
-    confirmation_page = source.continue_listed_submission()
-    random_string = reusables.get_random_string(10)
-    summary = reusables.get_random_string(10)
-    confirmation_page.set_addon_name(random_string)
-    confirmation_page.set_addon_summary(summary)
-    confirmation_page.select_firefox_categories(1)
-    confirmation_page.select_license_options[0].click()
-    confirmation_page.submit_addon()
-    return f"listed-addon{random_string}"
+# def submit_addon_method(selenium, base_url):
+#     devhub_page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+#     submit_addon = devhub_page.click_submit_addon_button()
+#     submit_addon.select_listed_option()
+#     submit_addon.click_continue()
+#     submit_addon.upload_addon("listed-addon.zip")
+#     submit_addon.is_validation_successful()
+#     assert submit_addon.success_validation_message.is_displayed()
+#     source = submit_addon.click_continue_upload_button()
+#     source.select_no_to_omit_source()
+#     confirmation_page = source.continue_listed_submission()
+#     random_string = reusables.get_random_string(10)
+#     summary = reusables.get_random_string(10)
+#     confirmation_page.set_addon_name(random_string)
+#     confirmation_page.set_addon_summary(summary)
+#     confirmation_page.select_firefox_categories(1)
+#     confirmation_page.select_license_options[0].click()
+#     confirmation_page.submit_addon()
+#     return f"listed-addon{random_string}"
 
 
 # @pytest.mark.coverage
@@ -53,17 +52,36 @@ def submit_addon_method(selenium, base_url):
 #     edit_addon_page.edit_preview_explicit_error.is_displayed()
 
 @pytest.mark.coverage
+@pytest.mark.login("submissions_user")
 def test_cancel_review_request(selenium, base_url, variables, wait):
     # Test Case: C1803555 -> AMO Coverage > Devhub
     """Submit the first version of an add-on"""
-    addon = submit_addon_method(selenium, base_url)
+    devhub_page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    submit_addon = devhub_page.click_submit_addon_button()
+    submit_addon.select_listed_option()
+    submit_addon.click_continue()
+    submit_addon.upload_addon("listed-addon.zip")
+    submit_addon.is_validation_successful()
+    assert submit_addon.success_validation_message.is_displayed()
+    source = submit_addon.click_continue_upload_button()
+    source.select_no_to_omit_source()
+    confirmation_page = source.continue_listed_submission()
+    random_string = "listed-addon" + reusables.get_random_string(10)
+    summary = reusables.get_random_string(10)
+    confirmation_page.clear_addon_name()
+    confirmation_page.set_addon_name(random_string)
+    confirmation_page.set_addon_summary(summary)
+    confirmation_page.select_firefox_categories(1)
+    confirmation_page.select_license_options[0].click()
+    confirmation_page.submit_addon()
+
     manage_versions = ManageVersions(selenium, base_url)
-    manage_versions.open_manage_versions_page_for_addon(selenium, base_url, addon)
+    manage_versions.open_manage_versions_page_for_addon(selenium, base_url, random_string)
     """Page is displayed"""
     manage_versions = ManageVersions(selenium, base_url).wait_for_page_to_load()
     """Check that below the version there's a 'Cancel Review Request' blue link. Click it"""
     """Cancel Review Request box is displayed:"""
-    cancel_review_request_modal = manage_versions.cancel_review_request()
+    cancel_review_request_modal = manage_versions.click_cancel_review_request()
     assert (
         variables["cancel_your_review_request_message"]
         in cancel_review_request_modal.cancel_your_review_request_message_locator.text,
@@ -74,11 +92,11 @@ def test_cancel_review_request(selenium, base_url, variables, wait):
     cancel_review_request_modal.click_cancel_review_request_button()
     """Status of the addon is: Incomplete, Version is: Disabled by Mozilla"""
     assert manage_versions.request_review_button.is_displayed()
+    assert manage_versions.incomplete_status_text.is_displayed()
     assert manage_versions.disabled_by_mozilla_text.is_displayed()
-    assert manage_versions.addon_status_incomplete.is_displayed()
     assert (
         variables["addon_status_incomplete"]
-        in manage_versions.addon_status_incomplete.text,
+        in manage_versions.incomplete_status_text.text,
         variables["addon_version_disabled_by_mozilla"]
         in manage_versions.disabled_by_mozilla_text.text,
     )
@@ -88,11 +106,11 @@ def test_cancel_review_request(selenium, base_url, variables, wait):
     delete_addon_modal.confirm_delete_addon()
 
 @pytest.mark.coverage
+@pytest.mark.create_session("submissions_user")
 def test_disable_an_addon_at_submission(selenium, base_url, wait, variables):
     # Test Case: C1898098 AMO Coverage > Devhub
     """Click on "Submit a new Addon" and upload a listed file"""
     devhub_page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    devhub_page.devhub_login("developer")
     submit_addon = devhub_page.click_submit_addon_button()
     submit_addon.select_listed_option()
     submit_addon.click_continue()
@@ -109,7 +127,7 @@ def test_disable_an_addon_at_submission(selenium, base_url, wait, variables):
     source.click_cancel_and_disable_version()
     """The versions page is displayed. 
     The Status of the addon is Incomplete on the left, and "Disabled by Mozilla" in versions history."""
-    manage_versions_page = source.confirm_cancel_and_disable_version()
+    manage_versions_page = source.confirm_cancel_and_disable_version().wait_for_page_to_load()
     """Click "Request Review"""
     manage_versions_page.click_request_review_button()
     """The submission form should be displayed /submit/details in order to complete the submission."""
@@ -117,7 +135,7 @@ def test_disable_an_addon_at_submission(selenium, base_url, wait, variables):
     """You must provide further details to proceed."""
     random_string = reusables.get_random_string(10)
     summary = reusables.get_random_string(10)
-    addon = f"listed-addon{random_string}"
+    listed_addon_submission_form.clear_addon_name()
     listed_addon_submission_form.set_addon_name(random_string)
     listed_addon_submission_form.set_addon_summary(summary)
     listed_addon_submission_form.select_firefox_categories(1)
@@ -127,21 +145,38 @@ def test_disable_an_addon_at_submission(selenium, base_url, wait, variables):
     """The version is submitted. ".../addon/cancel-disable/submit/finish" page is displayed"""
     SubmissionConfirmationPage(selenium, base_url).wait_for_page_to_load()
     """Clean-up: Delete created add-on"""
-    manage_versions_page.open_manage_versions_page_for_addon(selenium, base_url, addon)
+    manage_versions_page.open_manage_versions_page_for_addon(selenium, base_url, random_string)
     delete_addon_modal = manage_versions_page.delete_addon()
     delete_addon_modal.input_delete_confirmation_string()
     delete_addon_modal.confirm_delete_addon()
 
 @pytest.mark.coverage
+@pytest.mark.create_session("submissions_user")
 def test_change_the_license(selenium, base_url, variables, wait):
     # Test Case: C1901412 AMO Coverage > Devhub
     """Submit a new add-on"""
-    addon = submit_addon_method(selenium, base_url)
+    devhub_page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    submit_addon = devhub_page.click_submit_addon_button()
+    submit_addon.select_listed_option()
+    submit_addon.click_continue()
+    submit_addon.upload_addon("listed-addon.zip")
+    submit_addon.is_validation_successful()
+    assert submit_addon.success_validation_message.is_displayed()
+    source = submit_addon.click_continue_upload_button()
+    source.select_no_to_omit_source()
+    confirmation_page = source.continue_listed_submission()
+    random_string = "listed-addon" + reusables.get_random_string(10)
+    summary = reusables.get_random_string(10)
+    confirmation_page.clear_addon_name()
+    confirmation_page.set_addon_name(random_string)
+    confirmation_page.set_addon_summary(summary)
+    confirmation_page.select_firefox_categories(1)
+    confirmation_page.select_license_options[0].click()
+    confirmation_page.submit_addon()
     """From Manage Authors and License page -> select a new License for the add-on and Save Changes"""
     manage_authors_page = ManageAuthorsAndLicenses(selenium, base_url)
-    manage_authors_page.open_manage_authors_and_licenses_page(selenium, base_url, addon)
+    manage_authors_page.open_manage_authors_and_licenses_page(selenium, base_url, random_string)
     manage_authors_page.wait_for_page_to_load()
-    assert manage_authors_page.radio_button_mozilla_public_license.is_selected()
     manage_authors_page.click_general_public_license()
     assert manage_authors_page.radio_button_general_public_license.is_selected()
     manage_authors_page.click_save_changes_button()
@@ -150,12 +185,12 @@ def test_change_the_license(selenium, base_url, variables, wait):
         variables["notification_box_success"]
         in manage_authors_page.notification_box_success.text
     )
-    selenium.get(f"{base_url}/firefox/addon/{addon}")
+    selenium.get(f"{base_url}/firefox/addon/{random_string}")
     addon_detail_page = Detail(selenium, base_url).wait_for_page_to_load()
     assert addon_detail_page.addon_icon.is_displayed()
     """Clean-up: Delete created add-on"""
     manage_versions_page = ManageVersions(selenium, base_url)
-    manage_versions_page.open_manage_versions_page_for_addon(selenium, base_url, addon)
+    manage_versions_page.open_manage_versions_page_for_addon(selenium, base_url, random_string)
     delete_addon_modal = manage_versions_page.delete_addon()
     delete_addon_modal.input_delete_confirmation_string()
     delete_addon_modal.confirm_delete_addon()

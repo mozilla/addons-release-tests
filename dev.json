@@ -200,5 +200,8 @@
   "upload_status": "100% complete",
   "upload_status_results_failed": "Your add-on failed validation with 1 error.",
   "unsupported_format_message": "The filetype you uploaded isn't recognized.",
-  "no_manifest_found_message": "manifest.json was not found"
+  "no_manifest_found_message": "manifest.json was not found",
+  "notification_box_success": "Changes successfully saved.",
+  "addon_status_incomplete": "Incomplete",
+  "addon_version_disabled_by_mozilla": "Disabled by Mozilla"
 }

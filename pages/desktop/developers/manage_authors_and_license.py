@@ -8,10 +8,10 @@ from selenium.webdriver.support import expected_conditions as EC
 
 
 class ManageAuthorsAndLicenses(Page):
-    _radio_button_mozilla_public_license_selector = (By.XPATH, '//*[@data-name="Mozilla Public License 2.0"]')
-    _radio_button_gnu_general_public_license_selector = (By.ID, 'authors_pending_confirmation')
+    _radio_button_mozilla_public_license_selector = (By.XPATH, 'id_builtin_0')
+    _radio_button_gnu_general_public_license_selector = (By.ID, 'id_builtin_1')
     _save_changes_button_selector = (By.CSS_SELECTOR, 'div.listing-footer button')
-    _notification_box_success_selector = (By.CSS_SELECTOR, '.notification-box')
+    _notification_box_success_selector = (By.CSS_SELECTOR, '.notification-box > h2:nth-child(1)')
 
     @property
     def radio_button_mozilla_public_license(self):
@@ -31,15 +31,15 @@ class ManageAuthorsAndLicenses(Page):
 
     def wait_for_page_to_load(self):
         self.wait.until(
-            EC.visibility_of_element_located(*self._radio_button_gnu_general_public_license_selector)
+            EC.visibility_of_element_located(self._radio_button_gnu_general_public_license_selector)
         )
-        return
+        return self
 
     def wait_for_notification_box_success(self):
         self.wait.until(
-            EC.visibility_of_element_located(*self._notification_box_success_selector)
+            EC.visibility_of_element_located(self._notification_box_success_selector)
         )
-        return
+        return self
 
     def click_mozilla_public_license(self):
         return self.find_element(*self._radio_button_mozilla_public_license_selector).click()
