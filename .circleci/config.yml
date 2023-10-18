@@ -33,6 +33,7 @@ jobs:
             no_output_timeout: 30m
         - store_artifacts:
             path: coverage-devhub-test-results.html
+
   # run collections tests in a separate serial job to make serial workflows more granular
   collections_serial_tests:
     executor:
@@ -496,6 +497,7 @@ workflows:
       - devhub_parallel_tests
       - addon_submissions_tests
       - api_submission_tests
+
   # scheduled in CircleCI Project settings to run each Wednesdays at 04:00 UTC
   scheduled_coverage_run:
     when:
@@ -504,6 +506,7 @@ workflows:
         - equal: [ "scheduled_coverage_run", << pipeline.schedule.name >> ]
     jobs:
       - coverage_devhub_tests
+
   # scheduled in CircleCI Project settings to run each Wednesdays at 05:00 UTC
   scheduled_stage_release_run:
     when:
