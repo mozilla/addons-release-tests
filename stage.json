@@ -206,5 +206,9 @@
   "no_manifest_found_message": "manifest.json was not found",
   "notification_box_success": "Changes successfully saved.",
   "addon_status_incomplete": "Incomplete",
-  "addon_version_disabled_by_mozilla": "Disabled by Mozilla"
+  "addon_version_disabled_by_mozilla": "Disabled by Mozilla",
+  "text_block_for_use": "Olim puer varius et ad iram promptus misere flebat.",
+  "please_specify_your_license_agreement": "Please specify your add-on's End-User License Agreement:",
+  "please_specify_your_privacy_policy": "Please specify your add-on's Privacy Policy:",
+  "mv3_extension_without_id_message": "The extension ID is required in Manifest Version 3 and above."
 }

@@ -94,6 +94,8 @@ class SubmitAddon(Page):
     _validation_fail_reason_locator = (By.CSS_SELECTOR, "#upload_errors li")
     _validation_status_text_locator = (By.ID, "upload-status-text")
     _validation_success_message_locator = (By.ID, "upload-status-results")
+    _failed_validation_message_locator = (By.CSS_SELECTOR, "#upload-status-results > strong:nth-child(2)")
+
 
     @property
     def my_addons_page_logo(self):
@@ -381,6 +383,11 @@ class SubmitAddon(Page):
         # return to the main tab
         self.driver.switch_to.window(self.driver.window_handles[0])
 
+    def is_validation_failed(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._validation_fail_bar_locator)
+        )
+
     @property
     def validation_failed_message(self):
         self.wait.until(
@@ -426,6 +433,10 @@ class SubmitAddon(Page):
 
     def submit_button_disabled(self):
         self.find_element(*self._submit_file_button_locator).get_attribute("disabled")
+
+    @property
+    def failed_validation_message(self):
+        return self.find_element(*self._failed_validation_message_locator)
 
 
 class ValidationResults(Page):
