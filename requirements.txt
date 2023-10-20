@@ -1,4 +1,4 @@
-apipkg==3.0.1
+apipkg==3.0.2
 appdirs==1.4.4
 astroid==2.15.6
 atomicwrites==1.4.1
