@@ -30,7 +30,7 @@ def test_login(selenium, base_url, wait):
 @pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.nondestructive
-def test_logout(base_url, selenium):
+def test_logout_tc_id_c95092(base_url, selenium):
     """User can logout"""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.login("regular_user")
@@ -40,7 +40,7 @@ def test_logout(base_url, selenium):
 @pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.nondestructive
-def test_user_menu_collections_link(base_url, selenium):
+def test_user_menu_collections_link_tc_id_c95102(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.login("regular_user")
     # clicks on View My Collections in the user menu
@@ -53,7 +53,7 @@ def test_user_menu_collections_link(base_url, selenium):
 @pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.nondestructive
-def test_user_menu_view_profile(base_url, selenium):
+def test_user_menu_view_profile_tc_id_c95102(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.login("regular_user")
     # clicks on View Profile in the user menu and checks that the correct page opens
@@ -65,7 +65,7 @@ def test_user_menu_view_profile(base_url, selenium):
 @pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.nondestructive
-def test_user_menu_edit_profile(base_url, selenium):
+def test_user_menu_edit_profile_tc_id_c95102(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.login("regular_user")
     # clicks on Edit Profile in the user menu and checks that the correct page opens
@@ -87,9 +87,10 @@ def test_register_new_account(base_url, selenium, wait):
 
 
 @pytest.mark.serial
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 @pytest.mark.login("developer")
-def test_user_menu_click_user_menu_links(base_url, selenium):
+def test_user_menu_click_user_menu_links_tc_id_c95102(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     # Click Submit New Add-on
     count = 3
@@ -149,7 +150,7 @@ def test_user_mandatory_notifications(base_url, selenium):
 @pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.login("reusable_user")
-def test_user_edit_profile(base_url, selenium, variables):
+def test_user_edit_profile_tc_id_c4607(base_url, selenium, variables):
     user = User(selenium, base_url).open().wait_for_page_to_load()
     # make sure that the submit changes button is disabled if display_name is not filled in
     assert user.edit.submit_changes_button_disabled.is_displayed()
@@ -172,7 +173,7 @@ def test_user_edit_profile(base_url, selenium, variables):
 @pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.create_session("reusable_user")
-def test_user_view_profile(base_url, selenium, variables):
+def test_user_view_profile_tc_id_c452203(base_url, selenium, variables):
     user = User(selenium, base_url).open().wait_for_page_to_load()
     # opens the View profile page
     user.edit.click_view_profile_link()
@@ -290,7 +291,7 @@ def test_user_update_url(base_url, selenium, variables):
 @pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.create_session("reusable_user")
-def test_user_delete_profile(base_url, selenium):
+def test_user_delete_profile_tc_id_c4393(base_url, selenium):
     user = User(selenium, base_url).open().wait_for_page_to_load()
     user.edit.delete_account()
     # click cancel to close the delete profile overlay
@@ -534,7 +535,7 @@ def test_user_profile_themes_card(base_url, selenium, variables):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-def test_user_profile_open_extension_detail_page(base_url, selenium, variables):
+def test_user_profile_open_extension_detail_page_tc_id_c4350(base_url, selenium, variables):
     page = variables["developer_profile"]
     selenium.get(f"{base_url}/user/{page}")
     extension = Search(selenium, base_url).wait_for_page_to_load()
@@ -547,7 +548,7 @@ def test_user_profile_open_extension_detail_page(base_url, selenium, variables):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-def test_user_profile_open_theme_detail_page(base_url, selenium, variables):
+def test_user_profile_open_theme_detail_page_tc_id_c95590(base_url, selenium, variables):
     artist = variables["theme_artist_profile"]
     selenium.get(f"{base_url}/user/{artist}")
     theme = Search(selenium, base_url).wait_for_page_to_load()

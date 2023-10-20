@@ -31,6 +31,9 @@ class Detail(Base):
     _install_warning_text_locator = (By.CSS_SELECTOR, ".InstallWarning p")
     _install_warning_button_locator = (By.CSS_SELECTOR, ".InstallWarning a")
     _non_public_addon_notice_locator = (By.CSS_SELECTOR, ".Addon-non-public-notice")
+    _privacy_policy_locator = (By.CSS_SELECTOR, ".AddonMoreInfo-privacy-policy-link")
+    _license_agreement_locator = (By.CSS_SELECTOR, ".AddonMoreInfo-eula-link")
+    _addon_info_text = (By.CSS_SELECTOR, ".AddonInfo-info-html")
 
     def wait_for_page_to_load(self):
         """Waits for various page components to be loaded"""
@@ -214,6 +217,19 @@ class Detail(Base):
     @property
     def themes(self):
         return self.Theme(self)
+
+    @property
+    def addon_info_text(self):
+        """used for privacy policy and license agreement"""
+        return self.find_element(*self._addon_info_text)
+
+    @property
+    def privacy_policy_locator(self):
+        return self.find_element(*self._privacy_policy_locator)
+
+    @property
+    def license_agreement_locator(self):
+        return self.find_element(*self._license_agreement_locator)
 
     class Stats(Region):
         _root_locator = (By.CLASS_NAME, "AddonMeta")
