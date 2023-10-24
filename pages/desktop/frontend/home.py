@@ -26,6 +26,8 @@ class Home(Base):
         By.CSS_SELECTOR,
         ".Card-shelf-footer-in-header a",
     )
+    _extensions_with_tag_header_text_locator = (By.CSS_SELECTOR, "section.Card:nth-child(8) > header:nth-child(1) > div")
+    _extensions_tag_see_more_locator = (By.CSS_SELECTOR, "section.Card:nth-child(8) > header:nth-child(1) > footer > a")
 
     def wait_for_page_to_load(self):
         """Waits for various page components to be loaded"""
@@ -114,6 +116,17 @@ class Home(Base):
             EC.visibility_of_element_located(self._shelves_see_more_links_locator)
         )
         return self.find_elements(*self._shelves_see_more_links_locator)
+
+    @property
+    def extensions_with_tag_header(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._extensions_with_tag_header_text_locator)
+        )
+        return self.find_element(*self._extensions_with_tag_header_text_locator)
+
+    @property
+    def extensions_with_tag_see_more(self):
+        return self.find_element(*self._extensions_tag_see_more_locator)
 
     def click_see_more_links(self, count):
         link = [el for el in self.see_more_links_in_shelves]

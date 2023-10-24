@@ -18,6 +18,7 @@ class Search(Page):
     _pagination_next_locator = (By.CSS_SELECTOR, ".Paginate-item--next")
     _pagination_previous_locator = (By.CLASS_NAME, "Paginate-item--previous")
     _selected_page_locator = (By.CLASS_NAME, "Paginate-page-number")
+    _firefox_logo_locator = (By.CSS_SELECTOR, ".Header-title")
 
     def wait_for_page_to_load(self):
         self.wait.until(
@@ -101,6 +102,10 @@ class Search(Page):
             message="Pagination items were not loaded",
         )
         return self.find_element(*self._selected_page_locator).text
+
+    @property
+    def firefox_logo(self):
+        return self.find_element(*self._firefox_logo_locator)
 
     class SearchResultList(Region):
         _result_locator = (By.CLASS_NAME, "SearchResult")
