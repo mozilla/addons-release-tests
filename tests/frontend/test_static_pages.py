@@ -102,7 +102,7 @@ def test_about_firefox_addons_page_links(base_url, selenium, variables):
         # verify if the opened page link contains the correct domain
         page.wait_for_current_url(link_domain)
         # go back to test the next link
-        page.driver.back()
+        selenium.get(f"{base_url}/about")
 
 
 @pytest.mark.nondestructive
