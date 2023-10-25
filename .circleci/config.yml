@@ -131,6 +131,9 @@ jobs:
     steps:
       - checkout
       - run:
+          command: |
+              echo $(circleci tests\frontend split tests\frontend\test_filenames.txt) | xargs -n 1 echo
+      - run:
           name: Upgrade pip
           command: py -m pip install --upgrade pip --user
       - run:
