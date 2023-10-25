@@ -43,7 +43,7 @@ class ManageVersions(Page):
     )
     _version_approval_status_locator = (
         By.CSS_SELECTOR,
-        "#version-list .file-status div:nth-child(1)",
+        ".file-status div",
     )
     _disable_delete_version_button_locator = (By.CSS_SELECTOR, ".version-delete a")
     _delete_version_help_text_locator = (By.CSS_SELECTOR, ".current-version-warning")

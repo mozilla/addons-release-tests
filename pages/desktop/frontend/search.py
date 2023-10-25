@@ -19,6 +19,7 @@ class Search(Page):
     _pagination_previous_locator = (By.CLASS_NAME, "Paginate-item--previous")
     _selected_page_locator = (By.CLASS_NAME, "Paginate-page-number")
     _firefox_logo_locator = (By.CSS_SELECTOR, ".Header-title")
+    _auto_complete_list_locator = (By.ID, "react-autowhatever-1")
 
     def wait_for_page_to_load(self):
         self.wait.until(
@@ -47,6 +48,15 @@ class Search(Page):
     def results_info(self):
         self.wait.until(EC.visibility_of_element_located(self._context_card_locator))
         return self.find_element(*self._context_card_locator)
+
+    @property
+    def auto_complete_list(self):
+        self.wait.until(EC.visibility_of_element_located(self._auto_complete_list_locator))
+        return self.find_element(*self._auto_complete_list_locator)
+
+    @property
+    def search_box(self):
+        return self.find_element(*self._search_box_locator)
 
     @property
     def result_list(self):
