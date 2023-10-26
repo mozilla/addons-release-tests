@@ -128,7 +128,6 @@ jobs:
       name: win/default
       size: "large"
     working_directory: ~/addons-release-tests/
-    parallelism: 4
     steps:
       - checkout
       - run:
