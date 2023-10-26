@@ -8,6 +8,7 @@ from pages.desktop.frontend.static_pages import StaticPages
 
 @pytest.mark.nondestructive
 def test_about_firefox_addons_page_links(base_url, selenium, variables):
+    Home(selenium, base_url).open().wait_for_page_to_load()
     selenium.get(f"{base_url}/about")
     page = StaticPages(selenium, base_url)
     for count in range(len(page.page_links)):
