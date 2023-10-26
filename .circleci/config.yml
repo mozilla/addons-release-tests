@@ -132,7 +132,13 @@ jobs:
     steps:
       - checkout
       - run:
-          command: circle ci "tests/frontend/test_*.py" split --split-by=filename "test_frontend_filenames.txt"
+          name: Split Test Files
+          command: |
+            filenames=tests/frontend/test_*.py
+            for file in $filenames; do
+              filename=$(basename $file)
+              echo $filename >> test_frontend_filenames.txt
+            done
       - run:
           name: Upgrade pip
           command: py -m pip install --upgrade pip --user
