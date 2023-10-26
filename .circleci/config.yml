@@ -128,11 +128,11 @@ jobs:
       name: win/default
       size: "large"
     working_directory: ~/addons-release-tests/
+    parallelism: 4
     steps:
       - checkout
       - run:
-          command: |
-              echo $(circleci tests\frontend split tests\frontend\test_filenames.txt) | xargs -n 1 echo
+          command: circleci tests\frontend split tests\frontend\test_filenames.txt
       - run:
           name: Upgrade pip
           command: py -m pip install --upgrade pip --user
@@ -491,13 +491,7 @@ workflows:
       not:
         equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
     jobs:
-      - collections_serial_tests
-      - ratings_serial_tests
-      - user_serial_tests
       - frontend_parallel_tests
-      - devhub_parallel_tests
-      - addon_submissions_tests
-      - api_submission_tests
 
   # scheduled in CircleCI Project settings to run each Wednesdays at 04:00 UTC
   scheduled_coverage_run:
