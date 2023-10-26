@@ -379,6 +379,9 @@ def test_connect_newsletter_section(selenium, base_url, variables):
 
 
 @pytest.mark.nondestructive
+@pytest.mark.skip(
+    reason= "Skipped until this issue is fixed: https://github.com/mozilla/addons-server/issues/21335"
+)
 def test_verify_newsletter_signup_confirmation(selenium, base_url, variables, wait):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     email = f"{reusables.get_random_string(10)}@restmail.net"
