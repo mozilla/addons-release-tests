@@ -132,7 +132,7 @@ jobs:
     steps:
       - checkout
       - run:
-          command: echo $(circleci tests\frontend split test_frontend_filenames.txt)
+          command: circle ci tests split --split-by=filename < tests/frontend
       - run:
           name: Upgrade pip
           command: py -m pip install --upgrade pip --user
