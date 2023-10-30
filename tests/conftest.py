@@ -46,13 +46,25 @@ def firefox_options(firefox_options, base_url, variables):
     # for prod installation tests, we do not need to set special prefs, so we
     # separate the browser set-up based on the AMO environments
     if base_url == "https://addons.mozilla.org":
-        firefox_options.add_argument("-headless")
+        firefox_options.add_argument("-foreground")
         firefox_options.log.level = "trace"
         firefox_options.set_preference(
             "extensions.getAddons.discovery.api_url",
             "https://services.addons.mozilla.org/api/v4/discovery/?lang=%LOCALE%&edition=%DISTRIBUTION%",
         )
         firefox_options.set_preference("extensions.getAddons.cache.enabled", True)
+        firefox_options.set_preference(
+            "extensions.getAddons.get.url",
+            "https://services.addons.mozilla.org/api/v4/addons/search/?guid=%IDS%&lang=%LOCALE%",
+        )
+        firefox_options.set_preference(
+            "extensions.update.url",
+            "extensions.update.url	https://versioncheck.addons.mozilla.org/update/VersionCheck.php?reqVersion=%REQ_VERSION%&id=%ITEM_ID%&version=%ITEM_VERSION%&maxAppVersion=%ITEM_MAXAPPVERSION%&status=%ITEM_STATUS%&appID=%APP_ID%&appVersion=%APP_VERSION%&appOS=%APP_OS%&appABI=%APP_ABI%&locale=%APP_LOCALE%&currentAppVersion=%CURRENT_APP_VERSION%&updateType=%UPDATE_TYPE%&compatMode=%COMPATIBILITY_MODE%"
+        )
+        firefox_options.set_preference(
+            "extensions.update.background.url",
+            "https://versioncheck-bg.addons.mozilla.org/update/VersionCheck.php?reqVersion=%REQ_VERSION%&id=%ITEM_ID%&version=%ITEM_VERSION%&maxAppVersion=%ITEM_MAXAPPVERSION%&status=%ITEM_STATUS%&appID=%APP_ID%&appVersion=%APP_VERSION%&appOS=%APP_OS%&appABI=%APP_ABI%&locale=%APP_LOCALE%&currentAppVersion=%CURRENT_APP_VERSION%&updateType=%UPDATE_TYPE%&compatMode=%COMPATIBILITY_MODE%"
+        )
     else:
         firefox_options.set_preference("extensions.install.requireBuiltInCerts", False)
         firefox_options.set_preference("xpinstall.signatures.required", False)

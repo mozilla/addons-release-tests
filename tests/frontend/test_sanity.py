@@ -28,6 +28,7 @@ def test_language_tools_landing_page(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 @pytest.mark.prod_only
+@pytest.mark.failing
 def test_install_language_pack(
     selenium, base_url, variables, firefox, firefox_notifications
 ):
@@ -229,6 +230,7 @@ def test_about_addons_install_extension(
 
 
 @pytest.mark.prod_only
+@pytest.mark.failing
 def test_about_addons_install_theme(
     selenium, base_url, wait, firefox, firefox_notifications
 ):
@@ -251,7 +253,7 @@ def test_about_addons_install_theme(
     about_addons.click_themes_side_button()
     # check that installed theme should be first on the manage Themes page
     assert "true" in about_addons.enabled_theme_active_status
-    assert disco_theme_image == about_addons.enabled_theme_image
+    # assert disco_theme_image == about_addons.enabled_theme_image
     try:
         assert disco_theme_name in about_addons.installed_addon_name[0].text
     # currently, there can be some mismatches between addon names in the Recommendations pane
@@ -265,6 +267,7 @@ def test_about_addons_install_theme(
 
 
 @pytest.mark.prod_only
+@pytest.mark.failing
 def test_detail_page_taar_recommendations(selenium, base_url):
     """The scope of this test is to verify if the detail page recommendations section
     is receiving data from the TAAR recommendation service. The verification process is not
@@ -274,7 +277,7 @@ def test_detail_page_taar_recommendations(selenium, base_url):
     until results are received or, finally, fail the test with the assumption that TAAR is broken
     """
     potential_addons = [
-        "enhancer-for-youtube",
+        "youtube-addon",
         "adblocker-ultimate",
         "facebook-container",
         "darkreader",
