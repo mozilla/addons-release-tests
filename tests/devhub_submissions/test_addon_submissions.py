@@ -91,7 +91,7 @@ def test_submit_listed_wizard_theme_tc_id_c97500(selenium, base_url, variables, 
     assert theme_name in theme_details.addon_name_field.get_attribute("value")
     theme_details.set_addon_summary("Theme summary")
     # select a category for the theme
-    theme_details.select_theme_categories(0)
+    theme_details.theme_category_abstract.click()
     # set up a license for the theme based on 'Yes'[0]/'No'[1] options
     theme_details.select_theme_licence_sharing_rights(1)
     theme_details.select_theme_license_commercial_use(1)
@@ -251,8 +251,8 @@ def test_submit_listed_addon_tc_id_c4369(selenium, base_url, variables, wait):
     details_form.requires_payment.click()
     # reusables.scroll_into_view(selenium, details_form.categories_section)
     # set Firefox and Android categories for the addon
-    details_form.select_firefox_categories(0)
-    details_form.select_android_categories(0)
+    details_form.select_categories(0)
+    # details_form.select_android_categories(0)
     details_form.email_input_field("some-mail@mail.com")
     details_form.support_site_input_field("https://example.com")
     # set an addon license from the available list
@@ -306,8 +306,8 @@ def test_submit_addon_3mb_size_tc_id_c2274214(selenium, base_url, wait, variable
     details_form.requires_payment.click()
     # reusables.scroll_into_view(selenium, details_form.categories_section)
     # set Firefox and Android categories for the addon
-    details_form.select_firefox_categories(0)
-    details_form.select_android_categories(0)
+    details_form.select_categories(0)
+    # details_form.select_android_categories(0)
     details_form.email_input_field("some-mail@mail.com")
     details_form.support_site_input_field("https://example.com")
     # set an addon license from the available list
@@ -448,7 +448,7 @@ def test_submit_unicode_addon_tc_id_c4590(
     source = submit_addon.click_continue_upload_button()
     source.select_no_to_omit_source()
     details_form = source.continue_listed_submission()
-    details_form.select_firefox_categories(0)
+    details_form.select_categories(0)
     # set an addon license from the available list
     details_form.select_license_options[0].click()
     # submit the add-on details
