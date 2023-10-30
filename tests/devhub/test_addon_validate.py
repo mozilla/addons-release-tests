@@ -84,7 +84,7 @@ def test_validate_listed_addon_option_unsupported_format(
 
 
 @pytest.mark.sanity
-@pytest.mark.create_session("developer")
+@pytest.mark.login("developer")
 def test_validate_addon_unlisted(selenium, base_url, variables, wait):
     """Go to Devhub Addon Validate page"""
     DevHubHome(selenium, base_url).open().wait_for_page_to_load()
