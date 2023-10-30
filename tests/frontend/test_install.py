@@ -254,7 +254,6 @@ def test_about_addons_install_theme(
 
 
 @pytest.mark.sanity
-@pytest.mark.failing
 def test_about_addons_extension_updates(
     selenium, base_url, wait, firefox, firefox_notifications, variables
 ):
