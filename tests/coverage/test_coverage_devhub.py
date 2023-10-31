@@ -24,7 +24,7 @@ def submit_addon_method(selenium, base_url):
     summary = reusables.get_random_string(10)
     confirmation_page.set_addon_name(random_string)
     confirmation_page.set_addon_summary(summary)
-    confirmation_page.select_firefox_categories(1)
+    confirmation_page.select_categories(1)
     confirmation_page.select_license_options[0].click()
     confirmation_page.submit_addon()
     return f"listed-addon{random_string}"
@@ -138,7 +138,7 @@ def test_disable_an_addon_at_submission_tc_id_c1898098(selenium, base_url, wait,
     listed_addon_submission_form.clear_addon_name()
     listed_addon_submission_form.set_addon_name(random_string)
     listed_addon_submission_form.set_addon_summary(summary)
-    listed_addon_submission_form.select_firefox_categories(1)
+    listed_addon_submission_form.select_categories(1)
     listed_addon_submission_form.select_license_options[0].click()
     """Complete the form and "Submit Version"""
     listed_addon_submission_form.submit_addon()
