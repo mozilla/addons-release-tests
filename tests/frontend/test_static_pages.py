@@ -102,8 +102,8 @@ def test_about_firefox_addons_page_links(base_url, selenium, variables):
         # verify if the opened page link contains the correct domain
         page.wait_for_current_url(link_domain)
         # go back to test the next link
-        page.driver.back()
-        page.wait_for_page_to_load()
+        selenium.get(f"{base_url}/about")
+        StaticPages(selenium, base_url).wait_for_page_to_load()
 
 
 @pytest.mark.nondestructive
