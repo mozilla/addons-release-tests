@@ -430,7 +430,7 @@ def test_more_info_external_license(selenium, base_url, variables):
         (
             "mpl-2-0",
             "Mozilla Public License 2.0",
-            "https://www.mozilla.org/en-US/MPL/2.0/",
+            "https://www.mozilla.org/MPL/2.0/",
         ),
         (
             "gnu-general-2-0",
