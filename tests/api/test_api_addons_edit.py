@@ -81,7 +81,7 @@ def test_edit_listed_addon_details(base_url, session_auth):
 
 @pytest.mark.serial
 @pytest.mark.create_session("api_user")
-def test_extension_add_invalid_android_categories(base_url, session_auth):
+def test_extension_add_invalid_categories(base_url, session_auth):
     """Try to upload an addon that has invalid android categories set in the JSON payload"""
     with open("sample-addons/listed-addon.zip", "rb") as file:
         upload = requests.post(
@@ -96,12 +96,12 @@ def test_extension_add_invalid_android_categories(base_url, session_auth):
     print(upload.json())
     # get the addon uuid generated after upload
     uuid = upload.json()["uuid"]
-    invalid_android_catg = ["nature", "privacy-security", "", 123, None]
+    invalid_android_catg = ["", 123, None]
     for item in invalid_android_catg:
         payload = {
             **payloads.listed_addon_details(uuid),
-            "categories": {"android": [item], "firefox": ["bookmarks"]},
-            "slug": "invalid-android-cat",
+            "categories": [item],
+            "slug": "invalid-cat",
         }
         create_addon = requests.post(
             url=f"{base_url}{_addon_create}",
@@ -121,6 +121,47 @@ def test_extension_add_invalid_android_categories(base_url, session_auth):
             "Invalid category name" in create_addon.text
         ), f"Actual response message was {create_addon.text}"
 
+@pytest.mark.serial
+@pytest.mark.create_session("api_user")
+def test_extension_one_category_and_other_category(base_url, session_auth):
+    """Try to upload an addon that has invalid android categories set in the JSON payload"""
+    with open("sample-addons/listed-addon.zip", "rb") as file:
+        upload = requests.post(
+            url=f"{base_url}{_upload}",
+            headers={"Authorization": f"Session {session_auth}"},
+            files={"upload": file},
+            data={"channel": "listed"},
+        )
+    upload.raise_for_status()
+    # sleep to allow the first request to be processed
+    time.sleep(3)
+    print(upload.json())
+    # get the addon uuid generated after upload
+    uuid = upload.json()["uuid"]
+    invalid_android_catg = ["Appearance"]
+    for item in invalid_android_catg:
+        payload = {
+            **payloads.listed_addon_details(uuid),
+            "categories": ["Other", item],
+            "slug": "invalid-cat",
+        }
+        create_addon = requests.post(
+            url=f"{base_url}{_addon_create}",
+            headers={
+                "Authorization": f"Session {session_auth}",
+                "Content-Type": "application/json",
+            },
+            data=json.dumps(payload),
+        )
+        print(
+            f'For android category "{item}": Response status is {create_addon.status_code}; {create_addon.text}\n'
+        )
+        assert (
+            create_addon.status_code == 400
+        ), f"Actual status code was {create_addon.status_code}"
+        assert (
+            "Invalid category name" in create_addon.text
+        ), f"Actual response message was {create_addon.text}"
 
 @pytest.mark.serial
 @pytest.mark.create_session("api_user")
