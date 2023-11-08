@@ -10,10 +10,7 @@ minimal_manifest = {
 def listed_addon_minimal(uuid):
     """This holds only the strictly necessary properties required for successful submissions"""
     body = {
-        'categories': {
-            'android': ['photos-media', 'shopping'],
-            'firefox': ['appearance', 'download-management'],
-        },
+        'categories': ['appearance', 'download-management'],
         'version': {
             'license': 'all-rights-reserved',
             'upload': uuid,
@@ -25,10 +22,7 @@ def listed_addon_minimal(uuid):
 
 def listed_addon_details(uuid):
     body = {
-        'categories': {
-            'android': ['experimental', 'performance'],
-            'firefox': ['bookmarks', 'privacy-security'],
-        },
+        'categories': ['bookmarks', 'privacy-security'],
         'slug': 'my_sluggish_slug',
         'default_locale': 'en-US',
         'name': {
@@ -93,10 +87,7 @@ def listed_addon_details(uuid):
 
 
 edit_addon_details = {
-    'categories': {
-        'android': ['photos-media', 'shopping'],
-        'firefox': ['appearance', 'download-management'],
-    },
+    'categories': ['appearance', 'download-management'],
     'slug': 'new_sluggish_slug',
     'name': {
         'de': 'DE Name edited',
@@ -199,9 +190,7 @@ def new_version_details(uuid):
 def lang_tool_details(uuid):
     body = {
         'slug': f'langpack-{reusables.get_random_string(10)}',
-        'categories': {
-            'firefox': ['general'],
-        },
+        'categories': ['general'],
         'version': {'license': 'MPL-2.0', 'upload': uuid, 'compatibility': ['firefox']},
     }
     return body
@@ -225,9 +214,7 @@ custom_license = {
 
 def theme_details(uuid, theme_license):
     body = {
-        "categories": {
-            "firefox": ['nature'],
-        },
+        "categories": ['nature'],
         "summary": {
             "en-US": "theme summary api submissions"
         },

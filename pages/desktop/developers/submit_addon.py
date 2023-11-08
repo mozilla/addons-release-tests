@@ -82,7 +82,7 @@ class SubmitAddon(Page):
     )
     _create_theme_button_locator = (By.ID, "wizardlink")
     _submit_file_button_locator = (By.ID, "submit-upload-file-finish")
-    _addon_validation_success_locator = (By.CLASS_NAME, "bar-success")
+    _addon_validation_success_locator = (By.CSS_SELECTOR, "#upload-status-bar.bar-success")
     _validation_fail_bar_locator = (By.CLASS_NAME, "bar-fail")
     _validation_support_link_locator = (By.CSS_SELECTOR, "#upload-status-results a")
     _validation_failed_message_locator = (
@@ -611,14 +611,14 @@ class ListedAddonSubmissionForm(Page):
     _is_experimental_checkbox_locator = (By.ID, "id_is_experimental")
     _requires_payment_checkbox_locator = (By.ID, "id_requires_payment")
     _categories_section_locator = (By.ID, "addon-categories-edit")
-    _firefox_categories_locator = (
+    _categories_locator = (
         By.CSS_SELECTOR,
         ".addon-app-cats:nth-of-type(1) > ul input",
     )
-    _android_categories_locator = (
-        By.CSS_SELECTOR,
-        ".addon-app-cats:nth-of-type(2) > ul input",
-    )
+    # _android_categories_locator = (
+    #     By.CSS_SELECTOR,
+    #     ".addon-app-cats:nth-of-type(2) > ul input",
+    # )
     _email_input_field_locator = (By.ID, "id_support_email_0")
     _support_site_input_field_locator = (By.ID, "id_support_url_0")
     _license_options_locator = (By.CLASS_NAME, "license")
@@ -637,7 +637,8 @@ class ListedAddonSubmissionForm(Page):
         ".submission-buttons button:nth-child(2)",
     )
     # _theme_categories_locator = (By.CSS_SELECTOR, '#addon-categories-edit > ul input') - temporary not available
-    _theme_categories_locator = (By.CSS_SELECTOR, "#id_category input")
+    _theme_categories_locator = (By.CSS_SELECTOR, ".addon-app-cats")
+    _theme_category_abstract_locator = (By.CSS_SELECTOR, "#id_categories > div:nth-child(1) > label")
     _theme_licence_sharing_rights_locator = (
         By.CSS_SELECTOR,
         "#cc-chooser ul:nth-of-type(1) input",
@@ -665,6 +666,10 @@ class ListedAddonSubmissionForm(Page):
 
     def clear_addon_name(self):
         self.find_element(*self._addon_name_field_locator).clear()
+
+    @property
+    def theme_category_abstract(self):
+        return self.find_element(*self._theme_category_abstract_locator)
 
     @property
     def addon_name_field(self):
@@ -717,11 +722,11 @@ class ListedAddonSubmissionForm(Page):
         )
         return self.find_element(*self._categories_section_locator)
 
-    def select_firefox_categories(self, count):
-        self.find_elements(*self._firefox_categories_locator)[count].click()
+    def select_categories(self, count):
+        self.find_elements(*self._categories_locator)[count].click()
 
-    def select_android_categories(self, count):
-        self.find_elements(*self._android_categories_locator)[count].click()
+    # def select_android_categories(self, count):
+    #     self.find_elements(*self._android_categories_locator)[count].click()
 
     def select_theme_categories(self, count):
         self.find_elements(*self._theme_categories_locator)[count].click()
@@ -929,5 +934,4 @@ class SubmissionConfirmationPage(Page):
 
     @property
     def generated_theme_preview(self):
-        self.wait.until(EC.visibility_of_element_located(self._theme_preview_locator))
         return self.find_element(*self._theme_preview_locator)
