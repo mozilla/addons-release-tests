@@ -107,14 +107,14 @@ class User(Base):
             By.CSS_SELECTOR,
             ".ReportUserAbuse-show-more",
         )
-        _abuse_report_form_header_locator = (By.CSS_SELECTOR, ".ReportUserAbuse-header")
-        _abuse_report_form_help_text = (
+        _abuse_report_form_header_locator = (By.CSS_SELECTOR, ".Card-header-text")
+        _abuse_report_form_send_feedback_text = (
             By.CSS_SELECTOR,
-            ".ReportUserAbuse-form p:nth-child(2)",
+            "section.Card:nth-child(2) > div:nth-child(2) > h3",
         )
-        _abuse_report_form_additional_help_text = (
+        _abuse_report_form_provide_more_information_help_text = (
             By.CSS_SELECTOR,
-            ".ReportUserAbuse-form p:nth-child(3)",
+            "section.Card:nth-child(3) > div:nth-child(2) > p",
         )
         _abuse_report_textarea_locator = (
             By.CSS_SELECTOR,
@@ -126,16 +126,26 @@ class User(Base):
         )
         _abuse_report_submit_disabled_button_locator = (
             By.CSS_SELECTOR,
-            ".DismissibleTextForm-submit.Button--disabled",
+            ".Button--disabled",
         )
         _abuse_report_submit_button_locator = (
             By.CSS_SELECTOR,
-            ".DismissibleTextForm-submit",
+            ".FeedbackForm-submit-button",
         )
         _abuse_report_confirm_message_locator = (
             By.CSS_SELECTOR,
-            ".ReportUserAbuse--report-sent p:nth-child(2)",
+            ".FeedbackForm-success-first-paragraph",
         )
+        _abuse_report_spam_option_locator = (
+            By.CSS_SELECTOR,
+            "#feedbackCategoryfeedback_spam",
+        )
+
+        def click_abuse_report_spam_option(self):
+            self.wait.until(
+                EC.visibility_of_element_located(self._abuse_report_spam_option_locator)
+            )
+            return self.find_element(*self._abuse_report_spam_option_locator).click()
 
         @property
         def user_profile_icon_placeholder(self):
@@ -353,9 +363,6 @@ class User(Base):
                 EC.element_to_be_clickable(self._user_abuse_report_button_locator)
             )
             self.find_element(*self._user_abuse_report_button_locator).click()
-            self.wait.until(
-                EC.element_to_be_clickable(self._abuse_report_textarea_locator)
-            )
 
         @property
         def abuse_report_form_header(self):
@@ -365,20 +372,20 @@ class User(Base):
             return self.find_element(*self._abuse_report_form_header_locator).text
 
         @property
-        def abuse_report_form_help_text(self):
+        def abuse_report_form_send_feedback_text(self):
             self.wait.until(
-                EC.visibility_of_element_located(self._abuse_report_form_help_text)
+                EC.visibility_of_element_located(self._abuse_report_form_send_feedback_text)
             )
-            return self.find_element(*self._abuse_report_form_help_text).text
+            return self.find_element(*self._abuse_report_form_send_feedback_text).text
 
         @property
-        def abuse_report_form_additional_help_text(self):
+        def abuse_report_form_provide_more_information_help_text(self):
             self.wait.until(
                 EC.visibility_of_element_located(
-                    self._abuse_report_form_additional_help_text
+                    self._abuse_report_form_provide_more_information_help_text
                 )
             )
-            return self.find_element(*self._abuse_report_form_additional_help_text).text
+            return self.find_element(*self._abuse_report_form_provide_more_information_help_text).text
 
         def user_abuse_report_input_text(self, value):
             self.wait.until(

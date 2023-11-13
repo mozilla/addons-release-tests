@@ -636,25 +636,22 @@ def test_user_abuse_report(base_url, selenium, variables, wait):
     selenium.get(f"{base_url}/user/{developer}")
     user = User(selenium, base_url).wait_for_user_to_load()
     user.view.click_user_abuse_report()
+    # checks that the submit button is disabled if no text is inserted
+    assert user.view.abuse_report_submit_disabled.is_displayed()
     # checks the information present in the abuse report form before submission
     assert (
         variables["user_abuse_initial_form_header"]
         in user.view.abuse_report_form_header
     )
     assert (
-        variables["user_abuse_form_initial_help_text"]
-        in user.view.abuse_report_form_help_text
+        variables["user_abuse_form_send_feedback_text"]
+        in user.view.abuse_report_form_send_feedback_text
     )
     assert (
-        variables["user_abuse_form_additional_help_text"]
-        in user.view.abuse_report_form_additional_help_text
+        variables["user_abuse_form_provide_more_information_help_text"]
+        in user.view.abuse_report_form_provide_more_information_help_text
     )
-    # click on Cancel to close the form
-    user.view.cancel_abuse_report_form()
-    user.view.click_user_abuse_report()
-    # checks that the submit button is disabled if no text is inserted
-    assert user.view.abuse_report_submit_disabled.is_displayed()
-    user.view.user_abuse_report_input_text(variables["user_abuse_input_text"])
+    user.view.click_abuse_report_spam_option()
     user.view.submit_user_abuse_report()
     # verifies the abuse report form after submission
     wait.until(
