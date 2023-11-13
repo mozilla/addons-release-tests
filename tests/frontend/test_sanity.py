@@ -274,7 +274,7 @@ def test_detail_page_taar_recommendations(selenium, base_url):
     until results are received or, finally, fail the test with the assumption that TAAR is broken
     """
     potential_addons = [
-        "enhancer-for-youtube",
+        "youtube-addon",
         "adblocker-ultimate",
         "facebook-container",
         "darkreader",

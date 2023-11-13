@@ -845,11 +845,6 @@ class Detail(Base):
 
         @property
         def addon_recommendations_header(self):
-            self.wait.until(
-                EC.visibility_of_element_located(
-                    self._recommendations_card_header_locator
-                )
-            )
             return self.find_element(*self._recommendations_card_header_locator).text
 
         @property
