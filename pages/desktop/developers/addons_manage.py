@@ -61,6 +61,5 @@ class ManageAddons(Base):
             return self.find_element(*self._addon_name_locator).text
 
         def click_addon_name(self):
-            self.wait.until(EC.element_to_be_clickable(self._addon_edit_link_locator))
             self.find_element(*self._addon_edit_link_locator).click()
             return EditAddon(self.driver, self.page.base_url).wait_for_page_to_load()
