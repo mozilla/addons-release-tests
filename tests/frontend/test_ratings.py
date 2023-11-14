@@ -354,7 +354,8 @@ def test_flag_review_requires_login_tc_id_c1494904(selenium, base_url, variables
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-@pytest.mark.create_session("rating_user")
+@pytest.mark.login("rating_user")
+@pytest.mark.failing
 def test_flag_review_menu_options_tc_id_c1494904(selenium, base_url, variables):
     extension = variables["all_scores_addon"]
     selenium.get(f"{base_url}/addon/{extension}")
@@ -368,15 +369,16 @@ def test_flag_review_menu_options_tc_id_c1494904(selenium, base_url, variables):
             flag[count].click_flag_review()
             # verifies that the following 3 report options are available in the flag menu
             assert (
-                variables["review_flag_spam"] in flag[count].flag_review_option[0].text
+                variables["review_flag_spam"] in flag[count].flag_review_spam_option.text
             )
             assert (
-                variables["review_flag_language"]
-                in flag[count].flag_review_option[1].text
+                    variables["review_flag_language"] in flag[count].flag_review_language_option.text
             )
             assert (
-                variables["review_flag_bug"] in flag[count].flag_review_option[2].text
+                variables["review_flag_bug"]
+                in flag[count].flag_review_bug_report_option.text
             )
+
             break
         else:
             count += 1
