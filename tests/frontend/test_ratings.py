@@ -354,8 +354,7 @@ def test_flag_review_requires_login_tc_id_c1494904(selenium, base_url, variables
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-@pytest.mark.login("rating_user")
-@pytest.mark.failing
+@pytest.mark.create_session("rating_user")
 def test_flag_review_menu_options_tc_id_c1494904(selenium, base_url, variables):
     extension = variables["all_scores_addon"]
     selenium.get(f"{base_url}/addon/{extension}")
@@ -677,6 +676,7 @@ def test_rating_card_average_stars(selenium, base_url, variables):
         "Multiple words ban",
     ],
 )
+@pytest.mark.failing
 def test_banned_words_in_user_reviews(
     selenium, base_url, variables, denied_words, error_message
 ):
