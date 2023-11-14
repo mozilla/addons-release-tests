@@ -676,7 +676,6 @@ def test_rating_card_average_stars(selenium, base_url, variables):
         "Multiple words ban",
     ],
 )
-@pytest.mark.failing
 def test_banned_words_in_user_reviews(
     selenium, base_url, variables, denied_words, error_message
 ):
