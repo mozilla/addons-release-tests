@@ -113,6 +113,9 @@ class Reviews(Base):
         )
         _flag_review_button_locator = (By.CSS_SELECTOR, ".FlagReviewMenu-menu")
         _flag_review_menu_options = (By.CSS_SELECTOR, ".TooltipMenu-inner button")
+        _flag_review_spam_option = (By.CSS_SELECTOR, ".FlagReviewMenu-flag-spam-item")
+        _flag_review_language_option = (By.CSS_SELECTOR, ".FlagReviewMenu-flag-language-item")
+        _flag_review_bug_report_option = (By.CSS_SELECTOR, ".FlagReviewMenu-flag-bug-support-item")
         _flag_review_success_text = (By.CSS_SELECTOR, ".TooltipMenu-inner li")
         _flag_review_login_button = (
             By.CSS_SELECTOR,
@@ -165,6 +168,18 @@ class Reviews(Base):
         @property
         def flag_review_option(self):
             return self.find_elements(*self._flag_review_menu_options)
+
+        @property
+        def flag_review_spam_option(self):
+            return self.find_element(*self._flag_review_spam_option)
+
+        @property
+        def flag_review_language_option(self):
+            return self.find_element(*self._flag_review_language_option)
+
+        @property
+        def flag_review_bug_report_option(self):
+            return self.find_element(*self._flag_review_bug_report_option)
 
         def select_flag_option(self, count):
             self.wait.until(
