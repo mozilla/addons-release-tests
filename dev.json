@@ -45,6 +45,7 @@
   "non_recommended_addon": "non-recommended",
   "non_recommended_addon_frontend": "privacy-badger-stage",
   "addon_version_install": "both-desktop-android",
+  "addon_size_extension": "ghostery",
 
   "initial_text_input": "original text",
   "edited_text_input": "edited text",

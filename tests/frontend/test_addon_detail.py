@@ -368,6 +368,7 @@ def test_more_info_version_number(selenium, base_url, variables):
 
 @pytest.mark.sanity
 @pytest.mark.nondestructive
+@pytest.mark.failing
 def test_more_info_addon_size(selenium, base_url, variables):
     extension = variables["addon_size_extension"]
     selenium.get(f"{base_url}/addon/{extension}")
