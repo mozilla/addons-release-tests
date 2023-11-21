@@ -107,7 +107,8 @@ class User(Base):
             By.CSS_SELECTOR,
             ".ReportUserAbuse-show-more",
         )
-        _abuse_report_form_header_locator = (By.CSS_SELECTOR, ".Card-header-text")
+        _abuse_report_confirmed_header_locator = (By.XPATH, '//div[contains(text(), "Report submitted")]')
+
         _abuse_report_form_send_feedback_text = (
             By.CSS_SELECTOR,
             "section.Card:nth-child(2) > div:nth-child(2) > h3",
@@ -140,12 +141,43 @@ class User(Base):
             By.CSS_SELECTOR,
             "#feedbackCategoryfeedback_spam",
         )
+        _abuse_report_username_locator = (
+            By.CSS_SELECTOR, ".UserFeedback-header-username"
+        )
+        _abuse_report_form_header_locator = (
+            By.CSS_SELECTOR, ".Card-header-text"
+        )
+        _abuse_report_form_contains_violent_locator = (
+            By.ID, "feedbackCategoryhateful_violent_deceptive"
+        )
+        _abuse_report_form_feedback_anonymous_locator = (
+            By.ID, "feedbackAnonymous"
+        )
+
+        def click_abuse_form_feedback_anonymous_locator(self):
+            self.wait.until(
+                EC.visibility_of_element_located(self._abuse_report_form_feedback_anonymous_locator)
+            )
+            return self.find_element(*self._abuse_report_form_feedback_anonymous_locator).click()
+
+        def click_abuse_report_contains_violent(self):
+            self.wait.until(
+                EC.visibility_of_element_located(self._abuse_report_form_contains_violent_locator)
+            )
+            return self.find_element(*self._abuse_report_form_contains_violent_locator).click()
 
         def click_abuse_report_spam_option(self):
             self.wait.until(
                 EC.visibility_of_element_located(self._abuse_report_spam_option_locator)
             )
             return self.find_element(*self._abuse_report_spam_option_locator).click()
+
+        @property
+        def abuse_report_username(self):
+            self.wait.until(
+                EC.visibility_of_element_located(self._abuse_report_username_locator)
+            )
+            return self.find_element(*self._abuse_report_username_locator)
 
         @property
         def user_profile_icon_placeholder(self):
@@ -372,6 +404,13 @@ class User(Base):
             return self.find_element(*self._abuse_report_form_header_locator).text
 
         @property
+        def abuse_report_confirmed_form_header(self):
+            self.wait.until(
+                EC.visibility_of_element_located(self._abuse_report_confirmed_header_locator)
+            )
+            return self.find_element(*self._abuse_report_confirmed_header_locator).text
+
+        @property
         def abuse_report_form_send_feedback_text(self):
             self.wait.until(
                 EC.visibility_of_element_located(self._abuse_report_form_send_feedback_text)
@@ -412,23 +451,10 @@ class User(Base):
             return self.find_element(*self._abuse_report_submit_disabled_button_locator)
 
         def submit_user_abuse_report(self):
-            self.wait.until(
-                EC.element_to_be_clickable(self._abuse_report_submit_button_locator)
-            )
             self.find_element(*self._abuse_report_submit_button_locator).click()
-            self.wait.until(
-                EC.invisibility_of_element_located(
-                    self._abuse_report_submit_button_locator
-                )
-            )
 
         @property
         def user_abuse_confirmation_message(self):
-            self.wait.until(
-                EC.visibility_of_element_located(
-                    self._abuse_report_confirm_message_locator
-                )
-            )
             return self.find_element(*self._abuse_report_confirm_message_locator).text
 
     class EditProfile(Region):
