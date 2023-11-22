@@ -51,10 +51,10 @@
   "all_scores_addon": "all_scores_addon",
   "dev_reply_review": "woonken-redpar-worison",
   "confirm_delete_message": "Are you sure you want to delete",
-  "review_flag_spam": "This is spam",
+  "review_flag_spam": "Spam",
   "review_flagged_for_spam": "Flagged as spam",
-  "review_flag_language": "This contains inappropriate language",
-  "review_flag_bug": "This is a bug report or support request",
+  "review_flag_language": "Content that is illegal or that violates AMO's content policies",
+  "review_flag_bug": "Misplaced bug report or support request",
 
   "display_name": "reusable_user",
   "homepage": "https://mozilla.org/",

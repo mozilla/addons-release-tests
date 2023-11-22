@@ -331,25 +331,25 @@ def test_flag_missing_for_empty_review_tc_id_c1494904(selenium, base_url, variab
             with pytest.raises(NoSuchElementException):
                 user_review.find_element(By.CSS_SELECTOR, ".FlagReviewMenu-menu")
 
-
-@pytest.mark.serial
-@pytest.mark.nondestructive
-def test_flag_review_requires_login_tc_id_c1494904(selenium, base_url, variables):
-    extension = variables["all_scores_addon"]
-    selenium.get(f"{base_url}/addon/{extension}")
-    addon = Detail(selenium, base_url).wait_for_page_to_load()
-    reviews = addon.ratings.click_all_reviews_link()
-    review_item = reviews.review_items
-    # the 'Flag' menu is displayed only for reviews with text
-    # iterating through the list of reviews until a review with text is found
-    count = 0
-    while count <= len(reviews.reviews_list):
-        if len(review_item[count].review_body) > 0:
-            review_item[count].click_flag_review()
-            assert review_item[count].flag_review_login_button.is_displayed()
-            break
-        else:
-            count += 1
+#Removed only on dev due to the changes made. Now flag reviews can be done without login
+# @pytest.mark.serial
+# @pytest.mark.nondestructive
+# def test_flag_review_requires_login_tc_id_c1494904(selenium, base_url, variables):
+#     extension = variables["all_scores_addon"]
+#     selenium.get(f"{base_url}/addon/{extension}")
+#     addon = Detail(selenium, base_url).wait_for_page_to_load()
+#     reviews = addon.ratings.click_all_reviews_link()
+#     review_item = reviews.review_items
+#     # the 'Flag' menu is displayed only for reviews with text
+#     # iterating through the list of reviews until a review with text is found
+#     count = 0
+#     while count <= len(reviews.reviews_list):
+#         if len(review_item[count].review_body) > 0:
+#             review_item[count].click_flag_review()
+#             assert review_item[count].flag_review_login_button.is_displayed()
+#             break
+#         else:
+#             count += 1
 
 
 @pytest.mark.serial

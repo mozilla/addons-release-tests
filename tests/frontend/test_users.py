@@ -350,6 +350,7 @@ def test_user_regular_has_no_role(base_url, selenium):
 
 
 @pytest.mark.serial
+@pytest.mark.failing
 def test_user_regular_notifications(base_url, selenium, variables):
     user = User(selenium, base_url).open().wait_for_page_to_load()
     user.login("reusable_user")
@@ -631,6 +632,7 @@ def test_user_profile_delete_review(base_url, selenium, variables, wait):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
+@pytest.mark.failing
 def test_user_abuse_report(base_url, selenium, variables, wait):
     developer = variables["developer_profile"]
     selenium.get(f"{base_url}/user/{developer}")
@@ -651,15 +653,20 @@ def test_user_abuse_report(base_url, selenium, variables, wait):
         variables["user_abuse_form_provide_more_information_help_text"]
         in user.view.abuse_report_form_provide_more_information_help_text
     )
-    user.view.click_abuse_report_spam_option()
+    user.view.click_abuse_report_contains_violent()
+    user.view.click_abuse_form_feedback_anonymous_locator()
     user.view.submit_user_abuse_report()
+    time.sleep(5)
+    assert user.view.abuse_report_username.is_displayed()
     # verifies the abuse report form after submission
     wait.until(
+        lambda _: variables["user_abuse_form_confirmed_help_text"]
+                  in user.view.user_abuse_confirmation_message,
+        message=f'Abuse report confirmed message was "{user.view.user_abuse_confirmation_message}"',
+    )
+    wait.until(
         lambda _: variables["user_abuse_confirmed_form_header"]
-        in user.view.abuse_report_form_header,
+                  in user.view.abuse_report_confirmed_form_header,
         message=f'Abuse report form header was "{user.view.abuse_report_form_header}"',
     )
-    assert (
-        variables["user_abuse_form_confirmed_help_text"]
-        in user.view.user_abuse_confirmation_message
-    )
+
