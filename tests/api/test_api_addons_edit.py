@@ -202,7 +202,7 @@ def test_extension_add_invalid_firefox_categories(base_url, session_auth):
             create_addon.status_code == 400
         ), f"Actual status code was {create_addon.status_code}"
         assert (
-            "Invalid category name" in create_addon.text
+            "Invalid category name." in create_addon.text
         ), f"Actual response message was {create_addon.text}"
 
 

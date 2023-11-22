@@ -78,7 +78,7 @@ def listed_addon_details(uuid):
                 'fr': 'FR Version notes added in API at addon creation time',
             },
             'compatibility': {
-                'android': {'min': '120.0a1', 'max': '*'},
+                'android': {'min': '121.0a1', 'max': '*'},
                 'firefox': {'min': '58.0', 'max': '100.*'},
             },
         },
@@ -164,7 +164,7 @@ edit_version_details = {
         'ro': 'Edited FR Version notes added in API at addon creation time',
     },
     'compatibility': {
-        'android': {'min': '120.0a1', 'max': '*'},
+        'android': {'min': '121.0a1', 'max': '*'},
         'firefox': {'min': '89.0', 'max': '100.*'},
     },
 }
@@ -180,7 +180,7 @@ def new_version_details(uuid):
             "fr": "New Version FR notes added in API at addon creation time",
         },
         "compatibility": {
-            "android": {"min": "120.0a1", "max": "*"},
+            "android": {"min": "121.0a1", "max": "*"},
             "firefox": {"min": "70.0a1", "max": "*"},
         },
     }

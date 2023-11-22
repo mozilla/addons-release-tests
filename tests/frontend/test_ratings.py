@@ -371,11 +371,11 @@ def test_flag_review_menu_options_tc_id_c1494904(selenium, base_url, variables):
                 variables["review_flag_spam"] in flag[count].flag_review_option[0].text
             )
             assert (
-                variables["review_flag_language"]
+                variables["review_flag_bug"]
                 in flag[count].flag_review_option[1].text
             )
             assert (
-                variables["review_flag_bug"] in flag[count].flag_review_option[2].text
+                variables["review_flag_language"] in flag[count].flag_review_option[2].text
             )
             break
         else:

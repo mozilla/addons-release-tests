@@ -701,7 +701,7 @@ def test_edit_version_invalid_compatibility_format(base_url, session_auth, value
         (
             ["android", "firefox"],
             {
-                "android": {"min": "120.0a1", "max": "*"},
+                "android": {"min": "121.0a1", "max": "*"},
                 "firefox": {"min": "42.0", "max": "*"},
             },
         ),
