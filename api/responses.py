@@ -2,8 +2,8 @@
 abuse_report_unauthenticated_response = {
     'message': 'test from the API,both',
     'reporter': None,
-    'reporter_name': None,
-    'reporter_email': None,
+    'reporter_name': "A name",
+    'reporter_email': "reporter@test.com",
     'addon': {
         'guid': '{463b483d-6150-43c9-9b52-a3d08d5ecd3a}',
         'id': 1018565,
@@ -18,10 +18,10 @@ abuse_report_unauthenticated_response = {
     'addon_summary': 'Random summary',
     'addon_version': '1.1',
     'app': 'firefox',
-    'appversion': None,
+    'appversion': "1.1",
     'client_id': '06ecc8cef773a56ce40baa1ca1237184ea2c6a6a7f0485eda1ea7f4b5c317c65',
     'install_date': '2023-10-10T15:00:14Z',
-    'lang': None,
+    'lang': "en-Us",
     'operating_system': 'windows',
     'operating_system_version': '10',
     'reason': 'settings',
@@ -37,8 +37,8 @@ abuse_report_authenticated_response = {
         "url": "https://addons.allizom.org/en-US/firefox/user/11688807/",
         "username": "anonymous-c2f376812af322105f986b81fcbb5113"
     },
-    "reporter_name": None,
-    "reporter_email": None,
+    "reporter_name": "A name",
+    "reporter_email": "reporter@test.com",
     "addon": {
         "guid": "{463b483d-6150-43c9-9b52-a3d08d5ecd3a}",
         "id": 1018565,
@@ -53,10 +53,10 @@ abuse_report_authenticated_response = {
     "addon_summary": "Random summary",
     "addon_version": "1.1",
     "app": "firefox",
-    "appversion": None,
+    "appversion": "1.1",
     "client_id": "06ecc8cef773a56ce40baa1ca1237184ea2c6a6a7f0485eda1ea7f4b5c317c65",
     "install_date": "2023-10-10T15:00:14Z",
-    "lang": None,
+    "lang": "en-Us",
     "operating_system": "windows",
     "operating_system_version": "10",
     "reason": "settings",
@@ -66,7 +66,12 @@ abuse_report_authenticated_response = {
 
 abuse_report_minimal_details = {
     "message": "test from the API,both",
-    "reporter": None,
+    "reporter": {
+        "id": 11688807,
+        "name": "api_user",
+        "url": "https://addons.allizom.org/en-US/firefox/user/11688807/",
+        "username": "anonymous-c2f376812af322105f986b81fcbb5113"
+    },
     "reporter_name": None,
     "reporter_email": None,
     "addon": {
