@@ -232,3 +232,55 @@ author_stats = {
     "listed": False,
     "position": 0
 }
+
+abuse_report_full_body = {
+        "addon": "{463b483d-6150-43c9-9b52-a3d08d5ecd3a}",
+        "message": "test from the API,both",
+        "reason": "settings",
+        "install_date": "2023-10-10T15:00:14Z",
+        "addon_name": "automation-abuse-report-add-on",
+        "report_entry_point": "amo",
+        "addon_install_method": "link",
+        "addon_install_origin": "https://addons-server.readthedocs.io/en/latest/topics/api/abuse.html",
+        "addon_install_source": "amo",
+        "addon_install_source_url": "https://addons.allizom.org/en-US/firefox/addon/automation-abuse-report-add-on/",
+        "addon_signature": "signed",
+        "addon_summary": "Random summary",
+        "addon_version": "1.1",
+        "app": "firefox",
+        "appversion": "1.1",
+        "lang": "en-Us",
+        "client_id": "06ecc8cef773a56ce40baa1ca1237184ea2c6a6a7f0485eda1ea7f4b5c317c65",
+        "operating_system": "windows",
+        "operating_system_version": "10",
+        "location": "amo",
+        "reporter_name": "A name",
+        "reporter_email": "reporter@test.com"
+}
+
+def abuse_report_body(addon_install_method, addon_install_source, reason, addon_signature, report_entry_point, location):
+    body = {
+        "addon": "{463b483d-6150-43c9-9b52-a3d08d5ecd3a}",
+        "message": "test from the API,both",
+        "reason": reason,
+        "install_date": "2023-10-10T15:00:14Z",
+        "addon_name": "automation-abuse-report-add-on",
+        "report_entry_point": report_entry_point,
+        "addon_install_method": addon_install_method,
+        "addon_install_origin": "https://addons-server.readthedocs.io/en/latest/topics/api/abuse.html",
+        "addon_install_source": addon_install_source,
+        "addon_install_source_url": "https://addons-dev.allizom.org/en-US/firefox/addon/desktop_android_addon/",
+        "addon_signature": addon_signature,
+        "addon_summary": "Listed extension for release testing",
+        "addon_version": "10.151",
+        "app": "firefox",
+        "appversion": "118.0.1",
+        "lang": "en-US",
+        "client_id": "06ecc8cef773a56ce40baa1ca1237184ea2c6a6a7f0485eda1ea7f4b5c317c65",
+        "operating_system": "windows",
+        "operating_system_version": "10",
+        "location": location,
+        "reporter_name": "A name",
+        "reporter_email": "reporter@test.com"
+    }
+    return body
