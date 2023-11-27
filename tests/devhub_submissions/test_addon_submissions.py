@@ -10,7 +10,7 @@ from scripts import reusables
 from api import api_helpers, payloads
 
 
-
+@pytest.mark.other
 def test_devhub_developer_agreement_page_contents(selenium, base_url, variables, wait):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     page.devhub_login("regular_user")
@@ -38,7 +38,7 @@ def test_devhub_developer_agreement_page_contents(selenium, base_url, variables,
     page = DevHubHome(selenium, base_url).wait_for_page_to_load()
     assert page.page_logo.is_displayed()
 
-
+@pytest.mark.other
 def test_devhub_developer_agreement_page_links(selenium, base_url):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     page.devhub_login("regular_user")
@@ -55,7 +55,7 @@ def test_devhub_developer_agreement_page_links(selenium, base_url):
     # verify that the Dev Account info link opens an Extension Workshop article page
     dist_agreement.click_dev_accounts_info_link()
 
-
+@pytest.mark.other
 def test_devhub_developer_agreement_checkboxes(selenium, base_url):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     page.devhub_login("regular_user")
@@ -69,6 +69,7 @@ def test_devhub_developer_agreement_checkboxes(selenium, base_url):
 
 
 @pytest.mark.sanity
+@pytest.mark.other
 def test_submit_listed_wizard_theme_tc_id_c97500(selenium, base_url, variables, wait, delete_themes):
     """A test that checks a straight-forward theme submission with the devhub wizard"""
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
@@ -108,6 +109,7 @@ def test_submit_listed_wizard_theme_tc_id_c97500(selenium, base_url, variables, 
 
 @pytest.mark.sanity
 @pytest.mark.serial
+@pytest.mark.addon
 # The first test starts the browser with a normal login in order to store de session cookie
 @pytest.mark.login("submissions_user")
 def test_submit_unlisted_addon_tc_id_c14886(selenium, base_url, variables, wait):
@@ -135,6 +137,7 @@ def test_submit_unlisted_addon_tc_id_c14886(selenium, base_url, variables, wait)
 
 
 @pytest.mark.create_session("submissions_user")
+@pytest.mark.other
 def test_addon_distribution_page_contents_tc_id_c14882(selenium, base_url, variables, wait):
     """Check the elements present on devhub addon distribution page (where the user selects
     the listed or unlisted channels to upload their addon"""
@@ -171,6 +174,7 @@ def test_addon_distribution_page_contents_tc_id_c14882(selenium, base_url, varia
 
 
 @pytest.mark.create_session("submissions_user")
+@pytest.mark.other
 def test_devhub_upload_extension_page_contents(selenium, base_url, wait, variables):
     """Verify the elements present on the upload file page, where the user
     uploads and validates an addon file"""
@@ -185,6 +189,7 @@ def test_devhub_upload_extension_page_contents(selenium, base_url, wait, variabl
 
 
 @pytest.mark.create_session("submissions_user")
+@pytest.mark.other
 def test_upload_unsupported_file_validation_error(selenium, base_url, wait):
     """Verify validation results for errors triggered by unsupported file uploads"""
     selenium.get(f"{base_url}/developers/addon/submit/upload-listed")
@@ -203,6 +208,7 @@ def test_upload_unsupported_file_validation_error(selenium, base_url, wait):
 
 
 @pytest.mark.serial
+@pytest.mark.addon
 @pytest.mark.create_session("submissions_user")
 def test_verify_first_version_autoapproval(selenium, base_url, variables, wait):
     """This test will wait (for max 5 minutes) until the status of an add-on changes to approved"""
@@ -216,6 +222,7 @@ def test_verify_first_version_autoapproval(selenium, base_url, variables, wait):
 
 @pytest.mark.sanity
 @pytest.mark.serial
+@pytest.mark.addon
 @pytest.mark.create_session("submissions_user")
 def test_submit_listed_addon_tc_id_c4369(selenium, base_url, variables, wait):
     """Test covering the process of uploading a listed addon"""
@@ -272,6 +279,7 @@ def test_submit_listed_addon_tc_id_c4369(selenium, base_url, variables, wait):
 
 @pytest.mark.sanity
 @pytest.mark.serial
+@pytest.mark.addon
 @pytest.mark.create_session("submissions_user")
 def test_submit_addon_3mb_size_tc_id_c2274214(selenium, base_url, wait, variables):
     """Test covering the process of uploading a listed addon with 3-4 mb in size"""
@@ -326,6 +334,7 @@ def test_submit_addon_3mb_size_tc_id_c2274214(selenium, base_url, wait, variable
 
 
 @pytest.mark.serial
+@pytest.mark.addon
 @pytest.mark.create_session("submissions_user")
 def test_addon_last_modified_date(selenium, base_url):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
@@ -341,6 +350,7 @@ def test_addon_last_modified_date(selenium, base_url):
 
 @pytest.mark.serial
 @pytest.mark.create_session("submissions_user")
+@pytest.mark.addon
 def test_submit_mixed_addon_versions_tc_id_c14981(selenium, base_url, variables, wait):
     """Uploads an unlisted version to an exiting listed addon"""
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
@@ -372,6 +382,7 @@ def test_submit_mixed_addon_versions_tc_id_c14981(selenium, base_url, variables,
 
 @pytest.mark.sanity
 @pytest.mark.serial
+@pytest.mark.addon
 def test_verify_new_unlisted_version_autoapproval_tc_id_C4372(selenium, base_url, variables):
     """Uploads a new version to an existing addon and verifies that is auto-approved"""
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
@@ -426,6 +437,7 @@ def test_verify_new_unlisted_version_autoapproval_tc_id_C4372(selenium, base_url
     ],
 )
 @pytest.mark.serial
+@pytest.mark.other
 @pytest.mark.create_session("submissions_user")
 def test_submit_unicode_addon_tc_id_c4590(
     selenium, base_url, variables, wait, addon_name, description
@@ -463,6 +475,7 @@ def test_submit_unicode_addon_tc_id_c4590(
 
 
 @pytest.mark.serial
+@pytest.mark.other
 @pytest.mark.create_session("submissions_user")
 def test_addon_validation_warning_tc_id_c2283005(selenium, base_url, variables, wait):
     """Test validation results when addons trigger some warnings"""
@@ -490,6 +503,7 @@ def test_addon_validation_warning_tc_id_c2283005(selenium, base_url, variables, 
 
 
 @pytest.mark.serial
+@pytest.mark.addon
 @pytest.mark.create_session("submissions_user")
 def test_cancel_and_disable_version_during_upload(selenium, base_url, wait):
     """Test what happens in the upload process when a user chooses to cancel the submission"""
@@ -521,6 +535,8 @@ def test_cancel_and_disable_version_during_upload(selenium, base_url, wait):
 
 @pytest.mark.sanity
 @pytest.mark.serial
+@pytest.mark.addon
+@pytest.mark.other
 @pytest.mark.create_session("submissions_user")
 def test_delete_all_extensions(selenium, base_url):
     """This test will delete all the extensions submitted above to make sure

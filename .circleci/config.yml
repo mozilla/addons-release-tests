@@ -207,7 +207,37 @@ jobs:
           environment:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 1 --reruns 2
-          command: py -m pytest tests\devhub_submissions\test_addon_submissions.py --driver Firefox --variables stage.json --html=submissions-test-results.html --self-contained-html
+          command: py -m pytest tests\devhub_submissions\test_addon_submissions.py -m "addon" --driver Firefox --variables stage.json --html=submissions-test-results.html --self-contained-html
+          no_output_timeout: 30m
+      - store_artifacts:
+          path: submissions-test-results.html
+
+  # tests covering addon theme and validation tests through DevHub
+  addon_theme_and_validation_tests:
+    executor:
+      name: win/default
+      size: "large"
+    working_directory: ~/addons-release-tests/
+    steps:
+      - checkout
+      - run:
+          name: Upgrade pip
+          command: py -m pip install --upgrade pip --user
+      - run:
+          name: Install requirements
+          command: py -m pip install --no-deps -r ./requirements.txt
+      - run:
+          name: Install geckodriver
+          command: choco install selenium-gecko-driver -y
+      - run:
+          name: Install Firefox
+          command: choco install firefox-nightly --pre --ignore-checksums -y
+      - run:
+          name: Run theme submission and validation tests
+          environment:
+            MOZ_HEADLESS: 1
+            PYTEST_ADDOPTS: -n 1 --reruns 2
+          command: py -m pytest tests\devhub_submissions\test_addon_submissions.py -m "other" --driver Firefox --variables stage.json --html=submissions-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: submissions-test-results.html
@@ -477,7 +507,37 @@ jobs:
           environment:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 1 --reruns 2
-          command: py -m pytest tests\devhub_submissions\test_addon_submissions.py --driver Firefox --variables dev.json --html=submissions-dev-test-results.html --self-contained-html
+          command: py -m pytest tests\devhub_submissions\test_addon_submissions.py -m "addon" --driver Firefox --variables dev.json --html=submissions-dev-test-results.html --self-contained-html
+          no_output_timeout: 30m
+      - store_artifacts:
+          path: submissions-dev-test-results.html
+
+  # tests covering addon submissions through DevHub from AMO dev
+  addon_theme_and_validation_dev_tests:
+    executor:
+      name: win/default
+      size: "large"
+    working_directory: ~/addons-release-tests/
+    steps:
+      - checkout
+      - run:
+          name: Upgrade pip
+          command: py -m pip install --upgrade pip --user
+      - run:
+          name: Install requirements
+          command: py -m pip install --no-deps -r ./requirements.txt
+      - run:
+          name: Install geckodriver
+          command: choco install selenium-gecko-driver -y
+      - run:
+          name: Install Firefox
+          command: choco install firefox-nightly --pre --ignore-checksums -y
+      - run:
+          name: Run theme submission and validation tests
+          environment:
+            MOZ_HEADLESS: 1
+            PYTEST_ADDOPTS: -n 1 --reruns 2
+          command: py -m pytest tests\devhub_submissions\test_addon_submissions.py -m "other" --driver Firefox --variables dev.json --html=submissions-dev-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: submissions-dev-test-results.html
@@ -494,6 +554,7 @@ workflows:
       - ratings_serial_tests
       - devhub_parallel_tests
       - addon_submissions_tests
+      - addon_theme_and_validation_tests
       - api_submission_tests
 
   # scheduled in CircleCI Project settings to run each Wednesdays at 04:00 UTC
@@ -549,3 +610,4 @@ workflows:
       - ratings_dev_serial_tests
       - devhub_dev_parallel_tests
       - addon_submissions_dev_tests
+      - addon_theme_and_validation_dev_tests
