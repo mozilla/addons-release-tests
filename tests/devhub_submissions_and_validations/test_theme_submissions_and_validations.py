@@ -70,10 +70,11 @@ def test_devhub_developer_agreement_checkboxes(selenium, base_url):
 
 @pytest.mark.sanity
 @pytest.mark.theme_and_validation
+@pytest.mark.login("submissions_user")
 def test_submit_listed_wizard_theme_tc_id_c97500(selenium, base_url, variables, wait, delete_themes):
     """A test that checks a straight-forward theme submission with the devhub wizard"""
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.devhub_login("submissions_user")
+    # page.devhub_login("submissions_user")
     submit_addon = page.click_submit_theme_button()
     # start the upload for a listed theme
     submit_addon.select_listed_option()

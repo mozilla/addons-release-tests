@@ -323,7 +323,7 @@ jobs:
           name: Install Firefox
           command: choco install firefox -y
       - run:
-          name: API submission tests
+          name: API tests
           environment:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 1 --reruns 2
@@ -353,7 +353,7 @@ jobs:
           name: Install Firefox
           command: choco install firefox -y
       - run:
-          name: API submission tests
+          name: API edit tests
           environment:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 1 --reruns 2
