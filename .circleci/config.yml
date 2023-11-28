@@ -207,7 +207,7 @@ jobs:
           environment:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 1 --reruns 2
-          command: py -m pytest tests\devhub_submissions\test_addon_submissions.py -m "addon" --driver Firefox --variables stage.json --html=submissions-test-results.html --self-contained-html
+          command: py -m pytest tests\devhub_submissions_and_validations\test_addon_submissions.py --driver Firefox --variables stage.json --html=submissions-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: submissions-test-results.html
@@ -237,7 +237,7 @@ jobs:
           environment:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 1 --reruns 2
-          command: py -m pytest tests\devhub_submissions\test_theme_submissions_and_validations.py --driver Firefox --variables stage.json --html=submissions-test-results.html --self-contained-html
+          command: py -m pytest tests\devhub_submissions_and_validations\test_theme_submissions_and_validations.py --driver Firefox --variables stage.json --html=submissions-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: submissions-test-results.html
@@ -302,8 +302,8 @@ jobs:
       - store_artifacts:
           path: sanity-serial-test-results.html
 
-  # api addon submission tests covering uploads, edits, authors;
-  api_submission_tests:
+  # api addon submission tests covering uploads and other requests;
+  api_tests:
     executor:
       name: win/default
       size: "large"
@@ -328,6 +328,36 @@ jobs:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 1 --reruns 2
           command: py -m pytest tests\api --driver Firefox --variables stage.json --html=api_submission_tests.html --self-contained-html
+          no_output_timeout: 30m
+      - store_artifacts:
+          path: api_submission_tests.html
+
+  # api addon submission tests covering edits, authors;
+  api_edit_tests:
+    executor:
+      name: win/default
+      size: "large"
+    working_directory: ~/addons-release-tests/
+    steps:
+      - checkout
+      - run:
+          name: Upgrade pip
+          command: py -m pip install --upgrade pip --user
+      - run:
+          name: Install requirements
+          command: py -m pip install --no-deps -r ./requirements.txt
+      - run:
+          name: Install geckodriver
+          command: choco install selenium-gecko-driver -y
+      - run:
+          name: Install Firefox
+          command: choco install firefox -y
+      - run:
+          name: API submission tests
+          environment:
+            MOZ_HEADLESS: 1
+            PYTEST_ADDOPTS: -n 1 --reruns 2
+          command: py -m pytest tests\api_edit --driver Firefox --variables stage.json --html=api_submission_tests.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: api_submission_tests.html
@@ -507,7 +537,7 @@ jobs:
           environment:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 1 --reruns 2
-          command: py -m pytest tests\devhub_submissions\test_addon_submissions.py -m "addon" --driver Firefox --variables dev.json --html=submissions-dev-test-results.html --self-contained-html
+          command: py -m pytest tests\devhub_submissions_and_validations\test_addon_submissions.py --driver Firefox --variables dev.json --html=submissions-dev-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: submissions-dev-test-results.html
@@ -537,7 +567,7 @@ jobs:
           environment:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 1 --reruns 2
-          command: py -m pytest tests\devhub_submissions\test_theme_submissions_and_validations.py --driver Firefox --variables dev.json --html=submissions-dev-test-results.html --self-contained-html
+          command: py -m pytest tests\devhub_submissions_and_validations\test_theme_submissions_and_validations.py --driver Firefox --variables dev.json --html=submissions-dev-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: submissions-dev-test-results.html

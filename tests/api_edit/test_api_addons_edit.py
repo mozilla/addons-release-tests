@@ -26,12 +26,13 @@ _addon_create = "/api/v5/addons/addon/"
 
 
 @pytest.mark.serial
-@pytest.mark.create_session("api_user")
-def test_upload_listed_extension_tc_id_c4369(base_url, session_auth):
+@pytest.mark.login("api_user")
+def test_upload_listed_extension_tc_id_c4369(base_url, selenium, session_auth):
+    session_cookie = selenium.get_cookie("sessionid")
     with open("sample-addons/listed-addon.zip", "rb") as file:
         upload = requests.post(
             url=f"{base_url}{_upload}",
-            headers={"Authorization": f"Session {session_auth}"},
+            headers={"Authorization": f'Session {session_cookie["value"]}'},
             files={"upload": file},
             data={"channel": "listed"},
         )
@@ -47,7 +48,7 @@ def test_upload_listed_extension_tc_id_c4369(base_url, session_auth):
     create_addon = requests.post(
         url=f"{base_url}{_addon_create}",
         headers={
-            "Authorization": f"Session {session_auth}",
+            "Authorization": f'Session {session_cookie["value"]}',
             "Content-Type": "application/json",
         },
         data=json.dumps(payload),
