@@ -944,7 +944,6 @@ def test_delete_extension_with_invalid_tokens(base_url, session_auth, token):
 
 @pytest.mark.serial
 @pytest.mark.create_session("api_user")
-@pytest.mark.clear_session
 def test_delete_extension_valid_token(selenium, base_url, session_auth, variables):
     addon = payloads.edit_addon_details["slug"]
     get_delete_confirm = requests.get(
