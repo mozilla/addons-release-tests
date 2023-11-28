@@ -237,7 +237,7 @@ jobs:
           environment:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 1 --reruns 2
-          command: py -m pytest tests\devhub_submissions\test_addon_submissions.py -m "other" --driver Firefox --variables stage.json --html=submissions-test-results.html --self-contained-html
+          command: py -m pytest tests\devhub_submissions\test_addon_submissions.py -m "theme_and_validation" --driver Firefox --variables stage.json --html=submissions-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: submissions-test-results.html
@@ -537,7 +537,7 @@ jobs:
           environment:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 1 --reruns 2
-          command: py -m pytest tests\devhub_submissions\test_addon_submissions.py -m "other" --driver Firefox --variables dev.json --html=submissions-dev-test-results.html --self-contained-html
+          command: py -m pytest tests\devhub_submissions\test_addon_submissions.py -m "theme_and_validation" --driver Firefox --variables dev.json --html=submissions-dev-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: submissions-dev-test-results.html
