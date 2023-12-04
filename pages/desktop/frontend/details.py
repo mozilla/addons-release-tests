@@ -18,7 +18,7 @@ class Detail(Base):
     _get_firefox_button_locator = (By.CLASS_NAME, "GetFirefoxButton-button")
     _install_button_locator = (By.CLASS_NAME, "AMInstallButton-button")
     _install_button_state_locator = (By.CSS_SELECTOR, ".AMInstallButton a")
-    _promoted_badge_locator = (By.CLASS_NAME, "PromotedBadge-large")
+    _promoted_badge_locator = (By.CLASS_NAME, "PromotedBadge-label")
     _promoted_badge_label_locator = (
         By.CSS_SELECTOR,
         ".PromotedBadge-large .PromotedBadge-label",
