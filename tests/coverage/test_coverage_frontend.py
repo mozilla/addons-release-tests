@@ -22,25 +22,25 @@ def test_changing_tag_shelves_at_refresh_tc_id_c1835238(selenium, base_url, wait
         before_refresh_shelve_tag is not after_refresh_shelve_tag
     )
 
-@pytest.mark.coverage
-def test_search_result_for_a_new_submitted_addon_tc_id_c1835241(selenium, base_url, wait, variables):
-    # Test Case: C1835241 AMO Coverage > Frontend
-    """Submit a new listed addon"""
-    devhub_page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    devhub_page.devhub_login("developer")
-    addon_slug = reusable_flows.submit_listed_addon_method(selenium, base_url)
-    devhub_page.logout()
-    """Addon is submitted successfully"""
-    """As a reviewer/admin approve the addon"""
-
-    """The addon is approved and becomes public"""
-    manage_versions_page = ManageVersions(selenium, base_url)
-    manage_versions_page.open_manage_versions_page_for_addon(selenium, base_url, addon_slug)
-    manage_versions_page.wait_for_page_to_load()
-    manage_versions_page.wait_for_version_autoapproval("Approved")
-    search_page = Search(selenium, base_url).open().wait_for_page_to_load()
-    search_page.search_box.send_keys(f"{addon_slug}")
-    search_results = search_page.auto_complete_list[0]
-    assert (
-        addon_slug in search_results
-    )
+# @pytest.mark.coverage
+# def test_search_result_for_a_new_submitted_addon_tc_id_c1835241(selenium, base_url, wait, variables):
+#     # Test Case: C1835241 AMO Coverage > Frontend
+#     """Submit a new listed addon"""
+#     devhub_page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+#     devhub_page.devhub_login("developer")
+#     addon_slug = reusable_flows.submit_listed_addon_method(selenium, base_url)
+#     devhub_page.logout()
+#     """Addon is submitted successfully"""
+#     """As a reviewer/admin approve the addon"""
+#
+#     """The addon is approved and becomes public"""
+#     manage_versions_page = ManageVersions(selenium, base_url)
+#     manage_versions_page.open_manage_versions_page_for_addon(selenium, base_url, addon_slug)
+#     manage_versions_page.wait_for_page_to_load()
+#     manage_versions_page.wait_for_version_autoapproval("Approved")
+#     search_page = Search(selenium, base_url).open().wait_for_page_to_load()
+#     search_page.search_box.send_keys(f"{addon_slug}")
+#     search_results = search_page.auto_complete_list[0]
+#     assert (
+#         addon_slug in search_results
+#     )

@@ -16,7 +16,7 @@ def submit_listed_addon_method(selenium, base_url):
     summary = reusables.get_random_string(10)
     confirmation_page.set_addon_name(random_string)
     confirmation_page.set_addon_summary(summary)
-    confirmation_page.select_firefox_categories(1)
+    confirmation_page.select_categories(1)
     confirmation_page.select_license_options[0].click()
     confirmation_page.submit_addon()
     return f"listed-addon{random_string}"
