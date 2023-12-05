@@ -36,7 +36,7 @@
   "contribute_card_summary": "The developer of this extension asks that you help support its continued development by making a small contribution.",
   "support_site_link": "ghostery.com",
   "ratings_card_summary": "How are you enjoying Ghostery - Privacy Ad Blocker",
-
+  "addon_size_extension": "ghostery",
   "secondary_hero_title": "Extensions are like apps for Firefox.",
   "secondary_hero_summary": "They add features to Firefox to make browsing faster, safer, or just plain fun",
 
@@ -61,7 +61,7 @@
   "occupation": "scientist",
   "biography": "I am the very model of a scientist salarian",
   "biography_extra": "\nI've studied species turian, asari, and batarian",
-  "email_field_help_text": "You can change your email address on Firefox Accounts.",
+  "email_field_help_text": "You can change your email address on Mozilla accounts. Need help?",
   "notifications": [
     "an add-on developer replies to my review",
     "new add-ons or Firefox features are available",
@@ -78,11 +78,11 @@
   "theme_artist_profile": "6199839",
   "developer_and_artist_role": "11688815",
   "non_developer_user": "11686961",
-  "user_abuse_initial_form_header": "Report this user for abuse",
+  "user_abuse_initial_form_header": "Report this user",
   "user_abuse_form_initial_help_text": "If you think this user is violating Mozilla's Add-on Policies, please report this user to Mozilla.",
   "user_abuse_form_additional_help_text": "Please don't use this form to report bugs or contact this user; your report will only be sent to Mozilla and not to this user.",
   "user_abuse_input_text": "Submitting a user abuse report",
-  "user_abuse_confirmed_form_header": "You reported this user for abuse",
+  "user_abuse_confirmed_form_header": "You reported this user",
   "user_abuse_form_confirmed_help_text": "We have received your report. Thanks for letting us know about your concerns with this user.",
 
   "collections_card_summary": "Collections make it easy to keep track of favorite add-ons and share your perfectly customized browser with others.",

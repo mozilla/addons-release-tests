@@ -6,15 +6,75 @@ from pages.desktop.developers.submit_addon import ListedAddonSubmissionForm, Sub
 from pages.desktop.frontend.details import Detail
 from pages.desktop.developers.manage_authors_and_license import ManageAuthorsAndLicenses
 from scripts import reusables
-from scripts import reusable_flows
 
+
+
+def submit_addon_method(selenium, base_url):
+    devhub_page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    submit_addon = devhub_page.click_submit_addon_button()
+    submit_addon.select_listed_option()
+    submit_addon.click_continue()
+    submit_addon.upload_addon("listed-addon.zip")
+    submit_addon.is_validation_successful()
+    assert submit_addon.success_validation_message.is_displayed()
+    source = submit_addon.click_continue_upload_button()
+    source.select_no_to_omit_source()
+    confirmation_page = source.continue_listed_submission()
+    random_string = reusables.get_random_string(10)
+    summary = reusables.get_random_string(10)
+    confirmation_page.set_addon_name(random_string)
+    confirmation_page.set_addon_summary(summary)
+    confirmation_page.select_categories(1)
+    confirmation_page.select_license_options[0].click()
+    confirmation_page.submit_addon()
+    return f"listed-addon{random_string}"
+
+
+# @pytest.mark.coverage
+# @pytest.mark.login("developer")
+# def test_upload_4mb_screenshots(base_url, selenium, variables, wait):
+#     "Go to the edit product page of an add-on to Images section, click Edit"
+#     "Add-on icon and Screenshots sections are displayed"
+#     selenium.get(f"{base_url}/developers/addon/{variables['4mb_addon_slug']}/edit")
+#     edit_addon_page = EditAddon(selenium, base_url).wait_for_page_to_load()
+#     "Add-on icon and Screenshots sections are displayed"
+#     edit_addon_page.edit_addon_describe_section.is_displayed()
+#     edit_addon_page.edit_addon_media_button.is_displayed()
+#     "Click on Add A Screenshot and try to upload a large image > 4MB (png or jpg format)"
+#     edit_addon_page.edit_addon_media_button.click()
+#     edit_addon_page.screenshot_upload.is_displayed()
+#     edit_addon_page.screenshot_file_upload("over_4mb_picture.png")
+#     time.sleep(10)
+#     "The image cannot be uploaded there's an error message displayed:"
+#     "There was an error uploading your file."
+#     "Please use images smaller than 4MB."
+#     edit_addon_page.edit_preview_error_strong.is_displayed()
+#     edit_addon_page.edit_preview_explicit_error.is_displayed()
 
 @pytest.mark.coverage
 @pytest.mark.login("submissions_user")
 def test_cancel_review_request_tc_id_c1803555(selenium, base_url, variables, wait):
     # Test Case: C1803555 -> AMO Coverage > Devhub
     """Submit the first version of an add-on"""
-    addon_slug = reusable_flows.submit_listed_addon_method(selenium, base_url)
+    addon_slug = submit_addon_method(selenium, base_url)
+    # devhub_page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    # submit_addon = devhub_page.click_submit_addon_button()
+    # submit_addon.select_listed_option()
+    # submit_addon.click_continue()
+    # submit_addon.upload_addon("listed-addon.zip")
+    # submit_addon.is_validation_successful()
+    # assert submit_addon.success_validation_message.is_displayed()
+    # source = submit_addon.click_continue_upload_button()
+    # source.select_no_to_omit_source()
+    # confirmation_page = source.continue_listed_submission()
+    # random_string = "listed-addon" + reusables.get_random_string(10)
+    # summary = reusables.get_random_string(10)
+    # confirmation_page.clear_addon_name()
+    # confirmation_page.set_addon_name(random_string)
+    # confirmation_page.set_addon_summary(summary)
+    # confirmation_page.select_firefox_categories(1)
+    # confirmation_page.select_license_options[0].click()
+    # confirmation_page.submit_addon()
     manage_versions = ManageVersions(selenium, base_url)
     manage_versions.open_manage_versions_page_for_addon(selenium, base_url, addon_slug)
     """Page is displayed"""
@@ -78,7 +138,7 @@ def test_disable_an_addon_at_submission_tc_id_c1898098(selenium, base_url, wait,
     listed_addon_submission_form.clear_addon_name()
     listed_addon_submission_form.set_addon_name(random_string)
     listed_addon_submission_form.set_addon_summary(summary)
-    listed_addon_submission_form.select_firefox_categories(1)
+    listed_addon_submission_form.select_categories(1)
     listed_addon_submission_form.select_license_options[0].click()
     """Complete the form and "Submit Version"""
     listed_addon_submission_form.submit_addon()
@@ -95,7 +155,7 @@ def test_disable_an_addon_at_submission_tc_id_c1898098(selenium, base_url, wait,
 def test_change_the_license_tc_id_c1901412(selenium, base_url, variables, wait):
     # Test Case: C1901412 AMO Coverage > Devhub
     """Submit a new add-on"""
-    addon_slug = reusable_flows.submit_listed_addon_method(selenium, base_url)
+    addon_slug = submit_addon_method(selenium, base_url)
     """From Manage Authors and License page -> select a new License for the add-on and Save Changes"""
     manage_authors_page = ManageAuthorsAndLicenses(selenium, base_url)
     manage_authors_page.open_manage_authors_and_licenses_page(selenium, base_url, addon_slug)
@@ -123,7 +183,7 @@ def test_change_the_license_tc_id_c1901412(selenium, base_url, variables, wait):
 def test_manage_authors_and_license_page_tc_id_c1901410(selenium, variables, wait, base_url):
     # Test Case: C1901410 AMO Coverage > Devhub
     """Submit a new add-on"""
-    addon_slug = reusable_flows.submit_listed_addon_method(selenium, base_url)
+    addon_slug = submit_addon_method(selenium, base_url)
     """Go to "Manage Authors and License page" of an addon"""
     manage_authors_page = ManageAuthorsAndLicenses(selenium, base_url)
     manage_authors_page.open_manage_authors_and_licenses_page(selenium, base_url, addon_slug)

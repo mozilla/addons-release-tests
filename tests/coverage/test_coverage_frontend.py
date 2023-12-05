@@ -23,7 +23,6 @@ def test_changing_tag_shelves_at_refresh_tc_id_c1835238(selenium, base_url, wait
     )
 
 @pytest.mark.coverage
-
 def test_search_result_for_a_new_submitted_addon_tc_id_c1835241(selenium, base_url, wait, variables):
     # Test Case: C1835241 AMO Coverage > Frontend
     """Submit a new listed addon"""

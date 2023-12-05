@@ -45,6 +45,7 @@
   "non_recommended_addon": "non-recommended",
   "non_recommended_addon_frontend": "privacy-badger-stage",
   "addon_version_install": "both-desktop-android",
+  "addon_size_extension": "ghostery",
 
   "initial_text_input": "original text",
   "edited_text_input": "edited text",
@@ -63,7 +64,7 @@
   "occupation": "scientist",
   "biography": "I am the very model of a scientist salarian",
   "biography_extra": "\nI've studied species turian, asari, and batarian",
-  "email_field_help_text": "You can change your email address on Firefox Accounts.",
+  "email_field_help_text": "You can change your email address on Mozilla accounts. Need help?",
   "notifications": [
     "an add-on developer replies to my review",
     "new add-ons or Firefox features are available",
