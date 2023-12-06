@@ -129,6 +129,9 @@ class Reviews(Base):
             ".AddonReviewCard-reply .ShowMoreCard-contents > div",
         )
         _dev_reply_header_locator = (By.CSS_SELECTOR, ".UserReview-reply-header")
+        _flag_spam_option_locator = (By.CSS_SELECTOR, ".FlagReviewMenu-flag-spam-item")
+        _flag_bug_option_locator = (By.CSS_SELECTOR, ".FlagReviewMenu-flag-bug-support-item")
+        _flag_language_option_locator = (By.CSS_SELECTOR, ".FlagReviewMenu-flag-language-item")
 
         @property
         def rating_stars(self):
@@ -165,6 +168,17 @@ class Reviews(Base):
         @property
         def flag_review_option(self):
             return self.find_elements(*self._flag_review_menu_options)
+
+        @property
+        def flag_spam_option(self):
+            return self.find_element(*self._flag_spam_option_locator)
+        @property
+        def flag_bug_option(self):
+            return self.find_element(*self._flag_bug_option_locator)
+
+        @property
+        def flag_language_option(self):
+            return self.find_element(*self._flag_language_option_locator)
 
         def select_flag_option(self, count):
             self.wait.until(
