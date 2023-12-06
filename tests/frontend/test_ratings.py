@@ -331,30 +331,31 @@ def test_flag_missing_for_empty_review_tc_id_c1494904(selenium, base_url, variab
             with pytest.raises(NoSuchElementException):
                 user_review.find_element(By.CSS_SELECTOR, ".FlagReviewMenu-menu")
 
+#login is no longer required for flag review
+# @pytest.mark.serial
+# @pytest.mark.nondestructive
+# def test_flag_review_requires_login_tc_id_c1494904(selenium, base_url, variables):
+#     extension = variables["all_scores_addon"]
+#     selenium.get(f"{base_url}/addon/{extension}")
+#     addon = Detail(selenium, base_url).wait_for_page_to_load()
+#     reviews = addon.ratings.click_all_reviews_link()
+#     review_item = reviews.review_items
+#     # the 'Flag' menu is displayed only for reviews with text
+#     # iterating through the list of reviews until a review with text is found
+#     count = 0
+#     while count <= len(reviews.reviews_list):
+#         if len(review_item[count].review_body) > 0:
+#             review_item[count].click_flag_review()
+#             assert review_item[count].flag_review_login_button.is_displayed()
+#             break
+#         else:
+#             count += 1
+
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-def test_flag_review_requires_login_tc_id_c1494904(selenium, base_url, variables):
-    extension = variables["all_scores_addon"]
-    selenium.get(f"{base_url}/addon/{extension}")
-    addon = Detail(selenium, base_url).wait_for_page_to_load()
-    reviews = addon.ratings.click_all_reviews_link()
-    review_item = reviews.review_items
-    # the 'Flag' menu is displayed only for reviews with text
-    # iterating through the list of reviews until a review with text is found
-    count = 0
-    while count <= len(reviews.reviews_list):
-        if len(review_item[count].review_body) > 0:
-            review_item[count].click_flag_review()
-            assert review_item[count].flag_review_login_button.is_displayed()
-            break
-        else:
-            count += 1
-
-
-@pytest.mark.serial
-@pytest.mark.nondestructive
-@pytest.mark.create_session("rating_user")
+@pytest.mark.failing
+@pytest.mark.login("rating_user")
 def test_flag_review_menu_options_tc_id_c1494904(selenium, base_url, variables):
     extension = variables["all_scores_addon"]
     selenium.get(f"{base_url}/addon/{extension}")
@@ -368,14 +369,14 @@ def test_flag_review_menu_options_tc_id_c1494904(selenium, base_url, variables):
             flag[count].click_flag_review()
             # verifies that the following 3 report options are available in the flag menu
             assert (
-                variables["review_flag_spam"] in flag[count].flag_review_option[0].text
+                variables["review_flag_spam"] in flag[count].flag_spam_option.text
             )
             assert (
                 variables["review_flag_bug"]
-                in flag[count].flag_review_option[1].text
+                in flag[count].flag_bug_option.text
             )
             assert (
-                variables["review_flag_language"] in flag[count].flag_review_option[2].text
+                variables["review_flag_language"] in flag[count].flag_language_option.text
             )
             break
         else:

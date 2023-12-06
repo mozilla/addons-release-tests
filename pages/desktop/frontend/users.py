@@ -107,18 +107,18 @@ class User(Base):
             By.CSS_SELECTOR,
             ".ReportUserAbuse-show-more",
         )
-        _abuse_report_form_header_locator = (By.CSS_SELECTOR, ".ReportUserAbuse-header")
+        _abuse_report_form_header_locator = (By.CSS_SELECTOR, ".Card-header-text")
         _abuse_report_form_help_text = (
             By.CSS_SELECTOR,
-            ".ReportUserAbuse-form p:nth-child(2)",
+            "section.Card:nth-child(2) > div:nth-child(2) > h3",
         )
         _abuse_report_form_additional_help_text = (
-            By.CSS_SELECTOR,
-            ".ReportUserAbuse-form p:nth-child(3)",
+            By.ID,
+            "feedbackText-help",
         )
         _abuse_report_textarea_locator = (
             By.CSS_SELECTOR,
-            ".DismissibleTextForm-textarea",
+            ".FeedbackForm--Card",
         )
         _abuse_report_cancel_button_locator = (
             By.CSS_SELECTOR,
@@ -126,16 +126,27 @@ class User(Base):
         )
         _abuse_report_submit_disabled_button_locator = (
             By.CSS_SELECTOR,
-            ".DismissibleTextForm-submit.Button--disabled",
+            ".FeedbackForm-button.Button--disabled",
         )
         _abuse_report_submit_button_locator = (
             By.CSS_SELECTOR,
-            ".DismissibleTextForm-submit",
+            ".Button",
         )
         _abuse_report_confirm_message_locator = (
             By.CSS_SELECTOR,
-            ".ReportUserAbuse--report-sent p:nth-child(2)",
+            "p.FeedbackForm-success-first-paragraph",
         )
+        _feedback_category_spam_locator = (
+            By.ID,
+            "feedbackCategoryfeedback_spam"
+        )
+
+        def click_category_spam(self):
+            self.wait.until(
+                EC.visibility_of_element_located(self._feedback_category_spam_locator)
+            )
+            self.find_element(*self._feedback_category_spam_locator).click()
+            return self.find_element(*self._feedback_category_spam_locator)
 
         @property
         def user_profile_icon_placeholder(self):
