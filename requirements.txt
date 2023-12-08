@@ -48,7 +48,7 @@ pytest-fxa==1.4.0
 pytest-html==3.1.1
 pytest-instafail==0.5.0
 pytest-metadata==3.0.0
-pytest-rerunfailures==11.1.2
+pytest-rerunfailures==13.0
 pytest-selenium==4.0.0
 pytest-variables==2.0.0
 pytest-xdist==3.2.1
