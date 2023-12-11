@@ -141,7 +141,6 @@ def test_user_mandatory_notifications(base_url, selenium):
         checkbox.click()
     user.edit.submit_changes()
     user.wait_for_user_to_load()
-    user.view.click_edit_profile_button()
     # checks that the mandatory notification checkboxes are still selected
     for checkbox in user.edit.notifications_checkbox[4:7]:
         assert checkbox.is_selected()
@@ -350,7 +349,6 @@ def test_user_regular_has_no_role(base_url, selenium):
 
 
 @pytest.mark.serial
-@pytest.mark.failing
 def test_user_regular_notifications(base_url, selenium, variables):
     user = User(selenium, base_url).open().wait_for_page_to_load()
     user.login("reusable_user")
@@ -632,7 +630,6 @@ def test_user_profile_delete_review(base_url, selenium, variables, wait):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-@pytest.mark.failing
 def test_user_abuse_report(base_url, selenium, variables, wait):
     developer = variables["developer_profile"]
     selenium.get(f"{base_url}/user/{developer}")

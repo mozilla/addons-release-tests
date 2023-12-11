@@ -16,7 +16,7 @@ from pages.desktop.frontend.search import Search
 class User(Base):
     URL_TEMPLATE = "/users/edit"
 
-    _display_name_locator = (By.CLASS_NAME, "UserProfile-name")
+    _display_name_locator = (By.CLASS_NAME, "UserProfileEdit-displayName")
 
     def wait_for_page_to_load(self):
         """Waits for various page components to be loaded"""
@@ -757,7 +757,7 @@ class User(Base):
             )
             self.find_element(*self._edit_profile_submit_button_locator).click()
             self.wait.until(
-                EC.visibility_of_element_located((By.CLASS_NAME, "UserProfile-name"))
+                EC.visibility_of_element_located((By.CLASS_NAME, "UserProfileEdit-displayName"))
             )
 
         def delete_account(self):
