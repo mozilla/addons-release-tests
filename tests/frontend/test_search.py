@@ -258,7 +258,7 @@ def test_filter_by_users_tc_id_c92462(base_url, selenium):
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 @pytest.mark.parametrize(
-    "category, sort_attr", [["Top Rated", "rating"], ["Trending", "hotness"]]
+    "category, sort_attr", [["Top Rated", "addon"], ["Trending", "hotness"]]
 )
 def test_filter_by_rating_and_hotness_tc_id_c92462(base_url, selenium, category, sort_attr):
     """Test searching for an addon and sorting."""
@@ -267,7 +267,7 @@ def test_filter_by_rating_and_hotness_tc_id_c92462(base_url, selenium, category,
     selenium.get(f"{base_url}/search/?&q={addon_name}&sort={sort_attr}")
     search_page = Search(selenium, base_url).wait_for_page_to_load()
     results = search_page.result_list.search_results
-    if sort_attr == "rating":
+    if sort_attr == "addon":
         for result in search_page.result_list.search_results:
             assert result.rating > 4
     else:

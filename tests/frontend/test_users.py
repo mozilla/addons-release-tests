@@ -133,6 +133,9 @@ def test_user_developer_notifications(base_url, selenium, variables, wait):
 @pytest.mark.serial
 @pytest.mark.nondestructive
 @pytest.mark.create_session("developer")
+@pytest.mark.xfail(
+    reason="There is an issue with search on dev-#12693", strict=False
+)
 def test_user_mandatory_notifications(base_url, selenium):
     Home(selenium, base_url).open().wait_for_page_to_load()
     user = User(selenium, base_url).open().wait_for_page_to_load()
