@@ -46,19 +46,23 @@ class Login(Base):
     # 10. account added to the list of banned user emails for rating and addon submissions
     RESTRICTED_USER_EMAIL = os.environ.get("RESTRICTED_USER_EMAIL")
     RESTRICTED_USER_PASSWORD = os.environ.get("RESTRICTED_USER_PASSWORD")
+    # 11. account for reviewer tools added in order to help with release and coverage tests(doesn't have full access)
+    REVIEWER_TOOLS_USER_EMAIL = os.environ.get("REVIEWER_TOOLS_USER_EMAIL")
+    REVIEWER_TOOLS_USER_PASSWORD = os.environ.get("REVIEWER_TOOLS_USER_PASSWORD")
 
-    # # KEYS FOR AUTHENTICATOR DEV
+    # KEYS FOR AUTHENTICATOR DEV
     DEVELOPER_USER_KEY_DEV = os.environ.get("DEVELOPER_USER_KEY_DEV")
     RATING_USER_KEY_DEV = os.environ.get("RATING_USER_KEY_DEV")
     SUBMISSIONS_USER_KEY_DEV = os.environ.get("SUBMISSIONS_USER_KEY_DEV")
     API_USER_KEY_DEV = os.environ.get("API_USER_KEY_DEV")
     STAFF_USER_KEY_DEV = os.environ.get("STAFF_USER_KEY_DEV")
-
+    # KEYS FOR AUTHENTICATOR STAGE
     DEVELOPER_USER_KEY_STAGE = os.environ.get("DEVELOPER_USER_KEY_STAGE")
     RATING_USER_KEY_STAGE = os.environ.get("RATING_USER_KEY_STAGE")
     SUBMISSIONS_USER_KEY_STAGE = os.environ.get("SUBMISSIONS_USER_KEY_STAGE")
     API_USER_KEY_STAGE = os.environ.get("API_USER_KEY_STAGE")
     STAFF_USER_KEY_STAGE = os.environ.get("STAFF_USER_KEY_STAGE")
+    REVIEWER_TOOLS_USER_KEY = os.environ.get("REVIEWER_TOOLS_USER_KEY")
 
     _email_locator = (By.NAME, "email")
     _continue_locator = (By.CSS_SELECTOR, ".button-row button")
@@ -145,6 +149,12 @@ class Login(Base):
         elif user == "restricted_user":
             self.fxa_login(
                 self.RESTRICTED_USER_EMAIL, self.RESTRICTED_USER_PASSWORD, ""
+            )
+        elif user == "reviewer_user":
+            self.fxa_login(
+                self.REVIEWER_TOOLS_USER_EMAIL,
+                self.REVIEWER_TOOLS_USER_PASSWORD,
+                self.REVIEWER_TOOLS_USER_KEY
             )
         else:
             self.fxa_login(self.REGULAR_USER_EMAIL, self.REGULAR_USER_PASSWORD, "")
