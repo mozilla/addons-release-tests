@@ -39,7 +39,7 @@ PyJWT==2.6.0
 pylint==2.16.2
 pyparsing==3.1.0
 PyPOM==2.2.4
-pytest==7.4.2
+pytest==7.4.3
 pytest-base-url==2.0.0
 pytest-dependency==0.5.1
 pytest-firefox==0.1.1
