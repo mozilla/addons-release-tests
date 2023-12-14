@@ -474,7 +474,7 @@ def test_devhub_browsers_footer_links(base_url, selenium, count, link):
             "firefox/browsers/",
             "products/vpn/",
             "relay.firefox.com/",
-            "monitor.firefox",
+            "monitor.mozilla",
             "getpocket.com",
         ]
     ),
