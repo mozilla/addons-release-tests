@@ -347,7 +347,7 @@ def test_browsers_footer_links_tc_id_c95105(base_url, selenium, count, link):
             ["firefox/browsers/", ".mzp-c-split-body h1"],
             ["products/vpn/", ".c-sub-navigation-title"],
             ["relay.firefox.com/", ".Layout_logo__V4UCI"],
-            ["monitor.firefox", ".monitor-logo"],
+            ["monitor.mozilla", ".monitor-logo"],
             ["getpocket.com", ".mzp-t-product-pocket"],
         ]
     ),
