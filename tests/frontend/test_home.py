@@ -186,7 +186,7 @@ def test_home_see_more_popular_themes_tc_id_c95589(base_url, selenium):
 @pytest.mark.nondestructive
 def test_home_popular_themes_shelf(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
-    assert "Popular themes" in page.popular_themes.card_header
+    assert "Trending themes" in page.popular_themes.card_header
     shelf_items = page.popular_themes.list
     # verifies that each shelf themes has the necessary components
     users_list = []
