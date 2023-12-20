@@ -8,11 +8,6 @@ class ManualReview(Base):
 
     # Tab Navigation
     _manual_review_tab_locator = (By.CSS_SELECTOR, ".tabnav > li:nth-child(1) > a")
-    _flagged_by_mad_for_human_review_tab_locator = (By.CSS_SELECTOR, ".tabnav > li:nth-child(2) > a")
-    _new_tab_locator = (By.CSS_SELECTOR, ".tabnav > li:nth-child(3) > a")
-    _updates_tab_locator = (By.CSS_SELECTOR, ".tabnav > li:nth-child(4) > a")
-    _content_review_tab_locator = (By.CSS_SELECTOR, ".tabnav > li:nth-child(5) > a")
-    _pending_rejection_tab_locator = (By.CSS_SELECTOR, ".tabnav > li:nth-child(6) > a")
 
     # Queue Viewing
     _addon_column_locator = (By.CSS_SELECTOR, ".listing-header > th:nth-child(2)")
@@ -27,32 +22,7 @@ class ManualReview(Base):
             lambda _: self.find_element(*self._manual_review_tab_locator).is_displayed(),
             message="Manual Review Page was not loaded",
         )
-        return
-
-    # Tab Navigation ----------------------------------------------------------
-    @property
-    def manual_review_tab(self):
-        return self.find_element(*self._manual_review_tab_locator)
-
-    @property
-    def flagged_by_mad_for_human_review_tab(self):
-        return self.find_element(*self._flagged_by_mad_for_human_review_tab_locator)
-
-    @property
-    def new_tab(self):
-        return self.find_element(*self._new_tab_locator)
-
-    @property
-    def updates_tab(self):
-        return self.find_element(*self._updates_tab_locator)
-
-    @property
-    def content_review_tab(self):
-        return self.find_element(*self._content_review_tab_locator)
-
-    @property
-    def pending_rejection_tab(self):
-        return self.find_element(*self._pending_rejection_tab_locator)
+        return self
 
     # Queue Viewing --------------------------------------------------------
 
@@ -82,33 +52,7 @@ class ManualReview(Base):
 
     # Assert Methods ----------------------------------------------------------
 
-    def assert_tab_viewing(self):
-        assert (
-            self.manual_review_tab.is_displayed(),
-            "Manual Review" in self.manual_review_tab.text
-        )
-        assert (
-            self.flagged_by_mad_for_human_review_tab.is_displayed(),
-            "Flagged by MAD for Human Review" in self.flagged_by_mad_for_human_review_tab.text
-        )
-        assert (
-            self.new_tab.is_displayed(),
-            "New" in self.new_tab.text
-        )
-        assert (
-            self.updates_tab.is_displayed(),
-            "Updates" in self.updates_tab.text
-        )
-        assert (
-            self.flag_column.is_displayed(),
-            "Flags" in self.flag_column.text
-        )
-        assert (
-            self.pending_rejection_tab.is_displayed(),
-            "Pending Rejection" in self.pending_rejection_tab.text
-        )
-
-    def assert_queue_viewing(self):
+    def assert_queue_viewing_manual_review(self):
         assert (
             self.addon_column.is_displayed(),
             "Add-on" in self.addon_column.text
@@ -122,12 +66,8 @@ class ManualReview(Base):
             "Due Date" in self.due_date_column.text
         )
         assert (
-            self.manual_review_tab.is_displayed(),
-            "Manual Review" in self.manual_review_tab.text
-        )
-        assert (
-            self.manual_review_tab.is_displayed(),
-            "Manual Review" in self.manual_review_tab.text
+            self.flag_column.is_displayed(),
+            "Flags" in self.flag_column.text
         )
         assert (
             self.maliciousness_score_column.is_displayed(),
