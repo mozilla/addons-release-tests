@@ -15,7 +15,7 @@
     },
     "home_page": {
       "shelf_title_recommended_extensions": "Estensioni consigliate",
-      "shelf_title_popular_themes": "Temi più popolari",
+      "shelf_title_popular_themes": "Temi di tendenza",
       "shelf_title_recommended_themes": "Temi consigliati",
       "shelf_title_theme_categories": "Modifica l’aspetto di Firefox con i temi."
     },
@@ -52,7 +52,7 @@
     },
     "home_page": {
       "shelf_title_recommended_extensions": "Extensiones recomendadas",
-      "shelf_title_popular_themes": "Temas populares",
+      "shelf_title_popular_themes": "Trending themes",
       "shelf_title_recommended_themes": "Temas recomendados",
       "shelf_title_theme_categories": "Cambia la apariencia de Firefox con los temas."
     },
@@ -89,7 +89,7 @@
     },
     "home_page": {
       "shelf_title_recommended_extensions": "Empfohlene Erweiterungen",
-      "shelf_title_popular_themes": "Beliebte Themes",
+      "shelf_title_popular_themes": "Aktuell beliebte Themes",
       "shelf_title_recommended_themes": "Empfohlene Themes",
       "shelf_title_theme_categories": "Ändern Sie das Erscheinungsbild von Firefox mit Themes."
     },
