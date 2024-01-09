@@ -39,7 +39,7 @@ def test_reviewer_tools_homepage_layout_tc_id_c4589(selenium, base_url):
     )
 
 
-@pytest.mark.create_session("reviewer_user")
+@pytest.mark.login("reviewer_user")
 def test_queues_manual_review_queue_tc_id_c4583(selenium, base_url, wait):
     """Load AMO Reviewer Tools homepage."""
     """AMO Reviewer Tools homepage is displayed without any layout issues."""
@@ -58,7 +58,7 @@ def test_queues_manual_review_queue_tc_id_c4583(selenium, base_url, wait):
     manual_review_page.assert_queue_viewing_manual_review()
 
 
-@pytest.mark.create_session("reviewer_user")
+@pytest.mark.login("reviewer_user")
 def test_queues_content_review_tc_id_c79313(selenium, base_url, wait):
     """Load AMO Reviewer Tools homepage."""
     """AMO Reviewer Tools homepage is displayed without any layout issues."""
@@ -83,7 +83,7 @@ def test_queues_content_review_tc_id_c79313(selenium, base_url, wait):
     reviewer_tools_page.assert_tab_viewing()
 
 
-@pytest.mark.create_session("reviewer_user")
+@pytest.mark.login("reviewer_user")
 def test_queues_themes_new_tc_id_c325790(selenium, base_url):
     """Load AMO Reviewer Tools homepage."""
     """AMO Reviewer Tools homepage is displayed without any layout issues."""
@@ -104,7 +104,7 @@ def test_queues_themes_new_tc_id_c325790(selenium, base_url):
     )
     themes_new_page.assert_queue_viewing_themes_new()
 
-@pytest.mark.create_session("reviewer_user")
+@pytest.mark.login("reviewer_user")
 def test_queues_themes_updates_tc_id_c325792(selenium, base_url):
     """Load AMO Reviewer Tools homepage."""
     """AMO Reviewer Tools homepage is displayed without any layout issues."""
