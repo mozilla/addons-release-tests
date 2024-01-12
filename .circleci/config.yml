@@ -518,14 +518,13 @@ workflows:
       not:
         equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
     jobs:
-      - reviewer_tools_tests
-#      - frontend_parallel_tests
-#      - user_serial_tests
-#      - collections_serial_tests
-#      - ratings_serial_tests
-#      - devhub_parallel_tests
-#      - addon_submissions_tests
-#      - api_submission_tests
+      - frontend_parallel_tests
+      - user_serial_tests
+      - collections_serial_tests
+      - ratings_serial_tests
+      - devhub_parallel_tests
+      - addon_submissions_tests
+      - api_submission_tests
 
   # scheduled in CircleCI Project settings to run each Wednesdays at 04:00 UTC
   scheduled_coverage_run:
@@ -536,7 +535,15 @@ workflows:
     jobs:
       - coverage_devhub_tests
 
-  # scheduled in CircleCI Project settings to run each Wednesdays at 05:00 UTC
+  # scheduled in CircleCI project settings to run each Wednesdays at 08:00 UTC
+  scheduled_reviewer_tools_run:
+    when:
+      and:
+        - equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
+        - equal: [ "scheduled_reviewer_tools_run", << pipeline.schedule.name >> ]
+    jobs:
+      - reviewer_tools_tests
+        # scheduled in CircleCI Project settings to run each Wednesdays at 05:00 UTC
   scheduled_stage_release_run:
     when:
       and:
