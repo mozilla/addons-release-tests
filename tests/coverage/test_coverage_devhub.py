@@ -8,7 +8,6 @@ from pages.desktop.developers.manage_authors_and_license import ManageAuthorsAnd
 from scripts import reusables
 
 
-
 def submit_addon_method(selenium, base_url):
     devhub_page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     submit_addon = devhub_page.click_submit_addon_button()
@@ -30,51 +29,12 @@ def submit_addon_method(selenium, base_url):
     return f"listed-addon{random_string}"
 
 
-# @pytest.mark.coverage
-# @pytest.mark.login("developer")
-# def test_upload_4mb_screenshots(base_url, selenium, variables, wait):
-#     "Go to the edit product page of an add-on to Images section, click Edit"
-#     "Add-on icon and Screenshots sections are displayed"
-#     selenium.get(f"{base_url}/developers/addon/{variables['4mb_addon_slug']}/edit")
-#     edit_addon_page = EditAddon(selenium, base_url).wait_for_page_to_load()
-#     "Add-on icon and Screenshots sections are displayed"
-#     edit_addon_page.edit_addon_describe_section.is_displayed()
-#     edit_addon_page.edit_addon_media_button.is_displayed()
-#     "Click on Add A Screenshot and try to upload a large image > 4MB (png or jpg format)"
-#     edit_addon_page.edit_addon_media_button.click()
-#     edit_addon_page.screenshot_upload.is_displayed()
-#     edit_addon_page.screenshot_file_upload("over_4mb_picture.png")
-#     time.sleep(10)
-#     "The image cannot be uploaded there's an error message displayed:"
-#     "There was an error uploading your file."
-#     "Please use images smaller than 4MB."
-#     edit_addon_page.edit_preview_error_strong.is_displayed()
-#     edit_addon_page.edit_preview_explicit_error.is_displayed()
-
 @pytest.mark.coverage
 @pytest.mark.login("submissions_user")
 def test_cancel_review_request_tc_id_c1803555(selenium, base_url, variables, wait):
     # Test Case: C1803555 -> AMO Coverage > Devhub
     """Submit the first version of an add-on"""
     addon_slug = submit_addon_method(selenium, base_url)
-    # devhub_page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    # submit_addon = devhub_page.click_submit_addon_button()
-    # submit_addon.select_listed_option()
-    # submit_addon.click_continue()
-    # submit_addon.upload_addon("listed-addon.zip")
-    # submit_addon.is_validation_successful()
-    # assert submit_addon.success_validation_message.is_displayed()
-    # source = submit_addon.click_continue_upload_button()
-    # source.select_no_to_omit_source()
-    # confirmation_page = source.continue_listed_submission()
-    # random_string = "listed-addon" + reusables.get_random_string(10)
-    # summary = reusables.get_random_string(10)
-    # confirmation_page.clear_addon_name()
-    # confirmation_page.set_addon_name(random_string)
-    # confirmation_page.set_addon_summary(summary)
-    # confirmation_page.select_firefox_categories(1)
-    # confirmation_page.select_license_options[0].click()
-    # confirmation_page.submit_addon()
     manage_versions = ManageVersions(selenium, base_url)
     manage_versions.open_manage_versions_page_for_addon(selenium, base_url, addon_slug)
     """Page is displayed"""
@@ -104,6 +64,7 @@ def test_cancel_review_request_tc_id_c1803555(selenium, base_url, variables, wai
     delete_addon_modal = manage_versions.delete_addon()
     delete_addon_modal.input_delete_confirmation_string()
     delete_addon_modal.confirm_delete_addon()
+
 
 @pytest.mark.coverage
 @pytest.mark.create_session("submissions_user")
@@ -150,6 +111,7 @@ def test_disable_an_addon_at_submission_tc_id_c1898098(selenium, base_url, wait,
     delete_addon_modal.input_delete_confirmation_string()
     delete_addon_modal.confirm_delete_addon()
 
+
 @pytest.mark.coverage
 @pytest.mark.create_session("submissions_user")
 def test_change_the_license_tc_id_c1901412(selenium, base_url, variables, wait):
@@ -165,8 +127,8 @@ def test_change_the_license_tc_id_c1901412(selenium, base_url, variables, wait):
     manage_authors_page.click_save_changes_button()
     manage_authors_page.wait_for_notification_box_success()
     assert (
-        variables["notification_box_success"]
-        in manage_authors_page.notification_box_success.text
+            variables["notification_box_success"]
+            in manage_authors_page.notification_box_success.text
     )
     selenium.get(f"{base_url}/firefox/addon/{addon_slug}")
     addon_detail_page = Detail(selenium, base_url).wait_for_page_to_load()
@@ -177,6 +139,7 @@ def test_change_the_license_tc_id_c1901412(selenium, base_url, variables, wait):
     delete_addon_modal = manage_versions_page.delete_addon()
     delete_addon_modal.input_delete_confirmation_string()
     delete_addon_modal.confirm_delete_addon()
+
 
 @pytest.mark.coverage
 @pytest.mark.create_session("submissions_user")
@@ -197,8 +160,8 @@ def test_manage_authors_and_license_page_tc_id_c1901410(selenium, variables, wai
     """Add End-User License Agreement and Privacy Policy and Save Changes"""
     manage_authors_page.license_agreement_checkbox.click()
     assert (
-        variables["please_specify_your_license_agreement"]
-        in manage_authors_page.please_specify_license_text.text
+            variables["please_specify_your_license_agreement"]
+            in manage_authors_page.please_specify_license_text.text
     )
     manage_authors_page.license_agreeement_textbox.send_keys(variables["text_block_for_use"])
     manage_authors_page.privacy_policy_checkbox.click()
@@ -222,8 +185,8 @@ def test_manage_authors_and_license_page_tc_id_c1901410(selenium, variables, wai
     """Click on the links"""
     addon_detail_page.privacy_policy_locator.click()
     assert (
-        variables["text_block_for_use"]
-        in addon_detail_page.addon_info_text.text
+            variables["text_block_for_use"]
+            in addon_detail_page.addon_info_text.text
     )
     selenium.get(f"{base_url}/firefox/addon/{addon_slug}")
     addon_detail_page.wait_for_page_to_load()
@@ -239,6 +202,7 @@ def test_manage_authors_and_license_page_tc_id_c1901410(selenium, variables, wai
     delete_addon_modal.input_delete_confirmation_string()
     delete_addon_modal.confirm_delete_addon()
 
+
 @pytest.mark.coverage
 @pytest.mark.create_session("submissions_user")
 def test_addon_submission_without_id_mv3_extensions_tc_id_c1950460(selenium, base_url, wait, variables):
@@ -250,12 +214,10 @@ def test_addon_submission_without_id_mv3_extensions_tc_id_c1950460(selenium, bas
     submit_addon.upload_addon("mv3_addon_without_id.zip")
     submit_addon.is_validation_failed()
     assert (
-        variables["upload_status_results_failed"]
-        in submit_addon.validation_failed_message
+            variables["upload_status_results_failed"]
+            in submit_addon.validation_failed_message
     )
     assert (
-        variables["mv3_extension_without_id_message"]
-        in submit_addon.success_validation_message.text
+            variables["mv3_extension_without_id_message"]
+            in submit_addon.success_validation_message.text
     )
-
-
