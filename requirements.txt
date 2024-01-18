@@ -65,7 +65,7 @@ urllib3==2.1.0
 virtualenv==20.24.6
 wcwidth==0.2.12
 WebOb==1.8.7
-wrapt==1.15.0
+wrapt==1.16.0
 zipp==3.17.0
 zope.component==6.0
 zope.deferredimport==4.4
