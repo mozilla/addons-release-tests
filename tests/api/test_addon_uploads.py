@@ -1339,6 +1339,7 @@ def test_upload_addon_with_trademark_name_authorized_account(
 
 
 @pytest.mark.serial
+@pytest.mark.skip(reason= "skip, need to update the user")
 def test_upload_addon_restricted_user(selenium, base_url):
     """Try to upload an addon with a user that is on the restricted list for addon submissions"""
     # get the sessionid for a regular user
