@@ -28,7 +28,7 @@ def test_versions_counter(selenium, base_url, variables):
     page = Versions(selenium, base_url)
     text = page.versions_page_header.text
     text = text.split("-")[-1][1:]
-    text = text.split("versions")[0][:-1]
+    text = text.split("version")[0][:-1]
     assert int(text) == len(page.versions_list)
 
 
