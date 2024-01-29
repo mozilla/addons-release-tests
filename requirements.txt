@@ -70,7 +70,7 @@ zipp==3.17.0
 zope.component==6.0
 zope.deferredimport==4.4
 zope.deprecation==5.0
-zope.event==4.6
+zope.event==5.0
 zope.hookable==6.0
 zope.interface==6.1
 zope.proxy==5.1
