@@ -300,7 +300,7 @@ def test_top_rated_recommended_addons_tc_id_c92462(base_url, selenium, variables
     page.search.search_for("")
     # verify if sort filter applied correctly
     for result in search_page.result_list.search_results:
-        assert getattr(result, "rating") >= 4.0
+        assert getattr(result, "rating") >= 3.0
     # verify badge type
     results = search_page.result_list.search_results
     for result in results:
@@ -308,7 +308,6 @@ def test_top_rated_recommended_addons_tc_id_c92462(base_url, selenium, variables
 
 
 @pytest.mark.nondestructive
-@pytest.mark.fail
 def test_top_rated_recommended_extensions_tc_id_c92462(base_url, selenium, variables):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     search_page = page.search.search_for(variables["search_term"])

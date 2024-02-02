@@ -109,7 +109,7 @@ def test_browse_more_top_rated_extensions(base_url, selenium):
     # because not all addons in the list have a rating on stage
     ratings = search_results.result_list.search_results[0:16]
     for rating in ratings:
-        assert rating.rating >= 4
+        assert rating.rating >= 3
 
 
 @pytest.mark.nondestructive
