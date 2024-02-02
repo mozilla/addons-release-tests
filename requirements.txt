@@ -60,7 +60,7 @@ six==1.16.0
 tenacity==8.2.3
 toml==0.10.2
 typed-ast==1.5.5
-typing-extensions==4.8.0
+typing-extensions==4.9.0
 urllib3==2.1.0
 virtualenv==20.24.6
 wcwidth==0.2.12
