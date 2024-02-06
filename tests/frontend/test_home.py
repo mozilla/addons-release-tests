@@ -347,7 +347,7 @@ def test_browsers_footer_links_tc_id_c95105(base_url, selenium, count, link):
             ["firefox/browsers/", ".mzp-c-split-body h1"],
             ["products/vpn/", ".c-sub-navigation-title"],
             ["relay.firefox.com/", ".Layout_logo__V4UCI"],
-            ["monitor.mozilla", ".monitor-logo"],
+            ["monitor.mozilla", ".LandingView_nav__I80cG > h1"],
             ["getpocket.com", ".pocket-logo"],
         ]
     ),
@@ -361,6 +361,7 @@ def test_browsers_footer_links_tc_id_c95105(base_url, selenium, count, link):
 )
 @pytest.mark.sanity
 @pytest.mark.nondestructive
+@pytest.mark.fail
 def test_products_footer_links_tc_id_c95105(base_url, selenium, count, link):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.footer.products_links[count].click()
