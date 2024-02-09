@@ -23,6 +23,9 @@ jobs:
           name: Install Firefox
           command: choco install firefox-nightly --pre --ignore-checksums -y
       - run:
+          name: Install Setup Tools
+          command: pip install setuptools
+      - run:
           name: Run coverage devhub tests
           environment:
             MOZ_HEADLESS: 1
@@ -52,6 +55,9 @@ jobs:
       - run:
           name: Install Firefox
           command: choco install firefox-nightly --pre --ignore-checksums -y
+      - run:
+          name: Install Setup Tools
+          command: pip install setuptools
       - run:
           name: Run collections serial tests
           environment:
@@ -83,6 +89,9 @@ jobs:
           name: Install Firefox
           command: choco install firefox-nightly --pre --ignore-checksums -y
       - run:
+          name: Install Setup Tools
+          command: pip install setuptools
+      - run:
           name: Run ratings serial tests
           environment:
             MOZ_HEADLESS: 1
@@ -112,6 +121,9 @@ jobs:
       - run:
           name: Install Firefox
           command: choco install firefox-nightly --pre --ignore-checksums -y
+      - run:
+          name: Install Setup Tools
+          command: pip install setuptools
       - run:
           name: Run user serial tests
           environment:
@@ -143,6 +155,9 @@ jobs:
           name: Install Firefox
           command: choco install firefox-nightly --pre --ignore-checksums -y
       - run:
+          name: Install Setup Tools
+          command: pip install setuptools
+      - run:
           name: Run frontend parallel tests
           environment:
             MOZ_HEADLESS: 1
@@ -172,6 +187,9 @@ jobs:
       - run:
           name: Install Firefox
           command: choco install firefox-nightly --pre --ignore-checksums -y
+      - run:
+          name: Install Setup Tools
+          command: pip install setuptools
       - run:
           name: Run devhub parallel tests
           environment:
@@ -203,6 +221,9 @@ jobs:
           name: Install Firefox
           command: choco install firefox-nightly --pre --ignore-checksums -y
       - run:
+          name: Install Setup Tools
+          command: pip install setuptools
+      - run:
           name: Run addon submissions tests
           environment:
             MOZ_HEADLESS: 1
@@ -232,6 +253,9 @@ jobs:
       - run:
           name: Install Firefox
           command: choco install firefox -y
+      - run:
+          name: Install Setup Tools
+          command: pip install setuptools
       - run:
           name: Sanity parallel tests
           environment:
@@ -263,6 +287,9 @@ jobs:
           name: Install Firefox
           command: choco install firefox -y
       - run:
+          name: Install Setup Tools
+          command: pip install setuptools
+      - run:
           name: Sanity serial tests
           environment:
             MOZ_HEADLESS: 1
@@ -292,6 +319,9 @@ jobs:
       - run:
           name: Install Firefox
           command: choco install firefox -y
+      - run:
+          name: Install Setup Tools
+          command: pip install setuptools
       - run:
           name: API submission tests
           environment:
@@ -323,6 +353,9 @@ jobs:
           name: Install Firefox
           command: choco install firefox-nightly --pre --ignore-checksums -y
       - run:
+          name: Install Setup Tools
+          command: pip install setuptools
+      - run:
           name: Run frontend parallel tests
           environment:
             MOZ_HEADLESS: 1
@@ -352,6 +385,9 @@ jobs:
       - run:
           name: Install Firefox
           command: choco install firefox-nightly --pre --ignore-checksums -y
+      - run:
+          name: Install Setup Tools
+          command: pip install setuptools
       - run:
           name: Run user serial tests
           environment:
@@ -383,6 +419,9 @@ jobs:
           name: Install Firefox
           command: choco install firefox-nightly --pre --ignore-checksums -y
       - run:
+          name: Install Setup Tools
+          command: pip install setuptools
+      - run:
           name: Run collections serial tests
           environment:
             MOZ_HEADLESS: 1
@@ -412,6 +451,9 @@ jobs:
       - run:
           name: Install Firefox
           command: choco install firefox-nightly --pre --ignore-checksums -y
+      - run:
+          name: Install Setup Tools
+          command: pip install setuptools
       - run:
           name: Run ratings serial tests
           environment:
@@ -443,6 +485,9 @@ jobs:
           name: Install Firefox
           command: choco install firefox-nightly --pre --ignore-checksums -y
       - run:
+          name: Install Setup Tools
+          command: pip install setuptools
+      - run:
           name: Run devhub parallel tests
           environment:
             MOZ_HEADLESS: 1
@@ -473,6 +518,9 @@ jobs:
           name: Install Firefox
           command: choco install firefox-nightly --pre --ignore-checksums -y
       - run:
+          name: Install Setup Tools
+          command: pip install setuptools
+      - run:
           name: Run addon submissions tests
           environment:
             MOZ_HEADLESS: 1
@@ -502,6 +550,9 @@ jobs:
       - run:
           name: Install Firefox
           command: choco install firefox-nightly --pre --ignore-checksums -y
+      - run:
+          name: Install Setup Tools
+          command: pip install setuptools
       - run:
           name: Reviewer Tools Tests
           environment:
