@@ -69,7 +69,7 @@ def test_enable_disable_extension(
     # verify that about:addons marks the extension as disabled -  (disabled) appended to addon name
     wait.until(
         lambda _: about_addons.installed_addon_name[0].text
-        == "Ghostery - Privacy Ad Blocker (disabled)"
+        == "Ghostery Tracker & Ad Blocker - Privacy AdBlock"
     )
     # go back to the addon detail page on AMO to Enable the addon
     selenium.switch_to.window(selenium.window_handles[1])
