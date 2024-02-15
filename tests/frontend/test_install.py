@@ -72,7 +72,7 @@ def test_enable_disable_extension(
         == "Stealthy (disabled)"
     )
     # go back to the addon detail page on AMO to Enable the addon
-    selenium.switch_to.window(selenium.window_handles[0])
+    selenium.switch_to.window(selenium.window_handles[1])
     assert addon.button_text == "Enable"
     addon.install()
     # check that the install button state changed back to "Remove"
@@ -202,10 +202,10 @@ def test_about_addons_install_extension(
     wait.until(
         lambda _: len([el.install_button for el in about_addons.addon_cards_items]) >= 8
     )
-    disco_addon_name = about_addons.addon_cards_items[1].disco_addon_name.text
-    disco_addon_author = about_addons.addon_cards_items[1].disco_addon_author.text
+    disco_addon_name = about_addons.addon_cards_items[2].disco_addon_name.text
+    disco_addon_author = about_addons.addon_cards_items[2].disco_addon_author.text
     # install the recommended extension
-    about_addons.addon_cards_items[1].install_button.click()
+    about_addons.addon_cards_items[2].install_button.click()
     firefox.browser.wait_for_notification(
         firefox_notifications.AddOnInstallConfirmation
     ).install()
