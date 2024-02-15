@@ -13,10 +13,10 @@ def test_install_uninstall_extension_tc_id_c393003(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Open an extension detail page, install it and then uninstall it"""
-    selenium.get(f"{base_url}/addon/aarafow-molla-mantinch/")
+    selenium.get(f"{base_url}/addon/stealthy/")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     amo_addon_name = addon.name
-    assert amo_addon_name == "aarafow-molla-mantinch"
+    assert amo_addon_name == "Stealthy"
     assert addon.is_compatible
     addon.install()
     firefox.browser.wait_for_notification(
@@ -51,7 +51,7 @@ def test_enable_disable_extension(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Open an extension detail page, install it, disable it from about:addons then enable it back in AMO"""
-    selenium.get(f"{base_url}/addon/aarafow-molla-mantinch/")
+    selenium.get(f"{base_url}/addon/stealthy/")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     addon.install()
     firefox.browser.wait_for_notification(
@@ -69,7 +69,7 @@ def test_enable_disable_extension(
     # verify that about:addons marks the extension as disabled -  (disabled) appended to addon name
     wait.until(
         lambda _: about_addons.installed_addon_name[0].text
-        == "aarafow-molla-mantinch (disabled)"
+        == "Stealthy (disabled)"
     )
     # go back to the addon detail page on AMO to Enable the addon
     selenium.switch_to.window(selenium.window_handles[0])
@@ -80,7 +80,7 @@ def test_enable_disable_extension(
     # open the manage Extensions page in about:addons to verify that the extension was re-enabled
     selenium.switch_to.window(selenium.window_handles[1])
     wait.until(
-        lambda _: about_addons.installed_addon_name[0].text == "aarafow-molla-mantinch"
+        lambda _: about_addons.installed_addon_name[0].text == "Stealthy"
     )
 
 
@@ -237,13 +237,13 @@ def test_about_addons_install_theme(
     wait.until(
         lambda _: len([el.install_button for el in about_addons.addon_cards_items]) >= 8
     )
-    disco_theme_name = about_addons.addon_cards_items[0].disco_addon_name.text
+    disco_theme_name = about_addons.addon_cards_items[3].disco_addon_name.text
     # make a note of the image source of the theme we are about to install
-    disco_theme_image = about_addons.addon_cards_items[0].theme_image.get_attribute(
+    disco_theme_image = about_addons.addon_cards_items[3].theme_image.get_attribute(
         "src"
     )
     # install the recommended theme
-    about_addons.addon_cards_items[0].install_button.click()
+    about_addons.addon_cards_items[3].install_button.click()
     firefox.browser.wait_for_notification(
         firefox_notifications.AddOnInstallConfirmation
     ).install()
