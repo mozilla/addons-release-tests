@@ -51,7 +51,7 @@ def test_enable_disable_extension(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Open an extension detail page, install it, disable it from about:addons then enable it back in AMO"""
-    selenium.get(f"{base_url}/addon/duckey-mallarse-donflyfis/")
+    selenium.get(f"{base_url}/addon/ghostery/")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     addon.install()
     firefox.browser.wait_for_notification(
@@ -69,7 +69,7 @@ def test_enable_disable_extension(
     # verify that about:addons marks the extension as disabled -  (disabled) appended to addon name
     wait.until(
         lambda _: about_addons.installed_addon_name[0].text
-        == "duckey-mallarse-donflyfis (disabled)"
+        == "Ghostery - Privacy Ad Blocker (disabled)"
     )
     # go back to the addon detail page on AMO to Enable the addon
     selenium.switch_to.window(selenium.window_handles[1])
@@ -80,7 +80,7 @@ def test_enable_disable_extension(
     # open the manage Extensions page in about:addons to verify that the extension was re-enabled
     selenium.switch_to.window(selenium.window_handles[1])
     wait.until(
-        lambda _: about_addons.installed_addon_name[0].text == "duckey-mallarse-donflyfis"
+        lambda _: about_addons.installed_addon_name[0].text == "Ghostery - Privacy Ad Blocker"
     )
 
 
