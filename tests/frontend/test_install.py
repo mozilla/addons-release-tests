@@ -67,10 +67,7 @@ def test_enable_disable_extension(
     about_addons.click_extensions_side_button()
     about_addons.disable_extension()
     # verify that about:addons marks the extension as disabled -  (disabled) appended to addon name
-    wait.until(
-        lambda _: about_addons.installed_addon_name[0].text
-        == "Ghostery - Privacy Ad Blocker (disabled)"
-    )
+    assert about_addons.installed_addon_name[0].text == "Ghostery - Privacy Ad Blocker (disabled)"
     # go back to the addon detail page on AMO to Enable the addon
     selenium.switch_to.window(selenium.window_handles[1])
     assert addon.button_text == "Enable"
