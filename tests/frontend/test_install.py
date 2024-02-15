@@ -222,7 +222,7 @@ def test_about_addons_install_extension(
     try:
         assert disco_addon_name in [el.text for el in about_addons.installed_addon_name]
     except AssertionError:
-        about_addons.installed_addon_cards[0].click()
+        about_addons.installed_addon_cards[1].click()
         wait.until(
             lambda _: disco_addon_author == about_addons.installed_addon_author_name
         )
