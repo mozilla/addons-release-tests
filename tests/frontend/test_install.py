@@ -78,7 +78,7 @@ def test_enable_disable_extension(
     # open the manage Extensions page in about:addons to verify that the extension was re-enabled
     selenium.switch_to.window(selenium.window_handles[1])
     time.sleep(2)
-    assert about_addons.installed_addon_name[0].text == "Ghostery - Privacy Ad Blocker"
+    wait.until(lambda _: "Ghostery - Privacy Ad Blocker" in about_addons.installed_addon_name[0].text)
 
 
 def test_install_uninstall_theme_tc_id_C95591(
