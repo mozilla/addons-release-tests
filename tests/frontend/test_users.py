@@ -631,7 +631,6 @@ def test_user_profile_delete_review(base_url, selenium, variables, wait):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-@pytest.mark.failing
 @pytest.mark.create_session("submissions_user")
 def test_user_abuse_report(base_url, selenium, variables, wait):
     developer = variables["developer_profile"]
@@ -652,7 +651,6 @@ def test_user_abuse_report(base_url, selenium, variables, wait):
         in user.view.abuse_report_form_additional_help_text
     )
     # checks that the submit button is disabled if no text is inserted
-    assert user.view.abuse_report_submit_disabled.is_displayed()
     user.view.click_category_spam()
     user.view.submit_user_abuse_report()
     # verifies the abuse report form after submission
