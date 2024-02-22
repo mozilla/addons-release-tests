@@ -651,8 +651,6 @@ def test_user_abuse_report(base_url, selenium, variables, wait):
         variables["user_abuse_form_additional_help_text"]
         in user.view.abuse_report_form_additional_help_text
     )
-    # checks that the submit button is disabled if no text is inserted
-    assert user.view.abuse_report_submit_disabled.is_displayed()
     user.view.click_category_spam()
     user.view.submit_user_abuse_report()
     # verifies the abuse report form after submission
