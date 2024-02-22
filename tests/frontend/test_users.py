@@ -631,7 +631,6 @@ def test_user_profile_delete_review(base_url, selenium, variables, wait):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-@pytest.mark.failing
 @pytest.mark.create_session("submissions_user")
 def test_user_abuse_report(base_url, selenium, variables, wait):
     developer = variables["developer_profile"]
