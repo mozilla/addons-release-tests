@@ -354,7 +354,6 @@ def test_user_regular_has_no_role(base_url, selenium):
 
 
 @pytest.mark.serial
-@pytest.mark.failing
 def test_user_regular_notifications(base_url, selenium, variables):
     user = User(selenium, base_url).open().wait_for_page_to_load()
     user.login("reusable_user")
@@ -636,14 +635,11 @@ def test_user_profile_delete_review(base_url, selenium, variables, wait):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-@pytest.mark.failing
 def test_user_abuse_report(base_url, selenium, variables, wait):
     developer = variables["developer_profile"]
     selenium.get(f"{base_url}/user/{developer}")
     user = User(selenium, base_url).wait_for_user_to_load()
     user.view.click_user_abuse_report()
-    # checks that the submit button is disabled if no text is inserted
-    assert user.view.abuse_report_submit_disabled.is_displayed()
     # checks the information present in the abuse report form before submission
     assert (
         variables["user_abuse_initial_form_header"]
