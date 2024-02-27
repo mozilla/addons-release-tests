@@ -20,16 +20,16 @@ class ReviewerToolsHomepage(Base):
     _announcement_section_locator = (By.CSS_SELECTOR, ".featured.daily-message")
 
     # Reviewer tools section
-    _manual_review_link_locator = (By.CSS_SELECTOR, ".listing > ul:nth-child(2) > li:nth-child(1) > a")
-    _content_review_link_locator = (By.CSS_SELECTOR, ".listing > ul:nth-child(6) > li:nth-child(1) > a")
-    _manual_review_log_link_locator = (By.CSS_SELECTOR, ".listing > ul:nth-child(2) > li:nth-child(2) > a")
-    _addons_review_guide_locator = (By.CSS_SELECTOR, ".listing > ul:nth-child(2) > li:nth-child(3) > a")
-    _flagged_for_human_review_locator = (By.CSS_SELECTOR, ".listing > ul:nth-child(4) > li:nth-child(1) > a")
-    _themes_new_locator = (By.CSS_SELECTOR, ".listing > ul:nth-child(8) > li:nth-child(1) > a")
-    _themes_updates_locator = (By.CSS_SELECTOR, ".listing > ul:nth-child(8) > li:nth-child(2) > a")
-    _themes_review_log_locator = (By.CSS_SELECTOR, ".listing > ul:nth-child(8) > li:nth-child(3) > a")
-    _themes_review_guide_locator = (By.CSS_SELECTOR, ".listing > ul:nth-child(8) > li:nth-child(4) > a")
-    _add_ons_pending_rejection_locator = (By.CSS_SELECTOR, ".listing > ul:nth-child(10) > li:nth-child(1) > a")
+    _manual_review_link_locator = (By.XPATH, "//a[contains(text(),'Manual Review')]")
+    _content_review_link_locator = (By.XPATH, "//a[contains(text(),'Content Review')]")
+    _manual_review_log_link_locator = (By.XPATH, "//a[contains(text(),'Review Log')]")
+    _addons_review_guide_locator = (By.XPATH, "//a[contains(text(),'Add-on Review Guide')]")
+    _flagged_for_human_review_locator = (By.XPATH, "//a[contains(text(),'Flagged by MAD for Human Review')]")
+    _themes_new_locator = (By.XPATH, "//a[contains(text(),'New')]")
+    _themes_updates_locator = (By.XPATH, "//a[contains(text(),'Updates')]")
+    _themes_review_log_locator = (By.XPATH, "//h3[contains(text(),'Themes')]/following-sibling::ul//a[contains(text(),'Review Log')]")
+    _themes_review_guide_locator = (By.XPATH, "//h3[contains(text(),'Themes')]/following-sibling::ul//a[contains(text(),'Review Guide')]")
+    _add_ons_pending_rejection_locator = (By.XPATH, "//h3[contains(text(),'Admin Tools')]/following-sibling::ul//a[contains(text(),'Add-ons Pending Rejection')]")
 
     # Footer section
     _mozilla_logo_footer_locator = (By.CSS_SELECTOR, ".Icon-mozilla")

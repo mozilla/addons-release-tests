@@ -7,13 +7,13 @@ class ContentReview(Base):
     URL_TEMPLATE = "reviewers/queue/content_review"
 
     # Current tab
-    _content_review_tab_locator = (By.CSS_SELECTOR, ".selected")
+    _content_review_tab_locator = (By.XPATH, "//li[@class='selected']//a[contains(text(),'Content Review')]")
 
     # Queue viewing
-    _addon_column_locator = (By.CSS_SELECTOR, ".listing-header > th:nth-child(2)")
-    _flags_column_locator = (By.CSS_SELECTOR, ".listing-header > th:nth-child(3)")
-    _last_updated_column_locator = (By.CSS_SELECTOR, ".listing-header > th:nth-child(4)")
-    _maliciousness_score_column_locator = (By.CSS_SELECTOR, ".listing-header > th:nth-child(5)")
+    _addon_column_locator = (By.XPATH, "//th[contains(text(),'Add-on')]")
+    _flags_column_locator = (By.XPATH, "//th[contains(text(),'Flags')]")
+    _last_updated_column_locator = (By.XPATH, "//th[contains(text(),'Last Updated')]")
+    _maliciousness_score_column_locator = (By.XPATH, "//th[contains(text(),'Maliciousness Score')]")
 
     def wait_for_page_to_load(self):
         self.wait.until(
