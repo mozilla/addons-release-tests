@@ -6,11 +6,11 @@ from pages.desktop.base import Base
 class ReviewerThemes(Base):
     URL_TEMPLATE = "reviewers/queue/theme_new"
 
-    _themes_new_locator = (By.CSS_SELECTOR, "li.selected")
+    _themes_new_locator = (By.XPATH, "//li[@class='selected']//a[contains(text(),'New')]")
 
-    _addon_column_locator = (By.CSS_SELECTOR, ".listing-header > th:nth-child(2)")
-    _flags_column_locator = (By.CSS_SELECTOR, ".listing-header > th:nth-child(3)")
-    _due_date_column_locator = (By.CSS_SELECTOR, ".listing-header > th:nth-child(4)")
+    _addon_column_locator = (By.XPATH, "//th[contains(text(),'Add-on')]")
+    _flags_column_locator = (By.XPATH, "//th[contains(text(),'Flags')]")
+    _due_date_column_locator = (By.XPATH, "//th[contains(text(),'Due date')]")
 
     def wait_for_page_to_load(self):
         self.wait.until(

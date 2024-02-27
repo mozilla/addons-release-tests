@@ -1,6 +1,7 @@
 import pytest
 
 from pages.desktop.reviewer_tools.reviewer_tools_homepage import ReviewerToolsHomepage
+from pages.desktop.reviewer_tools.addon_review_page import ReviewAddonPage
 from pages.desktop.developers.devhub_home import DevHubHome
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -125,3 +126,30 @@ def test_queues_themes_updates_tc_id_c325792(selenium, base_url):
         "Updates" in themes_updates_page.themes_selected.text
     )
     themes_updates_page.assert_queue_viewing_themes_new()
+
+@pytest.mark.login("reviewer_user")
+def test_information_on_add_on_review_page_tc_id_C354060(selenium, base_url, variables):
+    """Load AMO Reviewer Tools homepage."""
+    addon_review_page = ReviewAddonPage(selenium, base_url)
+    """Open an add-on review page"""
+    selenium.get(f"{base_url}/{addon_review_page.URL_TEMPLATE}9609")
+    addon_review_page.wait_for_page_to_load()
+    """Assert that the Addon Review Page has the following elements:"""
+    """Announcement
+        - the announcement text box can be dismissed by clicking on the X button in top right corner
+        - a text box on top of the review page where admin reviewers can communicate messages to other reviewers"""
+    addon_review_page.assert_announcement_section_displayed()
+    """Add-on information Section"""
+    addon_review_page.assert_addon_info_section_displayed()
+    """Sidenav"""
+    addon_review_page.assert_sidenav_section_displayed()
+    """Abuse Reports"""
+    addon_review_page.assert_abuse_report_section_displayed()
+    """Add-on History"""
+    addon_review_page.assert_addon_history_section_displayed()
+    """Reviewer actions"""
+    addon_review_page.assert_reviewer_actions_section_displayed()
+    """Whiteboards"""
+    addon_review_page.assert_whiteboard_section_displayed()
+    """More actions"""
+    addon_review_page.assert_more_actions_section_displayed()

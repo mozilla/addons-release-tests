@@ -7,14 +7,14 @@ class ManualReview(Base):
     URL_TEMPLATE = "reviewers/queue/extension"
 
     # Tab Navigation
-    _manual_review_tab_locator = (By.CSS_SELECTOR, ".tabnav > li:nth-child(1) > a")
+    _manual_review_tab_locator = (By.XPATH, "//li[@class='selected']//a[contains(text(),'Manual Review')]")
 
     # Queue Viewing
-    _addon_column_locator = (By.CSS_SELECTOR, ".listing-header > th:nth-child(2)")
-    _type_column_locator = (By.CSS_SELECTOR, ".listing-header > th:nth-child(3)")
-    _due_date_column_locator = (By.CSS_SELECTOR, ".listing-header > th:nth-child(4)")
-    _flag_column_locator = (By.CSS_SELECTOR, ".listing-header > th:nth-child(5)")
-    _maliciousness_score_column_locator = (By.CSS_SELECTOR, ".listing-header > th:nth-child(6)")
+    _addon_column_locator = (By.XPATH, "//th[contains(text(),'Add-on')]")
+    _type_column_locator = (By.XPATH, "//th[contains(text(),'Type')]")
+    _due_date_column_locator = (By.XPATH, "//th[contains(text(),'Due date')]")
+    _flag_column_locator = (By.XPATH, "//th[contains(text(),'Flags')]")
+    _maliciousness_score_column_locator = (By.XPATH, "//th[contains(text(),'Maliciousness Score')]")
     _addon_list_locator = (By.CSS_SELECTOR, "#addon-queue > tbody > tr")
 
     def wait_for_page_to_load(self):
