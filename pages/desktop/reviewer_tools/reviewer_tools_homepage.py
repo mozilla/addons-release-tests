@@ -153,11 +153,11 @@ class ReviewerToolsHomepage(Base):
 
     def click_themes_new_link(self):
         self.find_element(*self._themes_new_locator).click()
-        return ReviewerThemes(self.driver, self.base_url).wait_for_page_to_load()
+        return ReviewerThemes(self.driver, self.base_url).wait_for_themes_new_page_to_load()
 
     def click_themes_updates_link(self):
         self.find_element(*self._themes_updates_locator).click()
-        return ReviewerThemes(self.driver, self.base_url).wait_for_page_to_load()
+        return ReviewerThemes(self.driver, self.base_url).wait_for_themes_update_page_to_load()
 
 
     # Methods -------------------------------------------------------------

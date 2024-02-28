@@ -12,9 +12,9 @@ class ManualReview(Base):
     # Queue Viewing
     _addon_column_locator = (By.XPATH, "//th[contains(text(),'Add-on')]")
     _type_column_locator = (By.XPATH, "//th[contains(text(),'Type')]")
-    _due_date_column_locator = (By.XPATH, "//th[contains(text(),'Due Date')]")
+    _due_date_column_locator = (By.XPATH, "//a[contains(text(),'Due Date')]")
     _flag_column_locator = (By.XPATH, "//th[contains(text(),'Flags')]")
-    _maliciousness_score_column_locator = (By.XPATH, "//th[contains(text(),'Maliciousness Score')]")
+    _maliciousness_score_column_locator = (By.XPATH, "//a[contains(text(),'Maliciousness Score')]")
     _addon_list_locator = (By.CSS_SELECTOR, "#addon-queue > tbody > tr")
 
     def wait_for_page_to_load(self):
