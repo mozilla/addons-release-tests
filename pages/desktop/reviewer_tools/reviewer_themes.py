@@ -10,7 +10,7 @@ class ReviewerThemes(Base):
 
     _addon_column_locator = (By.XPATH, "//th[contains(text(),'Add-on')]")
     _flags_column_locator = (By.XPATH, "//th[contains(text(),'Flags')]")
-    _due_date_column_locator = (By.XPATH, "//th[contains(text(),'Due date')]")
+    _due_date_column_locator = (By.XPATH, "//th[contains(text(),'Due Date')]")
 
     def wait_for_page_to_load(self):
         self.wait.until(
