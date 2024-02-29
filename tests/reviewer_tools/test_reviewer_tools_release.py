@@ -107,7 +107,6 @@ def test_queues_themes_new_tc_id_c325790(selenium, base_url):
     themes_new_page.assert_queue_viewing_themes_new()
 
 @pytest.mark.login("reviewer_user")
-@pytest.mark.failing
 def test_queues_themes_updates_tc_id_c325792(selenium, base_url):
     """Load AMO Reviewer Tools homepage."""
     """AMO Reviewer Tools homepage is displayed without any layout issues."""
@@ -127,7 +126,7 @@ def test_queues_themes_updates_tc_id_c325792(selenium, base_url):
     assert (
         "Updates" in themes_updates_page.themes_updates_selected.text
     )
-    themes_updates_page.assert_queue_viewing_themes_new()
+    themes_updates_page.assert_queue_viewing_themes_updates()
 
 @pytest.mark.login("reviewer_user")
 def test_information_on_add_on_review_page_tc_id_C354060(selenium, base_url, variables):
