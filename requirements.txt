@@ -50,7 +50,7 @@ pytest-instafail==0.5.0
 pytest-metadata==3.1.1
 pytest-rerunfailures==13.0
 pytest-selenium==4.0.0
-pytest-variables==2.0.0
+pytest-variables==3.1.0
 pytest-xdist==3.5.0
 pyotp==2.9.0
 regex==2023.12.25
