@@ -76,7 +76,7 @@ class ReviewerThemes(Base):
             "Add-on" in self.addon_column.text
         )
         assert (
-            self.due_date_column.is_displayed(),
+            self.due_date_themes_updates_column.is_displayed(),
             "Due Date" in self.due_date_themes_updates_column.text
         )
         assert (
