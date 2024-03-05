@@ -106,6 +106,7 @@ def test_queues_themes_new_tc_id_c325790(selenium, base_url):
     )
     themes_new_page.assert_queue_viewing_themes_new()
 
+
 @pytest.mark.login("reviewer_user")
 def test_queues_themes_updates_tc_id_c325792(selenium, base_url):
     """Load AMO Reviewer Tools homepage."""
@@ -124,9 +125,10 @@ def test_queues_themes_updates_tc_id_c325792(selenium, base_url):
         EC.url_contains("reviewers/queue/theme_updates")
     )
     assert (
-        "Updates" in themes_updates_page.themes_updates_selected.text
+            "Updates" in themes_updates_page.themes_updates_selected.text
     )
     themes_updates_page.assert_queue_viewing_themes_updates()
+
 
 @pytest.mark.login("reviewer_user")
 def test_information_on_add_on_review_page_tc_id_C354060(selenium, base_url, variables):
@@ -154,3 +156,44 @@ def test_information_on_add_on_review_page_tc_id_C354060(selenium, base_url, var
     addon_review_page.assert_whiteboard_section_displayed()
     """More actions"""
     addon_review_page.assert_more_actions_section_displayed()
+
+
+@pytest.mark.login("reviewer_user")
+def test_logs_add_on_review_log_tc_id_C4588(selenium, base_url, variables):
+    """Load AMO Reviewer Tools homepage."""
+    reviewer_tools_homepage = ReviewerToolsHomepage(selenium, base_url).open().wait_for_page_to_load()
+    """AMO Reviewer Tools homepage is displayed without any layout issues."""
+    reviewer_tools_homepage.assert_reviewer_tools_section()
+    """Select "Add-on Review Log" from the available options."""
+    manual_review_log_page = reviewer_tools_homepage.click_manual_review_log_link()
+    """Add-on Review Log page is loaded
+    Should contain the following:
+    - URL is https://reviewers.addons.allizom.org/en-US/reviewers/reviewlog
+    - Filter section where user is able to chose between which dates to view entries for and a type. 
+    There is a "Filter" button colored in blue
+    - A list of reviewed add-ons containing the following information: Date, Event, Editor and a Show Comments link. 
+    When the Show Comments link is clicked, a list of comments is displayed under the add-on in the list.
+    Note: If there are no reviews for the selected period, 
+    the following message is displayed "No reviews found for this period."""
+    EC.url_contains(manual_review_log_page.URL_TEMPLATE)
+    manual_review_log_page.assert_review_page_elements()
+    manual_review_log_page.assert_no_results_search(variables["reviewer_tools_no_results_in_this_period_message"])
+
+
+@pytest.mark.login("reviewer_user")
+def test_logs_moderated_review_log_tc_id_C4614(selenium, base_url, variables):
+    """Load AMO Reviewer Tools homepage"""
+    reviewer_tools_homepage = ReviewerToolsHomepage(selenium, base_url).open().wait_for_page_to_load()
+    """AMO Reviewer Tools homepage is displayed without any layout issues"""
+    reviewer_tools_homepage.assert_reviewer_tools_section()
+    """Go to User Ratings Moderation queue and select Moderated Review Log from the available options."""
+    moderated_review_log_page = reviewer_tools_homepage.click_moderated_review_log_link()
+    """Add-on Moderated Review Log page is loaded - https://reviewers.addons.allizom.org/en-US/reviewers/logs
+    Please verify the the following:   
+    a) Filter section where user is able to chose between which dates to view entries for and a "Filter by type/action" containing a dropdown list with "Approved Reviews/Deleted Reviews" options. There is a "Filter" button colored in blue.  
+    b) A list of reviewed add-ons containing the following information: Date, Event (Editor, Review, name of the Add-on and More Details links)  
+    c) If "More Details" link is clicked, "Log Details" page is loaded containing details about the Add-on/Review  
+    Note: If there are no moderated reviews for the selected period, the following message is displayed "No events found for this period."""
+    moderated_review_log_page.assert_moderated_review_log_page_elements()
+    log_details_page = moderated_review_log_page.click_more_details_link()
+    log_details_page.assert_log_details_section_elements()
