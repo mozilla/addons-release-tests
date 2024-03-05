@@ -5,6 +5,8 @@ from pages.desktop.base import Base
 from pages.desktop.reviewer_tools.manual_review import ManualReview
 from pages.desktop.reviewer_tools.content_review import ContentReview
 from pages.desktop.reviewer_tools.reviewer_themes import ReviewerThemes
+from pages.desktop.reviewer_tools.manual_review_log import ManualReviewLog
+from pages.desktop.reviewer_tools.moderated_review_log import ModeratedReviewLog
 
 
 class ReviewerToolsHomepage(Base):
@@ -21,8 +23,9 @@ class ReviewerToolsHomepage(Base):
 
     # Reviewer tools section
     _manual_review_link_locator = (By.XPATH, "//a[contains(text(),'Manual Review')]")
+    _moderated_review_log_locator = (By.XPATH, "//h3[contains(text(),'User Ratings Moderation')]/following-sibling::ul//a[contains(text(),'Moderated Review Log')]")
     _content_review_link_locator = (By.XPATH, "//a[contains(text(),'Content Review')]")
-    _manual_review_log_link_locator = (By.XPATH, "//a[contains(text(),'Review Log')]")
+    _manual_review_log_link_locator = (By.XPATH, "//h3[contains(text(),'Manual Review')]/following-sibling::ul//a[contains(text(),'Review Log')]")
     _addons_review_guide_locator = (By.XPATH, "//a[contains(text(),'Add-on Review Guide')]")
     _flagged_for_human_review_locator = (By.XPATH, "//a[contains(text(),'Flagged by MAD for Human Review')]")
     _themes_new_locator = (By.XPATH, "//a[contains(text(),'New')]")
@@ -111,6 +114,10 @@ class ReviewerToolsHomepage(Base):
     def add_ons_pending_rejection(self):
         return self.find_element(*self._add_ons_pending_rejection_locator)
 
+    @property
+    def moderated_review_log(self):
+        return self.find_element(*self._moderated_review_log_locator)
+
     # Tab Navigation ----------------------------------------------------------
     @property
     def manual_review_tab(self):
@@ -158,6 +165,14 @@ class ReviewerToolsHomepage(Base):
     def click_themes_updates_link(self):
         self.find_element(*self._themes_updates_locator).click()
         return ReviewerThemes(self.driver, self.base_url).wait_for_themes_update_page_to_load()
+
+    def click_manual_review_log_link(self):
+        self.find_element(*self._manual_review_log_link_locator).click()
+        return ManualReviewLog(self.driver, self.base_url).wait_for_page_to_load()
+
+    def click_moderated_review_log_link(self):
+        self.find_element(*self._moderated_review_log_locator).click()
+        return ModeratedReviewLog(self.driver, self.base_url).wait_for_page_to_load()
 
 
     # Methods -------------------------------------------------------------

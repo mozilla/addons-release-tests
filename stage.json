@@ -210,5 +210,7 @@
   "text_block_for_use": "Olim puer varius et ad iram promptus misere flebat.",
   "please_specify_your_license_agreement": "Please specify your add-on's End-User License Agreement:",
   "please_specify_your_privacy_policy": "Please specify your add-on's Privacy Policy:",
-  "mv3_extension_without_id_message": "The extension ID is required in Manifest Version 3 and above."
+  "mv3_extension_without_id_message": "The extension ID is required in Manifest Version 3 and above.",
+
+  "reviewer_tools_no_results_in_this_period_message": "No reviews found for this period."
 }
