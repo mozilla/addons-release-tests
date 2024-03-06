@@ -28,7 +28,7 @@ class ReviewerToolsHomepage(Base):
     _manual_review_log_link_locator = (By.XPATH, "//h3[contains(text(),'Manual Review')]/following-sibling::ul//a[contains(text(),'Review Log')]")
     _addons_review_guide_locator = (By.XPATH, "//a[contains(text(),'Add-on Review Guide')]")
     _flagged_for_human_review_locator = (By.XPATH, "//a[contains(text(),'Flagged by MAD for Human Review')]")
-    _themes_new_locator = (By.XPATH, "//a[contains(text(),'New')]")
+    _themes_new_locator = (By.XPATH, "//h3[contains(text(),'Themes')]/following-sibling::ul//a[contains(text(),'New')]")
     _themes_updates_locator = (By.XPATH, "//a[contains(text(),'Updates')]")
     _themes_review_log_locator = (By.XPATH, "//h3[contains(text(),'Themes')]/following-sibling::ul//a[contains(text(),'Review Log')]")
     _themes_review_guide_locator = (By.XPATH, "//h3[contains(text(),'Themes')]/following-sibling::ul//a[contains(text(),'Review Guide')]")
