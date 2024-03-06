@@ -2,7 +2,7 @@ apipkg==3.0.2
 appdirs==1.4.4
 astroid==3.0.2
 atomicwrites==1.4.1
-attrs==23.1.0
+attrs==23.2.0
 certifi==2024.2.2
 cffi==1.16.0
 chardet==5.2.0
