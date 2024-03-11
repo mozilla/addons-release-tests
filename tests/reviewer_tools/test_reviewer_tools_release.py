@@ -197,3 +197,45 @@ def test_logs_moderated_review_log_tc_id_C4614(selenium, base_url, variables):
     moderated_review_log_page.assert_moderated_review_log_page_elements()
     log_details_page = moderated_review_log_page.click_more_details_link()
     log_details_page.assert_log_details_section_elements()
+
+
+@pytest.mark.login("reviewer_user")
+def test_reviewer_tools_review_guide_for_each_queue_page_C104890(selenium, base_url, variables):
+    """Load AMO Reviewer Tools homepage"""
+    reviewer_tools_homepage = ReviewerToolsHomepage(selenium, base_url).open().wait_for_page_to_load()
+    """AMO Reviewer Tools homepage is displayed without any layout issues"""
+    reviewer_tools_homepage.assert_reviewer_tools_section()
+    """Click on the Review Guide link available in the following queues and verify that it redirects accordingly:"""
+    """Manual Review Add-ons"""
+    """The review guide for the corresponding queues redirects as follows:
+    Manual Review Add-ons - Review Guide -->https://wiki.mozilla.org/Add-ons/Reviewers/Guide"""
+    reviewer_tools_homepage.click_addon_review_guide_link()
+    EC.url_contains("/Add-ons/Reviewers/Guide")
+    reviewer_tools_homepage.open().wait_for_page_to_load()
+    """Themes"""
+    """Static Themes - Review Guide -->https://wiki.mozilla.org/Add-ons/Reviewers/Themes/Guidelines"""
+    reviewer_tools_homepage.click_themes_review_guide_click()
+    EC.url_contains("/Add-ons/Reviewers/Themes/Guidelines")
+    reviewer_tools_homepage.open().wait_for_page_to_load()
+    """User Ratings Moderation"""
+    """User Ratings Moderation - Review Guide -->https://wiki.mozilla.org/Add-ons/Reviewers/Guide/Moderation"""
+    reviewer_tools_homepage.click_moderation_guide_click()
+    EC.url_contains("/Add-ons/Reviewers/Guide/Moderation")
+
+
+@pytest.mark.login("reviewer_user")
+def test_queues_ratings_awaiting_moderation_tc_id_C4586(selenium, base_url):
+    """Load AMO Reviewer Tools homepage"""
+    reviewer_tools_homepage = ReviewerToolsHomepage(selenium, base_url).open().wait_for_page_to_load()
+    """AMO Reviewer Tools homepage is displayed without any layout issues"""
+    reviewer_tools_homepage.assert_reviewer_tools_section()
+    """Go to "User Ratings Moderation" queues  and select "Ratings Awaiting Moderation" from the available options"""
+    ratings_awaiting_moderation = reviewer_tools_homepage.click_ratings_awaiting_moderation()
+    """Moderated reviews Queues page is displayed - https://reviewers.addons.allizom.org/en-US/reviewers/queue/reviews
+    Please verify if :    
+    a) A multitab containing all queue types is displayed and "Moderated Reviews" is selected  
+    b) A list of moderated reviews is displayed containing the app name, rating and author, the reason for moderation   
+    c) Moderation actions on the right side : "Keep review; remove flags", "Skip for now" and "Delete review"  
+    d) A "Process reviews" blue button (at the beginning and on the end of the reviews table)"""
+    ratings_awaiting_moderation.assert_moderation_actions_section_elements()
+    ratings_awaiting_moderation.assert_process_reviews_buttons()

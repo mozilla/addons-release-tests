@@ -7,6 +7,8 @@ from pages.desktop.reviewer_tools.content_review import ContentReview
 from pages.desktop.reviewer_tools.reviewer_themes import ReviewerThemes
 from pages.desktop.reviewer_tools.manual_review_log import ManualReviewLog
 from pages.desktop.reviewer_tools.moderated_review_log import ModeratedReviewLog
+from pages.desktop.reviewer_tools.ratings_awaiting_moderation import RatingsAwaitingModeration
+from scripts import reusables
 
 
 class ReviewerToolsHomepage(Base):
@@ -33,6 +35,8 @@ class ReviewerToolsHomepage(Base):
     _themes_review_log_locator = (By.XPATH, "//h3[contains(text(),'Themes')]/following-sibling::ul//a[contains(text(),'Review Log')]")
     _themes_review_guide_locator = (By.XPATH, "//h3[contains(text(),'Themes')]/following-sibling::ul//a[contains(text(),'Review Guide')]")
     _add_ons_pending_rejection_locator = (By.XPATH, "//h3[contains(text(),'Admin Tools')]/following-sibling::ul//a[contains(text(),'Add-ons Pending Rejection')]")
+    _user_ratings_moderation_guide_locator = (By.XPATH, "//h3[contains(text(),'User Ratings Moderation')]/following-sibling::ul//a[contains(text(),'Moderation Guide')]")
+    _user_ratings_awaiting_moderation_locator = (By.XPATH, "//h3[contains(text(),'User Ratings Moderation')]/following-sibling::ul//a[contains(text(),'Ratings Awaiting Moderation')]")
 
     # Footer section
     _mozilla_logo_footer_locator = (By.CSS_SELECTOR, ".Icon-mozilla")
@@ -143,6 +147,14 @@ class ReviewerToolsHomepage(Base):
     def pending_rejection_tab(self):
         return self.find_element(*self._pending_rejection_tab_locator)
 
+    @property
+    def moderation_guide(self):
+        return self.find_element(*self._user_ratings_moderation_guide_locator)
+
+    @property
+    def ratings_awaiting_moderation(self):
+        return self.find_element(*self._user_ratings_awaiting_moderation_locator)
+
     # Footer Section
 
     @property
@@ -174,6 +186,45 @@ class ReviewerToolsHomepage(Base):
         self.find_element(*self._moderated_review_log_locator).click()
         return ModeratedReviewLog(self.driver, self.base_url).wait_for_page_to_load()
 
+    def click_ratings_awaiting_moderation(self):
+        self.find_element(*self._user_ratings_awaiting_moderation_locator).click()
+        return RatingsAwaitingModeration(self.driver, self.base_url).wait_for_page_to_load()
+
+    def click_addon_review_guide_link(self):
+        self.find_element(*self._addons_review_guide_locator).click()
+        self.wait.until(EC.number_of_windows_to_be(2))
+        current_tab = self.driver.window_handles[0]
+        new_tab = self.driver.window_handles[1]
+        self.driver.switch_to.window(new_tab)
+        self.wait.until(
+            EC.visibility_of_element_located((By.ID, "Add-on_Review_Guide"))
+        )
+        self.driver.close()
+        self.driver.switch_to.window(current_tab)
+
+    def click_themes_review_guide_click(self):
+        self.find_element(*self._themes_review_guide_locator).click()
+        self.wait.until(EC.number_of_windows_to_be(2))
+        current_tab = self.driver.window_handles[0]
+        new_tab = self.driver.window_handles[1]
+        self.driver.switch_to.window(new_tab)
+        self.wait.until(
+            EC.visibility_of_element_located((By.ID, "Background_Themes_Content_Guidelines"))
+        )
+        self.driver.close()
+        self.driver.switch_to.window(current_tab)
+
+    def click_moderation_guide_click(self):
+        self.find_element(*self._user_ratings_moderation_guide_locator).click()
+        self.wait.until(EC.number_of_windows_to_be(2))
+        current_tab = self.driver.window_handles[0]
+        new_tab = self.driver.window_handles[1]
+        self.driver.switch_to.window(new_tab)
+        self.wait.until(
+            EC.visibility_of_element_located((By.ID, "User_Comment_Moderation"))
+        )
+        self.driver.close()
+        self.driver.switch_to.window(current_tab)
 
     # Methods -------------------------------------------------------------
     def assert_reviewer_tools_section(self):
