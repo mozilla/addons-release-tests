@@ -123,10 +123,10 @@ def test_install_uninstall_dictionary_tc_id_c4508(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Open a dictionary detail page, install it and then uninstall it"""
-    selenium.get(f"{base_url}/addon/release_dictionary/")
+    selenium.get(f"{base_url}/addon/dict-with-rules/")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     amo_dict_name = addon.name
-    assert amo_dict_name == "release dictionary"
+    assert amo_dict_name == "Dict with rules"
     assert addon.is_compatible
     addon.install()
     firefox.browser.wait_for_notification(
@@ -238,13 +238,13 @@ def test_about_addons_install_theme(
     wait.until(
         lambda _: len([el.install_button for el in about_addons.addon_cards_items]) >= 8
     )
-    disco_theme_name = about_addons.addon_cards_items[0].disco_addon_name.text
+    disco_theme_name = about_addons.addon_cards_items[3].disco_addon_name.text
     # make a note of the image source of the theme we are about to install
-    disco_theme_image = about_addons.addon_cards_items[0].theme_image.get_attribute(
+    disco_theme_image = about_addons.addon_cards_items[3].theme_image.get_attribute(
         "src"
     )
     # install the recommended theme
-    about_addons.addon_cards_items[0].install_button.click()
+    about_addons.addon_cards_items[3].install_button.click()
     firefox.browser.wait_for_notification(
         firefox_notifications.AddOnInstallConfirmation
     ).install()
