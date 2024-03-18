@@ -13,10 +13,10 @@ def test_install_uninstall_extension_tc_id_c393003(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Open an extension detail page, install it and then uninstall it"""
-    selenium.get(f"{base_url}/addon/stealthy/")
+    selenium.get(f"{base_url}/addon/camuse-wallam-gormoisow/")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     amo_addon_name = addon.name
-    assert amo_addon_name == "Stealthy"
+    assert amo_addon_name == "camuse-wallam-gormoisow"
     assert addon.is_compatible
     addon.install()
     firefox.browser.wait_for_notification(
@@ -51,7 +51,7 @@ def test_enable_disable_extension(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Open an extension detail page, install it, disable it from about:addons then enable it back in AMO"""
-    selenium.get(f"{base_url}/addon/ghostery/")
+    selenium.get(f"{base_url}/addon/permissionsv7/")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     addon.install()
     firefox.browser.wait_for_notification(
@@ -68,7 +68,7 @@ def test_enable_disable_extension(
     about_addons.disable_extension()
     time.sleep(3)
     # verify that about:addons marks the extension as disabled -  (disabled) appended to addon name
-    assert about_addons.installed_addon_name[0].text == "Ghostery – Privacy Ad Blocker (disabled)"
+    assert about_addons.installed_addon_name[0].text == "PermissionsOrder3 (disabled)"
     # go back to the addon detail page on AMO to Enable the addon
     selenium.switch_to.window(selenium.window_handles[0])
     assert addon.button_text == "Enable"
@@ -78,17 +78,17 @@ def test_enable_disable_extension(
     # open the manage Extensions page in about:addons to verify that the extension was re-enabled
     selenium.switch_to.window(selenium.window_handles[1])
     time.sleep(2)
-    wait.until(lambda _: "Privacy Ad Blocker" in about_addons.installed_addon_name[0].text)
+    wait.until(lambda _: "PermissionsOrder3" in about_addons.installed_addon_name[0].text)
 
 
 def test_install_uninstall_theme_tc_id_C95591(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Open a theme detail page, install it and then uninstall it"""
-    selenium.get(f"{base_url}/addon/japanese-tattoo/")
+    selenium.get(f"{base_url}/addon/calico-cat-1/")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     amo_theme_name = addon.name
-    assert amo_theme_name == "Japanese Tattoo"
+    assert amo_theme_name == "Calico Cat 1"
     assert addon.is_compatible
     addon.install()
     firefox.browser.wait_for_notification(
