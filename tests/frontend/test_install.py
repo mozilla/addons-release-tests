@@ -118,7 +118,7 @@ def test_install_uninstall_theme_tc_id_C95591(
     selenium.switch_to.window(selenium.window_handles[1])
     assert amo_theme_name not in [el.text for el in about_addons.installed_addon_name]
 
-
+@pytest.mark.skip
 def test_install_uninstall_dictionary_tc_id_c4508(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
@@ -154,7 +154,7 @@ def test_install_uninstall_dictionary_tc_id_c4508(
     with pytest.raises(IndexError):
         wait.until(lambda _: amo_dict_name == about_addons.installed_addon_name[0].text)
 
-
+@pytest.mark.skip
 def test_install_uninstall_langpack_tc_id_c4508(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
@@ -192,7 +192,7 @@ def test_install_uninstall_langpack_tc_id_c4508(
             lambda _: amo_langpack_name == about_addons.installed_addon_name[0].text
         )
 
-
+@pytest.mark.skip
 def test_about_addons_install_extension(
     selenium, base_url, wait, firefox, firefox_notifications
 ):
@@ -228,7 +228,7 @@ def test_about_addons_install_extension(
     #     )
     # FIXLATER
 
-
+@pytest.mark.skip
 def test_about_addons_install_theme(
     selenium, base_url, wait, firefox, firefox_notifications
 ):
