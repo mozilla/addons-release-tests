@@ -88,10 +88,10 @@ def test_install_uninstall_theme_tc_id_C95591(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Open a theme detail page, install it and then uninstall it"""
-    selenium.get(f"{base_url}/addon/calico-cat-1/")
+    selenium.get(f"{base_url}/addon/testing-locally/")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     amo_theme_name = addon.name
-    assert amo_theme_name == "Calico Cat 1"
+    assert amo_theme_name == "Testing locally"
     assert addon.is_compatible
     addon.install()
     firefox.browser.wait_for_notification(
@@ -159,10 +159,10 @@ def test_install_uninstall_langpack_tc_id_c4508(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Open a language pack detail page, install it and then uninstall it"""
-    selenium.get(f"{base_url}/addon/release-langpack/")
+    selenium.get(f"{base_url}/addon/release-lang-pack_dev/")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     amo_langpack_name = addon.name
-    assert amo_langpack_name == "Release lang pack"
+    assert amo_langpack_name == "Release lang pack_dev"
     assert addon.is_compatible
     addon.install()
     firefox.browser.wait_for_notification(
@@ -255,7 +255,7 @@ def test_about_addons_install_theme(
 
 
 @pytest.mark.sanity
-@pytest.mark.skip()
+@pytest.mark.skip
 def test_about_addons_extension_updates(
     selenium, base_url, wait, firefox, firefox_notifications, variables
 ):
