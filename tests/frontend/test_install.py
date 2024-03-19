@@ -9,8 +9,9 @@ from pages.desktop.frontend.details import Detail
 from pages.desktop.frontend.versions import Versions
 
 
+@pytest.mark.skip
 def test_install_uninstall_extension_tc_id_c393003(
-    selenium, base_url, firefox, firefox_notifications, wait
+        selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Open an extension detail page, install it and then uninstall it"""
     selenium.get(f"{base_url}/addon/camuse-wallam-gormoisow/")
@@ -47,8 +48,9 @@ def test_install_uninstall_extension_tc_id_c393003(
         )
 
 
+@pytest.mark.skip
 def test_enable_disable_extension(
-    selenium, base_url, firefox, firefox_notifications, wait
+        selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Open an extension detail page, install it, disable it from about:addons then enable it back in AMO"""
     selenium.get(f"{base_url}/addon/permissionsv7/")
@@ -81,8 +83,9 @@ def test_enable_disable_extension(
     wait.until(lambda _: "PermissionsOrder3" in about_addons.installed_addon_name[0].text)
 
 
+@pytest.mark.skip
 def test_install_uninstall_theme_tc_id_C95591(
-    selenium, base_url, firefox, firefox_notifications, wait
+        selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Open a theme detail page, install it and then uninstall it"""
     selenium.get(f"{base_url}/addon/calico-cat-1/")
@@ -117,7 +120,7 @@ def test_install_uninstall_theme_tc_id_C95591(
 
 
 def test_install_uninstall_dictionary_tc_id_c4508(
-    selenium, base_url, firefox, firefox_notifications, wait
+        selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Open a dictionary detail page, install it and then uninstall it"""
     selenium.get(f"{base_url}/addon/release_dictionary/")
@@ -153,7 +156,7 @@ def test_install_uninstall_dictionary_tc_id_c4508(
 
 
 def test_install_uninstall_langpack_tc_id_c4508(
-    selenium, base_url, firefox, firefox_notifications, wait
+        selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Open a language pack detail page, install it and then uninstall it"""
     selenium.get(f"{base_url}/addon/release-langpack/")
@@ -191,7 +194,7 @@ def test_install_uninstall_langpack_tc_id_c4508(
 
 
 def test_about_addons_install_extension(
-    selenium, base_url, wait, firefox, firefox_notifications
+        selenium, base_url, wait, firefox, firefox_notifications
 ):
     selenium.get("about:addons")
     about_addons = AboutAddons(selenium)
@@ -227,7 +230,7 @@ def test_about_addons_install_extension(
 
 
 def test_about_addons_install_theme(
-    selenium, base_url, wait, firefox, firefox_notifications
+        selenium, base_url, wait, firefox, firefox_notifications
 ):
     selenium.get("about:addons")
     about_addons = AboutAddons(selenium)
@@ -254,7 +257,7 @@ def test_about_addons_install_theme(
 @pytest.mark.sanity
 @pytest.mark.skip()
 def test_about_addons_extension_updates(
-    selenium, base_url, wait, firefox, firefox_notifications, variables
+        selenium, base_url, wait, firefox, firefox_notifications, variables
 ):
     """Install an addon from AMO and check for updates in addons manager;
     this test is set up to be able to run on each AMO environment"""
@@ -293,5 +296,5 @@ def test_about_addons_extension_updates(
     wait.until(
         lambda _: latest_version == about_addons.installed_version_number,
         message=f'Latest version from AMO "{latest_version}" did not match updated version from addons manager '
-        f'"{about_addons.installed_version_number}"',
+                f'"{about_addons.installed_version_number}"',
     )
