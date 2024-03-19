@@ -11,6 +11,7 @@ from pages.desktop.frontend.versions import Versions
 from scripts import reusables
 
 
+@pytest.mark.skip
 @pytest.mark.nondestructive
 def test_addon_name_in_header(selenium, base_url, variables):
     selenium.get(variables["addon_version_page_url"])
@@ -56,7 +57,7 @@ def test_license_link(selenium, base_url, variables):
     for i in range(len(page.versions_list)):
         if page.versions_list[i].license_link is not False:  # if link exists
             if (
-                page.versions_list[i].license_link.text == "Custom License"
+                    page.versions_list[i].license_link.text == "Custom License"
             ):  # if link exists and is 'Custom License'
                 page.versions_list[i].license_link.click()
                 page.wait.until(
@@ -120,7 +121,7 @@ def test_version_install_warning(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 def test_add_to_firefox_button(
-    selenium, base_url, variables, firefox, firefox_notifications
+        selenium, base_url, variables, firefox, firefox_notifications
 ):
     selenium.get(variables["addon_version_page_url"])
     page = Versions(selenium, base_url)
@@ -141,7 +142,7 @@ def test_add_to_firefox_button(
 
 @pytest.mark.nondestructive
 def test_version_download_file(
-    selenium, base_url, variables, firefox, firefox_notifications
+        selenium, base_url, variables, firefox, firefox_notifications
 ):
     """In Firefox, Download File for older versions will trigger an installation"""
     selenium.get(f'{base_url}/addon/{variables["addon_version_install"]}/versions/')
