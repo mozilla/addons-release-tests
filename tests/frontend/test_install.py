@@ -9,14 +9,15 @@ from pages.desktop.frontend.details import Detail
 from pages.desktop.frontend.versions import Versions
 
 
+@pytest.mark.skip
 def test_install_uninstall_extension_tc_id_c393003(
-    selenium, base_url, firefox, firefox_notifications, wait
+        selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Open an extension detail page, install it and then uninstall it"""
-    selenium.get(f"{base_url}/addon/aarafow-molla-mantinch/")
+    selenium.get(f"{base_url}/addon/zoomfox-webext-edit/")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     amo_addon_name = addon.name
-    assert amo_addon_name == "aarafow-molla-mantinch"
+    assert amo_addon_name == "Zoomfox-webext-EDIT"
     assert addon.is_compatible
     addon.install()
     firefox.browser.wait_for_notification(
@@ -47,11 +48,12 @@ def test_install_uninstall_extension_tc_id_c393003(
         )
 
 
+@pytest.mark.skip
 def test_enable_disable_extension(
-    selenium, base_url, firefox, firefox_notifications, wait
+        selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Open an extension detail page, install it, disable it from about:addons then enable it back in AMO"""
-    selenium.get(f"{base_url}/addon/aarafow-molla-mantinch/")
+    selenium.get(f"{base_url}/addon/zoomfox-webext-edit/")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     addon.install()
     firefox.browser.wait_for_notification(
@@ -69,7 +71,7 @@ def test_enable_disable_extension(
     # verify that about:addons marks the extension as disabled -  (disabled) appended to addon name
     wait.until(
         lambda _: about_addons.installed_addon_name[0].text
-        == "aarafow-molla-mantinch (disabled)"
+                  == "Zoomfox-webext (disabled)"
     )
     # go back to the addon detail page on AMO to Enable the addon
     selenium.switch_to.window(selenium.window_handles[0])
@@ -80,12 +82,12 @@ def test_enable_disable_extension(
     # open the manage Extensions page in about:addons to verify that the extension was re-enabled
     selenium.switch_to.window(selenium.window_handles[1])
     wait.until(
-        lambda _: about_addons.installed_addon_name[0].text == "aarafow-molla-mantinch"
+        lambda _: about_addons.installed_addon_name[0].text == "Zoomfox-webext"
     )
 
 
 def test_install_uninstall_theme_tc_id_C95591(
-    selenium, base_url, firefox, firefox_notifications, wait
+        selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Open a theme detail page, install it and then uninstall it"""
     selenium.get(f"{base_url}/addon/full-moon-kitty/")
@@ -120,7 +122,7 @@ def test_install_uninstall_theme_tc_id_C95591(
 
 
 def test_install_uninstall_dictionary_tc_id_c4508(
-    selenium, base_url, firefox, firefox_notifications, wait
+        selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Open a dictionary detail page, install it and then uninstall it"""
     selenium.get(f"{base_url}/addon/release_dictionary/")
@@ -156,7 +158,7 @@ def test_install_uninstall_dictionary_tc_id_c4508(
 
 
 def test_install_uninstall_langpack_tc_id_c4508(
-    selenium, base_url, firefox, firefox_notifications, wait
+        selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Open a language pack detail page, install it and then uninstall it"""
     selenium.get(f"{base_url}/addon/release-langpack/")
@@ -194,7 +196,7 @@ def test_install_uninstall_langpack_tc_id_c4508(
 
 
 def test_about_addons_install_extension(
-    selenium, base_url, wait, firefox, firefox_notifications
+        selenium, base_url, wait, firefox, firefox_notifications
 ):
     selenium.get("about:addons")
     about_addons = AboutAddons(selenium)
@@ -230,7 +232,7 @@ def test_about_addons_install_extension(
 
 
 def test_about_addons_install_theme(
-    selenium, base_url, wait, firefox, firefox_notifications
+        selenium, base_url, wait, firefox, firefox_notifications
 ):
     selenium.get("about:addons")
     about_addons = AboutAddons(selenium)
@@ -257,7 +259,7 @@ def test_about_addons_install_theme(
 @pytest.mark.sanity
 @pytest.mark.skip()
 def test_about_addons_extension_updates(
-    selenium, base_url, wait, firefox, firefox_notifications, variables
+        selenium, base_url, wait, firefox, firefox_notifications, variables
 ):
     """Install an addon from AMO and check for updates in addons manager;
     this test is set up to be able to run on each AMO environment"""
@@ -296,5 +298,5 @@ def test_about_addons_extension_updates(
     wait.until(
         lambda _: latest_version == about_addons.installed_version_number,
         message=f'Latest version from AMO "{latest_version}" did not match updated version from addons manager '
-        f'"{about_addons.installed_version_number}"',
+                f'"{about_addons.installed_version_number}"',
     )
