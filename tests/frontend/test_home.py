@@ -283,7 +283,7 @@ def test_mozilla_footer_link_tc_id_c95105(base_url, selenium):
             ["extensionworkshop", ".grid-container h1"],
             ["developers", ".DevHub-Navigation-Logo"],
             ["add-on-policies", ".page-hero-description h1"],
-            ["blog.mozilla.org", ".featured-posts"],
+            ["blog.mozilla.org", ".site-title-wrap"],
             ["discourse", ".category-list"],
             ["Contact_us", ".main-page-content"],
             ["review_guide", "#review-guide"],
