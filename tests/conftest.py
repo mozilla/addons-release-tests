@@ -67,7 +67,7 @@ def firefox_options(firefox_options, base_url, variables):
         )
     else:
         firefox_options.set_preference("extensions.install.requireBuiltInCerts", False)
-        firefox_options.set_preference("xpinstall.signatures.required", False)
+        firefox_options.set_preference("xpinstall.signatures.required", True)
         firefox_options.set_preference("xpinstall.signatures.dev-root", True)
         firefox_options.set_preference("extensions.webapi.testing", True)
         firefox_options.set_preference("ui.popup.disable_autohide", True)
