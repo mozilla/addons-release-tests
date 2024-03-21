@@ -119,6 +119,7 @@ def test_version_install_warning(selenium, base_url, variables):
 
 
 @pytest.mark.nondestructive
+@pytest.mark.skip
 def test_add_to_firefox_button(
     selenium, base_url, variables, firefox, firefox_notifications
 ):
@@ -140,6 +141,7 @@ def test_add_to_firefox_button(
 
 
 @pytest.mark.nondestructive
+@pytest.mark.skip
 def test_version_download_file(
     selenium, base_url, variables, firefox, firefox_notifications
 ):

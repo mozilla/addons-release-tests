@@ -67,18 +67,18 @@ def firefox_options(firefox_options, base_url, variables):
         )
     else:
         firefox_options.set_preference("extensions.install.requireBuiltInCerts", False)
-        firefox_options.set_preference("xpinstall.signatures.required", False)
+        firefox_options.set_preference("xpinstall.signatures.required", True)
         firefox_options.set_preference("xpinstall.signatures.dev-root", True)
         firefox_options.set_preference("extensions.webapi.testing", True)
         firefox_options.set_preference("ui.popup.disable_autohide", True)
         firefox_options.set_preference("devtools.console.stdout.content", True)
         firefox_options.set_preference(
             "extensions.getAddons.discovery.api_url",
-            "https://services.addons.allizom.org/api/v4/discovery/?lang=%LOCALE%&edition=%DISTRIBUTION%",
+            variables["extensions_getAddons_discovery_api_url"],
         )
         firefox_options.set_preference(
             "extensions.getAddons.get.url",
-            "https://services.addons.allizom.org/api/v4/addons/search/?guid=%IDS%&lang=%LOCALE%",
+            variables["extensions_getAddons_get_url"],
         )
         firefox_options.set_preference(
             "extensions.update.url", variables["extensions_update_url"]
