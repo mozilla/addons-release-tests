@@ -74,11 +74,11 @@ def firefox_options(firefox_options, base_url, variables):
         firefox_options.set_preference("devtools.console.stdout.content", True)
         firefox_options.set_preference(
             "extensions.getAddons.discovery.api_url",
-            "https://services.addons.allizom.org/api/v4/discovery/?lang=%LOCALE%&edition=%DISTRIBUTION%",
+            variables["extensions_getAddons_discovery_api_url"],
         )
         firefox_options.set_preference(
             "extensions.getAddons.get.url",
-            "https://services.addons.allizom.org/api/v4/addons/search/?guid=%IDS%&lang=%LOCALE%",
+            variables["extensions_getAddons_get_url"],
         )
         firefox_options.set_preference(
             "extensions.update.url", variables["extensions_update_url"]
