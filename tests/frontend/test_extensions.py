@@ -10,6 +10,7 @@ from pages.desktop.frontend.search import Search
     "count, category",
     enumerate(
         [
+            "Accessibility",
             "Alerts & Updates",
             "Appearance",
             "Bookmarks",
@@ -29,6 +30,7 @@ from pages.desktop.frontend.search import Search
     ),
 )
 @pytest.mark.nondestructive
+@pytest.mark.extension
 def test_extensions_categories(base_url, selenium, count, category):
     extensions = Extensions(selenium, base_url).open()
     assert "Categories" in extensions.categories.categories_list_header.text
