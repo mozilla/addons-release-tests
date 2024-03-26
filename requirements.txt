@@ -34,7 +34,7 @@ psutil==5.9.8
 py==1.11.0
 PyBrowserID==0.14.0
 pycparser==2.21
-PyFxA==0.7.7
+PyFxA==0.7.8
 PyJWT==2.8.0
 pylint==3.1.0
 pyparsing==3.1.2
