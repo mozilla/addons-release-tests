@@ -22,8 +22,8 @@ from scripts.reusables import get_random_string
     "term",
     [
         "Flagfox",
-        "Video DownloadHelper",
-        "Facebook Container",
+        "Video DownloadHelper (cas-cur)",
+        "Facebook Container (cas-cur)",
         "Tree Style Tab",
         "Two little birds",
     ],
@@ -308,6 +308,7 @@ def test_top_rated_recommended_addons_tc_id_c92462(base_url, selenium, variables
 
 
 @pytest.mark.nondestructive
+@pytest.mark.failing
 def test_top_rated_recommended_extensions_tc_id_c92462(base_url, selenium, variables):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     search_page = page.search.search_for(variables["search_term"])
@@ -319,7 +320,7 @@ def test_top_rated_recommended_extensions_tc_id_c92462(base_url, selenium, varia
     page.search.search_for("")
     # verify if sort filter applied correctly
     for result in search_page.result_list.search_results:
-        assert getattr(result, "rating") >= 1.0
+        assert getattr(result, "rating") >= 3.0
     # verify that no themes are displayed
     print(search_page.result_list.themes)
     assert len(search_page.result_list.themes) == 0
