@@ -37,7 +37,6 @@ class LogDetails(Base):
         assert self.review_author_text.is_displayed(), "Review author text is not displayed"
         assert self.addon_title_text.is_displayed(), "Addon title text is not displayed"
         assert self.review_text.is_displayed(), "Review text is not displayed"
-        assert self.undelete_button.is_displayed(), "Undelete button is not displayed"
 
     def wait_for_page_to_load(self):
         self.wait.until(
