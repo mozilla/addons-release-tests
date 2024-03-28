@@ -2,9 +2,29 @@ import pytest
 
 from pages.desktop.reviewer_tools.reviewer_tools_homepage import ReviewerToolsHomepage
 from pages.desktop.reviewer_tools.addon_review_page import ReviewAddonPage
+from scripts import reusables
 from pages.desktop.developers.devhub_home import DevHubHome
 from selenium.webdriver.support import expected_conditions as EC
 
+def submit_addon_method(selenium, base_url):
+    devhub_page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    submit_addon = devhub_page.click_submit_addon_button()
+    submit_addon.select_listed_option()
+    submit_addon.click_continue()
+    submit_addon.upload_addon("listed-addon.zip")
+    submit_addon.is_validation_successful()
+    assert submit_addon.success_validation_message.is_displayed()
+    source = submit_addon.click_continue_upload_button()
+    source.select_no_to_omit_source()
+    confirmation_page = source.continue_listed_submission()
+    random_string = reusables.get_random_string(10)
+    summary = reusables.get_random_string(10)
+    confirmation_page.set_addon_name(random_string)
+    confirmation_page.set_addon_summary(summary)
+    confirmation_page.select_categories(1)
+    confirmation_page.select_license_options[0].click()
+    confirmation_page.submit_addon()
+    return f"listed-addon{random_string}"
 
 @pytest.mark.login("reviewer_user")
 def test_reviewer_tools_homepage_layout_tc_id_c4589(selenium, base_url):
@@ -239,3 +259,15 @@ def test_queues_ratings_awaiting_moderation_tc_id_C4586(selenium, base_url):
     d) A "Process reviews" blue button (at the beginning and on the end of the reviews table)"""
     ratings_awaiting_moderation.assert_moderation_actions_section_elements()
     ratings_awaiting_moderation.assert_process_reviews_buttons()
+
+@pytest.mark.login("reviewer_user")
+def test_content_approve_version_tc_id_T5456486(selenium, base_url):
+    """Submit a new add-on in order to test the content approve function"""
+    addon_slug = submit_addon_method(selenium, base_url)
+    """Load AMO Reviewer Tools homepage"""
+    reviewer_tools_homepage = ReviewerToolsHomepage(selenium, base_url).open().wait_for_page_to_load()
+    """AMO Reviewer Tools homepage is displayed without any layout issues"""
+    reviewer_tools_homepage.assert_reviewer_tools_section()
+    """Go to "User Ratings Moderation" queues  and select "Content Review" from the available options"""
+    content_review_page = reviewer_tools_homepage.click_content_review_link()
+    content_review_page.assert_queue_viewing_content_review()
