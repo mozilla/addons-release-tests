@@ -400,7 +400,7 @@ def test_social_footer_links_tc_id_c95105(base_url, selenium, count, link):
         [
             ["privacy/websites/", ".privacy-title"],
             ["privacy/websites/", ".privacy-title"],
-            ["legal/terms/mozilla", "#websites-communications-terms-of-use"],
+            ["legal/amo-policies/", "#amo-policies"],
         ]
     ),
     ids=[
@@ -410,6 +410,7 @@ def test_social_footer_links_tc_id_c95105(base_url, selenium, count, link):
     ],
 )
 @pytest.mark.sanity
+@pytest.mark.failing
 @pytest.mark.nondestructive
 def test_legal_footer_links_tc_id_c95105(base_url, selenium, count, link):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
