@@ -344,7 +344,7 @@ def test_browsers_footer_links_tc_id_c95105(base_url, selenium, count, link):
     "count, link",
     enumerate(
         [
-            ["firefox/browsers/", ".mzp-c-split-body h1"],
+            ["firefox/?utm_content=footer-link&utm_medium=referral&utm_source=addons.mozilla.org", ".mzp-t-product-firefox"],
             ["products/vpn/", ".c-sub-navigation-title"],
             ["relay.firefox.com/", ".Layout_logo__V4UCI"],
             ["monitor.mozilla", ".LandingView_nav__I80cG"],
@@ -410,7 +410,6 @@ def test_social_footer_links_tc_id_c95105(base_url, selenium, count, link):
     ],
 )
 @pytest.mark.sanity
-@pytest.mark.failing
 @pytest.mark.nondestructive
 def test_legal_footer_links_tc_id_c95105(base_url, selenium, count, link):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
