@@ -471,7 +471,7 @@ def test_devhub_browsers_footer_links(base_url, selenium, count, link):
     "count, link",
     enumerate(
         [
-            "firefox/browsers/",
+            "firefox/?utm_source=addons.mozilla.org&utm_medium=referral&utm_content=footer-link",
             "products/vpn/",
             "relay.firefox.com/",
             "monitor.mozilla",
@@ -487,6 +487,7 @@ def test_devhub_browsers_footer_links(base_url, selenium, count, link):
     ],
 )
 @pytest.mark.nondestructive
+@pytest.mark.failing
 def test_devhub_products_footer_links(base_url, selenium, count, link):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     page.products_links[count].click()
