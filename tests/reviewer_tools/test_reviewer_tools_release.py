@@ -2,9 +2,11 @@ import pytest
 
 from pages.desktop.reviewer_tools.reviewer_tools_homepage import ReviewerToolsHomepage
 from pages.desktop.reviewer_tools.addon_review_page import ReviewAddonPage
+from pages.desktop.reviewer_tools.addon_content_review_page import ContentReviewAddonPage
 from scripts import reusables
 from pages.desktop.developers.devhub_home import DevHubHome
 from selenium.webdriver.support import expected_conditions as EC
+
 
 def submit_addon_method(selenium, base_url):
     devhub_page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
@@ -26,22 +28,21 @@ def submit_addon_method(selenium, base_url):
     confirmation_page.submit_addon()
     return f"listed-addon{random_string}"
 
+
 @pytest.mark.login("reviewer_user")
 def test_reviewer_tools_homepage_layout_tc_id_c4589(selenium, base_url):
-    """Log into AMO homepage and select 'Reviewer Tools' from the user menu"""
-    """Reviewers dashboard loads without layout issues at https://reviewers.addons.allizom.org/en-US/reviewers/"""
-    """Check the components of the reviewer dashboard"""
-    """Reviewers homepage contains the following:  
+    """Log into AMO homepage and select 'Reviewer Tools' from the user menu
+    Reviewers dashboard loads without layout issues at https://reviewers.addons.allizom.org/en-US/reviewers/
+    Check the components of the reviewer dashboard
+    Reviewers homepage contains the following:
     a) Reviewer Tools title on the header"""
     reviewer_tools_page = ReviewerToolsHomepage(selenium, base_url).open().wait_for_page_to_load()
-    """
-    b) Username, Tools, Other Applications menus"""
+    # b) Username, Tools, Other Applications menus
     assert (
         reviewer_tools_page.tools_header.is_displayed(),
         reviewer_tools_page.user_header.is_displayed()
     )
-    """
-    c) Announcement section (message is displayed to each reviewer permission) """
+    # c) Announcement section (message is displayed to each reviewer permission)
     assert (
         reviewer_tools_page.announcement_section.is_displayed()
     )
@@ -53,8 +54,7 @@ def test_reviewer_tools_homepage_layout_tc_id_c4589(selenium, base_url):
         4. **Themes:** - New (<number>), Updates (<number>), Review Log, Review Guide
         5. **Admin Tools:** - Add-ons Pending Rejection (Admin Reviewers only)"""
     reviewer_tools_page.assert_reviewer_tools_section()
-    """
-    e) Page Footer"""
+    # e) Page Footer
     assert (
         reviewer_tools_page.mozilla_logo.is_displayed()
     )
@@ -63,10 +63,10 @@ def test_reviewer_tools_homepage_layout_tc_id_c4589(selenium, base_url):
 @pytest.mark.login("reviewer_user")
 @pytest.mark.failing
 def test_queues_manual_review_queue_tc_id_c4583(selenium, base_url, wait):
-    """Load AMO Reviewer Tools homepage."""
-    """AMO Reviewer Tools homepage is displayed without any layout issues."""
+    """Load AMO Reviewer Tools homepage.
+    AMO Reviewer Tools homepage is displayed without any layout issues."""
     reviewer_tools_page = ReviewerToolsHomepage(selenium, base_url).open().wait_for_page_to_load()
-    """Go to **Manual Review** and select **Manual Review** from the available options."""
+    # Go to **Manual Review** and select **Manual Review** from the available options.
     manual_review_page = reviewer_tools_page.click_manual_review_link()
     """The queue is displayed - https://reviewers.addons.allizom.org/en-US/reviewers/queue/extension 
     There's a tabnav containing all queues corresponding to your reviewer permissions is displayed 
@@ -82,14 +82,14 @@ def test_queues_manual_review_queue_tc_id_c4583(selenium, base_url, wait):
 
 @pytest.mark.login("reviewer_user")
 def test_queues_content_review_tc_id_c79313(selenium, base_url, wait):
-    """Load AMO Reviewer Tools homepage."""
-    """AMO Reviewer Tools homepage is displayed without any layout issues."""
+    """Load AMO Reviewer Tools homepage.
+    AMO Reviewer Tools homepage is displayed without any layout issues."""
     reviewer_tools_page = ReviewerToolsHomepage(selenium, base_url).open().wait_for_page_to_load()
-    """Go to "Content Review queue " and select "Content Review" from the available options."""
+    # Go to "Content Review queue " and select "Content Review" from the available options.
     content_review_page = reviewer_tools_page.click_content_review_link()
-    """Content Review queue is loaded - https://reviewers.addons.allizom.org/en-US/reviewers/queue/content_review."""
-    """Please verify the following content:"""
-    """a)A table containing the following:
+    """Content Review queue is loaded - https://reviewers.addons.allizom.org/en-US/reviewers/queue/content_review.
+    Please verify the following content:
+    a)A table containing the following:
                 - Add-on name column
                 - Flags - add-on type or flags
                 - Last content review - time from last content review"""
@@ -97,20 +97,20 @@ def test_queues_content_review_tc_id_c79313(selenium, base_url, wait):
     assert (
         EC.url_contains("reviewers/queue/content_review")
     )
-    """b)Announcement - displays the message of the day"""
+    # b)Announcement - displays the message of the day
     assert (
         reviewer_tools_page.announcement_section.is_displayed()
     )
-    """c)A multitab containing several queue types is displayed and "Content Review" is selected"""
+    # c)A multitab containing several queue types is displayed and "Content Review" is selected
     reviewer_tools_page.assert_tab_viewing()
 
 
 @pytest.mark.login("reviewer_user")
 def test_queues_themes_new_tc_id_c325790(selenium, base_url):
-    """Load AMO Reviewer Tools homepage."""
-    """AMO Reviewer Tools homepage is displayed without any layout issues."""
+    """Load AMO Reviewer Tools homepage.
+    AMO Reviewer Tools homepage is displayed without any layout issues."""
     reviewer_tools_page = ReviewerToolsHomepage(selenium, base_url).open().wait_for_page_to_load()
-    """Go to Themes queue and select "New" from the available options."""
+    # Go to Themes queue and select "New" from the available options.
     themes_new_page = reviewer_tools_page.click_themes_new_link()
     """The list of themes pending for review is displayed - https://reviewers.addons-dev.allizom.org/en-US/reviewers/queue/theme_new
     Please verify if :  
@@ -129,10 +129,10 @@ def test_queues_themes_new_tc_id_c325790(selenium, base_url):
 
 @pytest.mark.login("reviewer_user")
 def test_queues_themes_updates_tc_id_c325792(selenium, base_url):
-    """Load AMO Reviewer Tools homepage."""
-    """AMO Reviewer Tools homepage is displayed without any layout issues."""
+    """Load AMO Reviewer Tools homepage.
+    AMO Reviewer Tools homepage is displayed without any layout issues."""
     reviewer_tools_page = ReviewerToolsHomepage(selenium, base_url).open().wait_for_page_to_load()
-    """Go to Themes queue " and select "Updates" from the available options"""
+    # Go to Themes queue " and select "Updates" from the available options
     themes_updates_page = reviewer_tools_page.click_themes_updates_link()
     """A list of add-on versions pending for review is displayed - https://reviewers.addons-dev.allizom.org/en-US/reviewers/queue/theme_updates
     Please verify if :   
@@ -152,39 +152,39 @@ def test_queues_themes_updates_tc_id_c325792(selenium, base_url):
 
 @pytest.mark.login("reviewer_user")
 def test_information_on_add_on_review_page_tc_id_C354060(selenium, base_url, variables):
-    """Load AMO Reviewer Tools homepage."""
+    # Load AMO Reviewer Tools homepage.
     addon_review_page = ReviewAddonPage(selenium, base_url)
-    """Open an add-on review page"""
+    # Open an add-on review page
     selenium.get(f"{base_url}/{addon_review_page.URL_TEMPLATE}9609")
     addon_review_page.wait_for_page_to_load()
-    """Assert that the Addon Review Page has the following elements:"""
-    """Announcement
+    """Assert that the Addon Review Page has the following elements:
+    Announcement
         - the announcement text box can be dismissed by clicking on the X button in top right corner
         - a text box on top of the review page where admin reviewers can communicate messages to other reviewers"""
     addon_review_page.assert_announcement_section_displayed()
-    """Add-on information Section"""
+    # Add-on information Section
     addon_review_page.assert_addon_info_section_displayed()
-    """Sidenav"""
+    # Sidenav
     addon_review_page.assert_sidenav_section_displayed()
-    """Abuse Reports"""
+    # Abuse Reports
     addon_review_page.assert_abuse_report_section_displayed()
-    """Add-on History"""
+    # Add-on History
     addon_review_page.assert_addon_history_section_displayed()
-    """Reviewer actions"""
+    # Reviewer actions
     addon_review_page.assert_reviewer_actions_section_displayed()
-    """Whiteboards"""
+    # Whiteboards
     addon_review_page.assert_whiteboard_section_displayed()
-    """More actions"""
+    # More actions
     addon_review_page.assert_more_actions_section_displayed()
 
 
 @pytest.mark.login("reviewer_user")
 def test_logs_add_on_review_log_tc_id_C4588(selenium, base_url, variables):
-    """Load AMO Reviewer Tools homepage."""
+    # Load AMO Reviewer Tools homepage.
     reviewer_tools_homepage = ReviewerToolsHomepage(selenium, base_url).open().wait_for_page_to_load()
-    """AMO Reviewer Tools homepage is displayed without any layout issues."""
+    # AMO Reviewer Tools homepage is displayed without any layout issues.
     reviewer_tools_homepage.assert_reviewer_tools_section()
-    """Select "Add-on Review Log" from the available options."""
+    # Select "Add-on Review Log" from the available options.
     manual_review_log_page = reviewer_tools_homepage.click_manual_review_log_link()
     """Add-on Review Log page is loaded
     Should contain the following:
@@ -202,11 +202,11 @@ def test_logs_add_on_review_log_tc_id_C4588(selenium, base_url, variables):
 
 @pytest.mark.login("reviewer_user")
 def test_logs_moderated_review_log_tc_id_C4614(selenium, base_url, variables):
-    """Load AMO Reviewer Tools homepage"""
+    # Load AMO Reviewer Tools homepage
     reviewer_tools_homepage = ReviewerToolsHomepage(selenium, base_url).open().wait_for_page_to_load()
-    """AMO Reviewer Tools homepage is displayed without any layout issues"""
+    # AMO Reviewer Tools homepage is displayed without any layout issues
     reviewer_tools_homepage.assert_reviewer_tools_section()
-    """Go to User Ratings Moderation queue and select Moderated Review Log from the available options."""
+    # Go to User Ratings Moderation queue and select Moderated Review Log from the available options.
     moderated_review_log_page = reviewer_tools_homepage.click_moderated_review_log_link()
     """Add-on Moderated Review Log page is loaded - https://reviewers.addons.allizom.org/en-US/reviewers/logs
     Please verify the the following:   
@@ -221,35 +221,33 @@ def test_logs_moderated_review_log_tc_id_C4614(selenium, base_url, variables):
 
 @pytest.mark.login("reviewer_user")
 def test_reviewer_tools_review_guide_for_each_queue_page_C104890(selenium, base_url, variables):
-    """Load AMO Reviewer Tools homepage"""
+    # Load AMO Reviewer Tools homepage
     reviewer_tools_homepage = ReviewerToolsHomepage(selenium, base_url).open().wait_for_page_to_load()
-    """AMO Reviewer Tools homepage is displayed without any layout issues"""
+    # AMO Reviewer Tools homepage is displayed without any layout issues
     reviewer_tools_homepage.assert_reviewer_tools_section()
-    """Click on the Review Guide link available in the following queues and verify that it redirects accordingly:"""
-    """Manual Review Add-ons"""
-    """The review guide for the corresponding queues redirects as follows:
+    """Click on the Review Guide link available in the following queues and verify that it redirects accordingly:
+    Manual Review Add-ons
+    The review guide for the corresponding queues redirects as follows:
     Manual Review Add-ons - Review Guide -->https://wiki.mozilla.org/Add-ons/Reviewers/Guide"""
     reviewer_tools_homepage.click_addon_review_guide_link()
     EC.url_contains("/Add-ons/Reviewers/Guide")
     reviewer_tools_homepage.open().wait_for_page_to_load()
-    """Themes"""
-    """Static Themes - Review Guide -->https://wiki.mozilla.org/Add-ons/Reviewers/Themes/Guidelines"""
+    # Static Themes - Review Guide -->https://wiki.mozilla.org/Add-ons/Reviewers/Themes/Guidelines
     reviewer_tools_homepage.click_themes_review_guide_click()
     EC.url_contains("/Add-ons/Reviewers/Themes/Guidelines")
     reviewer_tools_homepage.open().wait_for_page_to_load()
-    """User Ratings Moderation"""
-    """User Ratings Moderation - Review Guide -->https://wiki.mozilla.org/Add-ons/Reviewers/Guide/Moderation"""
+    # User Ratings Moderation - Review Guide -->https://wiki.mozilla.org/Add-ons/Reviewers/Guide/Moderation
     reviewer_tools_homepage.click_moderation_guide_click()
     EC.url_contains("/Add-ons/Reviewers/Guide/Moderation")
 
 
 @pytest.mark.login("reviewer_user")
 def test_queues_ratings_awaiting_moderation_tc_id_C4586(selenium, base_url):
-    """Load AMO Reviewer Tools homepage"""
+    # Load AMO Reviewer Tools homepage
     reviewer_tools_homepage = ReviewerToolsHomepage(selenium, base_url).open().wait_for_page_to_load()
-    """AMO Reviewer Tools homepage is displayed without any layout issues"""
+    # AMO Reviewer Tools homepage is displayed without any layout issues
     reviewer_tools_homepage.assert_reviewer_tools_section()
-    """Go to "User Ratings Moderation" queues  and select "Ratings Awaiting Moderation" from the available options"""
+    # Go to "User Ratings Moderation" queues  and select "Ratings Awaiting Moderation" from the available options
     ratings_awaiting_moderation = reviewer_tools_homepage.click_ratings_awaiting_moderation()
     """Moderated reviews Queues page is displayed - https://reviewers.addons.allizom.org/en-US/reviewers/queue/reviews
     Please verify if :    
@@ -260,14 +258,20 @@ def test_queues_ratings_awaiting_moderation_tc_id_C4586(selenium, base_url):
     ratings_awaiting_moderation.assert_moderation_actions_section_elements()
     ratings_awaiting_moderation.assert_process_reviews_buttons()
 
+
 @pytest.mark.login("reviewer_user")
+@pytest.mark.content
 def test_content_approve_version_tc_id_T5456486(selenium, base_url):
-    """Submit a new add-on in order to test the content approve function"""
+    # Submit a new add-on in order to test the content approve function
     addon_slug = submit_addon_method(selenium, base_url)
-    """Load AMO Reviewer Tools homepage"""
-    reviewer_tools_homepage = ReviewerToolsHomepage(selenium, base_url).open().wait_for_page_to_load()
-    """AMO Reviewer Tools homepage is displayed without any layout issues"""
-    reviewer_tools_homepage.assert_reviewer_tools_section()
-    """Go to "User Ratings Moderation" queues  and select "Content Review" from the available options"""
-    content_review_page = reviewer_tools_homepage.click_content_review_link()
-    content_review_page.assert_queue_viewing_content_review()
+    # Load Content Review Page
+    addon_content_review_page = ContentReviewAddonPage(selenium, base_url)
+    addon_content_review_page.open_content_review_addon_page(selenium, addon_slug)
+    addon_content_review_page.wait_for_page_to_load()
+    assert (
+        addon_slug in
+        addon_content_review_page.addon_name.text.lower()
+    )
+
+
+

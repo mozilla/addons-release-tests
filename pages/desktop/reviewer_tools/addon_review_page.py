@@ -53,6 +53,9 @@ class ReviewAddonPage(Base):
     _notify_about_listed_versions_locator = (By.ID, 'notify_new_listed_versions')
     _notify_about_unlisted_versions_locator =(By.ID, 'notify_new_unlisted_versions')
 
+    @staticmethod
+    def open_content_review_page_for_addon(selenium, base_url, addon_string):
+        return selenium.get(f"{base_url}/reviewer/review-content/{addon_string}")
 
     # Announcement section interaction methods
 
