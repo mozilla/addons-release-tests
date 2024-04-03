@@ -354,7 +354,6 @@ def test_flag_missing_for_empty_review_tc_id_c1494904(selenium, base_url, variab
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-@pytest.mark.failing
 @pytest.mark.login("rating_user")
 def test_flag_review_menu_options_tc_id_c1494904(selenium, base_url, variables):
     extension = variables["all_scores_addon"]
