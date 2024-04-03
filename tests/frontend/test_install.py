@@ -8,15 +8,14 @@ from pages.desktop.about_addons import AboutAddons
 from pages.desktop.frontend.details import Detail
 from pages.desktop.frontend.versions import Versions
 
-@pytest.mark.skip
 def test_install_uninstall_extension_tc_id_c393003(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Open an extension detail page, install it and then uninstall it"""
-    selenium.get(f"{base_url}/addon/stealthy/")
+    selenium.get(f"{base_url}/addon/cas-current-addon-1/")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     amo_addon_name = addon.name
-    assert amo_addon_name == "Stealthy"
+    assert amo_addon_name == "cas-current-addon-1"
     assert addon.is_compatible
     addon.install()
     firefox.browser.wait_for_notification(
@@ -46,12 +45,11 @@ def test_install_uninstall_extension_tc_id_c393003(
             lambda _: amo_addon_name == about_addons.installed_addon_name[0].text
         )
 
-@pytest.mark.skip
 def test_enable_disable_extension(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Open an extension detail page, install it, disable it from about:addons then enable it back in AMO"""
-    selenium.get(f"{base_url}/addon/ghostery/")
+    selenium.get(f"{base_url}/addon/cas-current-addon-1/")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     addon.install()
     firefox.browser.wait_for_notification(
@@ -68,7 +66,7 @@ def test_enable_disable_extension(
     about_addons.disable_extension()
     time.sleep(3)
     # verify that about:addons marks the extension as disabled -  (disabled) appended to addon name
-    assert about_addons.installed_addon_name[0].text == "Ghostery – Privacy Ad Blocker (disabled)"
+    assert about_addons.installed_addon_name[0].text == "cas-current-addon-1 (disabled)"
     # go back to the addon detail page on AMO to Enable the addon
     selenium.switch_to.window(selenium.window_handles[0])
     assert addon.button_text == "Enable"
@@ -78,17 +76,16 @@ def test_enable_disable_extension(
     # open the manage Extensions page in about:addons to verify that the extension was re-enabled
     selenium.switch_to.window(selenium.window_handles[1])
     time.sleep(2)
-    wait.until(lambda _: "Privacy Ad Blocker" in about_addons.installed_addon_name[0].text)
+    wait.until(lambda _: "cas-current-addon-1" in about_addons.installed_addon_name[0].text)
 
-@pytest.mark.skip
 def test_install_uninstall_theme_tc_id_C95591(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Open a theme detail page, install it and then uninstall it"""
-    selenium.get(f"{base_url}/addon/japanese-tattoo/")
+    selenium.get(f"{base_url}/addon/cas-current-theme-1/")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     amo_theme_name = addon.name
-    assert amo_theme_name == "Japanese Tattoo"
+    assert amo_theme_name == "cas-current-theme-1"
     assert addon.is_compatible
     addon.install()
     firefox.browser.wait_for_notification(
@@ -115,7 +112,6 @@ def test_install_uninstall_theme_tc_id_C95591(
     selenium.switch_to.window(selenium.window_handles[1])
     assert amo_theme_name not in [el.text for el in about_addons.installed_addon_name]
 
-@pytest.mark.skip
 def test_install_uninstall_dictionary_tc_id_c4508(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
@@ -151,15 +147,14 @@ def test_install_uninstall_dictionary_tc_id_c4508(
     with pytest.raises(IndexError):
         wait.until(lambda _: amo_dict_name == about_addons.installed_addon_name[0].text)
 
-@pytest.mark.skip
 def test_install_uninstall_langpack_tc_id_c4508(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Open a language pack detail page, install it and then uninstall it"""
-    selenium.get(f"{base_url}/addon/release-langpack/")
+    selenium.get(f"{base_url}/addon/language-frysk-frisian_/")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     amo_langpack_name = addon.name
-    assert amo_langpack_name == "Release lang pack"
+    assert amo_langpack_name == "Language: Frysk (Frisian)_cas-cur"
     assert addon.is_compatible
     addon.install()
     firefox.browser.wait_for_notification(
@@ -175,7 +170,7 @@ def test_install_uninstall_langpack_tc_id_c4508(
     selenium.get("about:addons")
     about_addons = AboutAddons(selenium).wait_for_page_to_load()
     about_addons.click_language_side_button()
-    wait.until(lambda _: amo_langpack_name == about_addons.installed_addon_name[0].text)
+    wait.until(lambda _: "Language: Frysk (Frisian)" == about_addons.installed_addon_name[0].text)
     # go back to the addon detail page on AMO to uninstall the dictionary
     selenium.switch_to.window(selenium.window_handles[0])
     # reused the 'install()` method although the next step reflects an uninstall action.
@@ -189,7 +184,6 @@ def test_install_uninstall_langpack_tc_id_c4508(
             lambda _: amo_langpack_name == about_addons.installed_addon_name[0].text
         )
 
-@pytest.mark.skip
 def test_about_addons_install_extension(
     selenium, base_url, wait, firefox, firefox_notifications
 ):
@@ -225,7 +219,6 @@ def test_about_addons_install_extension(
     #     )
     # To decomment at a later time. #FIX
 
-@pytest.mark.skip
 def test_about_addons_install_theme(
     selenium, base_url, wait, firefox, firefox_notifications
 ):
@@ -235,13 +228,13 @@ def test_about_addons_install_theme(
     wait.until(
         lambda _: len([el.install_button for el in about_addons.addon_cards_items]) >= 8
     )
-    disco_theme_name = about_addons.addon_cards_items[3].disco_addon_name.text
+    disco_theme_name = about_addons.addon_cards_items[0].disco_addon_name.text
     # make a note of the image source of the theme we are about to install
-    disco_theme_image = about_addons.addon_cards_items[3].theme_image.get_attribute(
+    disco_theme_image = about_addons.addon_cards_items[0].theme_image.get_attribute(
         "src"
     )
     # install the recommended theme
-    about_addons.addon_cards_items[3].install_button.click()
+    about_addons.addon_cards_items[0].install_button.click()
     firefox.browser.wait_for_notification(
         firefox_notifications.AddOnInstallConfirmation
     ).install()
@@ -252,7 +245,6 @@ def test_about_addons_install_theme(
 
 
 @pytest.mark.sanity
-@pytest.mark.skip
 def test_about_addons_extension_updates(
     selenium, base_url, wait, firefox, firefox_notifications, variables
 ):
