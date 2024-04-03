@@ -522,7 +522,7 @@ def test_devhub_social_footer_links(base_url, selenium, count, link):
         [
             "privacy/websites/",
             "privacy/websites/",
-            "legal/terms/mozilla",
+            "legal/amo-policies/",
         ]
     ),
     ids=[
