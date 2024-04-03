@@ -401,7 +401,7 @@ def test_social_footer_links_tc_id_c95105(base_url, selenium, count, link):
         [
             ["privacy/websites/", ".privacy-title"],
             ["privacy/websites/", ".privacy-title"],
-            ["legal/terms/mozilla", "#websites-communications-terms-of-use"],
+            ["legal/amo-policies/", "#amo-policies"],
         ]
     ),
     ids=[
