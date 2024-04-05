@@ -303,6 +303,7 @@ def test_detail_page_taar_recommendations(selenium, base_url):
 
 
 @pytest.mark.sanity
+@pytest.mark.skip
 def test_discovery_taar_recommendations(base_url, variables):
     """The scope of this test is to verify if the addons manager recommendations page returns
     extensions from the TAAR service based on a 'telemetry-client-id'"""

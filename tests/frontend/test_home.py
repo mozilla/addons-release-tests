@@ -347,7 +347,7 @@ def test_browsers_footer_links_tc_id_c95105(base_url, selenium, count, link):
             ["firefox/?utm_content=footer-link&utm_medium=referral&utm_source=addons.mozilla.org", ".mzp-t-product-firefox"],
             ["products/vpn/", ".c-sub-navigation-title"],
             ["relay.firefox.com/", ".Layout_logo__V4UCI"],
-            ["monitor.mozilla", ".LandingView_nav__I80cG"],
+            ["monitor.mozilla", ".PublicShell_logo__vbvvO"],
             ["getpocket.com", ".pocket-logo"],
         ]
     ),
