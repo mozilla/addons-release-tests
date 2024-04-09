@@ -5,6 +5,7 @@ from pages.desktop.reviewer_tools.addon_review_page import ReviewAddonPage
 from pages.desktop.reviewer_tools.addon_content_review_page import ContentReviewAddonPage
 from scripts import reusables
 from pages.desktop.developers.devhub_home import DevHubHome
+from pages.desktop.developers.manage_versions import ManageVersions
 from selenium.webdriver.support import expected_conditions as EC
 
 
@@ -27,6 +28,13 @@ def submit_addon_method(selenium, base_url):
     confirmation_page.select_license_options[0].click()
     confirmation_page.submit_addon()
     return f"listed-addon{random_string}"
+
+def delete_addon_method(selenium, base_url, random_string):
+    manage_versions_page = ManageVersions(selenium, base_url)
+    manage_versions_page.open_manage_versions_page_for_addon(selenium, base_url, random_string)
+    delete_addon_modal = manage_versions_page.delete_addon()
+    delete_addon_modal.input_delete_confirmation_string()
+    delete_addon_modal.confirm_delete_addon()
 
 
 @pytest.mark.login("reviewer_user")
@@ -272,6 +280,10 @@ def test_content_approve_version_tc_id_T5456486(selenium, base_url):
         addon_slug in
         addon_content_review_page.addon_name.text.lower()
     )
+
+
+    # Clean-up: Delete created addon
+    delete_addon_method(selenium, base_url, addon_slug)
 
 
 
