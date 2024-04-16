@@ -32,6 +32,7 @@ class ManageVersions(Page):
 
     _disabled_by_mozilla_locator = (By.CSS_SELECTOR, ".file-status > div")
     _incomplete_status_locator = (By.CSS_SELECTOR, ".status-incomplete b")
+    _approved_status_locator = (By.CSS_SELECTOR, ".status-approved b")
     _addon_listed_status_locator = (By.CSS_SELECTOR, ".addon-listed-status b")
     _delete_addon_button_locator = (By.CLASS_NAME, "delete-button.delete-addon")
 
@@ -173,6 +174,13 @@ class ManageVersions(Page):
             EC.visibility_of_element_located(self._incomplete_status_locator)
         )
         return self.find_element(*self._incomplete_status_locator)
+
+    @property
+    def approved_status(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._approved_status_locator)
+        )
+        return self.find_element(*self._approved_status_locator)
 
     @property
     def current_version_status(self):

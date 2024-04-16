@@ -1,3 +1,5 @@
+import time
+
 import pytest
 
 from pages.desktop.reviewer_tools.reviewer_tools_homepage import ReviewerToolsHomepage
@@ -28,6 +30,7 @@ def submit_addon_method(selenium, base_url):
     confirmation_page.select_license_options[0].click()
     confirmation_page.submit_addon()
     return f"listed-addon{random_string}"
+
 
 def delete_addon_method(selenium, base_url, random_string):
     manage_versions_page = ManageVersions(selenium, base_url)
@@ -268,7 +271,6 @@ def test_queues_ratings_awaiting_moderation_tc_id_C4586(selenium, base_url):
 
 
 @pytest.mark.login("reviewer_user")
-@pytest.mark.content
 def test_content_approve_version_tc_id_T5456486(selenium, base_url):
     # Submit a new add-on in order to test the content approve function
     addon_slug = submit_addon_method(selenium, base_url)
@@ -277,13 +279,43 @@ def test_content_approve_version_tc_id_T5456486(selenium, base_url):
     addon_content_review_page.open_content_review_addon_page(selenium, addon_slug)
     addon_content_review_page.wait_for_page_to_load()
     assert (
-        addon_slug in
-        addon_content_review_page.addon_name.text.lower()
+            addon_slug in
+            addon_content_review_page.addon_name.text.lower()
     )
-
-
+    addon_content_review_page.click_approve_content()
+    addon_content_review_page.click_save_changes()
+    assert addon_content_review_page.content_approved_text.is_displayed(), "Content approved text is not displayed"
     # Clean-up: Delete created addon
-    delete_addon_method(selenium, base_url, addon_slug)
+    manage_versions_page = ManageVersions(selenium, base_url)
+    manage_versions_page.open_manage_versions_page_for_addon(selenium, base_url, addon_slug)
+    delete_addon_modal = manage_versions_page.delete_addon()
+    delete_addon_modal.input_delete_confirmation_string()
+    delete_addon_modal.confirm_delete_addon()
 
 
-
+@pytest.mark.login("reviewer_user")
+@pytest.mark.content
+def test_reject_content_version_tc_id_T5481974(selenium, base_url):
+    # Submit a new add-on in order to test the content approve function
+    addon_slug = submit_addon_method(selenium, base_url)
+    # Load Content Review Page
+    addon_content_review_page = ContentReviewAddonPage(selenium, base_url)
+    addon_content_review_page.open_content_review_addon_page(selenium, addon_slug)
+    addon_content_review_page.wait_for_page_to_load()
+    assert (
+            addon_slug in
+            addon_content_review_page.addon_name.text.lower()
+    )
+    addon_content_review_page.click_reject_multiple_versions()
+    addon_content_review_page.select_version_option()
+    addon_content_review_page.click_first_review_action()
+    addon_content_review_page.click_save_changes()
+    assert addon_content_review_page.content_rejected_text.is_displayed(), "Content rejected text is not displayed"
+    # Clean-up: Delete created addon
+    manage_versions_page = ManageVersions(selenium, base_url)
+    manage_versions_page.incomplete_status.is_displayed()
+    assert "Incomplete" in manage_versions_page.incomplete_status.text
+    manage_versions_page.open_manage_versions_page_for_addon(selenium, base_url, addon_slug)
+    delete_addon_modal = manage_versions_page.delete_addon()
+    delete_addon_modal.input_delete_confirmation_string()
+    delete_addon_modal.confirm_delete_addon()
