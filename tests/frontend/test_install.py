@@ -151,10 +151,10 @@ def test_install_uninstall_langpack_tc_id_c4508(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Open a language pack detail page, install it and then uninstall it"""
-    selenium.get(f"{base_url}/addon/language-frysk-frisian_/")
+    selenium.get(f"{base_url}/addon/language-עברית-hebrew-_cas-cur/")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     amo_langpack_name = addon.name
-    assert amo_langpack_name == "Language: Frysk (Frisian)_cas-cur"
+    assert amo_langpack_name == "Language: עברית (Hebrew)_cas-cur"
     assert addon.is_compatible
     addon.install()
     firefox.browser.wait_for_notification(
@@ -170,7 +170,7 @@ def test_install_uninstall_langpack_tc_id_c4508(
     selenium.get("about:addons")
     about_addons = AboutAddons(selenium).wait_for_page_to_load()
     about_addons.click_language_side_button()
-    wait.until(lambda _: "Language: Frysk (Frisian)" == about_addons.installed_addon_name[0].text)
+    wait.until(lambda _: "Language: עברית (Hebrew)" == about_addons.installed_addon_name[0].text)
     # go back to the addon detail page on AMO to uninstall the dictionary
     selenium.switch_to.window(selenium.window_handles[0])
     # reused the 'install()` method although the next step reflects an uninstall action.
