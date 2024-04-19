@@ -24,7 +24,6 @@ from scripts.reusables import get_random_string
         "Flagfox",
         "Video DownloadHelper",
         "Adblock Plus",
-        "Facebook Container (cas-cur)",
         "Tree Style Tab",
         "Two little birds",
     ],

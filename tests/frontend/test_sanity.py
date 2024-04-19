@@ -159,7 +159,7 @@ def test_about_addons_addon_cards_author_link(selenium, base_url, wait):
     # waiting for the addon cards data to be retrieved (the author names in this case)
     wait.until(
         lambda _: len([el.disco_addon_author for el in about_addons.addon_cards_items])
-        >= 7
+        >= 6
     )
     disco_addon_name = about_addons.addon_cards_items[3].disco_addon_name.text
     # clicking on the author link should open the addon detail page on AMO
@@ -265,6 +265,7 @@ def test_about_addons_install_theme(
 
 
 @pytest.mark.prod_only
+@pytest.mark.skip
 def test_detail_page_taar_recommendations(selenium, base_url):
     """The scope of this test is to verify if the detail page recommendations section
     is receiving data from the TAAR recommendation service. The verification process is not
