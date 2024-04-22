@@ -115,8 +115,8 @@
   "devhub_logged_in_banner_text": "Whether you’re new to extension development, polishing up or porting an existing extension or theme, or creating a custom enterprise solution, we’ve got the resources to support you.",
   "devhub_resources_doc_links": [
     "/Mozilla/Add-ons/WebExtensions",
-    "extensionworkshop-dev.allizom.org/extension-basics/",
-    "extensionworkshop-dev.allizom.org/documentation/themes/"
+    "extensionworkshop.allizom.org/extension-basics/",
+    "extensionworkshop.allizom.org/documentation/themes/"
   ],
   "devhub_resources_tools_links": [
     "/github.com/mozilla/web-ext",
@@ -124,7 +124,7 @@
   ],
   "devhub_resources_promote_links": [
     "/promote-your-add-ons-with-the-get-the-add-on-button/",
-    "extensionworkshop-dev.allizom.org/documentation/publish/recommended-extensions/"
+    "extensionworkshop.allizom.org/documentation/publish/recommended-extensions/"
   ],
   "devhub_resources_review_addons_text": "Volunteer reviewers help keep add-ons safe and reliable to use. They enjoy great perks too!",
   "devhub_resources_write_some_code_text": "Help make add-ons better by contributing your coding skills.",
