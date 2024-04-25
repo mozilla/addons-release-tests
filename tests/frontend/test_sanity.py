@@ -159,11 +159,11 @@ def test_about_addons_addon_cards_author_link(selenium, base_url, wait):
     # waiting for the addon cards data to be retrieved (the author names in this case)
     wait.until(
         lambda _: len([el.disco_addon_author for el in about_addons.addon_cards_items])
-        >= 6
+        >= 7
     )
-    disco_addon_name = about_addons.addon_cards_items[3].disco_addon_name.text
+    disco_addon_name = about_addons.addon_cards_items[0].disco_addon_name.text
     # clicking on the author link should open the addon detail page on AMO
-    amo_detail_page = about_addons.addon_cards_items[3].click_disco_addon_author()
+    amo_detail_page = about_addons.addon_cards_items[0].click_disco_addon_author()
     # checking that the expected detail page was opened
     wait.until(lambda _: disco_addon_name == amo_detail_page.name)
 
