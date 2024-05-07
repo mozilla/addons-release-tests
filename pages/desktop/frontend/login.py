@@ -66,11 +66,12 @@ class Login(Base):
 
     _email_locator = (By.NAME, "email")
     _continue_locator = (By.CSS_SELECTOR, ".button-row button")
-    _password_locator = (By.ID, "password")
-    _login_btn_locator = (By.ID, "submit-btn")
-    _repeat_password_locator = (By.ID, "vpassword")
-    _age_locator = (By.ID, "age")
-    _code_input_locator = (By.CSS_SELECTOR, ".tooltip-below")
+    _password_login = (By.ID, "password")
+    _password_locator = (By.CSS_SELECTOR, "div.relative:nth-child(2) > div:nth-child(1) > label:nth-child(1) > span:nth-child(1) > input")
+    _login_btn_locator = (By.CSS_SELECTOR, ".cta-primary")
+    _repeat_password_locator = (By.CSS_SELECTOR, "div.relative:nth-child(3) > div:nth-child(1) > label:nth-child(1) > span:nth-child(1) > input:nth-child(2)")
+    _age_locator = (By.CSS_SELECTOR, "label.flex:nth-child(4) > span:nth-child(1) > input")
+    _code_input_locator = (By.CSS_SELECTOR, ".pb-1")
     _login_card_header_locator = (By.CSS_SELECTOR, ".card header h1")
     _2fa_input_locator = (By.CSS_SELECTOR, ".tooltip-below")
     _confirm_2fa_button_locator = (By.ID, "use-logged-in")
@@ -178,7 +179,7 @@ class Login(Base):
             pass
         print('The "click continue button" event occurred.')
         self.wait.until(
-            EC.element_to_be_clickable(self._password_locator),
+            EC.element_to_be_clickable(self._password_login),
             message=f"Password input field not displayed; "
             f"FxA card header was {self.find_element(*self._login_card_header_locator).text}",
         )
@@ -186,7 +187,7 @@ class Login(Base):
             f'The script should be on the password input screen here. We should see "Sign in" in the header.'
             f' The card  header title is "{self.find_element(*self._login_card_header_locator).text}"'
         )
-        self.find_element(*self._password_locator).send_keys(password)
+        self.find_element(*self._password_login).send_keys(password)
         # waits for the password to be filled in
         self.wait.until(
             EC.invisibility_of_element_located((By.CSS_SELECTOR, ".password.empty")),
@@ -221,7 +222,7 @@ class Login(Base):
 
     def fxa_register(self):
         email = f"{reusables.get_random_string(10)}@restmail.net"
-        password = reusables.get_random_string(10)
+        password = reusables.get_random_string(12)
         self.find_element(*self._email_locator).send_keys(email)
         # catching the geckodriver click() issue, in cae it happens here
         # issue - https://github.com/mozilla/geckodriver/issues/1608
@@ -244,7 +245,7 @@ class Login(Base):
         self.find_element(*self._age_locator).send_keys(23)
         self.find_element(*self._login_btn_locator).click()
         # sleep to allow FxA to process the request and communicate with the email client
-        time.sleep(3)
+        time.sleep(5)
         verification_code = self.get_verification_code(email)
         self.find_element(*self._code_input_locator).send_keys(verification_code)
         self.find_element(*self._login_btn_locator).click()
