@@ -249,7 +249,7 @@ def test_upload_new_version_with_different_addon_type(base_url, session_auth):
         new_version.status_code == 400
     ), f"Actual response: status code = {new_version.status_code}, message = {new_version.text}"
     assert (
-        "The type (10) does not match the type of your add-on on AMO (1)"
+        '{"upload":["The type (Theme) does not match the type of your add-on on AMO (Extension)"]}'
         in new_version.text
     ), f"Actual response message was {new_version.text}"
 
