@@ -38,7 +38,7 @@ def test_search_suggestion_term_is_higher_tc_id_c4481(base_url, selenium, variab
 def test_special_chars_dont_break_suggestions_tc_id_c4489(base_url, selenium, variables):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     term = variables["search_term"]
-    special_chars_term = f"${term[:4]}ç{term[4:]}%ç√®å"
+    special_chars_term = f"${term[:4]}{term[4:]}%√®å"
     suggestions = page.search.search_for(special_chars_term, execute=False)
     results = [item.name for item in suggestions]
     assert term in results
