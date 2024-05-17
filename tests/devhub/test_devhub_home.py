@@ -330,8 +330,8 @@ def test_devhub_resources_participate(selenium, base_url, variables):
             # twitter requires login atm so no direct landing
             # on the mozilla tweeters is available right now
             # we are checking that a redirect to twitter happens
-            "twitter.com",
-            "twitter.com",
+            "x.com",
+            "x.com",
         ]
     ),
 )
@@ -498,7 +498,7 @@ def test_devhub_products_footer_links(base_url, selenium, count, link):
     "count, link",
     enumerate(
         [
-            "twitter.com",
+            "x.com",
             "instagram.com",
             "youtube.com",
         ]
