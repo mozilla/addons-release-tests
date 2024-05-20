@@ -375,7 +375,7 @@ def test_products_footer_links_tc_id_c95105(base_url, selenium, count, link):
     "count, link",
     enumerate(
         [
-            "twitter.com",
+            "x.com",
             "instagram.com",
             "youtube.com",
         ]
