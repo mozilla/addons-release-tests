@@ -569,7 +569,7 @@ def test_edit_extension_valid_contribute_domains(base_url, session_auth):
     """Add a valid contributions url to an addon; requests should be successful"""
     addon = payloads.edit_addon_details["slug"]
     valid_domains = [
-        "https://www.buymeacoffee.com",
+        "https://buymeacoffee.com",
         "https://donate.mozilla.org",
         "https://flattr.com",
         "https://github.com/sponsors/",
