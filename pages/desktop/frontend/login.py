@@ -245,7 +245,7 @@ class Login(Base):
         self.find_element(*self._age_locator).send_keys(23)
         self.find_element(*self._login_btn_locator).click()
         # sleep to allow FxA to process the request and communicate with the email client
-        time.sleep(5)
+        time.sleep(10)
         verification_code = self.get_verification_code(email)
         self.find_element(*self._code_input_locator).send_keys(verification_code)
         self.find_element(*self._login_btn_locator).click()

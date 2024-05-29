@@ -10,7 +10,6 @@ from pages.desktop.frontend.search import Search
     "count, category",
     enumerate(
         [
-            "Accessibility",
             "Alerts & Updates",
             "Appearance",
             "Bookmarks",
