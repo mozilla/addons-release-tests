@@ -641,15 +641,15 @@ class ResourcesFooter(Region):
     )
     _participate_section_header_locator = (
         By.CSS_SELECTOR,
-        ".DevHub-Footer-sections:nth-of-type(2) .DevHub-Footer-section:nth-of-type(3) h4",
+        ".DevHub-Footer-sections:nth-of-type(2) .DevHub-Footer-section:nth-of-type(2) h4",
     )
     _participate_info_text_locator = (
         By.CSS_SELECTOR,
-        ".DevHub-Footer-sections:nth-of-type(2) .DevHub-Footer-section:nth-of-type(3) p",
+        ".DevHub-Footer-sections:nth-of-type(2) .DevHub-Footer-section:nth-of-type(2) p",
     )
     _participate_link_locator = (
         By.CSS_SELECTOR,
-        ".DevHub-Footer-sections:nth-of-type(2) .DevHub-Footer-section:nth-of-type(3) a",
+        ".DevHub-Footer-sections:nth-of-type(2) .DevHub-Footer-section:nth-of-type(2) a",
     )
 
     @property
