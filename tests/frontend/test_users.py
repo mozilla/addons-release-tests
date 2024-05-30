@@ -654,6 +654,7 @@ def test_user_abuse_report(base_url, selenium, variables, wait):
         in user.view.abuse_report_form_provide_more_information_help_text
     )
     user.view.click_abuse_report_contains_violent()
+    user.view.abuse_report_form_provide_more_details.send_keys("more_details")
     user.view.click_abuse_form_feedback_anonymous_locator()
     user.view.submit_user_abuse_report()
     time.sleep(5)

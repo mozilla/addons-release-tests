@@ -153,6 +153,9 @@ class User(Base):
         _abuse_report_form_feedback_anonymous_locator = (
             By.ID, "feedbackAnonymous"
         )
+        _abuse_report_form_provide_more_details = (
+            By.ID, "feedbackText"
+        )
 
         def click_abuse_form_feedback_anonymous_locator(self):
             self.wait.until(
@@ -456,6 +459,11 @@ class User(Base):
         @property
         def user_abuse_confirmation_message(self):
             return self.find_element(*self._abuse_report_confirm_message_locator).text
+
+        @property
+        def abuse_report_form_provide_more_details(self):
+            return self.find_element(*self._abuse_report_form_provide_more_details)
+
 
     class EditProfile(Region):
         _view_profile_link_locator = (By.CSS_SELECTOR, ".UserProfileEdit-user-links a")

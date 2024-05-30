@@ -283,22 +283,23 @@ def test_devhub_resources_footer_promote_links_tc_id_C15072(selenium, base_url, 
         selenium.back()
         count += 1
 
+# Commented because is it's removed on both STAGE and DEV
+# @pytest.mark.nondestructive
+# @pytest.mark.create_session("developer")
+# def test_devhub_resources_join_addon_review(selenium, base_url, variables):
+#     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+#     assert "Review Add-ons" in page.resources.review_addons_section_header
+#     assert (
+#         variables["devhub_resources_review_addons_text"]
+#         in page.resources.review_addons_section_info_text
+#     )
+#     page.resources.click_join_addon_review_link()
+#     page.wait_for_current_url("/Add-ons/Reviewers")
+
 
 @pytest.mark.nondestructive
-@pytest.mark.create_session("developer")
-def test_devhub_resources_join_addon_review(selenium, base_url, variables):
-    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    assert "Review Add-ons" in page.resources.review_addons_section_header
-    assert (
-        variables["devhub_resources_review_addons_text"]
-        in page.resources.review_addons_section_info_text
-    )
-    page.resources.click_join_addon_review_link()
-    page.wait_for_current_url("/Add-ons/Reviewers")
-
-
-@pytest.mark.nondestructive
-@pytest.mark.create_session("developer")
+@pytest.mark.login("developer")
+@pytest.mark.fail
 def test_devhub_resources_write_some_code(selenium, base_url, variables):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     assert "Write Some Code" in page.resources.write_code_section_header
@@ -311,6 +312,7 @@ def test_devhub_resources_write_some_code(selenium, base_url, variables):
 
 
 @pytest.mark.nondestructive
+@pytest.mark.fail
 def test_devhub_resources_participate(selenium, base_url, variables):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     page.devhub_login("regular_user")
