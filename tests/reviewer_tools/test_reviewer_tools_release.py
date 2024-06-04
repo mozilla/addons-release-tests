@@ -158,6 +158,7 @@ def test_information_on_add_on_review_page_tc_id_C354060(selenium, base_url, var
 
 
 @pytest.mark.login("reviewer_user")
+@pytest.mark.fail
 def test_logs_add_on_review_log_tc_id_C4588(selenium, base_url, variables):
     """Load AMO Reviewer Tools homepage."""
     reviewer_tools_homepage = ReviewerToolsHomepage(selenium, base_url).open().wait_for_page_to_load()

@@ -128,6 +128,9 @@ class User(Base):
             By.CSS_SELECTOR,
             ".FeedbackForm-button.Button--disabled",
         )
+        _abuse_report_form_provide_more_details = (
+            By.ID, "feedbackText"
+        )
         _abuse_report_submit_button_locator = (
             By.CSS_SELECTOR,
             ".Button",
@@ -358,6 +361,10 @@ class User(Base):
             items = self.find_elements(*self._user_review_list_locator)
             reviews = Reviews(self.driver, self.page.base_url).wait_for_page_to_load()
             return [reviews.UserReview(self, el) for el in items]
+
+        @property
+        def abuse_report_form_provide_more_details(self):
+            return self.find_element(*self._abuse_report_form_provide_more_details)
 
         def click_user_abuse_report(self):
             self.wait.until(

@@ -632,7 +632,8 @@ def test_user_profile_delete_review(base_url, selenium, variables, wait):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-@pytest.mark.create_session("submissions_user")
+@pytest.mark.login("submissions_user")
+@pytest.mark.fail
 def test_user_abuse_report(base_url, selenium, variables, wait):
     developer = variables["developer_profile"]
     selenium.get(f"{base_url}/user/{developer}")
@@ -652,6 +653,7 @@ def test_user_abuse_report(base_url, selenium, variables, wait):
         in user.view.abuse_report_form_additional_help_text
     )
     user.view.click_category_spam()
+    user.view.abuse_report_form_provide_more_details.send_keys("more_details")
     user.view.submit_user_abuse_report()
     # verifies the abuse report form after submission
     wait.until(
