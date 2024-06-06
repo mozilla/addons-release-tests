@@ -1,4 +1,5 @@
 import os
+import time
 from pathlib import Path
 from pypom import Page
 
@@ -877,6 +878,7 @@ class ThemeWizard(Page):
 
     def submit_theme(self):
         self.find_element(*self._submit_theme_button_locator).click()
+        time.sleep(5)
         return ListedAddonSubmissionForm(
             self.driver, self.base_url
         ).wait_for_page_to_load()
