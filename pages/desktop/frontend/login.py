@@ -235,6 +235,7 @@ class Login(Base):
             print(error.msg)
             pass
         # verify that the fxa register form was opened
+        time.sleep(5)
         self.wait.until(
             EC.element_to_be_clickable(self._password_locator),
             message=f"Password input field not displayed; "
