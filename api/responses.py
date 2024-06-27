@@ -26,7 +26,9 @@ abuse_report_unauthenticated_response = {
     'operating_system_version': '10',
     'reason': 'settings',
     'report_entry_point': 'amo',
-    'location': 'amo'
+    'location': 'amo',
+    'illegal_category': None,
+    'illegal_subcategory': None
 }
 
 abuse_report_authenticated_response = {
@@ -61,7 +63,9 @@ abuse_report_authenticated_response = {
     "operating_system_version": "10",
     "reason": "settings",
     "report_entry_point": "amo",
-    "location": "amo"
+    "location": "amo",
+    "illegal_category": None,
+    "illegal_subcategory": None
 }
 
 abuse_report_minimal_details = {
@@ -96,6 +100,8 @@ abuse_report_minimal_details = {
     "operating_system_version": None,
     "reason": None,
     "report_entry_point": None,
-    "location": None
+    "location": None,
+    "illegal_category": None,
+    "illegal_subcategory": None
 }
 

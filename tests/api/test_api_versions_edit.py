@@ -702,10 +702,10 @@ def test_edit_version_invalid_compatibility_format(base_url, session_auth, value
             ["android", "firefox"],
             {
                 "android": {"min": "120.0", "max": "*"},
-                "firefox": {"min": "42.0", "max": "*"},
+                "firefox": {"min": "58.0", "max": "*"},
             },
         ),
-        (["firefox"], {"firefox": {"min": "42.0", "max": "*"}}),
+        (["firefox"], {"firefox": {"min": "58.0", "max": "*"}}),
         ({"firefox": {"min": "65.0"}}, {"firefox": {"min": "65.0", "max": "*"}})
     ],
     ids=[
