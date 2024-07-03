@@ -34,6 +34,9 @@ class Detail(Base):
     _privacy_policy_locator = (By.CSS_SELECTOR, ".AddonMoreInfo-privacy-policy-link")
     _license_agreement_locator = (By.CSS_SELECTOR, ".AddonMoreInfo-eula-link")
     _addon_info_text = (By.CSS_SELECTOR, ".AddonInfo-info-html")
+    _page_not_available_in_region = (By.XPATH, "//div[contains(text(), 'That page is not available in your region')]")
+    _not_available_in_your_region_message = (By.XPATH, "//p[contains(text(), 'The page you tried to access is not available in your region.')]")
+    _paragraphs_with_links_message = (By.CSS_SELECTOR, "p.Errors-paragraph-with-links")
 
     def wait_for_page_to_load(self):
         """Waits for various page components to be loaded"""
@@ -230,6 +233,18 @@ class Detail(Base):
     @property
     def license_agreement_locator(self):
         return self.find_element(*self._license_agreement_locator)
+
+    @property
+    def page_not_available_in_region(self):
+        return self.find_element(*self._page_not_available_in_region)
+
+    @property
+    def not_available_in_your_region_message(self):
+        return self.find_element(*self._not_available_in_your_region_message)
+
+    @property
+    def paragraphs_with_links_message(self):
+        return self.find_element(*self._paragraphs_with_links_message)
 
     class Stats(Region):
         _root_locator = (By.CLASS_NAME, "AddonMeta")

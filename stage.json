@@ -214,5 +214,9 @@
   "please_specify_your_privacy_policy": "Please specify your add-on's Privacy Policy:",
   "mv3_extension_without_id_message": "The extension ID is required in Manifest Version 3 and above.",
 
-  "reviewer_tools_no_results_in_this_period_message": "No reviews found for this period."
+  "reviewer_tools_no_results_in_this_period_message": "No reviews found for this period.",
+
+  "page_not_available_in_your_region": "That page is not available in your region",
+  "page_not_accessible_in_your_region": "The page you tried to access is not available in your region.",
+  "paragraph_with_links": "You may be able to find what you’re looking for in one of the available extensions or themes, or by asking for help on our community forums."
 }
