@@ -67,7 +67,7 @@ class Login(Base):
     _repeat_password_locator = (By.ID, "vpassword")
     _age_locator = (By.ID, "age")
     _code_input_locator = (By.CSS_SELECTOR, ".tooltip-below")
-    _login_card_header_locator = (By.CSS_SELECTOR, "h1.card-header")
+    _login_card_header_locator = (By.CSS_SELECTOR, ".card-header")
     _2fa_input_locator = (By.CSS_SELECTOR, ".tooltip-below")
     _confirm_2fa_button_locator = (By.ID, "use-logged-in")
     _error_2fa_code_locator = (By.CSS_SELECTOR, ".tooltip-below.invalid")
