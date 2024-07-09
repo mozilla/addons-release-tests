@@ -37,6 +37,9 @@ class Detail(Base):
     _page_not_available_in_region = (By.XPATH, "//div[contains(text(), 'That page is not available in your region')]")
     _not_available_in_your_region_message = (By.XPATH, "//p[contains(text(), 'The page you tried to access is not available in your region.')]")
     _paragraphs_with_links_message = (By.CSS_SELECTOR, "p.Errors-paragraph-with-links")
+    _card_header_text_message = (By.CSS_SELECTOR, ".Card-header-text")
+    _why_was_it_blocked_message = (By.CSS_SELECTOR, ".Card-contents > h2")
+    _block_metadata_message = (By.CSS_SELECTOR, ".Block-metadata")
 
     def wait_for_page_to_load(self):
         """Waits for various page components to be loaded"""
@@ -245,6 +248,18 @@ class Detail(Base):
     @property
     def paragraphs_with_links_message(self):
         return self.find_element(*self._paragraphs_with_links_message)
+
+    @property
+    def card_header_text(self):
+        return self.find_element(*self._card_header_text_message)
+
+    @property
+    def why_was_it_blocked(self):
+        return self.find_element(*self._why_was_it_blocked_message)
+
+    @property
+    def block_metadata(self):
+        return self.find_element(*self._block_metadata_message)
 
     class Stats(Region):
         _root_locator = (By.CLASS_NAME, "AddonMeta")

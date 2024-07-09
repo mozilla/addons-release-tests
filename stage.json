@@ -218,5 +218,9 @@
 
   "page_not_available_in_your_region": "That page is not available in your region",
   "page_not_accessible_in_your_region": "The page you tried to access is not available in your region.",
-  "paragraph_with_links": "You may be able to find what you’re looking for in one of the available extensions or themes, or by asking for help on our community forums."
+  "paragraph_with_links": "You may be able to find what you’re looking for in one of the available extensions or themes, or by asking for help on our community forums.",
+
+  "card_header_text": "Test Tab Mix has been blocked for your protection.",
+  "why_was_it_blocked": "Why was it blocked?",
+  "block_metadata": "Versions blocked: all versions."
 }
