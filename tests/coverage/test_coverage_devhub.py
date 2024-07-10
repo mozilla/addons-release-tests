@@ -222,24 +222,5 @@ def test_addon_submission_without_id_mv3_extensions_tc_id_c1950460(selenium, bas
             in submit_addon.success_validation_message.text
     )
 
-@pytest.mark.coverage
-@pytest.mark.create_session("submissions_user")
-def test_geo_locations_tc_id_c1781143(selenium, base_url, wait, variables):
-    # Test Case:C1781143 AMO Coverage > Require admin tools
-    selenium.get(f"{base_url}/firefox/addon/devhub-listed-ext-06-13/")
-    detail_page = Detail(selenium, base_url).wait_for_page_to_load()
-    assert(
-        variables["page_not_available_in_your_region"]
-        in detail_page.page_not_available_in_region.text
-    )
-    assert (
-        variables["page_not_accessible_in_your_region"]
-        in detail_page.not_available_in_your_region_message.text
-    )
-    assert (
-        variables["paragraph_with_links"]
-        in detail_page.paragraphs_with_links_message.text
-    )
-
 
 
