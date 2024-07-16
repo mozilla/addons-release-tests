@@ -60,7 +60,7 @@ class Login(Base):
     API_USER_KEY_STAGE = os.environ.get("API_USER_KEY_STAGE")
     STAFF_USER_KEY_STAGE = os.environ.get("STAFF_USER_KEY_STAGE")
 
-    _email_locator = (By.NAME, "email")
+    _email_locator = (By.CSS_SELECTOR, ".input-text")
     _continue_locator = (By.CSS_SELECTOR, ".button-row button")
     _password_locator = (By.CSS_SELECTOR, ".pb-1")
     _login_btn_locator = (By.CSS_SELECTOR, ".cta-primary")
