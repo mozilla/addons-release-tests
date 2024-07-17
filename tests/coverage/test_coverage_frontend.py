@@ -8,7 +8,7 @@ from pages.desktop.developers.manage_authors_and_license import ManageAuthorsAnd
 from scripts import reusables
 
 @pytest.mark.coverage
-@pytest.mark.login("developer")
+@pytest.mark.login("submissions_user")
 def test_geo_locations_tc_id_c1781143(selenium, base_url, wait, variables):
     # Test Case:C1781143 AMO Coverage > Require admin tools
     selenium.get(f"{base_url}/firefox/addon/devhub-listed-ext-06-13/")
@@ -27,7 +27,7 @@ def test_geo_locations_tc_id_c1781143(selenium, base_url, wait, variables):
     )
 
 @pytest.mark.coverage
-@pytest.mark.create_session("developer")
+@pytest.mark.create_session("submissions_user")
 def test_blocked_frontend_page_tc_id_c1771696(selenium, base_url, wait, variables):
     # Test Case: C1771696 AMO Coverage > Require admin tools
     selenium.get(f"{base_url}/firefox/blocked-addon/alextest@mail.ro/")
