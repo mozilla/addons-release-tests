@@ -4,7 +4,7 @@ from pages.desktop.reviewer_tools.reviewer_tools_homepage import ReviewerToolsHo
 from pages.desktop.developers.devhub_home import DevHubHome
 from selenium.webdriver.support import expected_conditions as EC
 
-
+""""""
 @pytest.mark.login("reviewer_user")
 def test_reviewer_tools_homepage_layout_tc_id_c4589(selenium, base_url):
     """Log into AMO homepage and select 'Reviewer Tools' from the user menu"""
