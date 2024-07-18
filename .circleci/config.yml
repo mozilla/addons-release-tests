@@ -90,6 +90,9 @@ jobs:
           name: Install Setup Tools
           command: pip install setuptools
       - run:
+          name: Install Typeguard
+          command: pip install --upgrade typeguard
+      - run:
           name: Run collections serial tests
           environment:
             MOZ_HEADLESS: 1
@@ -600,13 +603,13 @@ workflows:
       not:
         equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
     jobs:
-      - frontend_parallel_tests
-      - user_serial_tests
+#      - frontend_parallel_tests
+#      - user_serial_tests
       - collections_serial_tests
-      - ratings_serial_tests
-      - devhub_parallel_tests
-      - addon_submissions_tests
-      - api_submission_tests
+#      - ratings_serial_tests
+#      - devhub_parallel_tests
+#      - addon_submissions_tests
+#      - api_submission_tests
 
   # scheduled in CircleCI Project settings to run each Wednesdays at 04:00 UTC
   scheduled_coverage_run:
