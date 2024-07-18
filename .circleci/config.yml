@@ -90,6 +90,9 @@ jobs:
           name: Install Setup Tools
           command: pip install setuptools
       - run:
+          name: Install Typeguard
+          command: pip install --upgrade typeguard
+      - run:
           name: Run collections serial tests
           environment:
             MOZ_HEADLESS: 1
@@ -122,6 +125,9 @@ jobs:
       - run:
           name: Install Setup Tools
           command: pip install setuptools
+      - run:
+          name: Install Typeguard
+          command: pip install --upgrade typeguard
       - run:
           name: Run ratings serial tests
           environment:
@@ -156,6 +162,9 @@ jobs:
           name: Install Setup Tools
           command: pip install setuptools
       - run:
+          name: Install Typeguard
+          command: pip install --upgrade typeguard
+      - run:
           name: Run user serial tests
           environment:
             MOZ_HEADLESS: 1
@@ -188,6 +197,9 @@ jobs:
       - run:
           name: Install Setup Tools
           command: pip install setuptools
+      - run:
+          name: Install Typeguard
+          command: pip install --upgrade typeguard
       - run:
           name: Run frontend parallel tests
           environment:
@@ -222,6 +234,9 @@ jobs:
           name: Install Setup Tools
           command: pip install setuptools
       - run:
+          name: Install Typeguard
+          command: pip install --upgrade typeguard
+      - run:
           name: Run devhub parallel tests
           environment:
             MOZ_HEADLESS: 1
@@ -254,6 +269,9 @@ jobs:
       - run:
           name: Install Setup Tools
           command: pip install setuptools
+      - run:
+          name: Install Typeguard
+          command: pip install --upgrade typeguard
       - run:
           name: Run addon submissions tests
           environment:
@@ -353,6 +371,9 @@ jobs:
       - run:
           name: Install Setup Tools
           command: pip install setuptools
+      - run:
+          name: Install Typeguard
+          command: pip install --upgrade typeguard
       - run:
           name: API submission tests
           environment:
