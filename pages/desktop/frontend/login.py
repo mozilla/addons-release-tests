@@ -170,12 +170,12 @@ class Login(Base):
         self.wait.until(
             EC.element_to_be_clickable(self._password_locator),
             message=f"Password input field not displayed; "
-            f"FxA card header was {self.find_element(*self._login_card_header_locator).text}",
+            # f"FxA card header was {self.find_element(*self._login_card_header_locator).text}",
         )
-        print(
-            f'The script should be on the password input screen here. We should see "Sign in" in the header.'
-            f' The card  header title is "{self.find_element(*self._login_card_header_locator).text}"'
-        )
+        # print(
+        #     f'The script should be on the password input screen here. We should see "Sign in" in the header.'
+        #     f' The card  header title is "{self.find_element(*self._login_card_header_locator).text}"'
+        # )
         self.find_element(*self._password_locator).send_keys(password)
         # waits for the password to be filled in
         self.wait.until(
