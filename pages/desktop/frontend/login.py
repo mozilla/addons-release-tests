@@ -62,14 +62,14 @@ class Login(Base):
 
     _email_locator = (By.NAME, "email")
     _continue_locator = (By.CSS_SELECTOR, ".button-row button")
-    _password_locator = (By.ID, "password")
-    _login_btn_locator = (By.ID, "submit-btn")
+    _password_locator = (By.XPATH, "//input[@data-testid='input-field']")
+    _login_btn_locator = (By.CSS_SELECTOR, "button.cta-primary.cta-xl")
     _repeat_password_locator = (By.ID, "vpassword")
     _age_locator = (By.ID, "age")
     _code_input_locator = (By.CSS_SELECTOR, ".tooltip-below")
-    _login_card_header_locator = (By.CSS_SELECTOR, ".card header h1")
-    _2fa_input_locator = (By.CSS_SELECTOR, ".tooltip-below")
-    _confirm_2fa_button_locator = (By.ID, "use-logged-in")
+    _login_card_header_locator = (By.CSS_SELECTOR, ".card-header h1")
+    _2fa_input_locator = (By.CSS_SELECTOR, ".pb-1")
+    _confirm_2fa_button_locator = (By.CSS_SELECTOR, ".cta-primary")
     _error_2fa_code_locator = (By.CSS_SELECTOR, ".tooltip-below.invalid")
 
     def account(self, user):
@@ -170,12 +170,12 @@ class Login(Base):
         self.wait.until(
             EC.element_to_be_clickable(self._password_locator),
             message=f"Password input field not displayed; "
-            f"FxA card header was {self.find_element(*self._login_card_header_locator).text}",
+            # f"FxA card header was {self.find_element(*self._login_card_header_locator).text}",
         )
-        print(
-            f'The script should be on the password input screen here. We should see "Sign in" in the header.'
-            f' The card  header title is "{self.find_element(*self._login_card_header_locator).text}"'
-        )
+        # print(
+        #     f'The script should be on the password input screen here. We should see "Sign in" in the header.'
+        #     f' The card  header title is "{self.find_element(*self._login_card_header_locator).text}"'
+        # )
         self.find_element(*self._password_locator).send_keys(password)
         # waits for the password to be filled in
         self.wait.until(
