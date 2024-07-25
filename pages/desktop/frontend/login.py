@@ -66,15 +66,15 @@ class Login(Base):
 
     _email_locator = (By.NAME, "email")
     _continue_locator = (By.CSS_SELECTOR, ".button-row button")
-    _password_login = (By.ID, "password")
-    _password_locator = (By.CSS_SELECTOR, "div.relative:nth-child(2) > div:nth-child(1) > label:nth-child(1) > span:nth-child(1) > input")
-    _login_btn_locator = (By.CSS_SELECTOR, ".cta-primary")
+    _password_login = (By.CSS_SELECTOR, ".pb-1")
+    _password_locator = (By.XPATH, "//input[@data-testid='input-field']")
+    _login_btn_locator = (By.CSS_SELECTOR, "button.cta-primary.cta-xl")
     _repeat_password_locator = (By.CSS_SELECTOR, "div.relative:nth-child(3) > div:nth-child(1) > label:nth-child(1) > span:nth-child(1) > input:nth-child(2)")
     _age_locator = (By.CSS_SELECTOR, "label.flex:nth-child(4) > span:nth-child(1) > input")
     _code_input_locator = (By.CSS_SELECTOR, ".pb-1")
     _login_card_header_locator = (By.CSS_SELECTOR, ".card-header")
-    _2fa_input_locator = (By.CSS_SELECTOR, ".tooltip-below")
-    _confirm_2fa_button_locator = (By.ID, "use-logged-in")
+    _2fa_input_locator = (By.CSS_SELECTOR, ".pb-1")
+    _confirm_2fa_button_locator = (By.CSS_SELECTOR, ".cta-primary")
     _error_2fa_code_locator = (By.CSS_SELECTOR, ".tooltip-below.invalid")
 
     def account(self, user):
@@ -181,12 +181,12 @@ class Login(Base):
         self.wait.until(
             EC.element_to_be_clickable(self._password_login),
             message=f"Password input field not displayed; "
-            f"FxA card header was {self.find_element(*self._login_card_header_locator).text}",
+            # f"FxA card header was {self.find_element(*self._login_card_header_locator).text}",
         )
-        print(
-            f'The script should be on the password input screen here. We should see "Sign in" in the header.'
-            f' The card  header title is "{self.find_element(*self._login_card_header_locator).text}"'
-        )
+        # print(
+        #     f'The script should be on the password input screen here. We should see "Sign in" in the header.'
+        #     f' The card  header title is "{self.find_element(*self._login_card_header_locator).text}"'
+        # )
         self.find_element(*self._password_login).send_keys(password)
         # waits for the password to be filled in
         self.wait.until(
