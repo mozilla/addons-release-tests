@@ -74,7 +74,7 @@ class Login(Base):
     _code_input_locator = (By.CSS_SELECTOR, ".pb-1")
     _login_card_header_locator = (By.CSS_SELECTOR, ".card-header h1")
     _2fa_input_locator = (By.CSS_SELECTOR, ".pb-1")
-    _confirm_2fa_button_locator = (By.ID, ".cta-primary")
+    _confirm_2fa_button_locator = (By.CSS_SELECTOR, ".cta-primary")
     _error_2fa_code_locator = (By.CSS_SELECTOR, ".tooltip-below.invalid")
 
     def account(self, user):
