@@ -66,7 +66,7 @@ class Login(Base):
 
     _email_locator = (By.NAME, "email")
     _continue_locator = (By.CSS_SELECTOR, ".button-row button")
-    _password_login = (By.ID, "password")
+    _password_login = (By.CSS_SELECTOR, ".pb-1")
     _password_locator = (By.XPATH, "//input[@data-testid='input-field']")
     _login_btn_locator = (By.CSS_SELECTOR, "button.cta-primary.cta-xl")
     _repeat_password_locator = (By.CSS_SELECTOR, "div.relative:nth-child(3) > div:nth-child(1) > label:nth-child(1) > span:nth-child(1) > input:nth-child(2)")
