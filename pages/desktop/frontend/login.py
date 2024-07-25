@@ -72,7 +72,7 @@ class Login(Base):
     _repeat_password_locator = (By.CSS_SELECTOR, "div.relative:nth-child(3) > div:nth-child(1) > label:nth-child(1) > span:nth-child(1) > input:nth-child(2)")
     _age_locator = (By.CSS_SELECTOR, "label.flex:nth-child(4) > span:nth-child(1) > input")
     _code_input_locator = (By.CSS_SELECTOR, ".pb-1")
-    _login_card_header_locator = (By.CSS_SELECTOR, ".card-header h1")
+    _login_card_header_locator = (By.CSS_SELECTOR, ".card-header")
     _2fa_input_locator = (By.CSS_SELECTOR, ".pb-1")
     _confirm_2fa_button_locator = (By.CSS_SELECTOR, ".cta-primary")
     _error_2fa_code_locator = (By.CSS_SELECTOR, ".tooltip-below.invalid")
