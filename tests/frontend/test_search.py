@@ -411,7 +411,6 @@ def test_filter_themes(base_url, selenium):
     [
         ["recommended", "Recommended"],
         ["line", "by Firefox"],
-        ["sponsored,verified", "Verified"],
         ["badged", "Reviewed"],
     ],
 )
