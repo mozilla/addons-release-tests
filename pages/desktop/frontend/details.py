@@ -1,3 +1,5 @@
+import time
+
 from pypom import Region
 
 from selenium.webdriver.common.by import By
@@ -46,6 +48,7 @@ class Detail(Base):
         self.wait.until(
             expected.invisibility_of_element_located((By.CLASS_NAME, "LoadingText"))
         )
+        time.sleep(3)
         return self
 
     @property
@@ -1022,6 +1025,7 @@ class Detail(Base):
                     self._loaded_rating_stars_locator
                 )
             )
+            time.sleep(3)
             # waits for the rating stars to be editable
             self.wait.until(
                 expected.element_to_be_clickable(self._rating_stars_locator)

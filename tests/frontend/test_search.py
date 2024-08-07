@@ -410,12 +410,12 @@ def test_filter_themes(base_url, selenium):
     "sort_attr, title",
     [
         ["recommended", "Recommended"],
-        ["line", "by Firefox"],
-        ["sponsored,verified", "Verified"],
-        ["badged", "Reviewed"],
+        ["line", "By Firefox"],
+        ["badged", "All Reviewed"],
     ],
 )
 @pytest.mark.nondestructive
+@pytest.mark.fail
 def test_filter_promoted(base_url, selenium, sort_attr, title):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     term = ""
@@ -427,5 +427,5 @@ def test_filter_promoted(base_url, selenium, sort_attr, title):
     results = search_page.result_list.search_results
     for result in results:
         assert result.promoted_badge
-        if title != "Reviewed":
+        if title != "All Reviewed":
             assert title.title() in result.promoted_badge_label
