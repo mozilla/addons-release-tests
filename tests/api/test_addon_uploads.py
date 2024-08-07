@@ -1096,7 +1096,7 @@ def test_upload_language_pack_unauthorized_user(selenium, base_url):
     """Users not part of the language pack submission group are not allowed to submit langpacks"""
     # get the sessionid for a regular user
     page = Home(selenium, base_url).open().wait_for_page_to_load()
-    page.login("developer")
+    page.login("regular_user")
     session_auth = selenium.get_cookie("sessionid")
     with open("sample-addons/lang-pack.xpi", "rb") as file:
         upload = requests.post(

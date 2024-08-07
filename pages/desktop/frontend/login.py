@@ -75,7 +75,7 @@ class Login(Base):
     _login_card_header_locator = (By.CSS_SELECTOR, ".card-header")
     _2fa_input_locator = (By.CSS_SELECTOR, ".pb-1")
     _confirm_2fa_button_locator = (By.CSS_SELECTOR, ".cta-primary")
-    _error_2fa_code_locator = (By.CSS_SELECTOR, ".tooltip-below.invalid")
+    _error_2fa_code_locator = (By.CSS_SELECTOR, ".text-xs")
 
     def account(self, user):
         if user == "reusable_user":

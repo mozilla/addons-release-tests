@@ -1036,7 +1036,7 @@ def test_edit_addon_with_incorrect_account(base_url, selenium):
     """Edit the add-on details while being authenticated with a different, non-owner developer account"""
     amo = Home(selenium, base_url).open().wait_for_page_to_load()
     # login with a user that has no authorship over the addon we want to edit
-    amo.login("developer")
+    amo.login("submissions_user")
     session_cookie = selenium.get_cookie("sessionid")
     addon = payloads.edit_addon_details["slug"]
     # crete a new dictionary from the original payload, with a different name values
