@@ -14,7 +14,6 @@ class ManualReview(Base):
     _type_column_locator = (By.XPATH, "//th[contains(text(),'Type')]")
     _due_date_column_locator = (By.XPATH, "//a[contains(text(),'Due Date')]")
     _flag_column_locator = (By.XPATH, "//th[contains(text(),'Flags')]")
-    _maliciousness_score_column_locator = (By.XPATH, "//a[contains(text(),'Maliciousness Score')]")
     _addon_list_locator = (By.CSS_SELECTOR, "#addon-queue > tbody > tr")
 
     def wait_for_page_to_load(self):
@@ -43,10 +42,6 @@ class ManualReview(Base):
         return self.find_element(*self._flag_column_locator)
 
     @property
-    def maliciousness_score_column(self):
-        return self.find_element(*self._maliciousness_score_column_locator)
-
-    @property
     def addon_list(self):
         return self.find_element(*self._addon_list_locator)
 
@@ -68,8 +63,4 @@ class ManualReview(Base):
         assert (
             self.flag_column.is_displayed(),
             "Flags" in self.flag_column.text
-        )
-        assert (
-            self.maliciousness_score_column.is_displayed(),
-            "Maliciousness Score" in self.maliciousness_score_column.text
         )
