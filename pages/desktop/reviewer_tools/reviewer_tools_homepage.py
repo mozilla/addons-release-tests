@@ -30,8 +30,7 @@ class ReviewerToolsHomepage(Base):
     _manual_review_log_link_locator = (By.XPATH, "//h3[contains(text(),'Manual Review')]/following-sibling::ul//a[contains(text(),'Review Log')]")
     _addons_review_guide_locator = (By.XPATH, "//a[contains(text(),'Add-on Review Guide')]")
     _flagged_for_human_review_locator = (By.XPATH, "//a[contains(text(),'Flagged by MAD for Human Review')]")
-    _themes_new_locator = (By.XPATH, "//h3[contains(text(),'Themes')]/following-sibling::ul//a[contains(text(),'New')]")
-    _themes_updates_locator = (By.XPATH, "//a[contains(text(),'Updates')]")
+    _themes_awaiting_review_locator = (By.XPATH, "//h3[contains(text(),'Themes')]/following-sibling::ul//a[contains(text(),'Awaiting Review')]")
     _themes_review_log_locator = (By.XPATH, "//h3[contains(text(),'Themes')]/following-sibling::ul//a[contains(text(),'Review Log')]")
     _themes_review_guide_locator = (By.XPATH, "//h3[contains(text(),'Themes')]/following-sibling::ul//a[contains(text(),'Review Guide')]")
     _add_ons_pending_rejection_locator = (By.XPATH, "//h3[contains(text(),'Admin Tools')]/following-sibling::ul//a[contains(text(),'Add-ons Pending Rejection')]")
@@ -99,12 +98,8 @@ class ReviewerToolsHomepage(Base):
         return self.find_element(*self._flagged_for_human_review_locator)
 
     @property
-    def themes_new(self):
-        return self.find_element(*self._themes_new_locator)
-
-    @property
-    def themes_updates(self):
-        return self.find_element(*self._themes_updates_locator)
+    def themes_themes_awaiting_review(self):
+        return self.find_element(*self._themes_awaiting_review_locator)
 
     @property
     def themes_review_log(self):
@@ -170,13 +165,9 @@ class ReviewerToolsHomepage(Base):
         self.find_element(*self._content_review_link_locator).click()
         return ContentReview(self.driver, self.base_url).wait_for_page_to_load()
 
-    def click_themes_new_link(self):
-        self.find_element(*self._themes_new_locator).click()
-        return ReviewerThemes(self.driver, self.base_url).wait_for_themes_new_page_to_load()
-
-    def click_themes_updates_link(self):
-        self.find_element(*self._themes_updates_locator).click()
-        return ReviewerThemes(self.driver, self.base_url).wait_for_themes_update_page_to_load()
+    def click_awaiting_review_link(self):
+        self.find_element(*self._themes_awaiting_review_locator).click()
+        return ReviewerThemes(self.driver, self.base_url).wait_for_themes_page_to_load()
 
     def click_manual_review_log_link(self):
         self.find_element(*self._manual_review_log_link_locator).click()
@@ -234,8 +225,7 @@ class ReviewerToolsHomepage(Base):
             self.content_review_link.is_displayed(),
             self.addons_review_guide.is_displayed(),
             self.flagged_for_human_review.is_displayed(),
-            self.themes_new.is_displayed(),
-            self.themes_updates.is_displayed(),
+            self.themes_themes_awaiting_review.is_displayed(),
             self.themes_review_log.is_displayed(),
             self.themes_review_guide.is_displayed(),
             self.add_ons_pending_rejection.is_displayed()

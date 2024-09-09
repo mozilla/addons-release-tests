@@ -13,7 +13,6 @@ class ContentReview(Base):
     _addon_column_locator = (By.XPATH, "//th[contains(text(),'Add-on')]")
     _flags_column_locator = (By.XPATH, "//th[contains(text(),'Flags')]")
     _last_updated_column_locator = (By.XPATH, "//th[contains(text(),'Last Updated')]")
-    _maliciousness_score_column_locator = (By.XPATH, "//th[contains(text(),'Maliciousness Score')]")
 
     def wait_for_page_to_load(self):
         self.wait.until(
@@ -36,10 +35,6 @@ class ContentReview(Base):
     def last_updated_column(self):
         return self.find_element(*self._last_updated_column_locator)
 
-    @property
-    def maliciousness_score(self):
-        return self.find_element(*self._maliciousness_score_column_locator)
-
     # Assert Methods ----------------------------------------------------------
 
     def assert_queue_viewing_content_review(self):
@@ -54,8 +49,4 @@ class ContentReview(Base):
         assert (
             self.last_updated_column.is_displayed(),
             "Last Updated" in self.last_updated_column.text
-        )
-        assert (
-            self.maliciousness_score.is_displayed(),
-            "Maliciousness Score" in self.maliciousness_score.text
         )

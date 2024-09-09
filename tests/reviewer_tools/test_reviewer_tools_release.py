@@ -85,12 +85,13 @@ def test_queues_content_review_tc_id_c79313(selenium, base_url, wait):
 
 
 @pytest.mark.login("reviewer_user")
-def test_queues_themes_new_tc_id_c325790(selenium, base_url):
+@pytest.mark.fail
+def test_queues_themes_awaiting_review_tc_id_c325790(selenium, base_url):
     """Load AMO Reviewer Tools homepage."""
     """AMO Reviewer Tools homepage is displayed without any layout issues."""
     reviewer_tools_page = ReviewerToolsHomepage(selenium, base_url).open().wait_for_page_to_load()
     """Go to Themes queue and select "New" from the available options."""
-    themes_new_page = reviewer_tools_page.click_themes_new_link()
+    themes_new_page = reviewer_tools_page.click_awaiting_review_link()
     """The list of themes pending for review is displayed - https://reviewers.addons-dev.allizom.org/en-US/reviewers/queue/theme_new
     Please verify if :  
     b) A tab nav containing all queues corresponding to your reviewer permissions is displayed and "New" """
@@ -103,30 +104,30 @@ def test_queues_themes_new_tc_id_c325790(selenium, base_url):
     assert (
         reviewer_tools_page.announcement_section.is_displayed()
     )
-    themes_new_page.assert_queue_viewing_themes_new()
+    themes_new_page.assert_queue_viewing_themes_awaiting_review()
 
-
-@pytest.mark.login("reviewer_user")
-def test_queues_themes_updates_tc_id_c325792(selenium, base_url):
-    """Load AMO Reviewer Tools homepage."""
-    """AMO Reviewer Tools homepage is displayed without any layout issues."""
-    reviewer_tools_page = ReviewerToolsHomepage(selenium, base_url).open().wait_for_page_to_load()
-    """Go to Themes queue " and select "Updates" from the available options"""
-    themes_updates_page = reviewer_tools_page.click_themes_updates_link()
-    """A list of add-on versions pending for review is displayed - https://reviewers.addons-dev.allizom.org/en-US/reviewers/queue/theme_updates
-    Please verify if :   
-    a) A tabnav containing all queues corresponding to your reviewer permissions is displayed and "Updates" 
-    (with the identifiable "themes" icon) is selected"""
-    reviewer_tools_page.assert_tab_viewing()
-    """b) Under the selected tab there is a list of add-ons with various information: "Add-on ", "Type", 
-    "Waiting time", "Flags"""
-    assert (
-        EC.url_contains("reviewers/queue/theme_updates")
-    )
-    assert (
-            "Updates" in themes_updates_page.themes_updates_selected.text
-    )
-    themes_updates_page.assert_queue_viewing_themes_updates()
+# Themes Updates page was removed
+# @pytest.mark.login("reviewer_user")
+# def test_queues_themes_updates_tc_id_c325792(selenium, base_url):
+#     """Load AMO Reviewer Tools homepage."""
+#     """AMO Reviewer Tools homepage is displayed without any layout issues."""
+#     reviewer_tools_page = ReviewerToolsHomepage(selenium, base_url).open().wait_for_page_to_load()
+#     """Go to Themes queue " and select "Updates" from the available options"""
+#     themes_updates_page = reviewer_tools_page.click_themes_updates_link()
+#     """A list of add-on versions pending for review is displayed - https://reviewers.addons-dev.allizom.org/en-US/reviewers/queue/theme_updates
+#     Please verify if :
+#     a) A tabnav containing all queues corresponding to your reviewer permissions is displayed and "Updates"
+#     (with the identifiable "themes" icon) is selected"""
+#     reviewer_tools_page.assert_tab_viewing()
+#     """b) Under the selected tab there is a list of add-ons with various information: "Add-on ", "Type",
+#     "Waiting time", "Flags"""
+#     assert (
+#         EC.url_contains("reviewers/queue/theme_updates")
+#     )
+#     assert (
+#             "Updates" in themes_updates_page.themes_updates_selected.text
+#     )
+#     themes_updates_page.assert_queue_viewing_themes_updates()
 
 
 @pytest.mark.login("reviewer_user")

@@ -6,35 +6,24 @@ from pages.desktop.base import Base
 class ReviewerThemes(Base):
     URL_TEMPLATE = "reviewers/queue/theme_new"
 
-    _themes_new_locator = (By.XPATH, "//li[@class='selected']//a[contains(text(),'New')]")
-    _themes_updates_locator = (By.XPATH, "//li[@class='selected']//a[contains(text(),'Updates')]")
+    _themes_locator = (By.XPATH, "//li[@class='selected']//a[contains(text(),'Themes')]")
 
     _addon_column_locator = (By.XPATH, "//th[contains(text(),'Add-on')]")
     _flags_column_locator = (By.XPATH, "//th[contains(text(),'Flags')]")
-    _due_date_column_locator = (By.XPATH, "//th[contains(text(),'Due Date')]")
+    _target_date_column_locator = (By.XPATH, "//a[contains(text(),'Target Date')]")
     _due_date_column_themes_updates_locator = (By.XPATH, "//a[contains(text(),'Due Date')]")
 
-    def wait_for_themes_update_page_to_load(self):
-        self.wait.until(
-            lambda _: self.find_element(*self._themes_updates_locator).is_displayed(),
-            message="Themes Updates was not loaded",
-        )
-        return self
 
-    def wait_for_themes_new_page_to_load(self):
+    def wait_for_themes_page_to_load(self):
         self.wait.until(
-            lambda _: self.find_element(*self._themes_new_locator).is_displayed(),
+            lambda _: self.find_element(*self._themes_locator).is_displayed(),
             message="Themes New was not loaded",
         )
         return self
 
     @property
-    def themes_updates_selected(self):
-        return self.find_element(*self._themes_updates_locator)
-
-    @property
-    def themes_new_selected(self):
-        return self.find_element(*self._themes_new_locator)
+    def themes_selected(self):
+        return self.find_element(*self._themes_locator)
 
     # Queue Viewing ----------------------------------------------------------
 
@@ -47,8 +36,8 @@ class ReviewerThemes(Base):
         return self.find_element(*self._flags_column_locator)
 
     @property
-    def due_date_column(self):
-        return self.find_element(*self._due_date_column_locator)
+    def target_date_column(self):
+        return self.find_element(*self._target_date_column_locator)
 
     @property
     def due_date_themes_updates_column(self):
@@ -56,14 +45,14 @@ class ReviewerThemes(Base):
 
     # Assert Methods
 
-    def assert_queue_viewing_themes_new(self):
+    def assert_queue_viewing_themes_awaiting_review(self):
         assert (
             self.addon_column.is_displayed(),
             "Add-on" in self.addon_column.text
         )
         assert (
-            self.due_date_column.is_displayed(),
-            "Due Date" in self.due_date_column.text
+            self.target_date_column.is_displayed(),
+            "Due Date" in self.target_date_column.text
         )
         assert (
             self.flags_column.is_displayed(),
