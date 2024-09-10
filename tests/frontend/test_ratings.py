@@ -1,4 +1,6 @@
 import math
+import time
+
 import pytest
 
 from selenium.common.exceptions import NoSuchElementException
@@ -501,6 +503,7 @@ def test_edit_developer_reply_to_review(selenium, base_url, variables):
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     # addon.login('developer')
+    time.sleep(2)
     reviews = addon.ratings.click_all_reviews_link()
     edited_reply = variables["edited_text_input"]
     addon.ratings.edit_review.click()
@@ -518,6 +521,7 @@ def test_delete_developer_reply_to_review(selenium, base_url, variables):
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     # addon.login('developer')
+    time.sleep(2)
     reviews = addon.ratings.click_all_reviews_link()
     addon.ratings.delete_review.click()
     reviews.review_items[0].click_confirm_delete_button()
@@ -538,6 +542,7 @@ def test_developers_cannot_rate_their_own_addons(selenium, base_url, variables):
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     # addon.login('developer')
+    time.sleep(2)
     addon.ratings.rating_stars[4].click()
     addon.wait.until(
         EC.text_to_be_present_in_element(
