@@ -113,9 +113,12 @@ def test_validate_addon_unlisted(selenium, base_url, variables, wait):
 
 @pytest.mark.sanity
 @pytest.mark.login("developer")
+@pytest.mark.fail
 def test_validate_unlisted_addon_option_no_manifest_found(
     selenium, base_url, variables, wait
 ):
+    # devhub_home = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    # devhub_home.login("developer")
     """Go to Devhub Addon Validate page"""
     devhub_addon_validate = (
         DevhubAddonValidate(selenium, base_url).open().wait_for_page_to_load()

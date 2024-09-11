@@ -480,12 +480,11 @@ def test_delete_review_in_all_reviews_page(selenium, base_url, variables):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-@pytest.mark.login("developer")
 def test_developer_reply_to_review(selenium, base_url, variables):
     extension = variables["dev_reply_review"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
-    # addon.login('developer')
+    addon.login('developer')
     reviews = addon.ratings.click_all_reviews_link()
     reviews.review_items[0].click_reply_to_review()
     reply_text = variables["initial_text_input"]
@@ -497,12 +496,11 @@ def test_developer_reply_to_review(selenium, base_url, variables):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-@pytest.mark.create_session("developer")
 def test_edit_developer_reply_to_review(selenium, base_url, variables):
     extension = variables["dev_reply_review"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
-    # addon.login('developer')
+    addon.login('developer')
     time.sleep(2)
     reviews = addon.ratings.click_all_reviews_link()
     edited_reply = variables["edited_text_input"]
@@ -515,12 +513,11 @@ def test_edit_developer_reply_to_review(selenium, base_url, variables):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-@pytest.mark.create_session("developer")
 def test_delete_developer_reply_to_review(selenium, base_url, variables):
     extension = variables["dev_reply_review"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
-    # addon.login('developer')
+    addon.login('developer')
     time.sleep(2)
     reviews = addon.ratings.click_all_reviews_link()
     addon.ratings.delete_review.click()
@@ -535,13 +532,12 @@ def test_delete_developer_reply_to_review(selenium, base_url, variables):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-@pytest.mark.create_session("developer")
 def test_developers_cannot_rate_their_own_addons(selenium, base_url, variables):
     """Log in as an addon developer and try to post a review to your own addon; the request should fail"""
     extension = variables["dev_reply_review"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
-    # addon.login('developer')
+    addon.login('developer')
     time.sleep(2)
     addon.ratings.rating_stars[4].click()
     addon.wait.until(
