@@ -82,7 +82,7 @@
   "non_developer_user": "10642346",
   "user_abuse_initial_form_header": "Report this user to Mozilla",
   "user_abuse_form_send_feedback_text": "Send some feedback about the user",
-  "user_abuse_form_provide_more_information_help_text": "Please provide any additional information that may help us to understand your report (including which policy you believe has been violated). While this information is not required, failure to include it may prevent us from addressing the reported content.",
+  "user_abuse_form_provide_more_information_help_text": "Please provide any additional information that may help us to understand your report (including which policy you believe has been violated).",
   "user_abuse_input_text": "Submitting a user abuse report",
   "user_abuse_confirmed_form_header": "Report submitted",
   "user_abuse_form_confirmed_help_text": "We have received your report. Thanks for letting us know.",

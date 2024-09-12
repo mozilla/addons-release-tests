@@ -308,7 +308,6 @@ def test_top_rated_recommended_addons_tc_id_c92462(base_url, selenium, variables
 
 
 @pytest.mark.nondestructive
-@pytest.mark.failing
 def test_top_rated_recommended_extensions_tc_id_c92462(base_url, selenium, variables):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     search_page = page.search.search_for(variables["search_term"])
@@ -410,8 +409,8 @@ def test_filter_themes(base_url, selenium):
     "sort_attr, title",
     [
         ["recommended", "Recommended"],
-        ["line", "by Firefox"],
-        ["badged", "Reviewed"],
+        ["line", "By Firefox"],
+        ["badged", "All Reviewed"],
     ],
 )
 @pytest.mark.nondestructive
@@ -426,5 +425,5 @@ def test_filter_promoted(base_url, selenium, sort_attr, title):
     results = search_page.result_list.search_results
     for result in results:
         assert result.promoted_badge
-        if title != "Reviewed":
+        if title != "All Reviewed":
             assert title.title() in result.promoted_badge_label
