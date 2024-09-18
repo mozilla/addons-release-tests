@@ -444,12 +444,12 @@ def test_more_info_external_license(selenium, base_url, variables):
         ),
         (
             "gnu-library-2-1",
-            "GNU Library General Public License v2.1",
+            "GNU Lesser General Public License v2.1",
             "https://www.gnu.org/licenses/old-licenses/lgpl-2.1",
         ),
         (
             "gnu-library-3-0",
-            "GNU Library General Public License v3.0",
+            "GNU Lesser General Public License v3.0",
             "https://www.gnu.org/licenses/lgpl-3.0",
         ),
         (
@@ -459,7 +459,7 @@ def test_more_info_external_license(selenium, base_url, variables):
         ),
         (
             "bsd-license",
-            "The BSD License",
+            "The 2-Clause BSD License",
             "https://opensource.org/license/bsd-2-clause",
         ),
     ],
@@ -467,12 +467,13 @@ def test_more_info_external_license(selenium, base_url, variables):
         "Mozilla Public License 2.0",
         "GNU General Public License v2.0",
         "GNU General Public License v3.0",
-        "GNU Library General Public License v2.1",
-        "GNU Library General Public License v3.0",
+        "GNU Lesser General Public License v2.1",
+        "GNU Lesser General Public License v3.0",
         "The MIT License",
-        "The BSD License",
+        "The 2-Clause BSD License",
     ],
 )
+@pytest.mark.fail
 def test_more_info_builtin_licenses(
     selenium, base_url, extension, license_name, license_link
 ):
