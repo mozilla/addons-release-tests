@@ -378,7 +378,8 @@ def test_more_info_addon_size(selenium, base_url, variables):
     file = urllib.request.urlopen(addon.addon_xpi)
     # convert the size returned by the file.length from bytes to the unit displayed on AMO
     size = reusables.convert_bytes(file.length)
-    assert size == more_info_size/10
+    more_info_size = more_info_size[:len(more_info_size)-1]
+    assert size == more_info_size
 
 
 @pytest.mark.sanity
