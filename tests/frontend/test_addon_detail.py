@@ -473,7 +473,6 @@ def test_more_info_external_license(selenium, base_url, variables):
         "The 2-Clause BSD License",
     ],
 )
-@pytest.mark.fail
 def test_more_info_builtin_licenses(
     selenium, base_url, extension, license_name, license_link
 ):

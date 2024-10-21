@@ -299,7 +299,6 @@ def test_devhub_resources_footer_promote_links_tc_id_C15072(selenium, base_url, 
 
 @pytest.mark.nondestructive
 @pytest.mark.login("developer")
-@pytest.mark.fail
 def test_devhub_resources_write_some_code(selenium, base_url, variables):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     assert "Write Some Code" in page.resources.write_code_section_header
@@ -312,7 +311,6 @@ def test_devhub_resources_write_some_code(selenium, base_url, variables):
 
 
 @pytest.mark.nondestructive
-@pytest.mark.fail
 def test_devhub_resources_participate(selenium, base_url, variables):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     page.devhub_login("regular_user")
