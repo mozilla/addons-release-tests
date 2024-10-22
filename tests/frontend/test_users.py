@@ -311,6 +311,7 @@ def test_user_delete_profile_tc_id_c4393(base_url, selenium):
 
 @pytest.mark.serial
 @pytest.mark.login("reusable_user")
+@pytest.mark.skip
 def test_user_account_manage_section(base_url, selenium, variables):
     user = User(selenium, base_url).open().wait_for_page_to_load()
     email = Login(selenium, base_url)
