@@ -327,7 +327,7 @@ def test_user_account_manage_section(base_url, selenium, variables):
 
 
 @pytest.mark.serial
-@pytest.mark.create_session("reusable_user")
+@pytest.mark.login("reusable_user")
 def test_user_data_for_deleted_profile(base_url, selenium):
     """When a profile is deleted from AMO, the user data is deleted.
     However, the FxA account for that user still exists, so they can log into AMO
@@ -341,8 +341,7 @@ def test_user_data_for_deleted_profile(base_url, selenium):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-@pytest.mark.create_session("reusable_user")
-@pytest.mark.clear_session
+@pytest.mark.login("reusable_user")
 def test_user_regular_has_no_role(base_url, selenium):
     Home(selenium, base_url).open().wait_for_page_to_load()
     user = User(selenium, base_url).open().wait_for_page_to_load()
@@ -355,9 +354,10 @@ def test_user_regular_has_no_role(base_url, selenium):
 
 
 @pytest.mark.serial
+@pytest.mark.login("reusable_user")
 def test_user_regular_notifications(base_url, selenium, variables):
     user = User(selenium, base_url).open().wait_for_page_to_load()
-    user.login("reusable_user")
+    # user.login("reusable_user")
     # regular users can only opt in/out for 2 notifications
     assert len(user.edit.notification_text) == 2
     count = 0
