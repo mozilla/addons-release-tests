@@ -299,7 +299,6 @@ def test_devhub_resources_join_addon_review(selenium, base_url, variables):
 
 # @pytest.mark.nondestructive
 # @pytest.mark.create_session("developer")
-# @pytest.mark.fail
 # def test_devhub_resources_write_some_code(selenium, base_url, variables):
 #     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
 #     assert "More Ways to Participate" in page.resources.write_code_section_header

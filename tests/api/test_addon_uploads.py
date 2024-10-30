@@ -1092,7 +1092,6 @@ def test_upload_theme_with_wrong_license(base_url, session_auth):
 
 
 @pytest.mark.serial
-@pytest.mark.fail
 def test_upload_language_pack_unauthorized_user(selenium, base_url):
     """Users not part of the language pack submission group are not allowed to submit langpacks"""
     # get the sessionid for a regular user

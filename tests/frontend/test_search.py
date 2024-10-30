@@ -415,7 +415,6 @@ def test_filter_themes(base_url, selenium):
     ],
 )
 @pytest.mark.nondestructive
-@pytest.mark.fail
 def test_filter_promoted(base_url, selenium, sort_attr, title):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     term = ""

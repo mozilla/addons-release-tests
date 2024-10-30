@@ -85,7 +85,6 @@ def test_queues_content_review_tc_id_c79313(selenium, base_url, wait):
 
 
 @pytest.mark.login("reviewer_user")
-@pytest.mark.fail
 def test_queues_themes_awaiting_review_tc_id_c325790(selenium, base_url):
     """Load AMO Reviewer Tools homepage."""
     """AMO Reviewer Tools homepage is displayed without any layout issues."""

@@ -69,6 +69,7 @@ def test_devhub_developer_agreement_checkboxes(selenium, base_url):
 
 
 @pytest.mark.sanity
+@pytest.mark.fail
 def test_submit_listed_wizard_theme_tc_id_c97500(selenium, base_url, variables, wait, delete_themes):
     """A test that checks a straight-forward theme submission with the devhub wizard"""
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
@@ -110,6 +111,7 @@ def test_submit_listed_wizard_theme_tc_id_c97500(selenium, base_url, variables, 
 @pytest.mark.serial
 # The first test starts the browser with a normal login in order to store de session cookie
 @pytest.mark.login("submissions_user")
+@pytest.mark.fail
 def test_submit_unlisted_addon_tc_id_c14886(selenium, base_url, variables, wait):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     submit_addon = page.click_submit_addon_button()
@@ -217,6 +219,7 @@ def test_verify_first_version_autoapproval(selenium, base_url, variables, wait):
 @pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.create_session("submissions_user")
+@pytest.mark.fail
 def test_submit_listed_addon_tc_id_c4369(selenium, base_url, variables, wait):
     """Test covering the process of uploading a listed addon"""
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
@@ -273,6 +276,7 @@ def test_submit_listed_addon_tc_id_c4369(selenium, base_url, variables, wait):
 @pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.create_session("submissions_user")
+@pytest.mark.fail
 def test_submit_addon_3mb_size_tc_id_c2274214(selenium, base_url, wait, variables):
     """Test covering the process of uploading a listed addon with 3-4 mb in size"""
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()

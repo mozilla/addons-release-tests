@@ -73,16 +73,16 @@ def test_blocked_addon_page_loaded_correctly(base_url, selenium, variables):
     page = StaticPages(selenium, base_url)
     # verify the tab title
     assert (
-        f'{variables["blocked_addon_name"]} has been blocked for your protection. – Add-ons for Firefox'
+        f'{variables["blocked_addon_name"]} is blocked for violating Mozilla policies. – Add-ons for Firefox (en-US)'
         in page.driver.title
     )
     # verify the header
     assert (
-        f'{variables["blocked_addon_name"]} has been blocked for your protection.'
+        f'{variables["blocked_addon_name"]} is blocked for violating Mozilla policies.'
         in page.page_header
     )
     # verify the paragraphs
-    assert "Why was it blocked?" in page.content.text
+    assert "Why did this happen?" in page.content.text
     assert "What does this mean?" in page.content.text
     # verify that the links are displayed
     assert page.addon_policies_link.is_displayed()
