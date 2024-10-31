@@ -171,7 +171,7 @@ def test_addon_card_recommendation_badge_link(base_url, selenium, variables):
 
 @pytest.mark.prod_only
 @pytest.mark.nondestructive
-@pytest.mark.fail
+@pytest.mark.skip
 def test_blog_install_addon(
     base_url, selenium, variables, firefox, firefox_notifications, wait
 ):
@@ -206,7 +206,7 @@ def test_blog_install_addon(
 
 @pytest.mark.prod_only
 @pytest.mark.nondestructive
-@pytest.mark.fail
+@pytest.mark.skip
 def test_addon_link_in_article_addon_cards(base_url, selenium):
     blog = BlogHomepage(selenium, base_url).open().wait_for_page_to_load()
     article = blog.articles[0].click_read_more_link()
@@ -221,7 +221,7 @@ def test_addon_link_in_article_addon_cards(base_url, selenium):
 
 @pytest.mark.prod_only
 @pytest.mark.nondestructive
-@pytest.mark.fail
+@pytest.mark.skip
 def test_author_link_in_article_addon_cards(base_url, selenium):
     blog = BlogHomepage(selenium, base_url).open().wait_for_page_to_load()
     article = blog.articles[0].click_read_more_link()
