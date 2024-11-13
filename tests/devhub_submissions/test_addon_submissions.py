@@ -5,6 +5,7 @@ from pages.desktop.developers.manage_versions import ManageVersions
 from pages.desktop.developers.submit_addon import (
     SubmitAddon,
     SubmissionConfirmationPage,
+    UploadSource
 )
 from scripts import reusables
 from api import api_helpers, payloads
@@ -69,7 +70,6 @@ def test_devhub_developer_agreement_checkboxes(selenium, base_url):
 
 
 @pytest.mark.sanity
-@pytest.mark.fail
 def test_submit_listed_wizard_theme_tc_id_c97500(selenium, base_url, variables, wait, delete_themes):
     """A test that checks a straight-forward theme submission with the devhub wizard"""
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
@@ -106,12 +106,46 @@ def test_submit_listed_wizard_theme_tc_id_c97500(selenium, base_url, variables, 
     # check that the submitted theme appears in the user's themes list
     assert theme_name in manage_themes.addon_list[0].name
 
-
 @pytest.mark.sanity
+@pytest.mark.skip
+def test_submit_a_new_version_for_addon_prod(selenium, base_url, variables, wait):
+    """A test added just for production environment due to captcha """
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    page.devhub_login("submissions_user")
+    manage_versions = ManageVersions(selenium, base_url)
+    manage_versions.open_manage_versions_page_for_addon(selenium, base_url, "listed_addon_1_1")
+    manage_versions.click_visible_radio_button()
+    manage_versions.click_upload_new_version_button()
+    submit_addon_page = SubmitAddon(selenium, base_url).wait_for_page_to_load()
+    submit_addon_page.upload_addon("listed_addon_1.2.zip")
+    submit_addon_page.is_validation_successful()
+    submit_addon_page.click_continue()
+    upload_source = UploadSource(selenium, base_url).wait_for_page_to_load()
+    upload_source.select_no_to_omit_source()
+    upload_source.continue_listed_submission()
+    upload_source.release_notes_field().send_keys(variables["upload_status"])
+    upload_source.notes_to_reviewers_field().send_keys(variables["upload_status"])
+    upload_source.continue_listed_submission()
+    assert upload_source.version_submitted_text() in variables["version_submitted"]
+    manage_versions.open_manage_versions_page_for_addon(selenium, base_url, "listed_addon_1_1")
+    manage_versions.click_delete_disable_version()
+    manage_versions.click_delete_version_button()
+    manage_versions.set_addon_invisible()
+    assert manage_versions.invisible_status_text() in variables["invisible_status_text"]
+
+
+
+
+
+
+    
+
+
+
+
 @pytest.mark.serial
 # The first test starts the browser with a normal login in order to store de session cookie
 @pytest.mark.login("submissions_user")
-@pytest.mark.fail
 def test_submit_unlisted_addon_tc_id_c14886(selenium, base_url, variables, wait):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     submit_addon = page.click_submit_addon_button()
@@ -216,10 +250,8 @@ def test_verify_first_version_autoapproval(selenium, base_url, variables, wait):
     version_status.wait_for_version_autoapproval("Approved")
 
 
-@pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.create_session("submissions_user")
-@pytest.mark.fail
 def test_submit_listed_addon_tc_id_c4369(selenium, base_url, variables, wait):
     """Test covering the process of uploading a listed addon"""
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
@@ -273,10 +305,8 @@ def test_submit_listed_addon_tc_id_c4369(selenium, base_url, variables, wait):
     assert addon_name in edit_listing.name
 
 
-@pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.create_session("submissions_user")
-@pytest.mark.fail
 def test_submit_addon_3mb_size_tc_id_c2274214(selenium, base_url, wait, variables):
     """Test covering the process of uploading a listed addon with 3-4 mb in size"""
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
@@ -374,7 +404,6 @@ def test_submit_mixed_addon_versions_tc_id_c14981(selenium, base_url, variables,
     assert edit_addon.unlisted_version_tooltip.is_displayed()
 
 
-@pytest.mark.sanity
 @pytest.mark.serial
 def test_verify_new_unlisted_version_autoapproval_tc_id_C4372(selenium, base_url, variables):
     """Uploads a new version to an existing addon and verifies that is auto-approved"""

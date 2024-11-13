@@ -6,6 +6,8 @@ from pypom import Region, Page
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 
+# from pages.desktop.developers.submit_addon import SubmitAddon
+
 
 class ManageVersions(Page):
     _addon_name_title_locator = (By.CSS_SELECTOR, 'div[class="section"] header h2')
@@ -32,8 +34,10 @@ class ManageVersions(Page):
 
     _disabled_by_mozilla_locator = (By.CSS_SELECTOR, ".file-status > div")
     _incomplete_status_locator = (By.CSS_SELECTOR, ".status-incomplete b")
+    _invisible_status_locator = (By.CSS_SELECTOR, ".status-disabled b")
     _addon_listed_status_locator = (By.CSS_SELECTOR, ".addon-listed-status b")
     _delete_addon_button_locator = (By.CLASS_NAME, "delete-button.delete-addon")
+    _upload_new_version_locator = (By.CSS_SELECTOR, ".button.version-upload")
 
     # Version List Section
     _version_list_locator = (By.ID, "version-list")
@@ -100,6 +104,19 @@ class ManageVersions(Page):
             EC.visibility_of_element_located(self._request_review_button_locator)
         )
         return self.find_element(*self._request_review_button_locator).click()
+
+    def click_visible_radio_button(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._visible_listing_radio_locator)
+        )
+        return self.find_element(*self._visible_listing_radio_locator).click()
+
+    def click_upload_new_version_button(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._upload_new_version_locator)
+        )
+        return self.find_element(*self._upload_new_version_locator).click()
+
 
     def set_addon_visible(self):
         """Selects the Visible option and checks that the radio button is selected"""
@@ -260,6 +277,14 @@ class ManageVersions(Page):
     def click_cancel_review_request(self):
         self.find_element(*self._cancel_request_review_button_locator).click()
         return self.CancelReviewRequestModal(self).wait_for_region_to_load()
+
+    def invisible_status_text(self):
+        self.wait.until(
+            EC.visibility_of_element_located(
+                self._invisible_status_locator
+            )
+        )
+        return self.find_element(*self._invisible_status_locator).text
 
     class CancelReviewRequestModal(Region):
         _root_locator = (By.ID, 'modal-cancel')

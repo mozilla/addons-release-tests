@@ -12,7 +12,7 @@ class ContentReview(Base):
     # Queue viewing
     _addon_column_locator = (By.XPATH, "//th[contains(text(),'Add-on')]")
     _flags_column_locator = (By.XPATH, "//th[contains(text(),'Flags')]")
-    _last_updated_column_locator = (By.XPATH, "//th[contains(text(),'Last Updated')]")
+    _last_updated_column_locator = (By.XPATH, "//a[contains(text(),'Last Updated')]")
 
     def wait_for_page_to_load(self):
         self.wait.until(
