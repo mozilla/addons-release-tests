@@ -533,6 +533,9 @@ class UploadSource(Page):
     )
     _yes_cancel_and_disable_version = (By.CSS_SELECTOR, "button.delete-button:nth-child(1)")
     _do_not_cancel_version_link_locator = (By.CSS_SELECTOR, "#modal-confirm-submission-cancel > form > div > a")
+    _release_notes_field_locator = (By.ID, "trans-release_notes")
+    _notes_to_reviewer_locator = (By.ID, "id_approval_notes")
+    _version_submitted_text_locator = (By.CLASS_NAME, ".addon-submission-process h3")
 
     @property
     def submit_source_page_header(self):
@@ -597,6 +600,29 @@ class UploadSource(Page):
         self.find_element(*self._yes_cancel_and_disable_version).click()
         return ManageVersions(self.driver, self.base_url).wait_for_page_to_load()
 
+    def release_notes_field(self):
+        self.wait.until(
+            EC.visibility_of_element_located(
+                self._release_notes_field_locator
+            )
+        )
+        return self.find_element(*self._release_notes_field_locator)
+
+    def notes_to_reviewers_field(self):
+        self.wait.until(
+            EC.visibility_of_element_located(
+                self._notes_to_reviewer_locator
+            )
+        )
+        return self.find_element(*self._notes_to_reviewer_locator)
+
+    def version_submitted_text(self):
+        self.wait.until(
+            EC.visibility_of_element_located(
+                self._version_submitted_text_locator
+            )
+        )
+        return self.find_element(*self._version_submitted_text_locator).text
 
 class ListedAddonSubmissionForm(Page):
     _addon_name_field_locator = (By.CSS_SELECTOR, "#trans-name input:nth-child(1)")

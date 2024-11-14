@@ -171,12 +171,11 @@ def test_addon_card_recommendation_badge_link(base_url, selenium, variables):
 
 @pytest.mark.prod_only
 @pytest.mark.nondestructive
-@pytest.mark.skip
 def test_blog_install_addon(
     base_url, selenium, variables, firefox, firefox_notifications, wait
 ):
     blog = BlogHomepage(selenium, base_url).open().wait_for_page_to_load()
-    article = blog.articles[0].click_read_more_link()
+    article = blog.articles[3].click_read_more_link()
     # install add-on from a blog article
     addon_name = article.addon_cards[0].title.text
     addon_summary = article.addon_cards[0].summary
@@ -206,10 +205,9 @@ def test_blog_install_addon(
 
 @pytest.mark.prod_only
 @pytest.mark.nondestructive
-@pytest.mark.skip
 def test_addon_link_in_article_addon_cards(base_url, selenium):
     blog = BlogHomepage(selenium, base_url).open().wait_for_page_to_load()
-    article = blog.articles[0].click_read_more_link()
+    article = blog.articles[3].click_read_more_link()
     # make a note of the add-on name in the article card
     addon_name = article.addon_cards[0].title.text
     # click om the add-on name to open the detail page on AMO
@@ -221,10 +219,9 @@ def test_addon_link_in_article_addon_cards(base_url, selenium):
 
 @pytest.mark.prod_only
 @pytest.mark.nondestructive
-@pytest.mark.skip
 def test_author_link_in_article_addon_cards(base_url, selenium):
     blog = BlogHomepage(selenium, base_url).open().wait_for_page_to_load()
-    article = blog.articles[0].click_read_more_link()
+    article = blog.articles[3].click_read_more_link()
     # make a note of the addon author in the article card
     addon_author = article.addon_cards[0].author.text
     # click on the author name to open the user profile page on AMO

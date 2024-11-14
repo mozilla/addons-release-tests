@@ -60,6 +60,8 @@
   "addon_validation_message": "Your add-on was validated with no errors or warnings.",
   "no_manifest_found_message": "manifest.json was not found",
   "unsupported_format_message": "The filetype you uploaded isn't recognized.",
-  "upload_status": "100% complete"
+  "upload_status": "100% complete",
+  "version_submitted": "Version Submitted",
+  "invisible_status_text": "Invisible"
 }
 
