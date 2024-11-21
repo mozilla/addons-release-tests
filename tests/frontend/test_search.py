@@ -23,7 +23,7 @@ from scripts.reusables import get_random_string
     [
         "Flagfox",
         "Video DownloadHelper (cas-cur)",
-        "Facebook Container (cas-cur)",
+        "cas-new-addon-4",
         "Tree Style Tab",
         "Two little birds",
     ],
