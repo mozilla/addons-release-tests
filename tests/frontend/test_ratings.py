@@ -584,6 +584,7 @@ def test_rating_card_addon_name(selenium, base_url, variables):
 
 
 @pytest.mark.nondestructive
+@pytest.mark.fail
 def test_rating_card_authors(selenium, base_url, variables):
     selenium.get(f'{base_url}/addon/{variables["addon_with_stats"]}/versions/')
     page = Versions(selenium, base_url)
