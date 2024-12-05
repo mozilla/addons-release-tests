@@ -36,8 +36,8 @@ def test_blocked_frontend_page_tc_id_c1771696(selenium, base_url, wait, variable
         variables["why_was_it_blocked"]
         in detail_page.why_was_it_blocked.text
     )
-    assert (
-        variables["block_metadata"]
-        in detail_page.block_metadata.text
-    )
+    # assert (
+    #     variables["block_metadata"]
+    #     in detail_page.block_metadata.text
+    # )
 

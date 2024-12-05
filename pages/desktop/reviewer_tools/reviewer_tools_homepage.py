@@ -212,7 +212,7 @@ class ReviewerToolsHomepage(Base):
         new_tab = self.driver.window_handles[1]
         self.driver.switch_to.window(new_tab)
         self.wait.until(
-            EC.visibility_of_element_located((By.XPATH, "//h1[contains(text(),'Add-ons/Reviewers/Guide/Moderation')]"))
+            EC.visibility_of_element_located((By.XPATH, "//span[contains(text(),'Add-ons/Reviewers/Guide/Moderation')]"))
         )
         self.driver.close()
         self.driver.switch_to.window(current_tab)
