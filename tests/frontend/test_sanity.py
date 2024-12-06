@@ -15,7 +15,6 @@ from pages.desktop.frontend.language_tools import LanguageTools
 
 @pytest.mark.nondestructive
 @pytest.mark.prod_only
-@pytest.mark.fail
 def test_language_tools_landing_page(selenium, base_url, variables):
     page = LanguageTools(selenium, base_url).open().wait_for_page_to_load()
     # verify the information present on the landing page
