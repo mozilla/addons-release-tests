@@ -434,33 +434,33 @@ def test_more_info_external_license(selenium, base_url, variables):
         ),
         (
             "gnu-general-2-0",
-            "GNU General Public License v2.0",
-            "https://www.gnu.org/licenses/old-licenses/gpl-2.0",
+            "GNU General Public License v2.0 only",
+            "https://spdx.org/licenses/GPL-2.0-only.html",
         ),
         (
             "gnu-general-3-0",
             "GNU General Public License v3.0",
-            "https://www.gnu.org/licenses/gpl-3.0",
+            "https://spdx.org/licenses/GPL-3.0-only.html",
         ),
         (
             "gnu-library-2-1",
             "GNU Lesser General Public License v2.1",
-            "https://www.gnu.org/licenses/old-licenses/lgpl-2.1",
+            "https://spdx.org/licenses/LGPL-2.1-only.html",
         ),
         (
             "gnu-library-3-0",
             "GNU Lesser General Public License v3.0",
-            "https://www.gnu.org/licenses/lgpl-3.0",
+            "https://spdx.org/licenses/LGPL-3.0-only.html",
         ),
         (
             "mit-license",
-            "The MIT License",
-            "https://opensource.org/license/mit",
+            "MIT License",
+            "https://spdx.org/licenses/MIT.html",
         ),
         (
             "bsd-license",
-            "The 2-Clause BSD License",
-            "https://opensource.org/license/bsd-2-clause",
+            "BSD 2-Clause \"Simplified\" License",
+            "https://spdx.org/licenses/BSD-2-Clause.html",
         ),
     ],
     ids=[
@@ -473,6 +473,7 @@ def test_more_info_external_license(selenium, base_url, variables):
         "The 2-Clause BSD License",
     ],
 )
+@pytest.mark.fail
 def test_more_info_builtin_licenses(
     selenium, base_url, extension, license_name, license_link
 ):

@@ -112,6 +112,7 @@ def test_edit_version_set_custom_license(base_url, session_auth):
 
 @pytest.mark.serial
 @pytest.mark.create_session("api_user")
+@pytest.mark.fail
 def test_upload_new_listed_version(base_url, session_auth):
     """Uploads a new listed version for an existing addon"""
     with open("sample-addons/listed-addon-new-version.zip", "rb") as file:
@@ -146,6 +147,7 @@ def test_upload_new_listed_version(base_url, session_auth):
 
 @pytest.mark.serial
 @pytest.mark.create_session("api_user")
+@pytest.mark.fail
 def test_upload_new_version_with_existing_version_number(base_url, session_auth):
     """Uploads a new version with an existing version number; the upload should fail"""
     with open("sample-addons/listed-addon-new-version.zip", "rb") as file:
@@ -156,11 +158,15 @@ def test_upload_new_version_with_existing_version_number(base_url, session_auth)
             data={"channel": "listed"},
         )
     time.sleep(5)
+    print("Post upload json: " + f"{upload}")
     upload.raise_for_status()
     # get the addon uuid generated after upload
     uuid = upload.json()["uuid"]
+    print("UUID json: " + f"{uuid}")
     addon = payloads.edit_addon_details["slug"]
+    print("addon json: " + f"{addon}")
     payload = payloads.new_version_details(uuid)
+    print("payload json: " + f"{payload}")
     new_version = requests.post(
         url=f"{base_url}{_addon_create}{addon}/versions/",
         headers={
@@ -169,6 +175,7 @@ def test_upload_new_version_with_existing_version_number(base_url, session_auth)
         },
         data=json.dumps(payload),
     )
+    print("payload json: " + f"{new_version}")
     assert (
         new_version.status_code == 409
     ), f"Actual response: status code = {new_version.status_code}, message = {new_version.text}"
@@ -349,12 +356,14 @@ def test_edit_version_change_sources(base_url, session_auth):
         url=f"{base_url}{_addon_create}{addon}",
         headers={"Authorization": f"Session {session_auth}"},
     )
+    print("Request addon create: " + f"{request.json()}")
     # get the version id of the version we want to edit
     version = request.json()["current_version"]["id"]
     get_old_source = requests.get(
         url=f"{base_url}{_addon_create}{addon}/versions/{version}/",
         headers={"Authorization": f"Session {session_auth}"},
     )
+    print("get old source request: " + f"{get_old_source.json()}")
     # download the previous source code attached to the version
     previous_source = requests.get(
         get_old_source.json()["source"], cookies={"sessionid": session_auth}, timeout=10
@@ -365,12 +374,19 @@ def test_edit_version_change_sources(base_url, session_auth):
             headers={"Authorization": f"Session {session_auth}"},
             files={"source": source},
         )
+
+    print("previous source: " + f"{previous_source.json()}")
+    print("change source: " + f"{change_source.json()}")
+
     # download the new source code attached to the  version
     new_source = requests.get(
         change_source.json()["source"], cookies={"sessionid": session_auth}, timeout=10
     )
+    print("new source: " + f"{new_source.json()}")
+
     # compare that the previous source and the new source do not match
     api_helpers.compare_source_files(previous_source, new_source, "PATCH")
+
 
 
 @pytest.mark.parametrize(
