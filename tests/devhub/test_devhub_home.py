@@ -97,7 +97,7 @@ def test_devhub_page_get_involved(selenium, base_url, variables):
     assert variables["devhub_get_involved_summary"] in page.devhub_get_involved_summary
     assert page.devhub_get_involved_image.is_displayed()
     page.devhub_get_involved_link.click()
-    page.wait_for_element_to_be_clickable(page.devhub_addon_contribute_title)
+    page.wait_for_element_to_be_displayed(page.devhub_addon_contribute_title)
     assert page.devhub_addon_contribute_title.text in "Add-ons/Contribute"
 
 
