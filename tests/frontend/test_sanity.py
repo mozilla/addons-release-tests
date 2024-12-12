@@ -23,7 +23,7 @@ def test_language_tools_landing_page(selenium, base_url, variables):
     assert variables["language_packs_info"] in page.language_packs_info_text
     # we don't always know the number of supported languages in advance,
     # but we can make sure we are in close range to what we always supported
-    assert len(page.supported_languages_list) in range(120, 140)
+    assert len(page.supported_languages_list) in range(130, 150)
 
 
 @pytest.mark.nondestructive

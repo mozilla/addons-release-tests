@@ -53,6 +53,10 @@ class DevHubHome(Base):
         By.CSS_SELECTOR,
         ".DevHub-content-container--get-involved p",
     )
+    _add_ons_contribute_title_locator = (
+        By.CSS_SELECTOR,
+        ".mw-first-heading"
+    )
     _dev_community_link_locator = (
         By.CSS_SELECTOR,
         ".DevHub-content-container--get-involved a",
@@ -232,6 +236,11 @@ class DevHubHome(Base):
     def devhub_get_involved_image(self):
         self.wait_for_element_to_be_displayed(self._get_involved_image_locator)
         return self.find_element(*self._get_involved_image_locator)
+
+    @property
+    def devhub_addon_contribute_title(self):
+        self.wait_for_element_to_be_displayed(self._add_ons_contribute_title_locator)
+        return self.find_element(*self._add_ons_contribute_title_locator)
 
     def click_content_login_link(self):
         self.wait_for_element_to_be_clickable(self._page_content_login_link_locator)

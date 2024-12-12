@@ -173,7 +173,7 @@ edit_version_details = {
 def new_version_details(uuid):
     body = {
         "upload": uuid,
-        "license": "GPL-2.0-or-later",
+        "license": "ISC",
         "release_notes": {
             "de": "New Version DE notes added in API at addon creation time",
             "en-US": "New Version EN-US notes added in API at addon creation time",

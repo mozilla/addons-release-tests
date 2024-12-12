@@ -264,6 +264,7 @@ def test_theme_categories_shelf_tc_id_c95105(base_url, selenium, count, category
 # Tests covering the homepage footer
 @pytest.mark.sanity
 @pytest.mark.nondestructive
+@pytest.mark.prod_only
 def test_mozilla_footer_link_tc_id_c95105(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.footer.mozilla_link.click()
