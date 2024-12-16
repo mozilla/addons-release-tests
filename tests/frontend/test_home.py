@@ -265,12 +265,12 @@ def test_theme_categories_shelf_tc_id_c95105(base_url, selenium, count, category
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 @pytest.mark.prod_only
-def test_mozilla_footer_link_tc_id_c95105(base_url, selenium):
+def test_mozilla_footer_link_tc_id_c95105(base_url, selenium, wait):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.footer.mozilla_link.click()
     assert "mozilla.org" in selenium.current_url
     page.wait.until(
-        EC.visibility_of_element_located((By.CSS_SELECTOR, ".c-navigation-logo-image")),
+        EC.visibility_of_element_located((By.CSS_SELECTOR, ".Footer-mozilla-logo")),
         message="The chosen element could not be loaded on the Mozilla webpage",
     )
 

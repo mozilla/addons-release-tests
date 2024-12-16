@@ -77,7 +77,6 @@ def test_devhub_page_get_involved(selenium, base_url, variables):
     assert variables["devhub_get_involved_summary"] in page.devhub_get_involved_summary
     assert page.devhub_get_involved_image.is_displayed()
     page.devhub_get_involved_link.click()
-    page.wait_for_element_to_be_displayed(page.devhub_addon_contribute_title)
     assert page.devhub_addon_contribute_title.text in "Add-ons/Contribute"
 
 @pytest.mark.sanity
@@ -575,7 +574,7 @@ def test_change_devhub_language(base_url, selenium, language, locale, translatio
     ],
 )
 @pytest.mark.nondestructive
-def test_devhub_footer_copyright_message(base_url, selenium, count, link):
+def test_devhub_footer_copyright_message(base_url, selenium, count, link, wait):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     assert page.footer.copyright_message.is_displayed()
     page.footer.copyright_links[count].click()
