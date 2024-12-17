@@ -70,9 +70,8 @@ def test_devhub_page_overview(selenium, base_url, variables):
     # checks that the link redirects to the extension workshop
     page.extension_workshop_is_loaded()
 
-@pytest.mark.sanity
+@pytest.mark.prod_only
 @pytest.mark.nondestructive
-@pytest.mark.fail
 def test_devhub_page_get_involved(selenium, base_url, variables, wait):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     # checks the content in the page 'Get Involved' - secondary section
@@ -82,6 +81,15 @@ def test_devhub_page_get_involved(selenium, base_url, variables, wait):
     page.devhub_get_involved_link.click()
     time.sleep(5)
     assert page.devhub_addon_contribute_title.text in "Add-ons/Contribute"
+
+@pytest.mark.sanity
+@pytest.mark.nondestructive
+def test_devhub_get_involved_box(selenium, base_url, variables, wait):
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    # checks the content in the page 'Get Involved' - secondary section
+    assert variables["devhub_get_involved_header"] in page.devhub_get_involved_title
+    assert variables["devhub_get_involved_summary"] in page.devhub_get_involved_summary
+    assert page.devhub_get_involved_image.is_displayed()
 
 @pytest.mark.sanity
 @pytest.mark.nondestructive
