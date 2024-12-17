@@ -83,7 +83,7 @@ def firefox_options(firefox_options, base_url, variables):
         firefox_options.set_preference(
             "extensions.update.url", variables["extensions_update_url"]
         )
-        firefox_options.add_argument("-headless")
+        firefox_options.add_argument("-foreground")
         firefox_options.log.level = "trace"
     return firefox_options
 
