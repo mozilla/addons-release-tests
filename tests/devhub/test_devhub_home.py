@@ -1,10 +1,12 @@
 import pytest
+import time
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 
 from pages.desktop.developers.devhub_home import DevHubHome
 from scripts import reusables
+
 
 
 @pytest.mark.nondestructive
@@ -70,13 +72,14 @@ def test_devhub_page_overview(selenium, base_url, variables):
 
 @pytest.mark.sanity
 @pytest.mark.nondestructive
-def test_devhub_page_get_involved(selenium, base_url, variables):
+def test_devhub_page_get_involved(selenium, base_url, variables, wait):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     # checks the content in the page 'Get Involved' - secondary section
     assert variables["devhub_get_involved_header"] in page.devhub_get_involved_title
     assert variables["devhub_get_involved_summary"] in page.devhub_get_involved_summary
     assert page.devhub_get_involved_image.is_displayed()
     page.devhub_get_involved_link.click()
+    time.sleep(5)
     assert page.devhub_addon_contribute_title.text in "Add-ons/Contribute"
 
 @pytest.mark.sanity
