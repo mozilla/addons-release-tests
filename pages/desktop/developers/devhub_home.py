@@ -55,7 +55,7 @@ class DevHubHome(Base):
     )
     _add_ons_contribute_title_locator = (
         By.CSS_SELECTOR,
-        ".mw-first-heading"
+        ".mw-page-title-main"
     )
     _dev_community_link_locator = (
         By.CSS_SELECTOR,

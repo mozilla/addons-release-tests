@@ -1,10 +1,12 @@
 import pytest
+import time
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 
 from pages.desktop.developers.devhub_home import DevHubHome
 from scripts import reusables
+
 
 
 @pytest.mark.nondestructive
@@ -68,17 +70,26 @@ def test_devhub_page_overview(selenium, base_url, variables):
     # checks that the link redirects to the extension workshop
     page.extension_workshop_is_loaded()
 
-@pytest.mark.sanity
+@pytest.mark.prod_only
 @pytest.mark.nondestructive
-def test_devhub_page_get_involved(selenium, base_url, variables):
+def test_devhub_page_get_involved(selenium, base_url, variables, wait):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     # checks the content in the page 'Get Involved' - secondary section
     assert variables["devhub_get_involved_header"] in page.devhub_get_involved_title
     assert variables["devhub_get_involved_summary"] in page.devhub_get_involved_summary
     assert page.devhub_get_involved_image.is_displayed()
     page.devhub_get_involved_link.click()
-    page.wait_for_element_to_be_displayed(page.devhub_addon_contribute_title)
+    time.sleep(5)
     assert page.devhub_addon_contribute_title.text in "Add-ons/Contribute"
+
+@pytest.mark.sanity
+@pytest.mark.nondestructive
+def test_devhub_get_involved_box(selenium, base_url, variables, wait):
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    # checks the content in the page 'Get Involved' - secondary section
+    assert variables["devhub_get_involved_header"] in page.devhub_get_involved_title
+    assert variables["devhub_get_involved_summary"] in page.devhub_get_involved_summary
+    assert page.devhub_get_involved_image.is_displayed()
 
 @pytest.mark.sanity
 @pytest.mark.nondestructive
@@ -575,7 +586,7 @@ def test_change_devhub_language(base_url, selenium, language, locale, translatio
     ],
 )
 @pytest.mark.nondestructive
-def test_devhub_footer_copyright_message(base_url, selenium, count, link):
+def test_devhub_footer_copyright_message(base_url, selenium, count, link, wait):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     assert page.footer.copyright_message.is_displayed()
     page.footer.copyright_links[count].click()

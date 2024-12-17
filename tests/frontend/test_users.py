@@ -557,7 +557,7 @@ def test_user_profile_open_theme_detail_page_tc_id_c95590(base_url, selenium, va
     # clicks on a theme in the user profile page
     theme_detail = theme.result_list.click_search_result(0)
     # checks that the expected theme detail page is opened
-    assert theme_name in theme_detail.name
+    assert theme_detail.name in theme_name
 
 
 @pytest.mark.serial
