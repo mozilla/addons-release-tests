@@ -56,6 +56,27 @@ def test_devhub_login(selenium, base_url, wait):
     # verifies that the user has been logged in by looking at the user icon
     wait.until(lambda _: page.user_avatar.is_displayed())
 
+@pytest.mark.nondestructive
+@pytest.mark.create_session("developer")
+@pytest.mark.fail
+def test_devhub_click_my_addons_header_link(selenium, base_url, wait):
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    my_addons_page = page.click_my_addons_header_link()
+    # check that user is sent to the Manage addons page in devhub
+    wait.until(
+        lambda _: my_addons_page.my_addons_page_title.is_displayed(),
+        message="My addons page title was not displayed",
+    )
+
+
+@pytest.mark.nondestructive
+@pytest.mark.create_session("developer")
+@pytest.mark.fail
+def test_devhub_click_header_profile_icon(selenium, base_url):
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    user_profile = page.click_user_profile_picture()
+    # verify that the user profile frontend page opens
+    user_profile.wait_for_user_to_load()
 
 @pytest.mark.sanity
 @pytest.mark.nondestructive
@@ -90,6 +111,7 @@ def test_devhub_content_login_link(selenium, base_url, variables):
 
 @pytest.mark.sanity
 @pytest.mark.nondestructive
+@pytest.mark.fail
 def test_devhub_page_get_involved(selenium, base_url, variables):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     # checks the content in the page 'Get Involved' - secondary section
@@ -98,27 +120,6 @@ def test_devhub_page_get_involved(selenium, base_url, variables):
     assert page.devhub_get_involved_image.is_displayed()
     page.devhub_get_involved_link.click()
     assert page.contribute_page_title.is_displayed()
-
-
-@pytest.mark.nondestructive
-@pytest.mark.login("developer")
-def test_devhub_click_my_addons_header_link(selenium, base_url, wait):
-    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    my_addons_page = page.click_my_addons_header_link()
-    # check that user is sent to the Manage addons page in devhub
-    wait.until(
-        lambda _: my_addons_page.my_addons_page_title.is_displayed(),
-        message="My addons page title was not displayed",
-    )
-
-
-@pytest.mark.nondestructive
-@pytest.mark.login("developer")
-def test_devhub_click_header_profile_icon(selenium, base_url):
-    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    user_profile = page.click_user_profile_picture()
-    # verify that the user profile frontend page opens
-    user_profile.wait_for_user_to_load()
 
 
 @pytest.mark.nondestructive
