@@ -97,7 +97,7 @@ def test_devhub_page_get_involved(selenium, base_url, variables):
     assert variables["devhub_get_involved_summary"] in page.devhub_get_involved_summary
     assert page.devhub_get_involved_image.is_displayed()
     page.devhub_get_involved_link.click()
-    page.wait_for_title_update("Add-ons/Contribute")
+    assert page.contribute_page_title.is_displayed()
 
 
 @pytest.mark.nondestructive
@@ -113,7 +113,7 @@ def test_devhub_click_my_addons_header_link(selenium, base_url, wait):
 
 
 @pytest.mark.nondestructive
-@pytest.mark.create_session("developer")
+@pytest.mark.login("developer")
 def test_devhub_click_header_profile_icon(selenium, base_url):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     user_profile = page.click_user_profile_picture()
@@ -299,7 +299,6 @@ def test_devhub_resources_footer_promote_links_tc_id_C15072(selenium, base_url, 
 
 @pytest.mark.nondestructive
 @pytest.mark.login("developer")
-@pytest.mark.fail
 def test_devhub_resources_write_some_code(selenium, base_url, variables):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     assert "Write Some Code" in page.resources.write_code_section_header
@@ -312,7 +311,6 @@ def test_devhub_resources_write_some_code(selenium, base_url, variables):
 
 
 @pytest.mark.nondestructive
-@pytest.mark.fail
 def test_devhub_resources_participate(selenium, base_url, variables):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     page.devhub_login("regular_user")
@@ -489,7 +487,6 @@ def test_devhub_browsers_footer_links(base_url, selenium, count, link):
     ],
 )
 @pytest.mark.nondestructive
-@pytest.mark.failing
 def test_devhub_products_footer_links(base_url, selenium, count, link):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     page.products_links[count].click()

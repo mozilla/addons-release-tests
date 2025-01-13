@@ -49,6 +49,10 @@ class DevHubHome(Base):
         By.CSS_SELECTOR,
         ".DevHub-content-container--get-involved h3",
     )
+    _contribute_page_title_locator = (
+        By.CSS_SELECTOR,
+        ".mw-page-title-main"
+    )
     _get_involved_summary_locator = (
         By.CSS_SELECTOR,
         ".DevHub-content-container--get-involved p",
@@ -227,6 +231,11 @@ class DevHubHome(Base):
     def devhub_get_involved_link(self):
         self.wait_for_element_to_be_displayed(self._dev_community_link_locator)
         return self.find_element(*self._dev_community_link_locator)
+
+    @property
+    def contribute_page_title(self):
+        self.wait_for_element_to_be_displayed(self._contribute_page_title_locator)
+        return self.find_element(*self._contribute_page_title_locator)
 
     @property
     def devhub_get_involved_image(self):

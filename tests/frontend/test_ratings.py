@@ -16,7 +16,7 @@ from pages.desktop.frontend.versions import Versions
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-def test_throttled_request_create_rating_spam(selenium, base_url, variables):
+def test_throttled_request_create_rating_spam(selenium, base_url, variables, wait):
     # this test checks that creating a rating, deleting and trying
     # to create another rating immediately after will raise throttled request error
     extension = variables["detail_extension_slug"]
@@ -39,7 +39,7 @@ def test_throttled_request_create_rating_spam(selenium, base_url, variables):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-def test_throttled_request_update_rating_spam(selenium, base_url, variables):
+def test_throttled_request_update_rating_spam(selenium, base_url, variables, wait):
     # this test checks that repeatedly modifying the rating score will raise throttled request error
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
@@ -53,6 +53,79 @@ def test_throttled_request_update_rating_spam(selenium, base_url, variables):
     )
     assert addon.ratings.submit_review_error.is_displayed()
 
+@pytest.mark.serial
+@pytest.mark.nondestructive
+@pytest.mark.login("developer")
+def test_developer_reply_to_review(selenium, base_url, variables):
+    extension = variables["dev_reply_review"]
+    selenium.get(f"{base_url}/addon/{extension}")
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    # addon.login('developer')
+    reviews = addon.ratings.click_all_reviews_link()
+    reviews.review_items[0].click_reply_to_review()
+    reply_text = variables["initial_text_input"]
+    reviews.review_items[0].reply_text_input(reply_text)
+    reviews.review_items[0].publish_reply()
+    assert "Developer response" in reviews.review_items[0].dev_reply_header.text
+    assert reply_text == reviews.review_items[0].posted_reply_text
+
+
+@pytest.mark.serial
+@pytest.mark.nondestructive
+@pytest.mark.create_session("developer")
+def test_edit_developer_reply_to_review(selenium, base_url, variables):
+    extension = variables["dev_reply_review"]
+    selenium.get(f"{base_url}/addon/{extension}")
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    # addon.login('developer')
+    time.sleep(2)
+    reviews = addon.ratings.click_all_reviews_link()
+    edited_reply = variables["edited_text_input"]
+    addon.ratings.edit_review.click()
+    reviews.review_items[0].clear_developer_reply_text_field()
+    reviews.review_items[0].reply_text_input(edited_reply)
+    reviews.review_items[0].publish_reply()
+    assert edited_reply in reviews.review_items[0].posted_reply_text
+
+
+@pytest.mark.serial
+@pytest.mark.nondestructive
+@pytest.mark.create_session("developer")
+def test_delete_developer_reply_to_review(selenium, base_url, variables):
+    extension = variables["dev_reply_review"]
+    selenium.get(f"{base_url}/addon/{extension}")
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    # addon.login('developer')
+    time.sleep(2)
+    reviews = addon.ratings.click_all_reviews_link()
+    addon.ratings.delete_review.click()
+    reviews.review_items[0].click_confirm_delete_button()
+    # verifies that the Developer reply section is no longer displayed
+    WebDriverWait(selenium, 10).until(
+        EC.invisibility_of_element_located(
+            (By.CSS_SELECTOR, ".AddonReviewCard-reply .ShowMoreCard-contents > div")
+        )
+    )
+
+
+@pytest.mark.serial
+@pytest.mark.nondestructive
+@pytest.mark.create_session("developer")
+def test_developers_cannot_rate_their_own_addons(selenium, base_url, variables, wait):
+    """Log in as an addon developer and try to post a review to your own addon; the request should fail"""
+    extension = variables["dev_reply_review"]
+    selenium.get(f"{base_url}/addon/{extension}")
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    # addon.login('developer')
+    time.sleep(2)
+    addon.ratings.rating_stars[4].click()
+    addon.wait.until(
+        EC.text_to_be_present_in_element(
+            (By.CSS_SELECTOR, ".Notice-error"),
+            "You can't leave a review on your own add-on.",
+        ),
+        message=f"The expected review submission error was not raised",
+    )
 
 @pytest.mark.sanity
 @pytest.mark.serial
@@ -478,81 +551,6 @@ def test_delete_review_in_all_reviews_page(selenium, base_url, variables):
         assert review_text not in review.review_body
 
 
-@pytest.mark.serial
-@pytest.mark.nondestructive
-@pytest.mark.login("developer")
-def test_developer_reply_to_review(selenium, base_url, variables):
-    extension = variables["dev_reply_review"]
-    selenium.get(f"{base_url}/addon/{extension}")
-    addon = Detail(selenium, base_url).wait_for_page_to_load()
-    # addon.login('developer')
-    reviews = addon.ratings.click_all_reviews_link()
-    reviews.review_items[0].click_reply_to_review()
-    reply_text = variables["initial_text_input"]
-    reviews.review_items[0].reply_text_input(reply_text)
-    reviews.review_items[0].publish_reply()
-    assert "Developer response" in reviews.review_items[0].dev_reply_header.text
-    assert reply_text == reviews.review_items[0].posted_reply_text
-
-
-@pytest.mark.serial
-@pytest.mark.nondestructive
-@pytest.mark.create_session("developer")
-def test_edit_developer_reply_to_review(selenium, base_url, variables):
-    extension = variables["dev_reply_review"]
-    selenium.get(f"{base_url}/addon/{extension}")
-    addon = Detail(selenium, base_url).wait_for_page_to_load()
-    # addon.login('developer')
-    time.sleep(2)
-    reviews = addon.ratings.click_all_reviews_link()
-    edited_reply = variables["edited_text_input"]
-    addon.ratings.edit_review.click()
-    reviews.review_items[0].clear_developer_reply_text_field()
-    reviews.review_items[0].reply_text_input(edited_reply)
-    reviews.review_items[0].publish_reply()
-    assert edited_reply in reviews.review_items[0].posted_reply_text
-
-
-@pytest.mark.serial
-@pytest.mark.nondestructive
-@pytest.mark.create_session("developer")
-def test_delete_developer_reply_to_review(selenium, base_url, variables):
-    extension = variables["dev_reply_review"]
-    selenium.get(f"{base_url}/addon/{extension}")
-    addon = Detail(selenium, base_url).wait_for_page_to_load()
-    # addon.login('developer')
-    time.sleep(2)
-    reviews = addon.ratings.click_all_reviews_link()
-    addon.ratings.delete_review.click()
-    reviews.review_items[0].click_confirm_delete_button()
-    # verifies that the Developer reply section is no longer displayed
-    WebDriverWait(selenium, 10).until(
-        EC.invisibility_of_element_located(
-            (By.CSS_SELECTOR, ".AddonReviewCard-reply .ShowMoreCard-contents > div")
-        )
-    )
-
-
-@pytest.mark.serial
-@pytest.mark.nondestructive
-@pytest.mark.create_session("developer")
-def test_developers_cannot_rate_their_own_addons(selenium, base_url, variables):
-    """Log in as an addon developer and try to post a review to your own addon; the request should fail"""
-    extension = variables["dev_reply_review"]
-    selenium.get(f"{base_url}/addon/{extension}")
-    addon = Detail(selenium, base_url).wait_for_page_to_load()
-    # addon.login('developer')
-    time.sleep(2)
-    addon.ratings.rating_stars[4].click()
-    addon.wait.until(
-        EC.text_to_be_present_in_element(
-            (By.CSS_SELECTOR, ".Notice-error"),
-            "You can't leave a review on your own add-on.",
-        ),
-        message=f"The expected review submission error was not raised",
-    )
-
-
 @pytest.mark.nondestructive
 def test_rating_card_loaded_correctly(selenium, base_url, variables):
     selenium.get(variables["addon_version_page_url"])
@@ -584,7 +582,6 @@ def test_rating_card_addon_name(selenium, base_url, variables):
 
 
 @pytest.mark.nondestructive
-@pytest.mark.fail
 def test_rating_card_authors(selenium, base_url, variables):
     selenium.get(f'{base_url}/addon/{variables["addon_with_stats"]}/versions/')
     page = Versions(selenium, base_url)
