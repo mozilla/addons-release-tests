@@ -111,7 +111,7 @@ def test_devhub_content_login_link(selenium, base_url, variables):
 
 @pytest.mark.sanity
 @pytest.mark.nondestructive
-@pytest.mark.fail
+@pytest.mark.clear_session
 def test_devhub_page_get_involved(selenium, base_url, variables):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     # checks the content in the page 'Get Involved' - secondary section
