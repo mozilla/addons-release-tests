@@ -84,7 +84,6 @@ def test_devhub_click_my_addons_header_link(selenium, base_url, wait):
 
 @pytest.mark.nondestructive
 @pytest.mark.create_session("developer")
-@pytest.mark.clear_session
 def test_devhub_click_header_profile_icon(selenium, base_url):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     user_profile = page.click_user_profile_picture()
