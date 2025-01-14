@@ -7,6 +7,19 @@ from pages.desktop.developers.devhub_home import DevHubHome
 from scripts import reusables
 
 
+@pytest.mark.sanity
+@pytest.mark.nondestructive
+@pytest.mark.clear_session
+def test_devhub_page_get_involved(selenium, base_url, variables):
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    # checks the content in the page 'Get Involved' - secondary section
+    assert variables["devhub_get_involved_header"] in page.devhub_get_involved_title
+    assert variables["devhub_get_involved_summary"] in page.devhub_get_involved_summary
+    assert page.devhub_get_involved_image.is_displayed()
+    page.devhub_get_involved_link.click()
+    assert page.contribute_page_title.is_displayed()
+
+
 @pytest.mark.nondestructive
 def test_devhub_logo(selenium, base_url):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
@@ -71,7 +84,7 @@ def test_devhub_click_my_addons_header_link(selenium, base_url, wait):
 
 @pytest.mark.nondestructive
 @pytest.mark.create_session("developer")
-@pytest.mark.fail
+@pytest.mark.clear_session
 def test_devhub_click_header_profile_icon(selenium, base_url):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     user_profile = page.click_user_profile_picture()
@@ -107,19 +120,6 @@ def test_devhub_content_login_link(selenium, base_url, variables):
     page.click_content_login_link()
     # verify that the link opens the FxA login page
     page.wait_for_current_url(variables["fxa_login_page"])
-
-
-@pytest.mark.sanity
-@pytest.mark.nondestructive
-@pytest.mark.clear_session
-def test_devhub_page_get_involved(selenium, base_url, variables):
-    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    # checks the content in the page 'Get Involved' - secondary section
-    assert variables["devhub_get_involved_header"] in page.devhub_get_involved_title
-    assert variables["devhub_get_involved_summary"] in page.devhub_get_involved_summary
-    assert page.devhub_get_involved_image.is_displayed()
-    page.devhub_get_involved_link.click()
-    assert page.contribute_page_title.is_displayed()
 
 
 @pytest.mark.nondestructive
