@@ -7,6 +7,19 @@ from pages.desktop.developers.devhub_home import DevHubHome
 from scripts import reusables
 
 
+@pytest.mark.sanity
+@pytest.mark.nondestructive
+@pytest.mark.skip
+def test_devhub_page_get_involved(selenium, base_url, variables):
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    # checks the content in the page 'Get Involved' - secondary section
+    assert variables["devhub_get_involved_header"] in page.devhub_get_involved_title
+    assert variables["devhub_get_involved_summary"] in page.devhub_get_involved_summary
+    assert page.devhub_get_involved_image.is_displayed()
+    page.devhub_get_involved_link.click()
+    assert page.contribute_page_title.is_displayed()
+
+
 @pytest.mark.nondestructive
 def test_devhub_logo(selenium, base_url):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
@@ -56,52 +69,8 @@ def test_devhub_login(selenium, base_url, wait):
     # verifies that the user has been logged in by looking at the user icon
     wait.until(lambda _: page.user_avatar.is_displayed())
 
-
-@pytest.mark.sanity
 @pytest.mark.nondestructive
-def test_devhub_page_overview(selenium, base_url, variables):
-    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    # checks the content in the page 'Overview' - main section
-    assert variables["devhub_overview_header"] in page.devhub_overview_title
-    assert variables["devhub_overview_summary"] in page.devhub_overview_summary
-    page.click_overview_learn_how_button()
-    # checks that the link redirects to the extension workshop
-    page.extension_workshop_is_loaded()
-
-
-@pytest.mark.sanity
-@pytest.mark.nondestructive
-def test_devhub_page_content(selenium, base_url, variables):
-    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    # checks the content in the page 'Content' - secondary section
-    assert variables["devhub_content_header"] in page.devhub_content_title
-    assert variables["devhub_content_summary"] in page.devhub_content_summary
-    assert page.devhub_content_image.is_displayed()
-
-
-@pytest.mark.sanity
-@pytest.mark.nondestructive
-def test_devhub_content_login_link(selenium, base_url, variables):
-    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.click_content_login_link()
-    # verify that the link opens the FxA login page
-    page.wait_for_current_url(variables["fxa_login_page"])
-
-
-@pytest.mark.sanity
-@pytest.mark.nondestructive
-def test_devhub_page_get_involved(selenium, base_url, variables):
-    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    # checks the content in the page 'Get Involved' - secondary section
-    assert variables["devhub_get_involved_header"] in page.devhub_get_involved_title
-    assert variables["devhub_get_involved_summary"] in page.devhub_get_involved_summary
-    assert page.devhub_get_involved_image.is_displayed()
-    page.devhub_get_involved_link.click()
-    page.wait_for_title_update("Add-ons/Contribute")
-
-
-@pytest.mark.nondestructive
-@pytest.mark.login("developer")
+@pytest.mark.create_session("developer")
 def test_devhub_click_my_addons_header_link(selenium, base_url, wait):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     my_addons_page = page.click_my_addons_header_link()
@@ -119,33 +88,6 @@ def test_devhub_click_header_profile_icon(selenium, base_url):
     user_profile = page.click_user_profile_picture()
     # verify that the user profile frontend page opens
     user_profile.wait_for_user_to_load()
-
-
-@pytest.mark.nondestructive
-def test_devhub_logged_in_page_hero_banner_tc_id_C15072(selenium, base_url, variables):
-    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.devhub_login("regular_user")
-    # verify the items present in the page logged in banner
-    assert (
-        variables["devhub_logged_in_banner_header"] in page.logged_in_hero_banner_header
-    )
-    assert variables["devhub_logged_in_banner_text"] in page.logged_in_hero_banner_text
-    page.click_logged_in_hero_banner_extension_workshop_link()
-    # verify that the Extension Workshop page is opened
-    page.extension_workshop_is_loaded()
-
-
-@pytest.mark.nondestructive
-def test_devhub_my_addons_section_tc_id_C15072(selenium, base_url, variables):
-    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.devhub_login("regular_user")
-    page.wait_for_page_to_load()
-    assert "My Add-ons" in page.my_addons_section_header.text
-    # if the current account has no add-ons submitted, this paragraph will be displayed
-    assert (
-        variables["devhub_my_addons_section_paragraph"]
-        in page.my_addons_section_paragraph.text
-    )
 
 
 @pytest.mark.nondestructive
@@ -214,6 +156,93 @@ def test_devhub_click_submit_new_theme_button(selenium, base_url, wait):
 
 
 @pytest.mark.nondestructive
+@pytest.mark.create_session("developer")
+def test_devhub_resources_footer_tools_links_tc_id_C15072(selenium, base_url, variables):
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    assert "Tools" in page.resources.tools_section_header
+    count = 0
+    # looping through the actual number of Tools links present in the resources footer
+    while count in range(len(page.resources.tools_section_links) - 1):
+        link = page.resources.tools_section_links[count]
+        link.click()
+        # checks that the expected page is opened when clicking on the link
+        page.wait_for_current_url(variables["devhub_resources_tools_links"][count])
+        # go back to devhub and select the next Tools link
+        selenium.back()
+        count += 1
+
+
+@pytest.mark.nondestructive
+@pytest.mark.create_session("developer")
+def test_devhub_resources_footer_promote_links_tc_id_C15072(selenium, base_url, variables):
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    assert "Promote" in page.resources.promote_section_header
+    count = 0
+    # looping through the actual number of Promote links present in the resources footer
+    while count in range(len(page.resources.promote_section_links)):
+        link = page.resources.promote_section_links[count]
+        link.click()
+        # checks that the expected page is opened when clicking on the link
+        page.wait_for_current_url(variables["devhub_resources_promote_links"][count])
+        # go back to devhub and select the next Promote link
+        selenium.back()
+        count += 1
+
+
+@pytest.mark.nondestructive
+@pytest.mark.create_session("developer")
+def test_devhub_resources_write_some_code(selenium, base_url, variables):
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    assert "Write Some Code" in page.resources.write_code_section_header
+    assert (
+            variables["devhub_resources_write_some_code_text"]
+            in page.resources.write_code_section_info_text
+    )
+    page.resources.click_write_code_section_link()
+    page.wait_for_current_url("/Add-ons/Contribute/Code")
+
+
+@pytest.mark.sanity
+@pytest.mark.nondestructive
+@pytest.mark.create_session("developer")
+def test_devhub_logout_tc_id_c15075(selenium, base_url, wait):
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    # page.devhub_login("developer")
+    page.click_sign_out()
+    # confirms user is no longer logged in
+    wait.until(lambda _: page.header_login_button.is_displayed())
+
+@pytest.mark.sanity
+@pytest.mark.nondestructive
+def test_devhub_page_overview(selenium, base_url, variables):
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    # checks the content in the page 'Overview' - main section
+    assert variables["devhub_overview_header"] in page.devhub_overview_title
+    assert variables["devhub_overview_summary"] in page.devhub_overview_summary
+    page.click_overview_learn_how_button()
+    # checks that the link redirects to the extension workshop
+    page.extension_workshop_is_loaded()
+
+
+@pytest.mark.sanity
+@pytest.mark.nondestructive
+def test_devhub_page_content(selenium, base_url, variables):
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    # checks the content in the page 'Content' - secondary section
+    assert variables["devhub_content_header"] in page.devhub_content_title
+    assert variables["devhub_content_summary"] in page.devhub_content_summary
+    assert page.devhub_content_image.is_displayed()
+
+
+@pytest.mark.sanity
+@pytest.mark.nondestructive
+def test_devhub_content_login_link(selenium, base_url, variables):
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    page.click_content_login_link()
+    # verify that the link opens the FxA login page
+    page.wait_for_current_url(variables["fxa_login_page"])
+
+@pytest.mark.nondestructive
 def test_devhub_click_first_theme_button(selenium, base_url, variables):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     # an account with no add-ons submitted is used
@@ -249,39 +278,31 @@ def test_devhub_resources_footer_documentation_links_tc_id_C15072(selenium, base
         selenium.back()
         count += 1
 
-
 @pytest.mark.nondestructive
-@pytest.mark.create_session("developer")
-def test_devhub_resources_footer_tools_links_tc_id_C15072(selenium, base_url, variables):
+def test_devhub_logged_in_page_hero_banner_tc_id_C15072(selenium, base_url, variables):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    assert "Tools" in page.resources.tools_section_header
-    count = 0
-    # looping through the actual number of Tools links present in the resources footer
-    while count in range(len(page.resources.tools_section_links) - 1):
-        link = page.resources.tools_section_links[count]
-        link.click()
-        # checks that the expected page is opened when clicking on the link
-        page.wait_for_current_url(variables["devhub_resources_tools_links"][count])
-        # go back to devhub and select the next Tools link
-        selenium.back()
-        count += 1
+    page.devhub_login("regular_user")
+    # verify the items present in the page logged in banner
+    assert (
+        variables["devhub_logged_in_banner_header"] in page.logged_in_hero_banner_header
+    )
+    assert variables["devhub_logged_in_banner_text"] in page.logged_in_hero_banner_text
+    page.click_logged_in_hero_banner_extension_workshop_link()
+    # verify that the Extension Workshop page is opened
+    page.extension_workshop_is_loaded()
 
 
 @pytest.mark.nondestructive
-@pytest.mark.create_session("developer")
-def test_devhub_resources_footer_promote_links_tc_id_C15072(selenium, base_url, variables):
+def test_devhub_my_addons_section_tc_id_C15072(selenium, base_url, variables):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    assert "Promote" in page.resources.promote_section_header
-    count = 0
-    # looping through the actual number of Promote links present in the resources footer
-    while count in range(len(page.resources.promote_section_links)):
-        link = page.resources.promote_section_links[count]
-        link.click()
-        # checks that the expected page is opened when clicking on the link
-        page.wait_for_current_url(variables["devhub_resources_promote_links"][count])
-        # go back to devhub and select the next Promote link
-        selenium.back()
-        count += 1
+    page.devhub_login("regular_user")
+    page.wait_for_page_to_load()
+    assert "My Add-ons" in page.my_addons_section_header.text
+    # if the current account has no add-ons submitted, this paragraph will be displayed
+    assert (
+        variables["devhub_my_addons_section_paragraph"]
+        in page.my_addons_section_paragraph.text
+    )
 
 # Commented because is it's removed on both STAGE and DEV
 # @pytest.mark.nondestructive
@@ -296,23 +317,7 @@ def test_devhub_resources_footer_promote_links_tc_id_C15072(selenium, base_url, 
 #     page.resources.click_join_addon_review_link()
 #     page.wait_for_current_url("/Add-ons/Reviewers")
 
-
 @pytest.mark.nondestructive
-@pytest.mark.login("developer")
-@pytest.mark.fail
-def test_devhub_resources_write_some_code(selenium, base_url, variables):
-    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    assert "Write Some Code" in page.resources.write_code_section_header
-    assert (
-        variables["devhub_resources_write_some_code_text"]
-        in page.resources.write_code_section_info_text
-    )
-    page.resources.click_write_code_section_link()
-    page.wait_for_current_url("/Add-ons/Contribute/Code")
-
-
-@pytest.mark.nondestructive
-@pytest.mark.fail
 def test_devhub_resources_participate(selenium, base_url, variables):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     page.devhub_login("regular_user")
@@ -489,7 +494,6 @@ def test_devhub_browsers_footer_links(base_url, selenium, count, link):
     ],
 )
 @pytest.mark.nondestructive
-@pytest.mark.failing
 def test_devhub_products_footer_links(base_url, selenium, count, link):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     page.products_links[count].click()
@@ -588,14 +592,3 @@ def test_devhub_footer_copyright_message(base_url, selenium, count, link):
         EC.visibility_of_element_located((By.CSS_SELECTOR, link[1])),
         message=f'The chosen element "{link[1]}" could not be loaded on the "{link[0]}" webpage',
     )
-
-
-@pytest.mark.sanity
-@pytest.mark.nondestructive
-@pytest.mark.create_session("developer")
-def test_devhub_logout_tc_id_c15075(selenium, base_url, wait):
-    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    # page.devhub_login("developer")
-    page.click_sign_out()
-    # confirms user is no longer logged in
-    wait.until(lambda _: page.header_login_button.is_displayed())

@@ -16,7 +16,7 @@ from pages.desktop.frontend.versions import Versions
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-def test_throttled_request_create_rating_spam(selenium, base_url, variables):
+def test_throttled_request_create_rating_spam(selenium, base_url, variables, wait):
     # this test checks that creating a rating, deleting and trying
     # to create another rating immediately after will raise throttled request error
     extension = variables["detail_extension_slug"]
@@ -39,7 +39,7 @@ def test_throttled_request_create_rating_spam(selenium, base_url, variables):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-def test_throttled_request_update_rating_spam(selenium, base_url, variables):
+def test_throttled_request_update_rating_spam(selenium, base_url, variables, wait):
     # this test checks that repeatedly modifying the rating score will raise throttled request error
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
@@ -52,7 +52,6 @@ def test_throttled_request_update_rating_spam(selenium, base_url, variables):
         EC.visibility_of_element_located((By.CSS_SELECTOR, ".Notice-error"))
     )
     assert addon.ratings.submit_review_error.is_displayed()
-
 
 @pytest.mark.sanity
 @pytest.mark.serial
@@ -477,7 +476,6 @@ def test_delete_review_in_all_reviews_page(selenium, base_url, variables):
     for review in reviews.review_items:
         assert review_text not in review.review_body
 
-
 @pytest.mark.serial
 @pytest.mark.nondestructive
 @pytest.mark.login("developer")
@@ -536,7 +534,7 @@ def test_delete_developer_reply_to_review(selenium, base_url, variables):
 @pytest.mark.serial
 @pytest.mark.nondestructive
 @pytest.mark.create_session("developer")
-def test_developers_cannot_rate_their_own_addons(selenium, base_url, variables):
+def test_developers_cannot_rate_their_own_addons(selenium, base_url, variables, wait):
     """Log in as an addon developer and try to post a review to your own addon; the request should fail"""
     extension = variables["dev_reply_review"]
     selenium.get(f"{base_url}/addon/{extension}")
@@ -551,7 +549,6 @@ def test_developers_cannot_rate_their_own_addons(selenium, base_url, variables):
         ),
         message=f"The expected review submission error was not raised",
     )
-
 
 @pytest.mark.nondestructive
 def test_rating_card_loaded_correctly(selenium, base_url, variables):
@@ -584,7 +581,6 @@ def test_rating_card_addon_name(selenium, base_url, variables):
 
 
 @pytest.mark.nondestructive
-@pytest.mark.fail
 def test_rating_card_authors(selenium, base_url, variables):
     selenium.get(f'{base_url}/addon/{variables["addon_with_stats"]}/versions/')
     page = Versions(selenium, base_url)
