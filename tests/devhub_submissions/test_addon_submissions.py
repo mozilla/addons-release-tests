@@ -110,6 +110,13 @@ def test_submit_listed_wizard_theme_tc_id_c97500(selenium, base_url, variables, 
 @pytest.mark.skip
 def test_submit_a_new_version_for_addon_prod(selenium, base_url, variables, wait):
     """A test added just for production environment due to captcha """
+    manifest = {
+        "manifest_version": payloads.minimal_manifest['manifest_version'],
+        "version": "1.4",
+        "name": "listed_addon_1_1",
+        "description": "addon used for test",
+    }
+    api_helpers.make_addon(manifest)
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     page.devhub_login("submissions_user")
     manage_versions = ManageVersions(selenium, base_url)
@@ -117,12 +124,11 @@ def test_submit_a_new_version_for_addon_prod(selenium, base_url, variables, wait
     manage_versions.click_visible_radio_button()
     manage_versions.click_upload_new_version_button()
     submit_addon_page = SubmitAddon(selenium, base_url).wait_for_page_to_load()
-    submit_addon_page.upload_addon("listed_addon_1.2.zip")
+    submit_addon_page.upload_addon("make-addon.zip")
     submit_addon_page.is_validation_successful()
     submit_addon_page.click_continue()
     upload_source = UploadSource(selenium, base_url).wait_for_page_to_load()
     upload_source.select_no_to_omit_source()
-    upload_source.continue_listed_submission()
     upload_source.release_notes_field().send_keys(variables["upload_status"])
     upload_source.notes_to_reviewers_field().send_keys(variables["upload_status"])
     upload_source.continue_listed_submission()
@@ -552,7 +558,6 @@ def test_cancel_and_disable_version_during_upload(selenium, base_url, wait):
     delete.confirm_delete_addon()
 
 
-@pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.create_session("submissions_user")
 def test_delete_all_extensions(selenium, base_url):
