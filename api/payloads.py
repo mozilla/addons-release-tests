@@ -23,7 +23,7 @@ def listed_addon_minimal(uuid):
 def listed_addon_details(uuid):
     body = {
         'categories': ['bookmarks', 'privacy-security'],
-        'slug': 'my_sluggish_slug',
+        'slug': 'my_sluggish_slug_api',
         'default_locale': 'en-US',
         'name': {
             'de': 'DE Name set at creation time',

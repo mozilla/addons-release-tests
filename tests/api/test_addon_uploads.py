@@ -59,7 +59,7 @@ def test_upload_addon_without_dev_agreement(base_url, selenium):
 
 @pytest.mark.serial
 @pytest.mark.login("api_user")
-def test_bad_authentication_addon_upload(selenium, base_url):
+def test_bad_authentication_addon_upload(selenium, base_url,session_auth):
     with open("sample-addons/unlisted-addon.zip", "rb") as file:
         upload = requests.post(
             url=f"{base_url}{_upload}",
@@ -67,6 +67,8 @@ def test_bad_authentication_addon_upload(selenium, base_url):
             files={"upload": file},
             data={"channel": "unlisted"},
         )
+    print(f"Session Token: {session_auth}")
+    print(f"Uploading to: {base_url}{_upload}")
     assert upload.status_code == 401, f"Actual status code was {upload.status_code}"
     assert (
         'Valid user session not found matching the provided session key.","code":"ERROR_AUTHENTICATION_EXPIRED"'
@@ -85,6 +87,8 @@ def test_upload_addon_crx_archive(base_url, session_auth):
             files={"upload": file},
             data={"channel": "unlisted"},
         )
+    print(f"Session Token: {session_auth}")
+    print(f"Uploading to: {base_url}{_upload}")
     time.sleep(5)
     upload.raise_for_status()
     uuid = upload.json()["uuid"]
@@ -97,6 +101,7 @@ def test_upload_addon_crx_archive(base_url, session_auth):
         },
         data=json.dumps(payload),
     )
+    time.sleep(5)
     create_addon.raise_for_status()
     assert (
         create_addon.status_code == 201
@@ -415,6 +420,7 @@ def test_submit_addon_with_reserved_guid(base_url, session_auth, guid):
 
 
 @pytest.mark.serial
+@pytest.mark.fail
 @pytest.mark.create_session("api_user")
 def test_upload_extension_with_duplicate_guid(base_url, session_auth, variables):
     """Addon guids are unique and cannot be re-used for new addon submissions"""
