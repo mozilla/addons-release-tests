@@ -82,10 +82,10 @@ def test_install_uninstall_theme_tc_id_C95591(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Open a theme detail page, install it and then uninstall it"""
-    selenium.get(f"{base_url}/addon/cas-current-theme-1/")
+    selenium.get(f"{base_url}/addon/cas-current-theme-2/")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     amo_theme_name = addon.name
-    assert amo_theme_name == "cas-current-theme-1"
+    assert amo_theme_name == "cas-current-theme-2"
     assert addon.is_compatible
     addon.install()
     firefox.browser.wait_for_notification(
