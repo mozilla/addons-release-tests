@@ -818,7 +818,7 @@ def test_current_theme_not_in_more_by_artist_previews(selenium, base_url, variab
     addon.wait_for_page_to_load()
     assert theme_preview not in addon.themes.preview_source
 
-# @pytest.mark.fail - to be removed, no url can be used in summary now
+#  - to be removed, no url can be used in summary now
 # def test_addon_summary_outgoing_urls(selenium, base_url):
 #     """Checks that external URLs in summary are redirected through the outgoing domain"""
 #     selenium.get(f"{base_url}/addon/outgoing-urls/")
