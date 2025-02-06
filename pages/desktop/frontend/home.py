@@ -47,7 +47,9 @@ class Home(Base):
 
     @property
     def addon_shelf_titles(self):
-        self.wait.until(EC.visibility_of_element_located(self._shelves_titles_locator))
+        self.wait.until(
+            EC.visibility_of_element_located(self._shelves_titles_locator)
+        )
         return [
             title.text for title in self.find_elements(*self._shelves_titles_locator)
         ]

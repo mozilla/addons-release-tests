@@ -112,7 +112,6 @@ def test_edit_version_set_custom_license(base_url, session_auth):
 
 @pytest.mark.serial
 @pytest.mark.create_session("api_user")
-@pytest.mark.fail
 def test_upload_new_listed_version(base_url, session_auth):
     """Uploads a new listed version for an existing addon"""
     with open("sample-addons/listed-addon-new-version.zip", "rb") as file:
@@ -147,7 +146,6 @@ def test_upload_new_listed_version(base_url, session_auth):
 
 @pytest.mark.serial
 @pytest.mark.create_session("api_user")
-@pytest.mark.fail
 def test_upload_new_version_with_existing_version_number(base_url, session_auth):
     """Uploads a new version with an existing version number; the upload should fail"""
     with open("sample-addons/listed-addon-new-version.zip", "rb") as file:
