@@ -7,7 +7,7 @@ from pages.desktop.frontend.themes import Themes
 
 @pytest.mark.parametrize(
     "language",
-    ("it", "es", "de", "fr"),
+    ("it", "es-ES", "de", "fr"),
     ids=("Italiano", "Español", "Deutsch", "Français"),
 )
 def test_header_translations(base_url, selenium, variables, language):
@@ -52,7 +52,7 @@ def test_header_translations(base_url, selenium, variables, language):
 
 @pytest.mark.parametrize(
     "language",
-    ("it", "es", "de", "fr"),
+    ("it", "es-ES", "de", "fr"),
     ids=("Italiano", "Español", "Deutsch", "Français"),
 )
 def test_shelf_titles_translations(base_url, selenium, variables, language):
@@ -78,7 +78,7 @@ def test_shelf_titles_translations(base_url, selenium, variables, language):
 
 @pytest.mark.parametrize(
     "language",
-    ("it", "es", "de", "fr"),
+    ("it", "es-ES", "de", "fr"),
     ids=("Italiano", "Español", "Deutsch", "Français"),
 )
 def test_extensions_page_translations(base_url, selenium, variables, language):
@@ -106,7 +106,7 @@ def test_extensions_page_translations(base_url, selenium, variables, language):
 
 @pytest.mark.parametrize(
     "language",
-    ("it", "es", "de", "fr"),
+    ("it", "es-ES", "de", "fr"),
     ids=("Italiano", "Español", "Deutsch", "Français"),
 )
 def test_themes_page_translations(base_url, selenium, variables, language):
