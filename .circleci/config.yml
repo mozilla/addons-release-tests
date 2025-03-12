@@ -379,7 +379,7 @@ jobs:
           environment:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 1 --reruns 2
-          command: py -m pytest tests\api --driver Firefox --variables stage.json --html=api_submission_tests.html --self-contained-html
+          command: py -m pytest tests\api_w --driver Firefox --variables stage.json --html=api_submission_tests.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: api_submission_tests.html
@@ -627,7 +627,7 @@ workflows:
       - ratings_serial_tests
       - devhub_parallel_tests
       - addon_submissions_tests
-#      - api_submission_tests
+      - api_submission_tests
 
   # scheduled in CircleCI Project settings to run each Wednesdays at 04:00 UTC
   scheduled_coverage_run:
@@ -660,7 +660,7 @@ workflows:
       - frontend_parallel_tests
       - devhub_parallel_tests
       - addon_submissions_tests
-#      - api_submission_tests
+      - api_submission_tests
   # scheduled in CircleCI Project settings to start each Thursdays at 17:00 UTC
   scheduled_prod_sanity_run:
     when:

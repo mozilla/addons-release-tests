@@ -26,15 +26,19 @@ _addon_create = "/api/v5/addons/addon/"
 
 
 @pytest.mark.serial
-@pytest.mark.create_session("api_user")
-def test_upload_listed_extension_tc_id_c4369(base_url, session_auth):
-    with open("sample-addons/listed-addon.zip", "rb") as file:
+@pytest.mark.login("api_user")
+@pytest.mark.fail
+def test_upload_listed_extension_tc_id_c4369(base_url, selenium):
+    session_cookie = selenium.get_cookie("sessionid")
+    with open("sample-addons/listed-addon-api.zip", "rb") as file:
         upload = requests.post(
             url=f"{base_url}{_upload}",
-            headers={"Authorization": f"Session {session_auth}"},
+            headers={"Authorization": f'Session {session_cookie["value"]}'},
             files={"upload": file},
             data={"channel": "listed"},
         )
+    print(f'Session Token: {session_cookie["value"]}')
+    print(f"Uploading to: {base_url}{_upload}")
     resp = upload.json()
     print(json.dumps(resp, indent=2))
     upload.raise_for_status()
@@ -47,12 +51,12 @@ def test_upload_listed_extension_tc_id_c4369(base_url, session_auth):
     create_addon = requests.post(
         url=f"{base_url}{_addon_create}",
         headers={
-            "Authorization": f"Session {session_auth}",
+            "Authorization": f'Session {session_cookie["value"]}',
             "Content-Type": "application/json",
         },
         data=json.dumps(payload),
     )
-    print(create_addon)
+    print(create_addon.json())
     create_addon.raise_for_status()
     response = create_addon.json()
     print(json.dumps(response, indent=2))
@@ -62,10 +66,11 @@ def test_upload_listed_extension_tc_id_c4369(base_url, session_auth):
 
 @pytest.mark.serial
 @pytest.mark.create_session("api_user")
+@pytest.mark.fail
 def test_edit_listed_addon_details(base_url, session_auth):
     payload = payloads.edit_addon_details
     edit_addon = requests.patch(
-        url=f"{base_url}{_addon_create}my_sluggish_slug/",
+        url=f"{base_url}{_addon_create}my_sluggish_slug_api/",
         headers={
             "Authorization": f"Session {session_auth}",
             "Content-Type": "application/json",
@@ -809,7 +814,7 @@ def test_edit_extension_add_valid_screenshots(base_url, session_auth, count, pre
         assert (
             edit_addon.status_code == 201
         ), f"Actual status code was {edit_addon.status_code}"
-        # verify the image has been uploaded by checking the image location (should be '/user_media/')
+        # verify the image has been uploaded by checking the image location (should be '/user_media/'()
         assert f"{base_url}/user-media/previews/" in edit_addon.json()["image_url"]
         assert edit_addon.json()["position"] == count
 
