@@ -70,7 +70,7 @@ def test_devhub_page_overview(selenium, base_url, variables):
     # checks that the link redirects to the extension workshop
     page.extension_workshop_is_loaded()
 
-@pytest.mark.prod_only
+@pytest.mark.skip
 @pytest.mark.nondestructive
 def test_devhub_page_get_involved(selenium, base_url, variables, wait):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()

@@ -844,6 +844,7 @@ class Detail(Base):
             return self.find_element(*self._add_to_collection_error_notice_locator).text
 
     class AddonDescription(Region):
+
         _description_header_locator = (By.CSS_SELECTOR, ".AddonDescription header")
         _description_text_locator = (By.CLASS_NAME, "AddonDescription-contents")
 
