@@ -433,7 +433,6 @@ def test_user_artist_and_developer_role(base_url, selenium, variables):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-@pytest.mark.fail
 def test_non_developer_user_profile_is_not_public(base_url, selenium, variables):
     """Non developer users' profile pages are not publicly available;
     when accessed, they will show the profile with minimal details"""
