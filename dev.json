@@ -80,6 +80,8 @@
   "theme_artist_profile": "6199839",
   "developer_and_artist_role": "10642685",
   "non_developer_user": "10642346",
+  "non_developer_username": "regular_user",
+  "non_developer_joined_since": "Mar 17, 2025",
   "user_abuse_initial_form_header": "Report this user to Mozilla",
   "user_abuse_form_send_feedback_text": "Send some feedback about the user",
   "user_abuse_form_provide_more_information_help_text": "Please provide any additional information that may help us to understand your report (including which policy you believe has been violated).",
