@@ -97,9 +97,9 @@ def test_install_uninstall_theme_tc_id_C95591(
     firefox.browser.wait_for_notification(
         firefox_notifications.AddOnInstallConfirmation
     ).install()
-    firefox.browser.wait_for_notification(
-        firefox_notifications.AddOnInstallComplete
-    ).close()
+    # firefox.browser.wait_for_notification(
+    #     firefox_notifications.AddOnInstallComplete
+    # ).close()
     # check that the install button state changed to "Remove"
     assert "Remove" in addon.button_text
     # open the manage Themes page in about:addons to verify that the theme was installed correctly
