@@ -818,18 +818,18 @@ def test_current_theme_not_in_more_by_artist_previews(selenium, base_url, variab
     addon.wait_for_page_to_load()
     assert theme_preview not in addon.themes.preview_source
 
-
-def test_addon_summary_outgoing_urls(selenium, base_url):
-    """Checks that external URLs in summary are redirected through the outgoing domain"""
-    selenium.get(f"{base_url}/addon/outgoing-urls/")
-    addon = Detail(selenium, base_url).wait_for_page_to_load()
-    outgoing_summary = addon.summary.find_element(By.CSS_SELECTOR, "a")
-    assert (
-        "https://stage.outgoing.nonprod.webservices.mozgcp.net"
-        in outgoing_summary.get_attribute("href")
-    )
-    outgoing_summary.click()
-    addon.wait_for_current_url("https://extensionworkshop.allizom.org/")
+# Links are no longer available in summary
+# def test_addon_summary_outgoing_urls(selenium, base_url):
+#     """Checks that external URLs in summary are redirected through the outgoing domain"""
+#     selenium.get(f"{base_url}/addon/outgoing-urls/")
+#     addon = Detail(selenium, base_url).wait_for_page_to_load()
+#     outgoing_summary = addon.summary.find_element(By.CSS_SELECTOR, "a")
+#     assert (
+#         "https://stage.outgoing.nonprod.webservices.mozgcp.net"
+#         in outgoing_summary.get_attribute("href")
+#     )
+#     outgoing_summary.click()
+#     addon.wait_for_current_url("https://extensionworkshop.allizom.org/")
 
 
 def test_addon_description_outgoing_urls(selenium, base_url):
