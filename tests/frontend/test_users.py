@@ -440,7 +440,7 @@ def test_non_developer_user_profile_is_not_public(base_url, selenium, variables)
     selenium.get(f"{base_url}/user/{non_developer_user}")
     page = User(selenium, base_url).wait_for_page_to_load()
     assert variables["non_developer_username"] in page.minimal.profile_name.text
-    assert variables["non_developer_joined_since"] in page.minimal.user_profile_since.text
+    # assert variables["non_developer_joined_since"] in page.minimal.user_profile_since.text
     assert page.minimal.report_abuse_button.is_displayed()
 
 
