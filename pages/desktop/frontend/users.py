@@ -44,6 +44,36 @@ class User(Base):
     def edit(self):
         return self.EditProfile(self)
 
+    @property
+    def minimal(self):
+        return self.MinimalProfileDetails(self)
+
+    class MinimalProfileDetails(Region):
+        _profile_name_selector = (By.CSS_SELECTOR, ".UserProfile-name")
+        _user_profile_since_selector = (By.CSS_SELECTOR, ".UserProfile-user-since")
+        _report_abuse_button_selector = (By.CSS_SELECTOR, ".ReportUserAbuse-show-more")
+
+        @property
+        def profile_name(self):
+            self.wait.until(
+                EC.visibility_of_element_located(self._profile_name_selector)
+            )
+            return self.find_element(*self._profile_name_selector)
+
+        @property
+        def user_profile_since(self):
+            self.wait.until(
+                EC.visibility_of_element_located(self._user_profile_since_selector)
+            )
+            return self.find_element(*self._user_profile_since_selector)
+
+        @property
+        def report_abuse_button(self):
+            self.wait.until(
+                EC.visibility_of_element_located(self._report_abuse_button_selector)
+            )
+            return self.find_element(*self._report_abuse_button_selector)
+
     class ViewProfile(Region):
         _user_icon_placeholder_locator = (By.CSS_SELECTOR, ".Icon-anonymous-user")
         _user_profile_image_locator = (By.CSS_SELECTOR, ".UserAvatar-image")

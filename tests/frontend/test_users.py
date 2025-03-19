@@ -431,15 +431,13 @@ def test_user_artist_and_developer_role(base_url, selenium, variables):
 @pytest.mark.nondestructive
 def test_non_developer_user_profile_is_not_public(base_url, selenium, variables):
     """Non developer users' profile pages are not publicly available;
-    when accessed, they will return a 404 page"""
+    when accessed, they will show the profile with minimal details"""
     non_developer_user = variables["non_developer_user"]
     selenium.get(f"{base_url}/user/{non_developer_user}")
-    page = StaticPages(selenium, base_url).wait_for_page_to_load()
-    assert variables["not_found_page_title"] in page.page_header
-    response = requests.head(selenium.current_url)
-    assert (
-        response.status_code == 404
-    ), f"The response status code was {response.status_code}"
+    page = User(selenium, base_url).wait_for_page_to_load()
+    assert variables["non_developer_username"] in page.minimal.profile_name.text
+    # assert variables["non_developer_joined_since"] in page.minimal.user_profile_since.text
+    assert page.minimal.report_abuse_button.is_displayed()
 
 
 @pytest.mark.serial
