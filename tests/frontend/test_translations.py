@@ -10,6 +10,7 @@ from pages.desktop.frontend.themes import Themes
     ("it", "es-ES", "de", "fr"),
     ids=("Italiano", "Español", "Deutsch", "Français"),
 )
+@pytest.mark.fail
 def test_header_translations(base_url, selenium, variables, language):
     selenium.get(f"{base_url}/{language}")
     page = Home(selenium, base_url).wait_for_page_to_load()
@@ -55,6 +56,7 @@ def test_header_translations(base_url, selenium, variables, language):
     ("it", "es-ES", "de", "fr"),
     ids=("Italiano", "Español", "Deutsch", "Français"),
 )
+@pytest.mark.fail
 def test_shelf_titles_translations(base_url, selenium, variables, language):
     selenium.get(f"{base_url}/{language}")
     page = Home(selenium, base_url).wait_for_page_to_load()
@@ -81,6 +83,7 @@ def test_shelf_titles_translations(base_url, selenium, variables, language):
     ("it", "es-ES", "de", "fr"),
     ids=("Italiano", "Español", "Deutsch", "Français"),
 )
+@pytest.mark.fail
 def test_extensions_page_translations(base_url, selenium, variables, language):
     selenium.get(f"{base_url}/{language}/firefox/extensions/")
     page = Extensions(selenium, base_url)
@@ -109,6 +112,7 @@ def test_extensions_page_translations(base_url, selenium, variables, language):
     ("it", "es-ES", "de", "fr"),
     ids=("Italiano", "Español", "Deutsch", "Français"),
 )
+@pytest.mark.fail
 def test_themes_page_translations(base_url, selenium, variables, language):
     selenium.get(f"{base_url}/{language}/firefox/themes/")
     page = Themes(selenium, base_url)

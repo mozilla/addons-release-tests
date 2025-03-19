@@ -818,6 +818,8 @@ def test_current_theme_not_in_more_by_artist_previews(selenium, base_url, variab
     addon.wait_for_page_to_load()
     assert theme_preview not in addon.themes.preview_source
 
+
+# Links are no longer available in summary
 # commented because no urls can be added anymore in summary
 # def test_addon_summary_outgoing_urls(selenium, base_url):
 #     """Checks that external URLs in summary are redirected through the outgoing domain"""
