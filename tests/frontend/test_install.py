@@ -77,7 +77,7 @@ def test_enable_disable_extension(
     selenium.switch_to.window(selenium.window_handles[1])
     time.sleep(2)
     wait.until(lambda _: "cas-current-addon-1" in about_addons.installed_addon_name[0].text)
-@pytest.mark.fail
+
 def test_install_uninstall_theme_tc_id_C95591(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
