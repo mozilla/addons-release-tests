@@ -27,7 +27,6 @@ _addon_create = "/api/v5/addons/addon/"
 
 @pytest.mark.serial
 @pytest.mark.login("api_user")
-@pytest.mark.fail
 def test_upload_listed_extension_tc_id_c4369(base_url, selenium):
     session_cookie = selenium.get_cookie("sessionid")
     with open("sample-addons/listed-addon-api.zip", "rb") as file:
@@ -66,7 +65,6 @@ def test_upload_listed_extension_tc_id_c4369(base_url, selenium):
 
 @pytest.mark.serial
 @pytest.mark.create_session("api_user")
-@pytest.mark.fail
 def test_edit_listed_addon_details(base_url, session_auth):
     payload = payloads.edit_addon_details
     edit_addon = requests.patch(

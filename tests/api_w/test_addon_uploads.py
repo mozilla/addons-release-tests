@@ -420,7 +420,6 @@ def test_submit_addon_with_reserved_guid(base_url, session_auth, guid):
 
 
 @pytest.mark.serial
-@pytest.mark.fail
 @pytest.mark.create_session("api_user")
 def test_upload_extension_with_duplicate_guid(base_url, session_auth, variables):
     """Addon guids are unique and cannot be re-used for new addon submissions"""
