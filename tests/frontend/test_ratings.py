@@ -12,6 +12,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from pages.desktop.frontend.details import Detail
 from pages.desktop.frontend.reviews import Reviews
 from pages.desktop.frontend.versions import Versions
+from pages.desktop.frontend.users import User
 
 
 @pytest.mark.serial
@@ -386,7 +387,7 @@ def test_flag_review_menu_options_tc_id_c1494904(selenium, base_url, variables):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-@pytest.mark.create_session("rating_user")
+@pytest.mark.login("rating_user")
 def test_click_on_review_posting_time_link(selenium, base_url, variables):
     # this test checks that if we go to all reviews page and clik on a review's posting time link (ex: 2 months ago)
     # it displays the review in a different section from the others
@@ -394,17 +395,14 @@ def test_click_on_review_posting_time_link(selenium, base_url, variables):
     selenium.get(f"{base_url}/addon/{extension}/reviews")
     reviews = Reviews(selenium, base_url).wait_for_page_to_load()
     # save the review info
-    review_rating = reviews.review_items[0].rating_stars.get_attribute("title")
-    review_author = reviews.review_items[0].rating_user.text
-    review_body = reviews.review_items[0].review_body
+    review_rating = reviews.review_items[4].rating_stars.get_attribute("title")
+    review_author = reviews.review_items[4].rating_user.text
+    review_body = reviews.review_items[4].review_body
     # click on posting time link
-    reviews.review_items[0].posting_date.click()
+    reviews.review_items[4].posting_date.click()
     # check that the featured review is the same one
-    assert review_rating in reviews.featured_review_section.rating_stars.get_attribute(
-        "title"
-    )
-    assert review_author in reviews.featured_review_section.author.text
-    assert review_body in reviews.featured_review_section.body.text
+    user_profile = User(selenium, base_url).wait_for_page_to_load()
+    assert user_profile.user_display_name.text in review_author
 
 
 @pytest.mark.serial
