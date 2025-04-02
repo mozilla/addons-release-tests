@@ -1,0 +1,18 @@
+name: Sanity Parallel Tests
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  test:
+    uses: ./.github/workflows/_test.yml
+    with:
+      artifact_name: sanity-parallel-test-results
+      pytest_marker: "prod_only or sanity and not serial"
+      pytest_parallel: 4
+      pytest_path: '' # Run tests discovered from the root directory
+      pytest_report: sanity-parallel-test-results.html
+      pytest_reruns: 2
+      pytest_variables: prod.json
+      python_version: 3.x
