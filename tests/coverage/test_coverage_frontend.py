@@ -5,6 +5,7 @@ from pages.desktop.frontend.details import Detail
 
 
 @pytest.mark.coverage
+@pytest.mark.skip(reason="You must replace addon")
 def test_geo_locations_tc_id_c1781143(selenium, base_url, wait, variables):
     # Test Case:C1781143 AMO Coverage > Require admin tools
     selenium.get(f"{base_url}/firefox/addon/devhub-listed-ext-06-13/")

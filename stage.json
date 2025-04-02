@@ -15,6 +15,8 @@
   "telemetry_client_id": "1111111111111111111111111111111111111111111111111111111111111111",
 
   "detail_extension_slug": "ghostery",
+  "detail_extension_recommended_slug": "auto-addon_recommended_badge",
+  "detail_extension_by_firefox_slug": "auto-addon_by_firefox_badge",
   "detail_extension_name": "Ghostery - Privacy Ad Blocker",
   "addon_with_stats": "facebook-container",
   "addon_without_stats": "trustium",
