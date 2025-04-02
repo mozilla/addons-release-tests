@@ -48,7 +48,7 @@ def test_detail_author_links(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 def test_addon_detail_recommended_badge(selenium, base_url, variables):
-    extension = variables["detail_extension_slug"]
+    extension = variables["detail_extension_recommended_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url)
     assert addon.promoted_badge.is_displayed()
@@ -60,7 +60,7 @@ def test_addon_detail_recommended_badge(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 def test_addon_detail_by_firefox_badge(selenium, base_url, variables):
-    extension = variables["by_firefox_addon"]
+    extension = variables["detail_extension_by_firefox_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url)
     assert addon.promoted_badge.is_displayed()

@@ -92,7 +92,7 @@ def test_primary_hero_tc_id_c95105(base_url, selenium):
     assert page.hero_banner.primary_hero_image.is_displayed()
     # we have either Recommended, either By Firefox add-ons in the primary hero
     try:
-        assert "Recommended".upper() in page.hero_banner.primary_hero_title
+        assert "Promoted".upper() in page.hero_banner.primary_hero_title
     except AssertionError:
         assert "By Firefox".upper() in page.hero_banner.primary_hero_title
     hero_extension = page.hero_banner.primary_hero_extension_name

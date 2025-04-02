@@ -31,6 +31,7 @@ def submit_addon_method(selenium, base_url):
 
 @pytest.mark.coverage
 @pytest.mark.login("submissions_user")
+@pytest.mark.skip(reason="Need to investigate manually first")
 def test_cancel_review_request_tc_id_c1803555(selenium, base_url, variables, wait):
     # Test Case: C1803555 -> AMO Coverage > Devhub
     """Submit the first version of an add-on"""

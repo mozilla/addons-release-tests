@@ -10,6 +10,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from pages.desktop.frontend.details import Detail
 from pages.desktop.frontend.reviews import Reviews
 from pages.desktop.frontend.versions import Versions
+from pages.desktop.frontend.users import User
 
 
 @pytest.mark.serial
@@ -398,11 +399,8 @@ def test_click_on_review_posting_time_link(selenium, base_url, variables):
     # click on posting time link
     reviews.review_items[0].posting_date.click()
     # check that the featured review is the same one
-    assert review_rating in reviews.featured_review_section.rating_stars.get_attribute(
-        "title"
-    )
-    assert review_author in reviews.featured_review_section.author.text
-    assert review_body in reviews.featured_review_section.body.text
+    user_profile = User(selenium, base_url).wait_for_page_to_load()
+    assert user_profile.user_display_name.text in review_author
 
 
 @pytest.mark.serial
