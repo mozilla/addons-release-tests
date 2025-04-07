@@ -1,3 +1,5 @@
+"""This python file contains tests for the pages whose content do not change
+    when a user visits them"""
 import pytest
 import requests
 
@@ -7,10 +9,8 @@ from pages.desktop.frontend.home import Home
 from pages.desktop.frontend.static_pages import StaticPages
 
 @pytest.mark.nondestructive
-@pytest.mark.xfail(
-    reason="There is an issue with search on stage-#16610", strict=False
-)
 def test_about_firefox_addons_page_links(base_url, selenium, variables):
+    """"""
     Home(selenium, base_url).open().wait_for_page_to_load()
     selenium.get(f"{base_url}/about")
     page = StaticPages(selenium, base_url).wait_for_page_to_load()

@@ -1,3 +1,5 @@
+"""This python file contains tests AMO Home test cases"""
+
 import pytest
 
 from selenium.webdriver import ActionChains
@@ -13,6 +15,7 @@ from scripts import reusables
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_click_header_extensions_tc_id_c95105(base_url, selenium):
+    """ Test that verifies the header for extensions """
     page = Home(selenium, base_url).open()
     ext_page = page.header.click_extensions()
     assert "Extensions" in ext_page.title
@@ -23,6 +26,7 @@ def test_click_header_extensions_tc_id_c95105(base_url, selenium):
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_click_header_themes_tc_id_c95105(base_url, selenium):
+    """ Test that verifies the header for themes """
     page = Home(selenium, base_url).open()
     themes_page = page.header.click_themes()
     assert "Themes" in themes_page.text
@@ -33,6 +37,7 @@ def test_click_header_themes_tc_id_c95105(base_url, selenium):
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_logo_routes_to_homepage_tc_id_c95105(base_url, selenium):
+    """Test that verifies that the logo redirects the user to homepage"""
     page = Home(selenium, base_url).open()
     # navigate away from the homepage
     page.header.click_extensions()
@@ -44,6 +49,7 @@ def test_logo_routes_to_homepage_tc_id_c95105(base_url, selenium):
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_firefox_addons_blog_link_tc_id_c95105(base_url, selenium):
+    """Test that checks the blog link"""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.header.click_firefox_addons_blog()
     page.wait_for_current_url("/blog/")
@@ -52,6 +58,7 @@ def test_firefox_addons_blog_link_tc_id_c95105(base_url, selenium):
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_developer_hub_link_tc_id_c95105(base_url, selenium):
+    """Test that verifies the developer hub link"""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.header.click_developer_hub()
     assert "/developers/" in selenium.current_url
@@ -60,6 +67,7 @@ def test_developer_hub_link_tc_id_c95105(base_url, selenium):
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_extension_workshop_link_tc_id_c95105(base_url, selenium):
+    """Test that verifies the extension workshop link"""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.header.click_extension_workshop()
     assert "extensionworkshop" in selenium.current_url
@@ -77,6 +85,7 @@ def test_extension_workshop_link_tc_id_c95105(base_url, selenium):
 )
 @pytest.mark.nondestructive
 def test_more_dropdown_navigates_correctly_tc_id_c95103(base_url, selenium, count, title):
+    """Test that verifies the More dropdown"""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     # clicks on a link in the More menu and verifies that the correct page opens
     page.header.more_menu(item=count)
@@ -87,6 +96,7 @@ def test_more_dropdown_navigates_correctly_tc_id_c95103(base_url, selenium, coun
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_primary_hero_tc_id_c95105(base_url, selenium):
+    """Test covering the homepage primary hero"""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     # several assertions that validate the presence of elements in the primary hero
     assert page.hero_banner.primary_hero_image.is_displayed()
@@ -104,6 +114,7 @@ def test_primary_hero_tc_id_c95105(base_url, selenium):
 
 @pytest.mark.nondestructive
 def test_secondary_hero_message(base_url, selenium, variables):
+    """Test covering the homepage secondary hero"""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     assert (
         variables["secondary_hero_title"] in page.secondary_hero.secondary_hero_headline
@@ -120,8 +131,8 @@ def test_secondary_hero_message(base_url, selenium, variables):
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_secondary_hero_modules_tc_id_c95105(base_url, selenium):
+    """Check that each of the three secondary hero modules has an icon and a short description"""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
-    # check that each of the three secondary hero modules has an icon and a short description
     for module in page.secondary_hero.secondary_hero_modules:
         assert module.module_icon.is_displayed()
         assert module.module_description.is_displayed()
@@ -140,8 +151,8 @@ def test_secondary_hero_modules_tc_id_c95105(base_url, selenium):
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_click_module_link_tc_id_c95105(base_url, selenium, count, module):
+    """Check that the content linked in the secondary modules is available"""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
-    # checks that the content linked in the secondary modules is available
     module = page.secondary_hero.secondary_hero_modules
     module[count].click_secondary_module_link()
 
@@ -150,6 +161,7 @@ def test_click_module_link_tc_id_c95105(base_url, selenium, count, module):
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_browse_all_recommended_extensions_tc_id_c1137804(base_url, selenium):
+    """Test checking the All Recommended extensions"""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.recommended_extensions.browse_all()
     assert "type=extension" in selenium.current_url
@@ -161,6 +173,7 @@ def test_browse_all_recommended_extensions_tc_id_c1137804(base_url, selenium):
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_home_recommended_extensions_shelf_tc_id_c95105(base_url, selenium):
+    """Test checking the Home Recommended extensions"""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     assert "Recommended extensions" in page.recommended_extensions.card_header
     shelf_items = page.recommended_extensions.list
@@ -174,6 +187,7 @@ def test_home_recommended_extensions_shelf_tc_id_c95105(base_url, selenium):
 
 @pytest.mark.nondestructive
 def test_home_see_more_popular_themes_tc_id_c95589(base_url, selenium):
+    """Test checking the see more popular themes"""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.popular_themes.browse_all()
     sort = "users"
@@ -185,6 +199,7 @@ def test_home_see_more_popular_themes_tc_id_c95589(base_url, selenium):
 
 @pytest.mark.nondestructive
 def test_home_popular_themes_shelf(base_url, selenium):
+    """Test checking the Popular themes shelf"""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     assert "Popular themes" in page.popular_themes.card_header
     shelf_items = page.popular_themes.list
@@ -202,6 +217,7 @@ def test_home_popular_themes_shelf(base_url, selenium):
 
 @pytest.mark.nondestructive
 def test_home_see_more_recommended_themes_tc_id_c95589(base_url, selenium):
+    """Test checking the More recommended themes"""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.recommended_themes.browse_all()
     assert "type=statictheme" in selenium.current_url
@@ -212,6 +228,7 @@ def test_home_see_more_recommended_themes_tc_id_c95589(base_url, selenium):
 
 @pytest.mark.nondestructive
 def test_home_shelf_item_rating(base_url, selenium):
+    """Add-on ratings are displayed when hovering over a shelf item"""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     shelf_item = page.recommended_extensions.list[0].root
     # wait for the shelf to become intractable (scrolled into view)
@@ -225,6 +242,7 @@ def test_home_shelf_item_rating(base_url, selenium):
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_home_see_more_links_tc_id_c4407(base_url, selenium):
+    """Test that clicks each link from homepage shelves"""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     count = 0
     # clicks through each link in the homepage shelves and checks that the content is available
@@ -249,6 +267,7 @@ def test_home_see_more_links_tc_id_c4407(base_url, selenium):
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_theme_categories_shelf_tc_id_c95105(base_url, selenium, count, category):
+    """Verifying the elements present in the homepage Theme Category shelf"""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     # verifying the elements present in the homepage Theme Category shelf
     assert "Change the way Firefox looks" in page.theme_category.shelf_summary
@@ -265,7 +284,8 @@ def test_theme_categories_shelf_tc_id_c95105(base_url, selenium, count, category
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 @pytest.mark.prod_only
-def test_mozilla_footer_link_tc_id_c95105(base_url, selenium, wait):
+def test_mozilla_footer_link_tc_id_c95105(base_url, selenium):
+    """Verifies the mozilla link from the footer"""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.footer.mozilla_link.click()
     assert "mozilla.org" in selenium.current_url
@@ -305,6 +325,7 @@ def test_mozilla_footer_link_tc_id_c95105(base_url, selenium, wait):
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_addons_footer_links_tc_id_c95105(base_url, selenium, count, link):
+    """Verifies the links from the footer"""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.footer.addon_links[count].click()
     page.wait_for_current_url(link[0])
@@ -332,6 +353,7 @@ def test_addons_footer_links_tc_id_c95105(base_url, selenium, count, link):
 @pytest.mark.nondestructive
 @pytest.mark.sanity
 def test_browsers_footer_links_tc_id_c95105(base_url, selenium, count, link):
+    """Verifies the browsers footer links"""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.footer.browsers_links[count].click()
     page.wait_for_current_url(link[0])
@@ -345,7 +367,8 @@ def test_browsers_footer_links_tc_id_c95105(base_url, selenium, count, link):
     "count, link",
     enumerate(
         [
-            ["firefox/?utm_content=footer-link&utm_medium=referral&utm_source=addons.mozilla.org", ".mzp-t-product-firefox"],
+            ["firefox/?utm_content=footer-link&utm_medium=referral&utm_source=addons.mozilla.org",
+             ".mzp-t-product-firefox"],
             ["products/vpn/", ".c-sub-navigation-title"],
             ["relay.firefox.com/", ".Layout_logo__V4UCI"],
             ["monitor.mozilla", ".PublicShell_logo__vbvvO"],
@@ -363,6 +386,7 @@ def test_browsers_footer_links_tc_id_c95105(base_url, selenium, count, link):
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_products_footer_links_tc_id_c95105(base_url, selenium, count, link):
+    """Test that verifies all the products link"""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.footer.products_links[count].click()
     page.wait_for_current_url(link[0])
@@ -390,6 +414,7 @@ def test_products_footer_links_tc_id_c95105(base_url, selenium, count, link):
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_social_footer_links_tc_id_c95105(base_url, selenium, count, link):
+    """Test that verifies the social links from the footer section"""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.footer.social_links[count].click()
     page.wait_for_current_url(link)
@@ -413,6 +438,7 @@ def test_social_footer_links_tc_id_c95105(base_url, selenium, count, link):
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_legal_footer_links_tc_id_c95105(base_url, selenium, count, link):
+    """Test that verifies the legal links from the footer"""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.footer.legal_links[count].click()
     page.wait_for_current_url(link[0])
@@ -438,6 +464,7 @@ def test_legal_footer_links_tc_id_c95105(base_url, selenium, count, link):
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_copyright_footer_links_tc_id_c95105(base_url, selenium, count, link):
+    """Test that verifies copyright link from the footer"""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     assert page.footer.copyright_message.is_displayed()
     page.footer.copyright_links[count].click()
@@ -468,6 +495,7 @@ def test_copyright_footer_links_tc_id_c95105(base_url, selenium, count, link):
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_change_language_tc_id_c95098(base_url, selenium, language, locale, translation):
+    """Test that verifies if language changes"""
     print("Test present in TC: C95105,C95098")
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.footer.language_picker(language)
