@@ -1,3 +1,4 @@
+"""A python file that contains tests about versions, licenses"""
 from datetime import datetime
 
 import pytest
@@ -13,6 +14,7 @@ from scripts import reusables
 
 @pytest.mark.nondestructive
 def test_addon_name_in_header(selenium, base_url, variables):
+    """Tests that the add-on name appears correctly in the page header."""
     selenium.get(variables["addon_version_page_url"])
     page = Versions(selenium, base_url)
     addon_name = page.versions_page_header.text.split()[0]
@@ -22,8 +24,8 @@ def test_addon_name_in_header(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 def test_versions_counter(selenium, base_url, variables):
-    # this test verifies that the number of versions displayed
-    # in the header is the same as the number of elements in the version list
+    """this test verifies that the number of versions displayed
+        in the header is the same as the number of elements in the version list"""
     selenium.get(variables["addon_version_page_url"])
     page = Versions(selenium, base_url)
     text = page.versions_page_header.text
@@ -34,6 +36,7 @@ def test_versions_counter(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 def test_notice_message(selenium, base_url, variables):
+    """Tests that notice or warning messages are shown appropriately."""
     selenium.get(variables["addon_version_page_url"])
     page = Versions(selenium, base_url)
     assert page.notice_message.is_displayed()
@@ -42,6 +45,7 @@ def test_notice_message(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 def test_ratings_card(selenium, base_url, variables):
+    """Tests that the ratings card displays properly on the add-on page."""
     selenium.get(variables["addon_version_page_url"])
     page = Versions(selenium, base_url)
     # verify if ratings card is present
@@ -50,6 +54,7 @@ def test_ratings_card(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 def test_license_link(selenium, base_url, variables):
+    """Tests that the license link is present and navigates correctly."""
     selenium.get(variables["addon_version_page_url"])
     page = Versions(selenium, base_url)
 
@@ -85,6 +90,7 @@ def test_license_link(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 def test_current_version(selenium, base_url, variables):
+    """Tests that the current version information is shown accurately."""
     addon_url = f'addon/{variables["addon_version_install"]}/'
     # get info from api
     response = requests.get(f"{base_url}/api/v5/addons/{addon_url}")
@@ -106,6 +112,7 @@ def test_current_version(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 def test_version_install_warning(selenium, base_url, variables):
+    """Tests that install warnings appear for specific versions when required."""
     selenium.get(
         f'{base_url}/en-US/firefox/addon/{variables["non_recommended_addon"]}/versions/'
     )
@@ -123,6 +130,7 @@ def test_version_install_warning(selenium, base_url, variables):
 def test_add_to_firefox_button(
     selenium, base_url, variables, firefox, firefox_notifications
 ):
+    """Tests the visibility and functionality of the 'Add to Firefox' button."""
     selenium.get(variables["addon_version_page_url"])
     page = Versions(selenium, base_url)
     page.versions_list[0].add_to_firefox_button.click()
