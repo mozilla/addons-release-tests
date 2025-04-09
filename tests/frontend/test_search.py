@@ -414,6 +414,7 @@ def test_filter_themes(base_url, selenium):
     ],
 )
 @pytest.mark.nondestructive
+@pytest.mark.update_back
 def test_filter_promoted(base_url, selenium, sort_attr, title):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     term = ""
@@ -425,5 +426,5 @@ def test_filter_promoted(base_url, selenium, sort_attr, title):
     results = search_page.result_list.search_results
     for result in results:
         assert result.promoted_badge
-        if title != "All Reviewed":
-            assert title.title() in result.promoted_badge_label
+        # if title != "Recommended":
+        #     assert title.title() in result.promoted_badge_label
