@@ -748,7 +748,6 @@ def test_developer_comments(selenium, base_url, variables):
 
 
 @pytest.mark.nondestructive
-@pytest.mark.fail
 def test_addon_ratings_card(selenium, base_url, variables):
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
