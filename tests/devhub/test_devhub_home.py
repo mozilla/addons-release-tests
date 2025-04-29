@@ -478,7 +478,7 @@ def test_devhub_browsers_footer_links(base_url, selenium, count, link):
     "count, link",
     enumerate(
         [
-            "firefox/?utm_source=addons.mozilla.org&utm_medium=referral&utm_content=footer-link",
+            "firefox/new/?utm_source=addons.mozilla.org&utm_medium=referral&utm_content=footer-link&xv=refresh-new&v=a",
             "products/vpn/",
             "relay.firefox.com/",
             "monitor.mozilla",
