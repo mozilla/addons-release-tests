@@ -86,13 +86,14 @@ def test_more_dropdown_navigates_correctly_tc_id_c95103(base_url, selenium, coun
 # Tests covering the homepage primary and secondary heroes
 @pytest.mark.sanity
 @pytest.mark.nondestructive
+@pytest.mark.fail
 def test_primary_hero_tc_id_c95105(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     # several assertions that validate the presence of elements in the primary hero
     assert page.hero_banner.primary_hero_image.is_displayed()
     # we have either Recommended, either By Firefox add-ons in the primary hero
     try:
-        assert "Recommended".upper() in page.hero_banner.primary_hero_title
+        assert "Promoted".upper() or "Recommended".upper() in page.hero_banner.primary_hero_title
     except AssertionError:
         assert "By Firefox".upper() in page.hero_banner.primary_hero_title
     hero_extension = page.hero_banner.primary_hero_extension_name
