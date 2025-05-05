@@ -185,7 +185,7 @@ def test_install_uninstall_langpack_tc_id_c4508(
         )
 
 def test_about_addons_install_extension(
-    selenium, base_url, wait, firefox, firefox_notifications
+    selenium, wait, firefox, firefox_notifications
 ):
     selenium.get("about:addons")
     about_addons = AboutAddons(selenium)
@@ -193,8 +193,8 @@ def test_about_addons_install_extension(
     wait.until(
         lambda _: len([el.install_button for el in about_addons.addon_cards_items]) >= 8
     )
-    disco_addon_name = about_addons.addon_cards_items[2].disco_addon_name.text
-    disco_addon_author = about_addons.addon_cards_items[2].disco_addon_author.text
+    # disco_addon_name = about_addons.addon_cards_items[2].disco_addon_name.text
+    # disco_addon_author = about_addons.addon_cards_items[2].disco_addon_author.text
     # install the recommended extension
     about_addons.addon_cards_items[2].install_button.click()
     firefox.browser.wait_for_notification(
@@ -220,7 +220,7 @@ def test_about_addons_install_extension(
     # To decomment at a later time. #FIX
 
 def test_about_addons_install_theme(
-    selenium, base_url, wait, firefox, firefox_notifications
+    selenium, wait, firefox, firefox_notifications
 ):
     selenium.get("about:addons")
     about_addons = AboutAddons(selenium)
@@ -230,9 +230,9 @@ def test_about_addons_install_theme(
     )
     disco_theme_name = about_addons.addon_cards_items[0].disco_addon_name.text
     # make a note of the image source of the theme we are about to install
-    disco_theme_image = about_addons.addon_cards_items[0].theme_image.get_attribute(
-        "src"
-    )
+    # disco_theme_image = about_addons.addon_cards_items[0].theme_image.get_attribute(
+    #     "src"
+    # )
     # install the recommended theme
     about_addons.addon_cards_items[0].install_button.click()
     firefox.browser.wait_for_notification(

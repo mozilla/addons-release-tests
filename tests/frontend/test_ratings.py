@@ -1,3 +1,4 @@
+"""test_ratings.py focuses on tests regarding the rating fcuntionality"""
 import math
 import pytest
 
@@ -39,7 +40,8 @@ def test_throttled_request_create_rating_spam(selenium, base_url, variables):
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_throttled_request_update_rating_spam(selenium, base_url, variables):
-    """this test checks that repeatedly modifying the rating score will raise throttled request error"""
+    """this test checks that repeatedly modifying
+    the rating score will raise throttled request error"""
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -412,9 +414,7 @@ def test_click_on_review_posting_time_link(selenium, base_url, variables):
     selenium.get(f"{base_url}/addon/{extension}/reviews")
     reviews = Reviews(selenium, base_url).wait_for_page_to_load()
     # save the review info
-    review_rating = reviews.review_items[0].rating_stars.get_attribute("title")
     review_author = reviews.review_items[0].rating_user.text
-    review_body = reviews.review_items[0].review_body
     # click on posting time link
     reviews.review_items[0].posting_date.click()
     # check that the featured review is the same one
@@ -555,7 +555,8 @@ def test_delete_developer_reply_to_review(selenium, base_url, variables):
 @pytest.mark.nondestructive
 @pytest.mark.create_session("developer")
 def test_developers_cannot_rate_their_own_addons(selenium, base_url, variables):
-    """Log in as an addon developer and try to post a review to your own addon; the request should fail"""
+    """Log in as an addon developer and try to post a review
+    to your own addon; the request should fail"""
     extension = variables["dev_reply_review"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -566,7 +567,7 @@ def test_developers_cannot_rate_their_own_addons(selenium, base_url, variables):
             (By.CSS_SELECTOR, ".Notice-error"),
             "You can't leave a review on your own add-on.",
         ),
-        message=f"The expected review submission error was not raised",
+        message="The expected review submission error was not raised",
     )
 
 

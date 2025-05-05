@@ -13,6 +13,8 @@ from pages.desktop.frontend.users import User
 @pytest.mark.sanity
 @pytest.mark.nondesstructive
 def test_blog_homepage_header_logo_button(base_url, selenium):
+    """Verifies that clicking on the blog homepage's header
+    logo redirects to the homepage and displays the primary hero section."""
     page = BlogHomepage(selenium, base_url).open().wait_for_page_to_load()
     page.header.click_title()
     homepage = Home(selenium, base_url)
@@ -22,6 +24,8 @@ def test_blog_homepage_header_logo_button(base_url, selenium):
 @pytest.mark.sanity
 @pytest.mark.nondesstructive
 def test_articles_elements_are_displayed(base_url, selenium):
+    """Ensures that the key elements of each article
+    on the blog homepage are displayed correctly."""
     page = BlogHomepage(selenium, base_url).open().wait_for_page_to_load()
     for article in page.articles:
         assert article.image.is_displayed()
@@ -34,6 +38,8 @@ def test_articles_elements_are_displayed(base_url, selenium):
 @pytest.mark.sanity
 @pytest.mark.nondesstructive
 def test_open_article_by_clicking_article_image(base_url, selenium):
+    """Verifies that clicking on an article image opens the correct article page,
+    with the article's title displayed in the new page."""
     page = BlogHomepage(selenium, base_url).open().wait_for_page_to_load()
     article_title = page.articles[0].title.text
     page.articles[0].image.click()
@@ -44,6 +50,8 @@ def test_open_article_by_clicking_article_image(base_url, selenium):
 @pytest.mark.sanity
 @pytest.mark.nondesstructive
 def test_open_article_by_clicking_article_title(base_url, selenium):
+    """Ensures that clicking on an article's title on the homepage redirects
+    to the correct article page, where the title matches the article title."""
     page = BlogHomepage(selenium, base_url).open().wait_for_page_to_load()
     article_title = page.articles[0].title.text
     page.articles[0].title.click()
@@ -53,6 +61,8 @@ def test_open_article_by_clicking_article_title(base_url, selenium):
 
 @pytest.mark.nondesstructive
 def test_open_article_by_clicking_read_more_link(base_url, selenium):
+    """Verifies that clicking the "Read more" link for an article opens the full article page,
+    and the article title matches the clicked article."""
     page = BlogHomepage(selenium, base_url).open().wait_for_page_to_load()
     article_title = page.articles[0].title.text
     page.articles[0].read_more_link.click()
@@ -62,7 +72,11 @@ def test_open_article_by_clicking_read_more_link(base_url, selenium):
 
 @pytest.mark.sanity
 @pytest.mark.nondestructive
-def test_article_page_loaded_correctly(base_url, selenium, variables):
+def test_article_page_loaded_correctly(base_url, selenium):
+    """Ensures that the article page loads correctly with
+    all essential elements such as the header logo,
+    title, author information, navigation bar links,
+    content paragraphs, and next/previous article links."""
     blog_homepage = BlogHomepage(selenium, base_url).open().wait_for_page_to_load()
     page = blog_homepage.articles[0].click_read_more_link()
     assert page.header_logo.is_displayed()
@@ -84,7 +98,10 @@ def test_article_page_loaded_correctly(base_url, selenium, variables):
 
 @pytest.mark.sanity
 @pytest.mark.nondestructive
-def test_article_page_header_logo_button(base_url, selenium, variables):
+def test_article_page_header_logo_button(base_url, selenium):
+    """Verifies that clicking the header logo on
+    an article page redirects to the homepage,
+    and the primary hero section is displayed."""
     blog_homepage = BlogHomepage(selenium, base_url).open().wait_for_page_to_load()
     page = blog_homepage.articles[0].click_read_more_link()
     page.header_logo.click()
@@ -94,7 +111,11 @@ def test_article_page_header_logo_button(base_url, selenium, variables):
 
 @pytest.mark.sanity
 @pytest.mark.nondestructive
-def test_navbar_frontend_homepage_link(base_url, selenium, variables):
+def test_navbar_frontend_homepage_link(base_url, selenium):
+    """Ensures that clicking the "Home" link
+    in the article page's navbar
+    redirects to the homepage and
+    displays the primary hero section."""
     blog_homepage = BlogHomepage(selenium, base_url).open().wait_for_page_to_load()
     page = blog_homepage.articles[0].click_read_more_link()
     page.nav_bar_links[0].click()
@@ -104,7 +125,9 @@ def test_navbar_frontend_homepage_link(base_url, selenium, variables):
 
 @pytest.mark.sanity
 @pytest.mark.nondestructive
-def test_navbar_blog_homepage_link(base_url, selenium, variables):
+def test_navbar_blog_homepage_link(base_url, selenium):
+    """Verifies that clicking the "Blog Homepage" link in the article page's navbar
+    redirects back to the blog homepage, where the first article title is displayed."""
     blog_homepage = BlogHomepage(selenium, base_url).open().wait_for_page_to_load()
     page = blog_homepage.articles[0].click_read_more_link()
     page.nav_bar_links[1].click()
@@ -114,7 +137,9 @@ def test_navbar_blog_homepage_link(base_url, selenium, variables):
 
 @pytest.mark.sanity
 @pytest.mark.nondestructive
-def test_navbar_current_article_link(base_url, selenium, variables):
+def test_navbar_current_article_link(base_url, selenium):
+    """Verifies that clicking the "Current Article" link in the navbar on the article page
+    keeps the user on the current article page, with the title unchanged."""
     blog_homepage = BlogHomepage(selenium, base_url).open().wait_for_page_to_load()
     page = blog_homepage.articles[0].click_read_more_link()
     initial_title = page.title.text
@@ -124,7 +149,9 @@ def test_navbar_current_article_link(base_url, selenium, variables):
 
 @pytest.mark.sanity
 @pytest.mark.nondestructive
-def test_next_and_previous_article_links(base_url, selenium, variables):
+def test_next_and_previous_article_links(base_url, selenium):
+    """Ensures that clicking the "Next" and "Previous" article links correctly navigates
+    between articles, and the titles of the articles change accordingly."""
     blog_homepage = BlogHomepage(selenium, base_url).open().wait_for_page_to_load()
     page = blog_homepage.articles[0].click_read_more_link()
     initial_title = page.title.text
@@ -136,7 +163,9 @@ def test_next_and_previous_article_links(base_url, selenium, variables):
 
 @pytest.mark.sanity
 @pytest.mark.nondestructive
-def test_addon_cards_loaded_correctly(base_url, selenium, variables):
+def test_addon_cards_loaded_correctly(base_url, selenium):
+    """Verifies that addon cards displayed on the article page show all required elements,
+    such as title, author, summary, rating, number of users, and the "Add to Firefox" button."""
     blog_homepage = BlogHomepage(selenium, base_url).open().wait_for_page_to_load()
     page = blog_homepage.articles[0].click_read_more_link()
     for card in page.addon_cards:
@@ -150,7 +179,9 @@ def test_addon_cards_loaded_correctly(base_url, selenium, variables):
 
 @pytest.mark.sanity
 @pytest.mark.nondestructive
-def test_addon_card_recommendation_badge_link(base_url, selenium, variables):
+def test_addon_card_recommendation_badge_link(base_url, selenium):
+    """Tests the behavior when clicking on a recommendation badge in an addon card.
+    It checks that the correct page is opened, confirming the addon badge's status."""
     blog_homepage = BlogHomepage(selenium, base_url).open().wait_for_page_to_load()
     page = blog_homepage.articles[0].click_read_more_link()
     for addon_card in page.addon_cards:
@@ -172,8 +203,11 @@ def test_addon_card_recommendation_badge_link(base_url, selenium, variables):
 @pytest.mark.prod_only
 @pytest.mark.nondestructive
 def test_blog_install_addon(
-    base_url, selenium, variables, firefox, firefox_notifications, wait
+    base_url, selenium, firefox, firefox_notifications, wait
 ):
+    """Verifies that an addon can be installed from an article's addon card.
+    After installation, it checks that the addon appears in "about:addons"
+    and matches either the name or summary of the installed addon."""
     blog = BlogHomepage(selenium, base_url).open().wait_for_page_to_load()
     article = blog.articles[3].click_read_more_link()
     # install add-on from a blog article
@@ -206,6 +240,8 @@ def test_blog_install_addon(
 @pytest.mark.prod_only
 @pytest.mark.nondestructive
 def test_addon_link_in_article_addon_cards(base_url, selenium):
+    """Ensures that clicking on an addon name in an article’s addon card opens
+    the correct addon detail page on AMO, and verifies that the addon name matches the article's."""
     blog = BlogHomepage(selenium, base_url).open().wait_for_page_to_load()
     article = blog.articles[3].click_read_more_link()
     # make a note of the add-on name in the article card
@@ -220,6 +256,8 @@ def test_addon_link_in_article_addon_cards(base_url, selenium):
 @pytest.mark.prod_only
 @pytest.mark.nondestructive
 def test_author_link_in_article_addon_cards(base_url, selenium):
+    """Verifies that clicking on the author name in an article’s addon card redirects
+    to the author's profile page on AMO and that the author's name matches between the article and the profile page."""
     blog = BlogHomepage(selenium, base_url).open().wait_for_page_to_load()
     article = blog.articles[3].click_read_more_link()
     # make a note of the addon author in the article card

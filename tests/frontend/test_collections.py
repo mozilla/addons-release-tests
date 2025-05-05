@@ -15,6 +15,8 @@ from scripts import reusables
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_collection_meta_card_tc_id_c4475(selenium, base_url, variables):
+    """Verifies that the collection metadata elements (such as collection name, description, number of add-ons,
+    creator, and last update date) are displayed correctly in the collection summary card."""
     public_collection = variables["public_collection"]
     selenium.get(f"{base_url}/collections{public_collection}")
     collection = Collections(selenium, base_url).wait_for_page_to_load()
@@ -32,6 +34,8 @@ def test_collection_meta_card_tc_id_c4475(selenium, base_url, variables):
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_collection_addon_count_is_correct_tc_id_c4478(selenium, base_url, variables):
+    """Confirms that the addon count shown in the collection's
+    metadata matches the actual number of add-ons listed in the collection."""
     public_collection = variables["public_collection"]
     selenium.get(f"{base_url}/collections{public_collection}")
     collection = Collections(selenium, base_url).wait_for_page_to_load()
@@ -45,6 +49,8 @@ def test_collection_addon_count_is_correct_tc_id_c4478(selenium, base_url, varia
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_collection_creator_and_modified_date_tc_id_c4478(selenium, base_url, variables, wait):
+    """Tests if the logged-in user's name is correctly displayed as the creator of the collection
+    and verifies that the modified date updates correctly when editing a collection's description."""
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
     collections.login("collection_user")
     collections.select_collection(0)
@@ -72,6 +78,8 @@ def test_collection_creator_and_modified_date_tc_id_c4478(selenium, base_url, va
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_my_collections_page_items_tc_id_c4478(selenium, base_url, variables):
+    """Verifies that various elements are present and correctly displayed on the "My Collections" page,
+    including collection names, addon counts, and collection summaries."""
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
     collections.login("collection_user")
     # checking that various elements are present on the user collections page
@@ -87,6 +95,8 @@ def test_my_collections_page_items_tc_id_c4478(selenium, base_url, variables):
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_select_collection_from_list(selenium, base_url, wait):
+    """Verifies that when a collection is selected from the list,
+    the collection name and addon count match those displayed in the collection details."""
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
     collections.login("collection_user")
     # capture collection name and number of add-on displayed in My collections list
@@ -106,6 +116,8 @@ def test_select_collection_from_list(selenium, base_url, wait):
 @pytest.mark.serial
 @pytest.mark.login("collection_user")
 def test_create_collection_tc_id_c125543(selenium, base_url, variables, wait):
+    """Tests the process of creating a new collection, ensuring that the name,
+    description, and details entered during creation are correctly displayed after saving."""
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
     collections.click_create_collection()
     # using random strings to make sure we're always getting a unique URL,
@@ -128,6 +140,8 @@ def test_create_collection_tc_id_c125543(selenium, base_url, variables, wait):
 @pytest.mark.serial
 @pytest.mark.create_session("collection_user")
 def test_add_addons_to_collection_tc_id_c125542(selenium, base_url, variables, wait):
+    """Verifies the ability to add an addon to a collection.
+    The test ensures that a successful addition is confirmed and updates the collection’s addon list."""
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
     collections.select_collection(0)
     collections.collection_detail.click_edit_collection_button()
@@ -153,6 +167,8 @@ def test_add_addons_to_collection_tc_id_c125542(selenium, base_url, variables, w
 @pytest.mark.serial
 @pytest.mark.create_session("collection_user")
 def test_collection_add_duplicate_addons_error(selenium, base_url, variables):
+    """Tests that when an addon already exists in the collection,
+    attempting to add it again shows an appropriate error message."""
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
     collections.select_collection(0)
     collections.collection_detail.click_edit_collection_button()
@@ -169,6 +185,8 @@ def test_collection_add_duplicate_addons_error(selenium, base_url, variables):
 @pytest.mark.serial
 @pytest.mark.create_session("collection_user")
 def test_remove_addon_from_collection(selenium, base_url, variables, wait):
+    """Verifies that an addon can be successfully removed from a collection,
+     and the changes are reflected in the collection’s addon list."""
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
     collections.select_collection(0)
     collections.collection_detail.click_edit_collection_button()
@@ -199,6 +217,8 @@ def test_remove_addon_from_collection(selenium, base_url, variables, wait):
 @pytest.mark.serial
 @pytest.mark.create_session("collection_user")
 def test_collection_addon_notes(selenium, base_url, variables):
+    """Tests the ability to add, edit, and delete notes for addons in the collection,
+    ensuring that notes are correctly displayed or removed after each action."""
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
     collections.select_collection(0)
     collections.collection_detail.click_edit_collection_button()
@@ -235,6 +255,8 @@ def test_collection_addon_notes(selenium, base_url, variables):
 @pytest.mark.serial
 @pytest.mark.create_session("collection_user")
 def test_collection_sort_addons_by_date_added(selenium, base_url, variables, wait):
+    """Verifies that addons in a collection can be sorted by the date they were added,
+    ensuring that the sorting functionality works as expected."""
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
     collections.select_collection(0)
     collections.collection_detail.click_edit_collection_button()
@@ -267,6 +289,9 @@ def test_collection_sort_addons_by_date_added(selenium, base_url, variables, wai
 @pytest.mark.serial
 @pytest.mark.create_session("collection_user")
 def test_collection_edit_metadata_tc_id_c4469(selenium, base_url, variables, wait):
+    """Verifies that collection metadata can be successfully edited.
+    The test checks that the save button is initially disabled if no changes are made,
+    and then ensures that changes to the collection name and description are saved and displayed correctly."""
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
     collections.select_collection(0)
     collections.collection_detail.click_edit_collection_button()
@@ -298,7 +323,10 @@ def test_collection_edit_metadata_tc_id_c4469(selenium, base_url, variables, wai
 @pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.create_session("collection_user")
-def test_add_to_collection_in_addon_detail_page_tc_id_c125541(selenium, base_url, variables, wait):
+def test_add_to_collection_in_addon_detail_page_tc_id_c125541(selenium, base_url, variables):
+    """Verifies the process of adding an addon to a collection directly from the addon’s detail page.
+    The test ensures that the addon can be added to a collection and that a success message is shown.
+    It also checks that adding the same addon again shows an error message."""
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
     # make a note of the collection name to be used for this test
     collection_name = collections.list[0].name.text
@@ -339,7 +367,11 @@ def test_add_to_collection_in_addon_detail_page_tc_id_c125541(selenium, base_url
 
 @pytest.mark.serial
 @pytest.mark.create_session("collection_user")
-def test_confirm_delete_dialog(selenium, base_url, variables):
+def test_confirm_delete_dialog(selenium, base_url):
+    """Ensures that the confirmation dialog for deleting a collection behaves correctly.
+    The test verifies that the dialog elements are displayed when attempting to delete a collection
+    and that they are removed when editing the collection.
+    It also checks that the dialog reappears when trying to delete the collection again."""
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
     collections.select_collection(0)
     collections.collection_detail.delete_collection()
@@ -374,7 +406,10 @@ def test_confirm_delete_dialog(selenium, base_url, variables):
 @pytest.mark.serial
 @pytest.mark.create_session("collection_user")
 @pytest.mark.clear_session
-def test_delete_collection(selenium, base_url, variables):
+def test_delete_collection(selenium, base_url):
+    """Verifies the process of deleting a collection.
+    The test ensures that the collection is removed from the "My Collections" page
+    after deletion and that attempting to cancel the deletion properly closes the delete section."""
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
     # make a note of the collection name in My Collections list
     collection_name = collections.list[0].name
@@ -392,6 +427,9 @@ def test_delete_collection(selenium, base_url, variables):
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_create_collection_from_addon_detail_page(selenium, base_url, variables, wait):
+    """Verifies the creation of a new collection directly from an addon’s detail page.
+    The test ensures that the addon is automatically added to the newly created collection
+    and that the collection is correctly saved. The collection is then deleted to maintain test data integrity."""
     extension = variables["non_recommended_addon"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -419,6 +457,8 @@ def test_create_collection_from_addon_detail_page(selenium, base_url, variables,
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_collection_sort_addons_by_name_tc_id_c4477(selenium, base_url, variables):
+    """Verifies that addons in a collection can be sorted alphabetically by name.
+    The test checks that the addons are displayed in the correct order after applying the sorting function."""
     public_collection = variables["public_collection"]
     selenium.get(f"{base_url}/collections{public_collection}")
     collection = Collections(selenium, base_url).wait_for_page_to_load()
@@ -436,6 +476,8 @@ def test_collection_sort_addons_by_name_tc_id_c4477(selenium, base_url, variable
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_collection_sort_addons_by_popularity_tc_id_c4477(selenium, base_url, variables):
+    """Verifies that addons in a collection can be sorted by popularity (weekly downloads).
+    The test compares the frontend sorting with the API response to ensure that the list is correctly sorted."""
     public_collection = variables["public_collection"]
     selenium.get(f"{base_url}/collections{public_collection}")
     collection = Collections(selenium, base_url).wait_for_page_to_load()
@@ -466,6 +508,8 @@ def test_collection_sort_addons_by_popularity_tc_id_c4477(selenium, base_url, va
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_create_collection_empty_name(selenium, base_url):
+    """Ensures that the "Create Collection" button remains disabled
+    when the collection name is left empty during the creation process."""
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
     collections.login("collection_user")
     collections.click_create_collection()
@@ -477,6 +521,8 @@ def test_create_collection_empty_name(selenium, base_url):
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_create_collection_with_only_symbols_name(selenium, base_url):
+    """Verifies that the "Create Collection" button remains
+    disabled when the collection name consists solely of symbols."""
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
     collections.login("collection_user")
     collections.click_create_collection()
@@ -487,6 +533,8 @@ def test_create_collection_with_only_symbols_name(selenium, base_url):
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_create_collection_with_empty_custom_url(selenium, base_url):
+    """Ensures that the "Create Collection" button remains disabled
+    if the custom URL (slug) field is left empty when creating a collection."""
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
     collections.login("collection_user")
     collections.click_create_collection()
@@ -512,6 +560,8 @@ def test_create_collection_with_already_used_url(selenium, base_url, variables):
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_create_collection_with_invalid_symbols_in_url(selenium, base_url, variables):
+    """Verifies that an error message is displayed when an invalid symbol
+    is used in the custom URL (slug) during collection creation."""
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
     collections.login("collection_user")
     collections.click_create_collection()

@@ -1,3 +1,4 @@
+"""test_addon_validate.py focuses on the validation page for addons"""
 import pytest
 
 from pages.desktop.developers.devhub_addon_validate import DevhubAddonValidate
@@ -6,7 +7,11 @@ from pages.desktop.developers.devhub_home import DevHubHome
 
 @pytest.mark.sanity
 @pytest.mark.login("developer")
-def test_validate_addon_listed(selenium, base_url, variables, wait):
+def test_validate_addon_listed(selenium, base_url, variables):
+    """Verifies the process of validating a listed addon using the "On This Site"
+    checkbox in the DevHub Addon Validate page.
+    The test ensures that the addon is uploaded and validated successfully,
+    displaying appropriate success messages."""
     """Go to Devhub Addon Validate page"""
     DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     devhub_addon_validate = (
@@ -36,8 +41,11 @@ def test_validate_addon_listed(selenium, base_url, variables, wait):
 @pytest.mark.sanity
 @pytest.mark.create_session("developer")
 def test_validate_listed_addon_option_no_manifest_found(
-    selenium, base_url, variables, wait
+    selenium, base_url, variables
 ):
+    """Tests the scenario where an addon is uploaded with no manifest file.
+    It verifies that the validation fails and that the appropriate error
+    message is shown when using the "On This Site" checkbox for a listed addon."""
     DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     """Go to Devhub Addon Validate page"""
     devhub_addon_validate = (
@@ -61,8 +69,11 @@ def test_validate_listed_addon_option_no_manifest_found(
 @pytest.mark.sanity
 @pytest.mark.create_session("developer")
 def test_validate_listed_addon_option_unsupported_format(
-    selenium, base_url, variables, wait
+    selenium, base_url, variables
 ):
+    """Verifies the behavior when an unsupported addon format is uploaded (e.g., an image file).
+    The test ensures that the validation fails and that the correct error message for unsupported
+    formats is displayed when using the "On This Site" checkbox for a listed addon."""
     DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     """Go to Devhub Addon Validate page"""
     devhub_addon_validate = (
@@ -85,7 +96,11 @@ def test_validate_listed_addon_option_unsupported_format(
 
 @pytest.mark.sanity
 @pytest.mark.login("developer")
-def test_validate_addon_unlisted(selenium, base_url, variables, wait):
+def test_validate_addon_unlisted(selenium, base_url, variables):
+    """Verifies the process of validating an unlisted addon using
+    the "On Your Own" checkbox in the DevHub Addon Validate page.
+    The test checks that the addon is uploaded and validated successfully,
+    displaying appropriate success messages."""
     """Go to Devhub Addon Validate page"""
     DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     devhub_addon_validate = (
@@ -114,8 +129,11 @@ def test_validate_addon_unlisted(selenium, base_url, variables, wait):
 @pytest.mark.sanity
 @pytest.mark.login("developer")
 def test_validate_unlisted_addon_option_no_manifest_found(
-    selenium, base_url, variables, wait
+    selenium, base_url, variables
 ):
+    """Tests the scenario where an unlisted addon is uploaded with no manifest file.
+    The test ensures that validation fails and the correct error message is displayed
+    when using the "On Your Own" checkbox for an unlisted addon."""
     """Go to Devhub Addon Validate page"""
     devhub_addon_validate = (
         DevhubAddonValidate(selenium, base_url).open().wait_for_page_to_load()
@@ -138,8 +156,11 @@ def test_validate_unlisted_addon_option_no_manifest_found(
 @pytest.mark.sanity
 @pytest.mark.login("developer")
 def test_validate_unlisted_addon_option_unsupported_format(
-    selenium, base_url, variables, wait
+    selenium, base_url, variables
 ):
+    """Verifies the behavior when an unsupported addon format is uploaded
+     for an unlisted addon. The test ensures that the validation fails
+     and displays the correct error message for unsupported formats."""
     """Go to Devhub Addon Validate page"""
     devhub_addon_validate = (
         DevhubAddonValidate(selenium, base_url).open().wait_for_page_to_load()

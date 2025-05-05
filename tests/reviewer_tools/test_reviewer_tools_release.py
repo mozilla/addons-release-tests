@@ -2,7 +2,6 @@ import pytest
 
 from pages.desktop.reviewer_tools.reviewer_tools_homepage import ReviewerToolsHomepage
 from pages.desktop.reviewer_tools.addon_review_page import ReviewAddonPage
-from pages.desktop.developers.devhub_home import DevHubHome
 from selenium.webdriver.support import expected_conditions as EC
 
 
@@ -41,7 +40,7 @@ def test_reviewer_tools_homepage_layout_tc_id_c4589(selenium, base_url):
 
 
 @pytest.mark.login("reviewer_user")
-def test_queues_manual_review_queue_tc_id_c4583(selenium, base_url, wait):
+def test_queues_manual_review_queue_tc_id_c4583(selenium, base_url):
     """Load AMO Reviewer Tools homepage."""
     """AMO Reviewer Tools homepage is displayed without any layout issues."""
     reviewer_tools_page = ReviewerToolsHomepage(selenium, base_url).open().wait_for_page_to_load()
@@ -60,7 +59,7 @@ def test_queues_manual_review_queue_tc_id_c4583(selenium, base_url, wait):
 
 
 @pytest.mark.login("reviewer_user")
-def test_queues_content_review_tc_id_c79313(selenium, base_url, wait):
+def test_queues_content_review_tc_id_c79313(selenium, base_url):
     """Load AMO Reviewer Tools homepage."""
     """AMO Reviewer Tools homepage is displayed without any layout issues."""
     reviewer_tools_page = ReviewerToolsHomepage(selenium, base_url).open().wait_for_page_to_load()
@@ -130,7 +129,7 @@ def test_queues_themes_awaiting_review_tc_id_c325790(selenium, base_url):
 
 
 @pytest.mark.login("reviewer_user")
-def test_information_on_add_on_review_page_tc_id_C354060(selenium, base_url, variables):
+def test_information_on_add_on_review_page_tc_id_C354060(selenium, base_url):
     """Load AMO Reviewer Tools homepage."""
     addon_review_page = ReviewAddonPage(selenium, base_url)
     """Open an add-on review page"""
@@ -180,7 +179,7 @@ def test_logs_add_on_review_log_tc_id_C4588(selenium, base_url, variables):
 
 
 @pytest.mark.login("reviewer_user")
-def test_logs_moderated_review_log_tc_id_C4614(selenium, base_url, variables):
+def test_logs_moderated_review_log_tc_id_C4614(selenium, base_url):
     """Load AMO Reviewer Tools homepage"""
     reviewer_tools_homepage = ReviewerToolsHomepage(selenium, base_url).open().wait_for_page_to_load()
     """AMO Reviewer Tools homepage is displayed without any layout issues"""
@@ -199,7 +198,7 @@ def test_logs_moderated_review_log_tc_id_C4614(selenium, base_url, variables):
 
 
 @pytest.mark.login("reviewer_user")
-def test_reviewer_tools_review_guide_for_each_queue_page_C104890(selenium, base_url, variables):
+def test_reviewer_tools_review_guide_for_each_queue_page_C104890(selenium, base_url):
     """Load AMO Reviewer Tools homepage"""
     reviewer_tools_homepage = ReviewerToolsHomepage(selenium, base_url).open().wait_for_page_to_load()
     """AMO Reviewer Tools homepage is displayed without any layout issues"""
