@@ -92,7 +92,7 @@ def test_primary_hero_tc_id_c95105(base_url, selenium):
     assert page.hero_banner.primary_hero_image.is_displayed()
     # we have either Recommended, either By Firefox add-ons in the primary hero
     try:
-        assert "Recommended".upper() in page.hero_banner.primary_hero_title
+        assert "Promoted".upper() in page.hero_banner.primary_hero_title
     except AssertionError:
         assert "By Firefox".upper() in page.hero_banner.primary_hero_title
     hero_extension = page.hero_banner.primary_hero_extension_name
@@ -318,9 +318,9 @@ def test_addons_footer_links_tc_id_c95105(base_url, selenium, count, link):
     "count, link",
     enumerate(
         [
-            ["firefox/new", "#download-button-thanks"],
-            ["firefox/browsers/mobile/", "#android-download"],
-            ["firefox/enterprise/", "#primary-download-button"],
+            ["firefox/new", "//a[@data-testid='download-button-thanks']"],
+            ["firefox/browsers/mobile/", "//a[@data-cta-text='Download (Android)']"],
+            ["firefox/enterprise/", "//a[@id='primary-download-button']"],
         ]
     ),
     ids=[
@@ -331,12 +331,12 @@ def test_addons_footer_links_tc_id_c95105(base_url, selenium, count, link):
 )
 @pytest.mark.nondestructive
 @pytest.mark.sanity
-def test_browsers_footer_links_tc_id_c95105(base_url, selenium, count, link):
+def test_browsers_footer_links_tc_id_c95105(base_url, selenium, count, link, wait):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.footer.browsers_links[count].click()
     page.wait_for_current_url(link[0])
     page.wait.until(
-        EC.visibility_of_element_located((By.CSS_SELECTOR, link[1])),
+        EC.visibility_of_element_located((By.XPATH, link[1])),
         message=f'The chosen element "{link[1]}" could not be loaded on the "{link[0]}" webpage',
     )
 
@@ -345,7 +345,7 @@ def test_browsers_footer_links_tc_id_c95105(base_url, selenium, count, link):
     "count, link",
     enumerate(
         [
-            ["firefox/?utm_content=footer-link&utm_medium=referral&utm_source=addons.mozilla.org", ".mzp-t-product-firefox"],
+            ["firefox/new/?utm_content=footer-link&utm_medium=referral&utm_source=addons.mozilla.org", ".mzp-t-product-firefox"],
             ["products/vpn/", ".c-sub-navigation-title"],
             ["relay.firefox.com/", ".Layout_logo__V4UCI"],
             ["monitor.mozilla", ".PublicShell_logo__vbvvO"],

@@ -864,7 +864,7 @@ class Detail(Base):
             return self.find_elements(*self._recommendations_name_locator)
 
     class DeveloperComments(Region):
-        _header_locator = (By.CSS_SELECTOR, ".Addon-developer-comments > header > div")
+        _header_locator = (By.CSS_SELECTOR, ".Addon-developer-comments-header")
         _content_locator = (By.CSS_SELECTOR, ".Addon-developer-comments-contents")
 
         @property
@@ -944,7 +944,7 @@ class Detail(Base):
             ".ConfirmationDialog-cancel-button",
         )
         _review_permalink_locator = (By.CSS_SELECTOR, ".UserReview-byLine a")
-        _report_abuse_button_locator = (By.CLASS_NAME, "ReportAbuseButton-show-more")
+        _report_abuse_button_locator = (By.CLASS_NAME, "AddonReportAbuseLink--preview")
         _all_reviews_link_locator = (By.CLASS_NAME, "Addon-all-reviews-link")
         _submit_review_error_locator = (By.CSS_SELECTOR, ".Notice-error")
 
