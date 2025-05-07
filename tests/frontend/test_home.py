@@ -94,7 +94,7 @@ def test_primary_hero_tc_id_c95105(base_url, selenium):
     try:
         assert "Promoted".upper() in page.hero_banner.primary_hero_title
     except AssertionError:
-        assert "By Firefox".upper() in page.hero_banner.primary_hero_title
+        assert "Recommended".upper() in page.hero_banner.primary_hero_title
     hero_extension = page.hero_banner.primary_hero_extension_name
     assert page.hero_banner.primary_hero_extension_summary.is_displayed()
     # clicks on the Get extension button and checks that the correct detail page opens
