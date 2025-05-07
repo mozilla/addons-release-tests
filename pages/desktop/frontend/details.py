@@ -864,7 +864,7 @@ class Detail(Base):
             return self.find_elements(*self._recommendations_name_locator)
 
     class DeveloperComments(Region):
-        _header_locator = (By.CSS_SELECTOR, ".Addon-developer-comments > header > div")
+        _header_locator = (By.CSS_SELECTOR, ".Addon-developer-comments-header")
         _content_locator = (By.CSS_SELECTOR, ".Addon-developer-comments-contents")
 
         @property

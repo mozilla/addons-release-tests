@@ -331,7 +331,7 @@ def test_addons_footer_links_tc_id_c95105(base_url, selenium, count, link):
 )
 @pytest.mark.nondestructive
 @pytest.mark.sanity
-def test_browsers_footer_links_tc_id_c95105(base_url, selenium, count, link):
+def test_browsers_footer_links_tc_id_c95105(base_url, selenium, count, link, wait):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.footer.browsers_links[count].click()
     page.wait_for_current_url(link[0])
