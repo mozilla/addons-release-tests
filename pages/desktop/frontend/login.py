@@ -162,6 +162,7 @@ class Login(Base):
 
     def fxa_login(self, email, password, key):
         self.find_element(*self._email_locator).send_keys(email)
+        self.find_element(*self._login_btn_locator).click()
         # sometimes, the login function fails on the 'continue_btn.click()' event with a TimeoutException
         # triggered by the built'in timeout of the 'click()' method;
         # however, the screenshot captured by the html report at test fail time shows that the click occurred
