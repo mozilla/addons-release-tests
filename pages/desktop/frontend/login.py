@@ -70,7 +70,7 @@ class Login(Base):
     _password_locator = (By.XPATH, "//input[@data-testid='new-password-input-field']")
     _login_btn_locator = (By.CSS_SELECTOR, "button.cta-primary.cta-xl")
     _repeat_password_locator = (By.CSS_SELECTOR, "div.relative:nth-child(3) > div:nth-child(1) > label:nth-child(1) > span:nth-child(1) > input:nth-child(2)")
-    _age_locator = (By.CSS_SELECTOR, "label.flex:nth-child(4) > span:nth-child(1) > input")
+    _age_locator = (By.XPATH, "//input[@data-testid='age-input-field']")
     _code_input_locator = (By.CSS_SELECTOR, ".pb-1")
     _login_card_header_locator = (By.CSS_SELECTOR, ".card-header")
     _2fa_input_locator = (By.CSS_SELECTOR, ".pb-1")
@@ -162,6 +162,7 @@ class Login(Base):
 
     def fxa_login(self, email, password, key):
         self.find_element(*self._email_locator).send_keys(email)
+        self.find_element(*self._login_btn_locator).click()
         # sometimes, the login function fails on the 'continue_btn.click()' event with a TimeoutException
         # triggered by the built'in timeout of the 'click()' method;
         # however, the screenshot captured by the html report at test fail time shows that the click occurred
@@ -224,11 +225,12 @@ class Login(Base):
         email = f"{reusables.get_random_string(10)}@restmail.net"
         password = reusables.get_random_string(12)
         self.find_element(*self._email_locator).send_keys(email)
+        self.find_element(*self._login_btn_locator).click()
         # catching the geckodriver click() issue, in cae it happens here
         # issue - https://github.com/mozilla/geckodriver/issues/1608
         try:
             continue_btn = self.wait.until(
-                EC.element_to_be_clickable((By.ID, "submit-btn"))
+                EC.element_to_be_clickable((By.CLASS_NAME, "cta-primary cta-xl"))
             )
             continue_btn.click()
         except TimeoutException as error:
@@ -236,14 +238,14 @@ class Login(Base):
             pass
         # verify that the fxa register form was opened
         time.sleep(5)
+        self.find_element(*self._password_locator).send_keys(password)
         self.wait.until(
             EC.element_to_be_clickable(self._password_locator),
             message=f"Password input field not displayed; "
             f"FxA card header was {self.find_element(*self._login_card_header_locator).text}",
         )
-        self.find_element(*self._password_locator).send_keys(password)
-        self.find_element(*self._repeat_password_locator).send_keys(password)
-        self.find_element(*self._age_locator).send_keys(23)
+        # self.find_element(*self._repeat_password_locator).send_keys(password)
+        # self.find_element(*self._age_locator).send_keys(23)
         self.find_element(*self._login_btn_locator).click()
         # sleep to allow FxA to process the request and communicate with the email client
         time.sleep(10)

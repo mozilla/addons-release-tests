@@ -847,6 +847,7 @@ class Detail(Base):
 
         _description_header_locator = (By.CSS_SELECTOR, ".AddonDescription header")
         _description_text_locator = (By.CLASS_NAME, "AddonDescription-contents")
+        _read_more_button_locator = (By.CSS_SELECTOR, ".ShowMoreCard-expand-link")
 
         @property
         def addon_description_header(self):
@@ -861,6 +862,17 @@ class Detail(Base):
                 EC.visibility_of_element_located(self._description_text_locator)
             )
             return self.find_element(*self._description_text_locator)
+
+        @property
+        def read_more_button(self):
+            self.wait.until(
+                EC.visibility_of_element_located(self._read_more_button_locator)
+            )
+            return self.find_element(*self._read_more_button_locator)
+
+        def click_read_more_button(self):
+            self.wait.until(EC.element_to_be_clickable(self._read_more_button_locator))
+            return self.find_element(*self._read_more_button_locator).click()
 
     class AddonRecommendations(Region):
         _addon_recommendations_root_locator = (By.CSS_SELECTOR, ".AddonRecommendations")
@@ -898,7 +910,7 @@ class Detail(Base):
             return self.find_elements(*self._recommendations_name_locator)
 
     class DeveloperComments(Region):
-        _header_locator = (By.CSS_SELECTOR, ".Addon-developer-comments > header > div")
+        _header_locator = (By.CSS_SELECTOR, ".Addon-developer-comments-header")
         _content_locator = (By.CSS_SELECTOR, ".Addon-developer-comments-contents")
 
         @property
@@ -978,7 +990,7 @@ class Detail(Base):
             ".ConfirmationDialog-cancel-button",
         )
         _review_permalink_locator = (By.CSS_SELECTOR, ".UserReview-byLine a")
-        _report_abuse_button_locator = (By.CLASS_NAME, "ReportAbuseButton-show-more")
+        _report_abuse_button_locator = (By.CLASS_NAME, "AddonReportAbuseLink--preview")
         _all_reviews_link_locator = (By.CLASS_NAME, "Addon-all-reviews-link")
         _submit_review_error_locator = (By.CSS_SELECTOR, ".Notice-error")
 

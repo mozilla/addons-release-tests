@@ -778,6 +778,8 @@ def test_developer_comments(selenium, base_url, variables):
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
+    assert addon.description.read_more_button.is_displayed()
+    addon.description.click_read_more_button()
     assert "Developer comments" in addon.developer_comments.header.text
     assert addon.developer_comments.content.is_displayed()
 

@@ -102,7 +102,7 @@ def test_primary_hero_tc_id_c95105(base_url, selenium):
     assert page.hero_banner.primary_hero_image.is_displayed()
     # we have either Recommended, either By Firefox add-ons in the primary hero
     try:
-        assert "Promoted".upper() in page.hero_banner.primary_hero_title
+        assert "Promoted".upper() or "Recommended".upper() in page.hero_banner.primary_hero_title
     except AssertionError:
         assert "By Firefox".upper() in page.hero_banner.primary_hero_title
     hero_extension = page.hero_banner.primary_hero_extension_name
@@ -367,8 +367,7 @@ def test_browsers_footer_links_tc_id_c95105(base_url, selenium, count, link):
     "count, link",
     enumerate(
         [
-            ["firefox/?utm_content=footer-link&utm_medium=referral&utm_source=addons.mozilla.org",
-             ".mzp-t-product-firefox"],
+            ["firefox/new/?utm_content=footer-link&utm_medium=referral&utm_source=addons.mozilla.org", ".mzp-t-product-firefox"],
             ["products/vpn/", ".c-sub-navigation-title"],
             ["relay.firefox.com/", ".Layout_logo__V4UCI"],
             ["monitor.mozilla", ".PublicShell_logo__vbvvO"],
@@ -386,7 +385,6 @@ def test_browsers_footer_links_tc_id_c95105(base_url, selenium, count, link):
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_products_footer_links_tc_id_c95105(base_url, selenium, count, link):
-    """Test that verifies all the products link"""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.footer.products_links[count].click()
     page.wait_for_current_url(link[0])

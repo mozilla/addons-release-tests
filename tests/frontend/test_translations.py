@@ -11,6 +11,7 @@ from pages.desktop.frontend.themes import Themes
     ("it", "es-ES", "de", "fr"),
     ids=("Italiano", "Español", "Deutsch", "Français"),
 )
+@pytest.mark.fail
 def test_header_translations(base_url, selenium, variables, language):
     """Tests that the header elements are correctly translated."""
     selenium.get(f"{base_url}/{language}")

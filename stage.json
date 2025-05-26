@@ -184,7 +184,6 @@
       "Images must be square (same width and height)."
    ],
   "name_translations_from_locales_xpi": {
-       "ar": "«غرير الخصوصية»",
        "de": "German name from _locales",
        "en-US": "Privacy Badger",
        "fr": "Privacy Badger",
@@ -194,7 +193,6 @@
        "zh-CN": "隐私獾"
   },
   "summary_translations_from_locales_xpi": {
-       "ar": "يتعلم «غرير الخصوصية» تلقائيا أن يحجب المتعقبات الخفية",
        "de": "German summary from _locales.",
        "en-US": "Privacy Badger automatically learns to block invisible trackers.",
        "fr": "Privacy Badger apprend automatiquement à bloquer les traqueurs invisibles.",

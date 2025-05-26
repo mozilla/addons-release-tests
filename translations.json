@@ -38,10 +38,10 @@
   },
   "es-ES": {
     "header": {
-      "blog_link": "Firefox Add-ons Blog",
+      "blog_link": "Blog de complementos de Firefox",
       "extension_workshop_link": "Taller de extensiones",
       "developer_hub_link": "Central del desarrollador",
-      "login_link": "Log in",
+      "login_link": "Iniciar sesión",
       "extensions_link": "Extensiones",
       "themes_link": "Temas",
       "more_link": "Más...",

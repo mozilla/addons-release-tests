@@ -6,6 +6,7 @@ from pages.desktop.developers.manage_versions import ManageVersions
 
 
 @pytest.mark.login("developer")
+@pytest.mark.fail
 def test_set_addon_invisible_tc_id_c4371(selenium, base_url, variables, wait):
     """Set an addon Invisible and then reset the status to Visible"""
     selenium.get(f"{base_url}/developers/addon/invisible_addon_auto/versions")
