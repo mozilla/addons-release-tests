@@ -9,6 +9,11 @@ from scripts import reusables
 
 
 def submit_addon_method(selenium, base_url):
+    """This helper method automates the process of submitting a listed add-on,
+    performing the upload, validation, and source inclusion steps,
+    followed by completing the submission with an addon name,
+    summary, category selection, and license options.
+    It returns a formatted add-on name for later use."""
     devhub_page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     submit_addon = devhub_page.click_submit_addon_button()
     submit_addon.select_listed_option()
@@ -32,7 +37,13 @@ def submit_addon_method(selenium, base_url):
 @pytest.mark.coverage
 @pytest.mark.login("submissions_user")
 @pytest.mark.skip(reason="Need to investigate manually first")
-def test_cancel_review_request_tc_id_c1803555(selenium, base_url, variables, wait):
+def test_cancel_review_request_tc_id_c1803555(selenium, base_url, variables):
+    """Verifies the ability to cancel a review request for an
+    add-on in the "Manage Versions" page. After submitting an add-on,
+    the test checks that the "Cancel Review Request" modal appears,
+    confirming that the add-on's status is updated to
+    "Incomplete" and "Disabled by Mozilla."
+    It also verifies that the add-on is deleted afterward."""
     # Test Case: C1803555 -> AMO Coverage > Devhub
     """Submit the first version of an add-on"""
     addon_slug = submit_addon_method(selenium, base_url)
@@ -69,7 +80,12 @@ def test_cancel_review_request_tc_id_c1803555(selenium, base_url, variables, wai
 
 @pytest.mark.coverage
 @pytest.mark.create_session("submissions_user")
-def test_disable_an_addon_at_submission_tc_id_c1898098(selenium, base_url, wait, variables):
+def test_disable_an_addon_at_submission_tc_id_c1898098(selenium, base_url):
+    """Ensures that after submitting a listed add-on, the user can cancel
+    and disable the add-on version during submission. The test verifies
+    that the add-on's status is set to "Incomplete" and "Disabled by Mozilla,"
+    and the user is able to request a review and
+    proceed with completing the submission form."""
     # Test Case: C1898098 AMO Coverage > Devhub
     """Click on "Submit a new Addon" and upload a listed file"""
     devhub_page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
@@ -115,7 +131,12 @@ def test_disable_an_addon_at_submission_tc_id_c1898098(selenium, base_url, wait,
 
 @pytest.mark.coverage
 @pytest.mark.create_session("submissions_user")
-def test_change_the_license_tc_id_c1901412(selenium, base_url, variables, wait):
+def test_change_the_license_tc_id_c1901412(selenium, base_url, variables):
+    """Verifies the process of changing the license
+    for an add-on after submission. The test submits a new add-on,
+    navigates to the "Manage Authors and License" page,
+    selects a new license, saves changes, and confirms that
+    the updated license appears in the add-on's details page."""
     # Test Case: C1901412 AMO Coverage > Devhub
     """Submit a new add-on"""
     addon_slug = submit_addon_method(selenium, base_url)
@@ -144,7 +165,13 @@ def test_change_the_license_tc_id_c1901412(selenium, base_url, variables, wait):
 
 @pytest.mark.coverage
 @pytest.mark.create_session("submissions_user")
-def test_manage_authors_and_license_page_tc_id_c1901410(selenium, variables, wait, base_url):
+def test_manage_authors_and_license_page_tc_id_c1901410(selenium, variables, base_url):
+    """Ensures the functionality of the "Manage Authors and License" page
+    for an add-on. The test checks the presence of author, license,
+    EULA, and privacy policy elements. It tests the process of adding
+    a license agreement and privacy policy, saving the changes,
+    and confirming that the updates are
+    reflected in the add-on's detail page."""
     # Test Case: C1901410 AMO Coverage > Devhub
     """Submit a new add-on"""
     addon_slug = submit_addon_method(selenium, base_url)
@@ -206,7 +233,11 @@ def test_manage_authors_and_license_page_tc_id_c1901410(selenium, variables, wai
 
 @pytest.mark.coverage
 @pytest.mark.create_session("submissions_user")
-def test_addon_submission_without_id_mv3_extensions_tc_id_c1950460(selenium, base_url, wait, variables):
+def test_addon_submission_without_id_mv3_extensions_tc_id_c1950460(selenium, base_url, variables):
+    """Verifies that submitting an MV3 extension without an
+    ID fails validation. The test checks that the appropriate
+    error message is displayed, indicating that the extension
+    does not include the necessary ID for validation."""
     # Test Case: C1950460 AMO Coverage > Devhub
     devhub_page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     submit_addon = devhub_page.click_submit_addon_button()

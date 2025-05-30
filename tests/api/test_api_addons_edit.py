@@ -28,6 +28,10 @@ _addon_create = "/api/v5/addons/addon/"
 @pytest.mark.serial
 @pytest.mark.login("api_user")
 def test_upload_listed_extension_tc_id_c4369(base_url, selenium):
+    """Verifies the process of uploading a listed add-on.
+    The test checks the upload, validates the add-on,
+    and ensures the correct registration of the add-on details by using the create API endpoint.
+    The uploaded add-on is validated by comparing the response with the expected payload."""
     session_cookie = selenium.get_cookie("sessionid")
     with open("sample-addons/listed-addon-api.zip", "rb") as file:
         upload = requests.post(
@@ -66,6 +70,9 @@ def test_upload_listed_extension_tc_id_c4369(base_url, selenium):
 @pytest.mark.serial
 @pytest.mark.create_session("api_user")
 def test_edit_listed_addon_details(base_url, session_auth):
+    """This test checks the process of editing an existing listed add-on's details.
+    It uses the patch method to update add-on details
+    and verifies that the changes are correctly applied and reflected in the API response."""
     payload = payloads.edit_addon_details
     edit_addon = requests.patch(
         url=f"{base_url}{_addon_create}my_sluggish_slug_api/",
