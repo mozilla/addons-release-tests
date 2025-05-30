@@ -26,7 +26,8 @@ def test_install_uninstall_extension_tc_id_c393003(
     ).close()
     # check that the install button state changed to "Remove"
     assert "Remove" in addon.button_text
-    # open the manage Extensions page in about:addons to verify that the extension was installed correctly
+    # open the manage Extensions page in about:addons
+    # to verify that the extension was installed correctly
     selenium.switch_to.new_window("tab")
     selenium.get("about:addons")
     about_addons = AboutAddons(selenium).wait_for_page_to_load()
@@ -38,7 +39,8 @@ def test_install_uninstall_extension_tc_id_c393003(
     addon.install()
     # check that the install button state changed back to "Add to Firefox"
     wait.until(lambda _: "Add to Firefox" in addon.button_text)
-    # open the manage Extensions page in about:addons to verify that the extension is no longer in the list
+    # open the manage Extensions page in about:addons
+    # to verify that the extension is no longer in the list
     selenium.switch_to.window(selenium.window_handles[1])
     with pytest.raises(IndexError):
         wait.until(
@@ -78,7 +80,7 @@ def test_enable_disable_extension(
     time.sleep(2)
     wait.until(lambda _: "cas-current-addon-1" in about_addons.installed_addon_name[0].text)
 
-def test_install_uninstall_theme_tc_id_C95591(
+def test_install_uninstall_theme_tc_id_c95591(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Open a theme detail page, install it and then uninstall it"""
@@ -130,7 +132,8 @@ def test_install_uninstall_dictionary_tc_id_c4508(
     ).close()
     # check that the install button state changed to "Remove"
     assert "Remove" in addon.button_text
-    # open the manage Dictionaries page in about:addons to verify that the dictionary was installed correctly
+    # open the manage Dictionaries page in about:addons
+    # to verify that the dictionary was installed correctly
     selenium.switch_to.new_window("tab")
     selenium.get("about:addons")
     about_addons = AboutAddons(selenium).wait_for_page_to_load()
@@ -142,7 +145,8 @@ def test_install_uninstall_dictionary_tc_id_c4508(
     addon.install()
     # check that the install button state changed back to "Add to Firefox"
     wait.until(lambda _: "Add to Firefox" in addon.button_text)
-    # open the manage Dictionaries page in about:addons to verify that the dictionary is no longer in the list
+    # open the manage Dictionaries page in about:addons
+    # to verify that the dictionary is no longer in the list
     selenium.switch_to.window(selenium.window_handles[1])
     with pytest.raises(IndexError):
         wait.until(lambda _: amo_dict_name == about_addons.installed_addon_name[0].text)
@@ -165,7 +169,8 @@ def test_install_uninstall_langpack_tc_id_c4508(
     ).close()
     # check that the install button state changed to "Remove"
     assert "Remove" in addon.button_text
-    # open the manage Language page in about:addons to verify that the langpack was installed correctly
+    # open the manage Language page in about:addons
+    # to verify that the langpack was installed correctly
     selenium.switch_to.new_window("tab")
     selenium.get("about:addons")
     about_addons = AboutAddons(selenium).wait_for_page_to_load()
@@ -177,7 +182,8 @@ def test_install_uninstall_langpack_tc_id_c4508(
     addon.install()
     # check that the install button state changed back to "Add to Firefox"
     wait.until(lambda _: "Add to Firefox" in addon.button_text)
-    # open the manage Language page in about:addons to verify that the langpack is no longer in the list
+    # open the manage Language page in about:addons to
+    # verify that the langpack is no longer in the list
     selenium.switch_to.window(selenium.window_handles[1])
     with pytest.raises(IndexError):
         wait.until(
@@ -187,6 +193,7 @@ def test_install_uninstall_langpack_tc_id_c4508(
 def test_about_addons_install_extension(
     selenium, wait, firefox, firefox_notifications
 ):
+    """Install addon from About:addons and check that the addon is enabled"""
     selenium.get("about:addons")
     about_addons = AboutAddons(selenium)
     # waiting for the addon cards data to be retrieved (the install buttons in this case)
@@ -207,8 +214,10 @@ def test_about_addons_install_extension(
         selenium.switch_to.window(selenium.window_handles[0])
     # open the manage Extensions page to verify that the addon was installed correctly
     about_addons.click_extensions_side_button()
-    # verify that the extension installed is present in manage Extensions; if the names
-    # don't match (which happens sometimes due to differences between AMO names and manifest
+    # verify that the extension installed is present
+    # in manage Extensions; if the names
+    # don't match (which happens sometimes due to
+    # differences between AMO names and manifest
     # names), check that the add-on author is the same as an alternative check;
     # try:
     #     assert disco_addon_name in [el.text for el in about_addons.installed_addon_name]
@@ -222,6 +231,7 @@ def test_about_addons_install_extension(
 def test_about_addons_install_theme(
     selenium, wait, firefox, firefox_notifications
 ):
+    """Install a theme and then check in the themes page that it's enabled"""
     selenium.get("about:addons")
     about_addons = AboutAddons(selenium)
     # waiting for the addon cards data to be retrieved (the install buttons in this case)

@@ -1,3 +1,4 @@
+"""Test file that focuses on blog related tests"""
 import pytest
 
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
@@ -257,7 +258,8 @@ def test_addon_link_in_article_addon_cards(base_url, selenium):
 @pytest.mark.nondestructive
 def test_author_link_in_article_addon_cards(base_url, selenium):
     """Verifies that clicking on the author name in an article’s addon card redirects
-    to the author's profile page on AMO and that the author's name matches between the article and the profile page."""
+    to the author's profile page on AMO and that the
+    author's name matches between the article and the profile page."""
     blog = BlogHomepage(selenium, base_url).open().wait_for_page_to_load()
     article = blog.articles[3].click_read_more_link()
     # make a note of the addon author in the article card

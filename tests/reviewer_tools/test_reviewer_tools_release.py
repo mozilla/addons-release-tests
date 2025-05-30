@@ -1,8 +1,8 @@
 import pytest
 
 from pages.desktop.reviewer_tools.reviewer_tools_homepage import ReviewerToolsHomepage
-from pages.desktop.reviewer_tools.addon_review_page import ReviewAddonPage
 from selenium.webdriver.support import expected_conditions as EC
+from pages.desktop.reviewer_tools.addon_review_page import ReviewAddonPage
 
 
 @pytest.mark.login("reviewer_user")

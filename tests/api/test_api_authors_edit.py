@@ -21,6 +21,11 @@ _addon_create = "/api/v5/addons/addon/"
 @pytest.mark.serial
 @pytest.mark.create_session("api_user")
 def test_addon_add_new_author(base_url, session_auth, variables):
+    """This test verifies the process of adding a new author to an add-on via the API.
+    It sends a POST request to the API endpoint with the necessary payload containing
+    the new author's details, including their user ID and position in the authors list.
+    The test checks that the response status is 201 Created and verifies that the added
+    author's user ID matches the expected author ID from the payload."""
     addon = payloads.edit_addon_details["slug"]
     author = variables["api_post_valid_author"]
     # create the payload with the fields required for a new author set-up

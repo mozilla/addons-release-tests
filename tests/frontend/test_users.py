@@ -18,6 +18,7 @@ from pages.desktop.frontend.users import User
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_login(selenium, base_url, wait):
+    """Verifies that a user can successfully log in and that their username is displayed."""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.login("regular_user")
     # the AMO header state changed after the transition from FxA so we have to
@@ -31,7 +32,7 @@ def test_login(selenium, base_url, wait):
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_logout_tc_id_c95092(base_url, selenium):
-    """User can logout"""
+    """Ensures the user can log out successfully."""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.login("regular_user")
     page.logout()
@@ -41,6 +42,7 @@ def test_logout_tc_id_c95092(base_url, selenium):
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_user_menu_collections_link_tc_id_c95102(base_url, selenium):
+    """Tests the functionality of viewing a user's collections from the user menu."""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.login("regular_user")
     # clicks on View My Collections in the user menu
@@ -54,6 +56,8 @@ def test_user_menu_collections_link_tc_id_c95102(base_url, selenium):
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_user_menu_view_profile_tc_id_c95102(base_url, selenium):
+    """Verifies that clicking "View Profile" from
+    the user menu redirects to the correct profile page."""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.login("regular_user")
     # clicks on View Profile in the user menu and checks that the correct page opens
@@ -66,6 +70,8 @@ def test_user_menu_view_profile_tc_id_c95102(base_url, selenium):
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_user_menu_edit_profile_tc_id_c95102(base_url, selenium):
+    """Ensures that the "Edit Profile" option
+    in the user menu works and redirects to the correct page."""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.login("regular_user")
     # clicks on Edit Profile in the user menu and checks that the correct page opens
@@ -78,8 +84,8 @@ def test_user_menu_edit_profile_tc_id_c95102(base_url, selenium):
 @pytest.mark.serial
 @pytest.mark.nondestructive
 @pytest.mark.register
-@pytest.mark.fail
 def test_register_new_account(base_url, selenium, wait):
+    """Tests registering a new account and checks the default user name after registration."""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.register()
     # reassign AMO homepage it to another variable because 'page' can become stale at this point
@@ -93,6 +99,8 @@ def test_register_new_account(base_url, selenium, wait):
 @pytest.mark.nondestructive
 @pytest.mark.login("developer")
 def test_user_menu_click_user_menu_links_tc_id_c95102(base_url, selenium):
+    """Verifies the links in the user menu, including
+    "Submit New Add-on", "Submit New Theme", and "Manage Submissions"."""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     # Click Submit New Add-on
     count = 3
@@ -114,6 +122,8 @@ def test_user_menu_click_user_menu_links_tc_id_c95102(base_url, selenium):
 @pytest.mark.nondestructive
 @pytest.mark.create_session("developer")
 def test_user_developer_notifications(base_url, selenium, variables, wait):
+    """Validates the notifications settings for a
+    developer user, ensuring all available options are listed."""
     Home(selenium, base_url).open().wait_for_page_to_load()
     user = User(selenium, base_url).open().wait_for_page_to_load()
     # verifies that information messages about the scope of notifications are displayed
@@ -136,6 +146,7 @@ def test_user_developer_notifications(base_url, selenium, variables, wait):
 @pytest.mark.nondestructive
 @pytest.mark.create_session("developer")
 def test_user_mandatory_notifications(base_url, selenium):
+    """Ensures that mandatory notifications for developers cannot be unchecked."""
     Home(selenium, base_url).open().wait_for_page_to_load()
     user = User(selenium, base_url).open().wait_for_page_to_load()
     # notifications 5 to 7 are mandatory for developers; clicking the checkboxes should have no effect
@@ -153,6 +164,8 @@ def test_user_mandatory_notifications(base_url, selenium):
 @pytest.mark.serial
 @pytest.mark.login("reusable_user")
 def test_user_edit_profile_tc_id_c4607(base_url, selenium, variables):
+    """Verifies that a user can edit their profile,
+    upload a picture, and see the changes reflected."""
     user = User(selenium, base_url).open().wait_for_page_to_load()
     # make sure that the submit changes button is disabled if display_name is not filled in
     assert user.edit.submit_changes_button_disabled.is_displayed()
@@ -176,6 +189,8 @@ def test_user_edit_profile_tc_id_c4607(base_url, selenium, variables):
 @pytest.mark.serial
 @pytest.mark.create_session("reusable_user")
 def test_user_view_profile_tc_id_c452203(base_url, selenium, variables):
+    """Confirms that the profile view displays
+    the correct information after editing."""
     user = User(selenium, base_url).open().wait_for_page_to_load()
     # opens the View profile page
     user.edit.click_view_profile_link()
@@ -195,6 +210,7 @@ def test_user_view_profile_tc_id_c452203(base_url, selenium, variables):
 @pytest.mark.serial
 @pytest.mark.create_session("reusable_user")
 def test_user_change_profile_picture(base_url, selenium, wait):
+    """Tests changing and verifying the user's profile picture."""
     user = User(selenium, base_url).open().wait_for_page_to_load()
     # opens the View profile page
     user.edit.click_view_profile_link()
@@ -223,6 +239,8 @@ def test_user_change_profile_picture(base_url, selenium, wait):
 @pytest.mark.serial
 @pytest.mark.create_session("reusable_user")
 def test_user_delete_profile_picture(base_url, selenium):
+    """Verifies that a user can delete their
+    profile picture and see the default avatar."""
     user = User(selenium, base_url).open().wait_for_page_to_load()
     user.edit.delete_profile_picture()
     # cancel and then click on delete picture again
@@ -240,6 +258,8 @@ def test_user_delete_profile_picture(base_url, selenium):
 @pytest.mark.serial
 @pytest.mark.create_session("reusable_user")
 def test_user_update_profile(base_url, selenium, variables):
+    """Ensures that a user can update their profile fields,
+    including display name, biography, and location."""
     user = User(selenium, base_url).open().wait_for_page_to_load()
     updated_name = "new_display_name"
     # update field
@@ -262,6 +282,7 @@ def test_user_update_profile(base_url, selenium, variables):
 @pytest.mark.serial
 @pytest.mark.create_session("reusable_user")
 def test_user_update_url(base_url, selenium, variables):
+    """Tests that the user’s homepage URL field is validated for correctness."""
     user = User(selenium, base_url).open().wait_for_page_to_load()
     initial_page_url = selenium.current_url
     # test not a URL, this should not pass the client validation
@@ -294,6 +315,8 @@ def test_user_update_url(base_url, selenium, variables):
 @pytest.mark.serial
 @pytest.mark.create_session("reusable_user")
 def test_user_delete_profile_tc_id_c4393(base_url, selenium):
+    """Verifies that a user can delete their
+    account and be redirected to the homepage."""
     user = User(selenium, base_url).open().wait_for_page_to_load()
     user.edit.delete_account()
     # click cancel to close the delete profile overlay
@@ -310,6 +333,8 @@ def test_user_delete_profile_tc_id_c4393(base_url, selenium):
 @pytest.mark.serial
 @pytest.mark.login("reusable_user")
 def test_user_account_manage_section(base_url, selenium, variables):
+    """Confirms that the correct email is
+    displayed in the account management section."""
     user = User(selenium, base_url).open().wait_for_page_to_load()
     email = Login(selenium, base_url)
     # verifies if the correct email is displayed in the email field
@@ -341,6 +366,7 @@ def test_user_data_for_deleted_profile(base_url, selenium):
 @pytest.mark.create_session("reusable_user")
 @pytest.mark.clear_session
 def test_user_regular_has_no_role(base_url, selenium):
+    """Verifies that regular users do not see role badges in their profile."""
     Home(selenium, base_url).open().wait_for_page_to_load()
     user = User(selenium, base_url).open().wait_for_page_to_load()
     user.edit.click_view_profile_link()
@@ -353,6 +379,7 @@ def test_user_regular_has_no_role(base_url, selenium):
 
 @pytest.mark.serial
 def test_user_regular_notifications(base_url, selenium, variables):
+    """Ensures that regular users can opt in/out of only the basic notifications."""
     user = User(selenium, base_url).open().wait_for_page_to_load()
     user.login("reusable_user")
     # regular users can only opt in/out for 2 notifications
@@ -371,6 +398,7 @@ def test_user_regular_notifications(base_url, selenium, variables):
     reason="Intermittent issue, see https://github.com/mozilla/addons-server/issues/20965"
 )
 def test_user_notifications_subscriptions(base_url, selenium, wait):
+    """Tests subscribing and unsubscribing from notifications for a user."""
     edit_user = User(selenium, base_url).open().wait_for_page_to_load()
     edit_user.login("staff_user")
     # verify that the first 7 notifications are selected by default
@@ -396,6 +424,7 @@ def test_user_notifications_subscriptions(base_url, selenium, wait):
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_user_developer_role(base_url, selenium, variables):
+    """Verifies that a developer's profile displays the correct "Add-ons developer" badge."""
     developer = variables["developer_profile"]
     selenium.get(f"{base_url}/user/{developer}")
     user = User(selenium, base_url).wait_for_user_to_load()
@@ -407,6 +436,8 @@ def test_user_developer_role(base_url, selenium, variables):
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_user_theme_artist_role(base_url, selenium, variables):
+    """Confirms that a theme artist’s profile
+    displays the correct "Theme artist" badge."""
     artist = variables["theme_artist_profile"]
     selenium.get(f"{base_url}/user/{artist}")
     user = User(selenium, base_url).wait_for_user_to_load()
@@ -418,6 +449,8 @@ def test_user_theme_artist_role(base_url, selenium, variables):
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_user_artist_and_developer_role(base_url, selenium, variables):
+    """Verifies that users with both "Add-ons developer"
+    and "Theme artist" roles see both badges."""
     dev_artist = variables["developer_and_artist_role"]
     selenium.get(f"{base_url}/user/{dev_artist}")
     user = User(selenium, base_url).wait_for_user_to_load()
@@ -444,8 +477,10 @@ def test_non_developer_user_profile_is_not_public(base_url, selenium, variables)
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_user_addon_cards_for_users_with_multiple_roles(base_url, selenium, variables):
-    """Users who are both extension developers and theme artists should have the Extensions
-    and Themes cards displayed on their profiles. Additionally, the User reviews card should
+    """Users who are both extension developers
+    and theme artists should have the Extensions
+    and Themes cards displayed on their profiles.
+    Additionally, the User reviews card should
     be hidden when the profile is viewed by another user"""
     user_profile = variables["developer_and_artist_role"]
     selenium.get(f"{base_url}/user/{user_profile}")
@@ -477,6 +512,7 @@ def test_user_addon_cards_for_users_with_multiple_roles(base_url, selenium, vari
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_user_profile_extensions_card(base_url, selenium, variables):
+    """Confirms the display and pagination of extensions on a developer’s profile."""
     page = variables["developer_and_artist_role"]
     selenium.get(f"{base_url}/user/{page}")
     user = User(selenium, base_url).wait_for_user_to_load()
@@ -508,6 +544,7 @@ def test_user_profile_extensions_card(base_url, selenium, variables):
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_user_profile_themes_card(base_url, selenium, variables):
+    """Verifies the display and pagination of themes on a theme artist's profile."""
     page = variables["developer_and_artist_role"]
     selenium.get(f"{base_url}/user/{page}")
     user = User(selenium, base_url).wait_for_user_to_load()
@@ -536,6 +573,7 @@ def test_user_profile_themes_card(base_url, selenium, variables):
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_user_profile_open_extension_detail_page_tc_id_c4350(base_url, selenium, variables):
+    """Ensures that clicking on an extension in the user's profile opens the correct detail page."""
     page = variables["developer_profile"]
     selenium.get(f"{base_url}/user/{page}")
     extension = Search(selenium, base_url).wait_for_page_to_load()
@@ -549,6 +587,7 @@ def test_user_profile_open_extension_detail_page_tc_id_c4350(base_url, selenium,
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_user_profile_open_theme_detail_page_tc_id_c95590(base_url, selenium, variables):
+    """Verifies that clicking on a theme in the user's profile opens the correct detail page."""
     artist = variables["theme_artist_profile"]
     selenium.get(f"{base_url}/user/{artist}")
     theme = Search(selenium, base_url).wait_for_page_to_load()
@@ -563,6 +602,7 @@ def test_user_profile_open_theme_detail_page_tc_id_c95590(base_url, selenium, va
 @pytest.mark.nondestructive
 @pytest.mark.login("submissions_user")
 def test_user_profile_write_review(base_url, selenium, variables, wait):
+    """Validates that a user can write a review for an addon from their profile."""
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -591,6 +631,7 @@ def test_user_profile_write_review(base_url, selenium, variables, wait):
 @pytest.mark.nondestructive
 @pytest.mark.create_session("submissions_user")
 def test_user_profile_edit_review(base_url, selenium, variables, wait):
+    """Ensures that a user can edit their review for an addon."""
     user = User(selenium, base_url).open().wait_for_page_to_load()
     # user.login('submissions_user')
     user.edit.click_view_profile_link()
@@ -613,6 +654,7 @@ def test_user_profile_edit_review(base_url, selenium, variables, wait):
 @pytest.mark.nondestructive
 @pytest.mark.create_session("submissions_user")
 def test_user_profile_delete_review(base_url, selenium, variables, wait):
+    """Confirms that a user can delete their review for an addon."""
     user = User(selenium, base_url).open().wait_for_page_to_load()
     # user.login('submissions_user')
     user.edit.click_view_profile_link()
@@ -633,6 +675,7 @@ def test_user_profile_delete_review(base_url, selenium, variables, wait):
 @pytest.mark.nondestructive
 @pytest.mark.login("submissions_user")
 def test_user_abuse_report(base_url, selenium, variables, wait):
+    """Verifies that a user can submit an abuse report for a developer and that the form is correctly processed."""
     developer = variables["developer_profile"]
     selenium.get(f"{base_url}/user/{developer}")
     user = User(selenium, base_url).wait_for_user_to_load()

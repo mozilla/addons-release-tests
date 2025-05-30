@@ -11,6 +11,8 @@ _post_abuse_report = "/api/v5/abuse/report/addon/"
 
 @pytest.mark.skip(reason="Skipped for the moment due to throttle in place, to be removed with next pr")
 def test_abuse_report_unauthenticated_post(base_url, selenium):
+    """Verifies that an unauthenticated user can successfully
+    submit an abuse report and receive the correct response."""
     payload = payloads.abuse_report_full_body
     create_abuse_report = requests.post(
         url=f"{base_url}{_post_abuse_report}",
@@ -30,6 +32,8 @@ def test_abuse_report_unauthenticated_post(base_url, selenium):
 
 @pytest.mark.login("api_user")
 def test_abuse_report_authenticated(base_url, selenium):
+    """Ensures that an authenticated user can submit an
+    abuse report with the correct authorization and receive the correct response."""
     payload = payloads.abuse_report_full_body
     session_cookie = selenium.get_cookie("sessionid")
     create_abuse_report = requests.post(
@@ -50,6 +54,7 @@ def test_abuse_report_authenticated(base_url, selenium):
 
 @pytest.mark.create_session("api_user")
 def test_abuse_report_minimal_details(base_url, selenium, session_auth):
+    """Tests the submission of an abuse report with minimal details and verifies the correct response."""
     payload = {
         "addon": "{463b483d-6150-43c9-9b52-a3d08d5ecd3a}",
         "message": "test from the API,both"
@@ -83,6 +88,8 @@ def test_abuse_report_minimal_details(base_url, selenium, session_auth):
 )
 @pytest.mark.create_session("api_user")
 def test_addon_install_method_parameter(base_url, selenium, session_auth, addon_install_method):
+    """Validates the handling of accepted and
+    unsupported values for the addon_install_method field in the abuse report."""
     payload = payloads.abuse_report_body(f"{addon_install_method}", "amo", "settings", "signed", "menu", "amo")
     create_abuse_report = requests.post(
         url=f"{base_url}{_post_abuse_report}",
@@ -121,6 +128,7 @@ def test_addon_install_method_parameter(base_url, selenium, session_auth, addon_
 )
 @pytest.mark.create_session("api_user")
 def test_addon_install_source_parameter(base_url, selenium, session_auth, addon_install_source):
+    """Ensures that the addon_install_source field accepts valid values and rejects unsupported ones."""
     payload = payloads.abuse_report_body("link", f"{addon_install_source}", "settings", "signed", "menu", "amo")
     create_abuse_report = requests.post(
         url=f"{base_url}{_post_abuse_report}",
@@ -159,6 +167,7 @@ def test_addon_install_source_parameter(base_url, selenium, session_auth, addon_
 )
 @pytest.mark.create_session("api_user")
 def test_reason_parameter(base_url, selenium, session_auth, reason):
+    """Verifies the acceptance of valid reasons for abuse reports and rejection of invalid ones."""
     payload = payloads.abuse_report_body("link", "amo", f"{reason}", "signed", "menu", "amo")
     create_abuse_report = requests.post(
         url=f"{base_url}{_post_abuse_report}",
@@ -197,6 +206,7 @@ def test_reason_parameter(base_url, selenium, session_auth, reason):
 )
 @pytest.mark.create_session("api_user")
 def test_addon_signature_parameter(base_url, selenium, session_auth, addon_signature):
+    """Tests the handling of valid and invalid values for the addon_signature field in an abuse report."""
     payload = payloads.abuse_report_body("installtrigger", "about_preferences", "broken", f"{addon_signature}",
                                          "uninstall", "addon")
     create_abuse_report = requests.post(
@@ -236,6 +246,7 @@ def test_addon_signature_parameter(base_url, selenium, session_auth, addon_signa
 )
 @pytest.mark.create_session("api_user")
 def test_report_entry_point_parameter(base_url, selenium, session_auth, report_entry_point):
+    """Ensures the report_entry_point field accepts valid entries and rejects invalid ones."""
     payload = payloads.abuse_report_body("drag_and_drop", "app_profile", "policy", "preliminary",
                                          f"{report_entry_point}", "addon")
     create_abuse_report = requests.post(
@@ -275,6 +286,7 @@ def test_report_entry_point_parameter(base_url, selenium, session_auth, report_e
 )
 @pytest.mark.create_session("api_user")
 def test_location_parameter(base_url, selenium, session_auth, location):
+    """Validates the handling of accepted and unsupported values for the location field in an abuse report."""
     payload = payloads.abuse_report_body("link", "amo", "settings", "signed", "menu", f"{location}")
     create_abuse_report = requests.post(
         url=f"{base_url}{_post_abuse_report}",

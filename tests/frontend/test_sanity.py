@@ -1,7 +1,7 @@
 import time
 
-import pytest
 import random
+import pytest
 
 import requests
 
@@ -34,7 +34,7 @@ def test_language_tools_landing_page(selenium, base_url, variables):
 @pytest.mark.nondestructive
 @pytest.mark.prod_only
 def test_install_language_pack(
-    selenium, base_url, variables, firefox, firefox_notifications
+    selenium, base_url, firefox, firefox_notifications
 ):
     """Tests the process of installing and uninstalling
     a language pack through the language tools page.
@@ -59,7 +59,7 @@ def test_install_language_pack(
 @pytest.mark.sanity
 @pytest.mark.prod_only
 def test_install_dictionary(
-    selenium, base_url, variables, firefox, firefox_notifications
+    selenium, base_url, firefox, firefox_notifications
 ):
     """Verifies the installation and uninstallation of a dictionary
     from the language tools page.
@@ -157,7 +157,8 @@ def test_about_addons_find_more_addons(selenium, base_url, wait):
 
 @pytest.mark.prod_only
 def test_about_addons_addon_cards(selenium, base_url, wait):
-    """Verifies that the add-on cards displayed on the "about:addons" page contain the necessary information,
+    """Verifies that the add-on cards displayed on
+    the "about:addons" page contain the necessary information,
     including extension details like author, rating, and user count.
     It checks for visibility and correct data for both extensions and themes."""
     selenium.get("about:addons")
@@ -234,8 +235,10 @@ def test_about_addons_addon_stats_match_amo(selenium, base_url, wait):
 def test_about_addons_install_extension(
     selenium, base_url, wait, firefox, firefox_notifications
 ):
-    """Tests the installation process for an extension from the "about:addons" page,
-    ensuring that the extension is installed correctly and appears in the list of installed extensions."""
+    """Tests the installation process for an extension
+    from the "about:addons" page,
+    ensuring that the extension is installed correctly
+    and appears in the list of installed extensions."""
     selenium.get("about:addons")
     about_addons = AboutAddons(selenium)
     # waiting for the addon cards data to be retrieved (the install buttons in this case)
