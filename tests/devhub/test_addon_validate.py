@@ -24,7 +24,7 @@ def test_validate_addon_listed(selenium, base_url, variables, wait):
     devhub_addon_validate.click_on_this_site_checkbox()
     assert devhub_addon_validate.on_this_site_checkbox.is_selected()
     """Upload addon and check if validation is approved"""
-    devhub_addon_validate.upload_file("unlisted-addon.zip")
+    devhub_addon_validate.upload_file("listed-addon.zip")
     devhub_addon_validate.is_validation_approved()
     assert (
         variables["addon_validation_message"]
