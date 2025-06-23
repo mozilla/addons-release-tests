@@ -195,7 +195,7 @@
        "ru": "Privacy Badger автоматически учится блокировать невидимые трекеры.",
        "zh-CN": "隐私獾会自动学习去阻止不可见的追踪器。"
   },
-  "addon_validation_message": "Your add-on was validated with no errors or warnings.",
+  "addon_validation_message": "Your add-on was validated with no errors and 1 message.",
   "on_this_site_label_message": "On this site. Your submission is publicly listed on addons-dev.allizom.org.",
   "on_your_own_label_message": "On your own. After your submission is signed by Mozilla, you can download the .xpi file from the Developer Hub and distribute it to your audience. Please make sure the add-on manifest’s update_url is provided, as this is the URL where Firefox finds updates for automatic deployment to your users.",
   "upload_details_text": "Your add-on should end with .zip, .xpi or .crx",

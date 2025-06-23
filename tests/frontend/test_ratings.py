@@ -129,7 +129,6 @@ def test_cancel_edit_review(selenium, base_url, variables):
 @pytest.mark.serial
 @pytest.mark.nondestructive
 @pytest.mark.create_session("rating_user")
-@pytest.mark.clear_session
 def test_cancel_delete_review(selenium, base_url, variables):
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
@@ -676,13 +675,14 @@ def test_rating_card_average_stars(selenium, base_url, variables):
         "Multiple words ban",
     ],
 )
+@pytest.mark.create_session("rating_user")
 def test_banned_words_in_user_reviews(
     selenium, base_url, variables, denied_words, error_message
 ):
     extension = variables["theme_detail_page"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
-    addon.login("rating_user")
+    # addon.login("rating_user")
     # try to submit a user review using denied words in the review body
     addon.ratings.rating_stars[4].click()
     addon.ratings.wait_for_rating_form()
