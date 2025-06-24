@@ -53,9 +53,10 @@ def test_user_menu_collections_link_tc_id_c95102(base_url, selenium):
 @pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.nondestructive
+@pytest.mark.login("regular_user")
 def test_user_menu_view_profile_tc_id_c95102(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
-    page.login("regular_user")
+    # page.login("regular_user")
     # clicks on View Profile in the user menu and checks that the correct page opens
     count = 1
     landing_page = ".UserProfile-name"
@@ -65,9 +66,10 @@ def test_user_menu_view_profile_tc_id_c95102(base_url, selenium):
 @pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.nondestructive
+@pytest.mark.create_session("regular_user")
 def test_user_menu_edit_profile_tc_id_c95102(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
-    page.login("regular_user")
+    # page.login("regular_user")
     # clicks on Edit Profile in the user menu and checks that the correct page opens
     count = 2
     landing_page = ".UserProfileEdit-displayName"

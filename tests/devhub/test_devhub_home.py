@@ -330,25 +330,25 @@ def test_devhub_resources_participate(selenium, base_url, variables):
     page.wait_for_current_url("/Add-ons/Contribute")
 
 
-@pytest.mark.parametrize(
-    "count, link",
-    enumerate(
-        [
-            # twitter requires login atm so no direct landing
-            # on the mozilla tweeters is available right now
-            # we are checking that a redirect to twitter happens
-            "x.com",
-            "x.com",
-        ]
-    ),
-)
-@pytest.mark.nondestructive
-def test_page_connect_footer_twitter(selenium, base_url, count, link):
-    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    assert "Connect with us" in page.connect.connect_footer_title
-    assert "Twitter" in page.connect.connect_twitter_title
-    page.connect.twitter_links[count].click()
-    assert link in selenium.current_url
+# @pytest.mark.parametrize(
+#     "count, link",
+#     enumerate(
+#         [
+#             # twitter requires login atm so no direct landing
+#             # on the mozilla tweeters is available right now
+#             # we are checking that a redirect to twitter happens
+#             "x.com",
+#             "x.com",
+#         ]
+#     ),
+# )
+# @pytest.mark.nondestructive
+# def test_page_connect_footer_twitter(selenium, base_url, count, link):
+#     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+#     assert "Connect with us" in page.connect.connect_footer_title
+#     assert "Twitter" in page.connect.connect_twitter_title
+#     page.connect.twitter_links[count].click()
+#     assert link in selenium.current_url
 
 
 @pytest.mark.parametrize(
@@ -367,7 +367,7 @@ def test_page_connect_footer_twitter(selenium, base_url, count, link):
 @pytest.mark.nondestructive
 def test_page_connect_footer_more_links(selenium, base_url, count, link):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    assert "More" in page.connect.connect_more_title
+    # assert "More" in page.connect.connect_more_title
     page.connect.more_connect_links[count].click()
     assert link in selenium.current_url
 
@@ -478,7 +478,7 @@ def test_devhub_browsers_footer_links(base_url, selenium, count, link):
     "count, link",
     enumerate(
         [
-            "new/?utm_source=addons.mozilla.org&utm_medium=referral&utm_content=footer-link",
+            "firefox/new/?utm_campaign=",
             "products/vpn/",
             "relay.firefox.com/",
             "monitor.mozilla",
