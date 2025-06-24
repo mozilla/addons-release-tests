@@ -1,9 +1,10 @@
+"""A python file that contains tests regarding themes, categories"""
 import pytest
+
+from selenium.webdriver.support.select import Select
 
 from pages.desktop.frontend.search import Search
 from pages.desktop.frontend.themes import Themes
-
-from selenium.webdriver.support.select import Select
 
 
 @pytest.mark.parametrize(
@@ -30,6 +31,7 @@ from selenium.webdriver.support.select import Select
 )
 @pytest.mark.nondestructive
 def test_themes_categories(base_url, selenium, count, category):
+    """Tests that theme categories are displayed correctly."""
     themes = Themes(selenium, base_url).open()
     assert "Categories" in themes.categories.categories_list_header.text
     # clicking through each Theme Category
@@ -45,6 +47,7 @@ def test_themes_categories(base_url, selenium, count, category):
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_themes_landing_header(base_url, selenium):
+    """Tests the header section on the themes landing page."""
     themes = Themes(selenium, base_url).open()
     # checking that 'Themes' is underlined in the header menu
     assert "Themes" in themes.header.is_active_link
@@ -55,6 +58,7 @@ def test_themes_landing_header(base_url, selenium):
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_recommended_themes(base_url, selenium):
+    """Tests that recommended themes are shown on the landing page."""
     themes = Themes(selenium, base_url).open()
     shelf_items = themes.shelves.recommended_addons.list
     assert "Recommended themes" in themes.shelves.recommended_addons.card_header
@@ -70,6 +74,7 @@ def test_recommended_themes(base_url, selenium):
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_browse_more_recommended_themes(base_url, selenium):
+    """Tests navigation to the full list of recommended themes."""
     themes = Themes(selenium, base_url).open()
     themes.shelves.recommended_addons.browse_all()
     assert "type=statictheme" in selenium.current_url
@@ -82,6 +87,7 @@ def test_browse_more_recommended_themes(base_url, selenium):
 
 @pytest.mark.nondestructive
 def test_top_rated_themes(base_url, selenium):
+    """Tests that top-rated themes are displayed on the themes page."""
     themes = Themes(selenium, base_url).open()
     shelf_items = themes.shelves.top_rated_addons.list
     assert "Top rated themes" in themes.shelves.top_rated_addons.card_header
@@ -97,6 +103,7 @@ def test_top_rated_themes(base_url, selenium):
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_browse_more_top_rated_themes(base_url, selenium):
+    """Tests navigation to the full list of top-rated themes."""
     themes = Themes(selenium, base_url).open()
     themes.shelves.top_rated_addons.browse_all()
     assert "sort=rating&type=statictheme" in selenium.current_url
@@ -108,6 +115,7 @@ def test_browse_more_top_rated_themes(base_url, selenium):
 
 @pytest.mark.nondestructive
 def test_trending_themes(base_url, selenium):
+    """Tests that trending themes are shown on the themes page."""
     themes = Themes(selenium, base_url).open()
     shelf_items = themes.shelves.trending_addons.list
     assert "Trending themes" in themes.shelves.trending_addons.card_header
@@ -123,6 +131,7 @@ def test_trending_themes(base_url, selenium):
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_browse_more_trending_themes(base_url, selenium):
+    """Tests navigation to the full list of trending themes."""
     themes = Themes(selenium, base_url).open()
     themes.shelves.trending_addons.browse_all()
     assert "sort=hotness&type=statictheme" in selenium.current_url
