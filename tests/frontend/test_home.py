@@ -345,7 +345,7 @@ def test_browsers_footer_links_tc_id_c95105(base_url, selenium, count, link, wai
     "count, link",
     enumerate(
         [
-            ["firefox/new/?utm_content=footer-link&utm_medium=referral&utm_source=addons.mozilla.org", ".mzp-t-product-firefox"],
+            ["https://www.mozilla.org/en-US/firefox/new/?utm_campaign=SET_DEFAULT_BROWSER", ".mzp-t-product-firefox"],
             ["products/vpn/", ".c-sub-navigation-title"],
             ["relay.firefox.com/", ".Layout_logo__V4UCI"],
             ["monitor.mozilla", ".PublicShell_logo__vbvvO"],
