@@ -112,7 +112,7 @@ def test_validate_addon_unlisted(selenium, base_url, variables, wait):
 
 
 @pytest.mark.sanity
-@pytest.mark.login("developer")
+@pytest.mark.create_session("developer")
 def test_validate_unlisted_addon_option_no_manifest_found(
     selenium, base_url, variables, wait
 ):
@@ -136,7 +136,7 @@ def test_validate_unlisted_addon_option_no_manifest_found(
 
 
 @pytest.mark.sanity
-@pytest.mark.login("developer")
+@pytest.mark.create_session("developer")
 def test_validate_unlisted_addon_option_unsupported_format(
     selenium, base_url, variables, wait
 ):
