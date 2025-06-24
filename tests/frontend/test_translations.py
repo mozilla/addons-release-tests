@@ -10,7 +10,6 @@ from pages.desktop.frontend.themes import Themes
     ("it", "es-ES", "de", "fr"),
     ids=("Italiano", "Español", "Deutsch", "Français"),
 )
-@pytest.mark.fail
 def test_header_translations(base_url, selenium, variables, language):
     selenium.get(f"{base_url}/{language}")
     page = Home(selenium, base_url).wait_for_page_to_load()

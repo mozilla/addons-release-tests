@@ -86,7 +86,6 @@ def test_more_dropdown_navigates_correctly_tc_id_c95103(base_url, selenium, coun
 # Tests covering the homepage primary and secondary heroes
 @pytest.mark.sanity
 @pytest.mark.nondestructive
-@pytest.mark.fail
 def test_primary_hero_tc_id_c95105(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     # several assertions that validate the presence of elements in the primary hero
@@ -346,7 +345,7 @@ def test_browsers_footer_links_tc_id_c95105(base_url, selenium, count, link):
     "count, link",
     enumerate(
         [
-            ["firefox/new/?utm_content=footer-link&utm_medium=referral&utm_source=addons.mozilla.org", ".mzp-t-product-firefox"],
+            ["https://www.mozilla.org/en-US/firefox/new/?utm_campaign=SET_DEFAULT_BROWSER", ".mzp-t-product-firefox"],
             ["products/vpn/", ".c-sub-navigation-title"],
             ["relay.firefox.com/", ".Layout_logo__V4UCI"],
             ["monitor.mozilla", ".PublicShell_logo__vbvvO"],

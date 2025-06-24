@@ -78,7 +78,6 @@ def test_user_menu_edit_profile_tc_id_c95102(base_url, selenium):
 @pytest.mark.serial
 @pytest.mark.nondestructive
 @pytest.mark.register
-@pytest.mark.fail
 def test_register_new_account(base_url, selenium, wait):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.register()
