@@ -458,15 +458,15 @@ class ConnectFooter(Region):
     )
     _more_contact_links_locator = (
         By.CSS_SELECTOR,
-        ".DevHub-Connect-section:nth-child(2) > ul a",
+        ".Before-Icon-matrix",
     )
     _newsletter_header_locator = (
         By.CSS_SELECTOR,
-        ".Devhub-content-copy--Connect div:nth-child(3) h4",
+        ".DevHub-Connect-section h4",
     )
     _newsletter_info_text_locator = (
         By.CSS_SELECTOR,
-        ".Devhub-content-copy--Connect div:nth-child(3) p",
+        ".DevHub-Connect-section p",
     )
     _newsletter_email_input_field_locator = (By.ID, "email")
     _newsletter_sign_up_button_locator = (By.CSS_SELECTOR, ".btn-success")

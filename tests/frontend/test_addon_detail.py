@@ -315,7 +315,6 @@ def test_contribute_button_tc_id_c4402(selenium, base_url, variables):
 
 
 @pytest.mark.nondestructive
-@pytest.mark.fail
 def test_extension_permissions_tc_id_c139966(selenium, base_url, variables):
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
