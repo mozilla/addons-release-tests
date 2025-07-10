@@ -142,6 +142,17 @@ class Search(Page):
             _rating_stars_locator = (By.CLASS_NAME, "SearchResult-rating")
             _author_locator = (By.CLASS_NAME, "SearchResult-author")
             _summary_locator = (By.CLASS_NAME, "SearchResult-summary")
+            _recommended_badge_search_list_locator = (By.XPATH, "//h2[@class='SearchResult-name']//div[@data-testid='badge-recommended']")
+            @staticmethod
+            def return_badge_filter_locator(sortr_attr):
+                _type_of_badge_element_locator = (
+                By.XPATH, "//h2[@class='SearchResult-name']//div[@data-testid='badge-" + f'{sortr_attr}' + "']")
+                return _type_of_badge_element_locator
+
+            @property
+            def recommended_badge_search_list_locator(self):
+                self.wait.until(EC.visibility_of_element_located(self._recommended_badge_search_list_locator))
+                return self.find_element(*self._recommended_badge_search_list_locator)
 
             @property
             def search_name(self):

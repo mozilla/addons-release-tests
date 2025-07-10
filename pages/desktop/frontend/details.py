@@ -18,12 +18,13 @@ class Detail(Base):
     _get_firefox_button_locator = (By.CLASS_NAME, "GetFirefoxButton-button")
     _install_button_locator = (By.CLASS_NAME, "AMInstallButton-button")
     _install_button_state_locator = (By.CSS_SELECTOR, ".AMInstallButton a")
-    _promoted_badge_locator = (By.CLASS_NAME, "PromotedBadge-label")
-    _promoted_badge_label_locator = (
+    _recommended_badge_locator = (By.XPATH, "//div[@class='AddonBadges']//div[@data-testid='badge-recommended']")
+    _badge_label_locator = (
         By.CSS_SELECTOR,
-        ".PromotedBadge-large .PromotedBadge-label",
+        "div.Badge:nth-child(1) > a:nth-child(1) > span:nth-child(2)",
     )
-    _experimental_badge_locator = (By.CLASS_NAME, "Badge-experimental")
+    _by_firefox_badge_locator = (By.CLASS_NAME, "badge-line")
+    _experimental_badge_locator = (By.CLASS_NAME, "badge-experimental-badge")
     _addon_icon_locator = (By.CLASS_NAME, "Addon-icon-image")
     _addon_author_locator = (By.CSS_SELECTOR, ".AddonTitle-author a")
     _summary_locator = (By.CLASS_NAME, "Addon-summary")
@@ -102,18 +103,33 @@ class Detail(Base):
         )
 
     @property
-    def promoted_badge(self):
+    def recommended_badge(self):
         self.wait_for_element_to_be_displayed(self._install_button_locator)
-        return self.find_element(*self._promoted_badge_locator)
+        return self.find_element(*self._recommended_badge_locator)
+
+    @property
+    def by_firefox_badge(self):
+        self.wait_for_element_to_be_displayed(self._by_firefox_badge_locator)
+        return self.find_element(*self._by_firefox_badge_locator)
 
     @property
     def promoted_badge_category(self):
         self.wait_for_element_to_be_displayed(self._install_button_locator)
-        return self.find_element(*self._promoted_badge_label_locator).text
+        return self.find_element(*self._badge_label_locator).text
 
-    def click_promoted_badge(self):
+    def click_recommended_badge(self):
         # clicks on the promoted badge and waits for the sumo page to load
-        self.promoted_badge.click()
+        self.recommended_badge.click()
+        self.wait.until(expected.number_of_windows_to_be(2))
+        new_tab = self.driver.window_handles[1]
+        self.driver.switch_to.window(new_tab)
+        self.wait.until(
+            expected.visibility_of_element_located((By.CLASS_NAME, "sumo-page-heading"))
+        )
+
+    def click_by_firefox_badge(self):
+        # clicks on the promoted badge and waits for the sumo page to load
+        self.by_firefox_badge.click()
         self.wait.until(expected.number_of_windows_to_be(2))
         new_tab = self.driver.window_handles[1]
         self.driver.switch_to.window(new_tab)
@@ -232,9 +248,9 @@ class Detail(Base):
         return self.find_element(*self._license_agreement_locator)
 
     class Stats(Region):
-        _root_locator = (By.CLASS_NAME, "AddonMeta")
+        _root_locator = (By.CLASS_NAME, "Addon-main-content")
         _stats_users_locator = (By.CSS_SELECTOR, ".AddonMeta dl:nth-child(1)")
-        _stats_reviews_locator = (By.CSS_SELECTOR, ".AddonMeta dl:nth-child(2)")
+        _stats_reviews_locator = (By.XPATH, "//div[@data-testid='badge-user-fill']//span[@class='Badge-content Badge-content--large']")
         _stats_ratings_locator = (By.CSS_SELECTOR, ".AddonMeta dl:nth-child(3)")
         _rating_score_title_locator = (
             By.CSS_SELECTOR,
@@ -269,7 +285,7 @@ class Detail(Base):
         @property
         def stats_reviews_count(self):
             count = self.addon_reviews_stats
-            return int(count.find_element(By.CSS_SELECTOR, "dd").text.replace(",", ""))
+            return int(count.text.replace(",", ""))
 
         def stats_reviews_link(self):
             self.addon_reviews_stats.find_element(By.CSS_SELECTOR, "dt a").click()

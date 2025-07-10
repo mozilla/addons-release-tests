@@ -155,7 +155,7 @@ def test_browse_all_recommended_extensions_tc_id_c1137804(base_url, selenium):
     assert "type=extension" in selenium.current_url
     search_page = Search(selenium, base_url)
     for result in search_page.result_list.search_results:
-        assert result.promoted_badge
+        assert result.recommended_badge
 
 
 @pytest.mark.sanity
@@ -207,7 +207,7 @@ def test_home_see_more_recommended_themes_tc_id_c95589(base_url, selenium):
     assert "type=statictheme" in selenium.current_url
     search_page = Search(selenium, base_url)
     for result in search_page.result_list.themes:
-        assert result.promoted_badge
+        assert result.recommended_badge
 
 
 @pytest.mark.nondestructive

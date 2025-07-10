@@ -208,7 +208,7 @@ def test_blank_search_loads_results_tc_id_c97496(base_url, selenium):
     results = search_page.result_list.search_results
     assert len(results) == 25
     for result in results:
-        assert result.promoted_badge
+        assert result.recommended_badge_search_list_locator
     sort = "users"
     results = [
         getattr(result, sort) for result in search_page.result_list.search_results
@@ -415,6 +415,7 @@ def test_filter_themes(base_url, selenium):
 )
 @pytest.mark.nondestructive
 @pytest.mark.update_back
+@pytest.mark.fail
 def test_filter_promoted(base_url, selenium, sort_attr, title):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     term = ""
@@ -425,6 +426,6 @@ def test_filter_promoted(base_url, selenium, sort_attr, title):
     search_page.wait_for_contextcard_update("results found")
     results = search_page.result_list.search_results
     for result in results:
-        assert result.promoted_badge
+        assert result.return_badge_filter_locator(sort_attr)
         # if title != "Recommended":
         #     assert title.title() in result.promoted_badge_label

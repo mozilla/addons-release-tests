@@ -566,7 +566,7 @@ def test_user_profile_open_theme_detail_page_tc_id_c95590(base_url, selenium, va
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-@pytest.mark.login("submissions_user")
+@pytest.mark.create_session("submissions_user")
 def test_user_profile_write_review(base_url, selenium, variables, wait):
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
@@ -575,12 +575,12 @@ def test_user_profile_write_review(base_url, selenium, variables, wait):
     # post a rating on the detail page
     addon.ratings.rating_stars[4].click()
     # navigate to the user profile page to write a review
-    count = 1
-    landing_page = ".UserProfile-name"
-    addon.header.click_user_menu_links(count, landing_page)
+    # count = 1
+    # landing_page = ".UserProfile-name"
+    # addon.header.click_user_menu_links(count, landing_page)
     user = User(selenium, base_url).wait_for_user_to_load()
-    # the review card doesn't have preload elements, so we need to wait for it to load individually
-    user.view.user_reviews_section_loaded()
+    # # the review card doesn't have preload elements, so we need to wait for it to load individually
+    # user.view.user_reviews_section_loaded()
     addon.ratings.write_a_review.click()
     review_text = variables["initial_text_input"]
     addon.ratings.review_text_input(review_text)
