@@ -295,7 +295,7 @@ def test_devhub_resources_footer_promote_links_tc_id_C15072(selenium, base_url, 
 
 
 @pytest.mark.nondestructive
-@pytest.mark.login("developer")
+@pytest.mark.create_session("developer")
 def test_devhub_resources_join_addon_review(selenium, base_url, variables):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     assert "Write Some Code" in page.resources.review_addons_section_header
