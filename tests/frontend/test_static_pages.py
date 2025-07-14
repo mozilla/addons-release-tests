@@ -124,10 +124,11 @@ def test_blocked_addon_page_links(base_url, selenium, variables):
 
 
 @pytest.mark.nondestructive
+@pytest.mark.login("collection_user")
 def test_login_expired_page(base_url, selenium, variables):
     selenium.get(base_url)
     page = Home(selenium, base_url)
-    page.login("regular_user")
+    # page.login("regular_user")
     # open AMO in a new tab and logout
     page.driver.switch_to.new_window("tab")
     page.driver.get(base_url)
