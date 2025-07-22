@@ -1,4 +1,5 @@
 import pytest
+import time
 
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
@@ -318,9 +319,9 @@ def test_addons_footer_links_tc_id_c95105(base_url, selenium, count, link):
     "count, link",
     enumerate(
         [
-            ["firefox/new", "#download-button-thanks"],
-            ["firefox/browsers/mobile/", "#android-download"],
-            ["firefox/enterprise/", "#primary-download-button"],
+            ["en-US/?redirect_source", "#download-button-thanks"],
+            ["en-US/browsers/mobile/", "#android-download"],
+            ["en-US/browsers/enterprise/", "#primary-download-button"],
         ]
     ),
     ids=[
@@ -331,6 +332,7 @@ def test_addons_footer_links_tc_id_c95105(base_url, selenium, count, link):
 )
 @pytest.mark.nondestructive
 @pytest.mark.sanity
+@pytest.mark.fail
 def test_browsers_footer_links_tc_id_c95105(base_url, selenium, count, link):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.footer.browsers_links[count].click()
@@ -345,7 +347,7 @@ def test_browsers_footer_links_tc_id_c95105(base_url, selenium, count, link):
     "count, link",
     enumerate(
         [
-            ["https://www.mozilla.org/en-US/firefox/new/?utm_campaign=SET_DEFAULT_BROWSER", ".mzp-t-product-firefox"],
+            ["https://www.firefox.com/en-US/?redirect_source=mozilla-org&utm_campaign=SET_DEFAULT_BROWSER", ".mzp-t-product-firefox"],
             ["products/vpn/", ".c-sub-navigation-title"],
             ["relay.firefox.com/", ".Layout_logo__V4UCI"],
             ["monitor.mozilla", ".PublicShell_logo__vbvvO"],
@@ -362,9 +364,11 @@ def test_browsers_footer_links_tc_id_c95105(base_url, selenium, count, link):
 )
 @pytest.mark.sanity
 @pytest.mark.nondestructive
+@pytest.mark.fail
 def test_products_footer_links_tc_id_c95105(base_url, selenium, count, link):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.footer.products_links[count].click()
+    time.sleep(2)
     page.wait_for_current_url(link[0])
     page.wait.until(
         EC.visibility_of_element_located((By.CSS_SELECTOR, link[1])),
