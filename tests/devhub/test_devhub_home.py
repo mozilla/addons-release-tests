@@ -461,7 +461,7 @@ def test_devhub_addons_footer_links(base_url, selenium, count, link):
         [
             "en-US/?redirect_source=mozilla-org&utm_campaign=SET_DEFAULT_BROWSER",
             "en-US/browsers/mobile/",
-            "en-US/firefox/enterprise/",
+            "en-US/browsers/enterprise/",
         ]
     ),
     ids=[
