@@ -20,12 +20,14 @@ class Detail(Base):
     _get_firefox_button_locator = (By.CLASS_NAME, "GetFirefoxButton-button")
     _install_button_locator = (By.CLASS_NAME, "AMInstallButton-button")
     _install_button_state_locator = (By.CSS_SELECTOR, ".AMInstallButton a")
-    _promoted_badge_locator = (By.CLASS_NAME, "PromotedBadge-large")
+    _promoted_badge_locator = (By.XPATH, "//div[@class='AddonBadges']//div[@data-testid='badge-recommended']")
     _promoted_badge_label_locator = (
         By.CSS_SELECTOR,
-        ".PromotedBadge-large .PromotedBadge-label",
+        "//div[@class='AddonBadges']//div[@data-testid='badge-recommended']//span[2]",
     )
-    _experimental_badge_locator = (By.CLASS_NAME, "Badge-experimental")
+    _by_firefox_badge_locator = (By.XPATH, "//div[@data-testid='badge-line']//span")
+    _by_firefox_label_locator = (By.XPATH, "//div[@data-testid='badge-line']//span[2]")
+    _experimental_badge_locator = (By.XPATH, "//div[@data-testid='badge-experimental-badge']")
     _addon_icon_locator = (By.CLASS_NAME, "Addon-icon-image")
     _addon_author_locator = (By.CSS_SELECTOR, ".AddonTitle-author a")
     _summary_locator = (By.CLASS_NAME, "Addon-summary")
@@ -119,6 +121,16 @@ class Detail(Base):
     def promoted_badge_category(self):
         self.wait_for_element_to_be_displayed(self._install_button_locator)
         return self.find_element(*self._promoted_badge_label_locator).text
+
+    @property
+    def by_firefox_badge(self):
+        self.wait_for_element_to_be_displayed(self._by_firefox_badge_locator)
+        return self.find_element(*self._by_firefox_badge_locator)
+
+    @property
+    def by_firefox_label(self):
+        self.wait_for_element_to_be_displayed(self._by_firefox_label_locator)
+        return self.find_element(*self._by_firefox_label_locator).text
 
     def click_promoted_badge(self):
         # clicks on the promoted badge and waits for the sumo page to load
@@ -265,10 +277,10 @@ class Detail(Base):
         return self.find_element(*self._block_metadata_message)
 
     class Stats(Region):
-        _root_locator = (By.CLASS_NAME, "AddonMeta")
-        _stats_users_locator = (By.CSS_SELECTOR, ".AddonMeta dl:nth-child(1)")
-        _stats_reviews_locator = (By.CSS_SELECTOR, ".AddonMeta dl:nth-child(2)")
-        _stats_ratings_locator = (By.CSS_SELECTOR, ".AddonMeta dl:nth-child(3)")
+        _root_locator = (By.CLASS_NAME, "Addon-main-content")
+        _stats_users_locator = (By.XPATH, "//div[@data-testid='badge-user-fill']")
+        _stats_reviews_locator = (By.XPATH, "//div[@data-testid='badge-star-full']")
+        _stats_ratings_locator = (By.XPATH, "//div[@class='Addon-read-reviews-footer']")
         _rating_score_title_locator = (
             By.CSS_SELECTOR,
             ".AddonMeta-rating-content .Rating--small",
@@ -783,8 +795,8 @@ class Detail(Base):
 
     class AddToCollection(Region):
         _collection_card_header_locator = (
-            By.CSS_SELECTOR,
-            ".AddAddonToCollection header",
+            By.XPATH,
+            "//dt[contains(text(),'Add to collection')]",
         )
         _collection_select_locator = (By.CLASS_NAME, "AddAddonToCollection-select")
         _select_collections_list_locator = (
