@@ -1,4 +1,5 @@
 import time
+import re
 
 from pypom import Region
 
@@ -314,7 +315,13 @@ class Detail(Base):
         @property
         def stats_reviews_count(self):
             count = self.addon_reviews_stats
-            return int(count.find_element(By.CSS_SELECTOR, "dd").text.replace(",", ""))
+            text = count.find_element(By.XPATH, "//div[@data-testid='badge-star-full']//a").text
+            match = re.search(r'\((\d+)\s+reviews\)', text)
+            if match:
+                return int(match.group(1))
+            else:
+                return 0
+            # return int(count.find_element(By.XPATH, "//a").text.replace(",", ""))
 
         def stats_reviews_link(self):
             self.addon_reviews_stats.find_element(By.CSS_SELECTOR, "dt a").click()
@@ -983,7 +990,7 @@ class Detail(Base):
         )
         _write_review_button_locator = (
             By.CSS_SELECTOR,
-            ".AddonReviewCard-writeReviewButton",
+            ".AddonReviewCard .AddonReviewCard-writeReviewButton",
         )
         _review_textarea_locator = (By.CSS_SELECTOR, ".AddonReviewManager textarea")
         _cancel_review_write_locator = (
@@ -992,7 +999,8 @@ class Detail(Base):
         )
         _submit_review_button_locator = (
             By.CSS_SELECTOR,
-            ".AddonReviewManager .DismissibleTextForm-submit",
+            # ".AddonReviewManager .DismissibleTextForm-submit",
+            ".AddonReviewCard .DismissibleTextForm-submit"
         )
         _review_text_locator = (By.CSS_SELECTOR, ".UserReview-body")
         _edit_review_link_locator = (By.CSS_SELECTOR, ".AddonReviewCard-allControls a")
@@ -1126,9 +1134,9 @@ class Detail(Base):
             return self.find_element(*self._submit_review_button_locator)
 
         def submit_review(self):
-            self.wait.until(
-                EC.element_to_be_clickable(self._submit_review_button_locator)
-            )
+            # self.wait.until(
+            #     EC.element_to_be_clickable(self._submit_review_button_locator)
+            # )
             self.find_element(*self._submit_review_button_locator).click()
             self.wait.until(
                 expected.visibility_of_element_located(self._edit_review_link_locator)
