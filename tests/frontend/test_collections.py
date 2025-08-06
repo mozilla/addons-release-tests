@@ -107,7 +107,7 @@ def test_select_collection_from_list(selenium, base_url, wait):
 
 @pytest.mark.sanity
 @pytest.mark.serial
-@pytest.mark.create_session("collection_user")
+@pytest.mark.login("collection_user")
 def test_create_collection_tc_id_c125543(selenium, base_url, variables, wait):
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
     collections.click_create_collection()
