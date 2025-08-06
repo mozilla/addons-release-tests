@@ -324,7 +324,7 @@ class Detail(Base):
             # return int(count.find_element(By.XPATH, "//a").text.replace(",", ""))
 
         def stats_reviews_link(self):
-            self.addon_reviews_stats.find_element(By.CSS_SELECTOR, "dt a").click()
+            self.addon_reviews_stats.find_element(By.XPATH, "//a[@class='Addon-all-reviews-link']").click()
             return Reviews(self.driver, self.page.base_url).wait_for_page_to_load()
 
         @property
