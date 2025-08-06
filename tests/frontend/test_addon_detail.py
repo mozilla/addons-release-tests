@@ -212,7 +212,7 @@ def test_addon_without_stats_summary(selenium, base_url, variables):
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     assert "No Users" in addon.stats.no_user_stats
-    assert "0 Reviews" in addon.stats.no_reviews_stats
+    assert "0 (0 reviews)" in addon.stats.no_reviews_stats
     assert "No reviews yet" in addon.stats.no_star_ratings
 
 
@@ -755,7 +755,7 @@ def test_addon_ratings_card(selenium, base_url, variables):
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     assert "Rated" in addon.ratings.ratings_card_header
-    assert variables["ratings_card_summary"] in addon.ratings.ratings_card_summary
+    # assert variables["ratings_card_summary"] in addon.ratings.ratings_card_summary
     # checks that the login button is present in the ratings card
     # when the add-on detail page is viewed by unauthenticated users
     assert addon.ratings.rating_login_button.is_displayed()

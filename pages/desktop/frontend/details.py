@@ -21,9 +21,9 @@ class Detail(Base):
     _get_firefox_button_locator = (By.CLASS_NAME, "GetFirefoxButton-button")
     _install_button_locator = (By.CLASS_NAME, "AMInstallButton-button")
     _install_button_state_locator = (By.CSS_SELECTOR, ".AMInstallButton a")
-    _promoted_badge_locator = (By.XPATH, "//div[@class='AddonBadges']//div[@data-testid='badge-recommended']")
+    _promoted_badge_locator = (By.XPATH, "//div[@class='AddonBadges']//div[1]")
     _promoted_badge_label_locator = (
-        By.CSS_SELECTOR,
+        By.XPATH,
         "//div[@class='AddonBadges']//div[@data-testid='badge-recommended']//span[2]",
     )
     _by_firefox_badge_locator = (By.XPATH, "//div[@data-testid='badge-line']//span")
@@ -284,7 +284,7 @@ class Detail(Base):
         _stats_ratings_locator = (By.XPATH, "//div[@class='Addon-read-reviews-footer']")
         _rating_score_title_locator = (
             By.CSS_SELECTOR,
-            ".AddonMeta-rating-content .Rating--small",
+            ".AddonMeta-rating-content .Rating--small"
         )
         _rating_title_locator = (By.CSS_SELECTOR, ".AddonMeta-rating-title")
         _grouped_ratings_locator = (By.CSS_SELECTOR, ".RatingsByStar-star")
@@ -298,12 +298,12 @@ class Detail(Base):
 
         @property
         def stats_users_count(self):
-            count = self.addon_user_stats.find_element(By.CSS_SELECTOR, "dd").text
+            count = self.addon_user_stats.find_element(By.XPATH, "//div[@class='Badge']//span[2]").text
             return int(count.split()[0].replace(",", ""))
 
         @property
         def no_user_stats(self):
-            return self.addon_user_stats.find_element(By.CSS_SELECTOR, "dt").text
+            return self.addon_user_stats.find_element(By.XPATH, "//div[@data-testid='badge-user-fill']//span[2]").text
 
         @property
         def addon_reviews_stats(self):
@@ -329,7 +329,7 @@ class Detail(Base):
 
         @property
         def no_reviews_stats(self):
-            return self.addon_reviews_stats.find_element(By.CSS_SELECTOR, "dt").text
+            return self.addon_reviews_stats.find_element(By.XPATH, "//div[@data-testid='badge-star-full']//a//span[2]").text
 
         @property
         def addon_star_rating_stats(self):
@@ -356,7 +356,7 @@ class Detail(Base):
 
         @property
         def no_star_ratings(self):
-            return self.addon_star_rating_stats.find_element(By.CSS_SELECTOR, "dt").text
+            return self.addon_star_rating_stats.find_element(By.XPATH, "//div[@class='Addon-read-reviews-footer']").text
 
         @property
         def bar_grouped_ratings(self):

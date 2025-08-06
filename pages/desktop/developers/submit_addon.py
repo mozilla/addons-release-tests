@@ -46,7 +46,7 @@ class SubmitAddon(Page):
     )
     _accept_agreement_button = (By.ID, "accept-agreement")
     _cancel_agreement_button = (By.CSS_SELECTOR, ".submit-buttons a")
-    _dev_accounts_info_link_locator = (By.CSS_SELECTOR, ".addon-submission-process p a")
+    _dev_accounts_info_link_locator = (By.CSS_SELECTOR, ".addon-submission-process > p:nth-child(3) > a")
 
     _listed_option_locator = (By.CSS_SELECTOR, 'input[value="listed"]')
     _listed_option_helptext_locator = (
