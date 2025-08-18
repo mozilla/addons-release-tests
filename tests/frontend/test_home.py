@@ -318,9 +318,9 @@ def test_addons_footer_links_tc_id_c95105(base_url, selenium, count, link):
     "count, link",
     enumerate(
         [
-            ["firefox/new", "//a[@data-testid='download-button-thanks']"],
-            ["firefox/browsers/mobile/", "//a[@data-cta-text='Download (Android)']"],
-            ["firefox/enterprise/", "//a[@id='primary-download-button']"],
+            ["utm_source=addons.mozilla.org&utm_medium=referral&utm_content=footer-link", "//a[@data-testid='download-button-thanks']"],
+            ["browsers/mobile/", "//a[@data-cta-text='Download (Android)']"],
+            ["browsers/enterprise/", "//a[@id='primary-download-button']"],
         ]
     ),
     ids=[

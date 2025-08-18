@@ -1,3 +1,6 @@
+import time
+import re
+
 from pypom import Region
 
 from selenium.webdriver.common.by import By
@@ -18,12 +21,14 @@ class Detail(Base):
     _get_firefox_button_locator = (By.CLASS_NAME, "GetFirefoxButton-button")
     _install_button_locator = (By.CLASS_NAME, "AMInstallButton-button")
     _install_button_state_locator = (By.CSS_SELECTOR, ".AMInstallButton a")
-    _promoted_badge_locator = (By.CLASS_NAME, "PromotedBadge-label")
+    _promoted_badge_locator = (By.XPATH, "//div[@class='AddonBadges']//div[1]")
     _promoted_badge_label_locator = (
-        By.CSS_SELECTOR,
-        ".PromotedBadge-large .PromotedBadge-label",
+        By.XPATH,
+        "//div[@class='AddonBadges']//div[@data-testid='badge-recommended']//span[2]",
     )
-    _experimental_badge_locator = (By.CLASS_NAME, "Badge-experimental")
+    _by_firefox_badge_locator = (By.XPATH, "//div[@data-testid='badge-line']//span")
+    _by_firefox_label_locator = (By.XPATH, "//div[@data-testid='badge-line']//span[2]")
+    _experimental_badge_locator = (By.XPATH, "//div[@data-testid='badge-experimental-badge']")
     _addon_icon_locator = (By.CLASS_NAME, "Addon-icon-image")
     _addon_author_locator = (By.CSS_SELECTOR, ".AddonTitle-author a")
     _summary_locator = (By.CLASS_NAME, "Addon-summary")
@@ -34,12 +39,19 @@ class Detail(Base):
     _privacy_policy_locator = (By.CSS_SELECTOR, ".AddonMoreInfo-privacy-policy-link")
     _license_agreement_locator = (By.CSS_SELECTOR, ".AddonMoreInfo-eula-link")
     _addon_info_text = (By.CSS_SELECTOR, ".AddonInfo-info-html")
+    _page_not_available_in_region = (By.XPATH, "//div[contains(text(), 'That page is not available in your region')]")
+    _not_available_in_your_region_message = (By.XPATH, "//p[contains(text(), 'The page you tried to access is not available in your region.')]")
+    _paragraphs_with_links_message = (By.CSS_SELECTOR, "p.Errors-paragraph-with-links")
+    _card_header_text_message = (By.CSS_SELECTOR, ".Card-header-text")
+    _why_was_it_blocked_message = (By.CSS_SELECTOR, ".Card-contents > h2")
+    _block_metadata_message = (By.CSS_SELECTOR, ".Block-metadata")
 
     def wait_for_page_to_load(self):
         """Waits for various page components to be loaded"""
         self.wait.until(
             expected.invisibility_of_element_located((By.CLASS_NAME, "LoadingText"))
         )
+        time.sleep(3)
         return self
 
     @property
@@ -110,6 +122,16 @@ class Detail(Base):
     def promoted_badge_category(self):
         self.wait_for_element_to_be_displayed(self._install_button_locator)
         return self.find_element(*self._promoted_badge_label_locator).text
+
+    @property
+    def by_firefox_badge(self):
+        self.wait_for_element_to_be_displayed(self._by_firefox_badge_locator)
+        return self.find_element(*self._by_firefox_badge_locator)
+
+    @property
+    def by_firefox_label(self):
+        self.wait_for_element_to_be_displayed(self._by_firefox_label_locator)
+        return self.find_element(*self._by_firefox_label_locator).text
 
     def click_promoted_badge(self):
         # clicks on the promoted badge and waits for the sumo page to load
@@ -231,14 +253,38 @@ class Detail(Base):
     def license_agreement_locator(self):
         return self.find_element(*self._license_agreement_locator)
 
+    @property
+    def page_not_available_in_region(self):
+        return self.find_element(*self._page_not_available_in_region)
+
+    @property
+    def not_available_in_your_region_message(self):
+        return self.find_element(*self._not_available_in_your_region_message)
+
+    @property
+    def paragraphs_with_links_message(self):
+        return self.find_element(*self._paragraphs_with_links_message)
+
+    @property
+    def card_header_text(self):
+        return self.find_element(*self._card_header_text_message)
+
+    @property
+    def why_was_it_blocked(self):
+        return self.find_element(*self._why_was_it_blocked_message)
+
+    @property
+    def block_metadata(self):
+        return self.find_element(*self._block_metadata_message)
+
     class Stats(Region):
-        _root_locator = (By.CLASS_NAME, "AddonMeta")
-        _stats_users_locator = (By.CSS_SELECTOR, ".AddonMeta dl:nth-child(1)")
-        _stats_reviews_locator = (By.CSS_SELECTOR, ".AddonMeta dl:nth-child(2)")
-        _stats_ratings_locator = (By.CSS_SELECTOR, ".AddonMeta dl:nth-child(3)")
+        _root_locator = (By.CLASS_NAME, "Addon-main-content")
+        _stats_users_locator = (By.XPATH, "//div[@data-testid='badge-user-fill']")
+        _stats_reviews_locator = (By.XPATH, "//div[@data-testid='badge-star-full']")
+        _stats_ratings_locator = (By.XPATH, "//div[@class='Addon-read-reviews-footer']")
         _rating_score_title_locator = (
             By.CSS_SELECTOR,
-            ".AddonMeta-rating-content .Rating--small",
+            ".AddonMeta-rating-content .Rating--small"
         )
         _rating_title_locator = (By.CSS_SELECTOR, ".AddonMeta-rating-title")
         _grouped_ratings_locator = (By.CSS_SELECTOR, ".RatingsByStar-star")
@@ -252,12 +298,12 @@ class Detail(Base):
 
         @property
         def stats_users_count(self):
-            count = self.addon_user_stats.find_element(By.CSS_SELECTOR, "dd").text
+            count = self.addon_user_stats.find_element(By.XPATH, "//div[@data-testid='badge-user-fill']//span[2]").text
             return int(count.split()[0].replace(",", ""))
 
         @property
         def no_user_stats(self):
-            return self.addon_user_stats.find_element(By.CSS_SELECTOR, "dt").text
+            return self.addon_user_stats.find_element(By.XPATH, "//div[@data-testid='badge-user-fill']//span[2]").text
 
         @property
         def addon_reviews_stats(self):
@@ -269,15 +315,21 @@ class Detail(Base):
         @property
         def stats_reviews_count(self):
             count = self.addon_reviews_stats
-            return int(count.find_element(By.CSS_SELECTOR, "dd").text.replace(",", ""))
+            text = count.find_element(By.XPATH, "//div[@data-testid='badge-star-full']//a").text
+            match = re.search(r'\((\d+)\s+reviews\)', text)
+            if match:
+                return int(match.group(1))
+            else:
+                return 0
+            # return int(count.find_element(By.XPATH, "//a").text.replace(",", ""))
 
         def stats_reviews_link(self):
-            self.addon_reviews_stats.find_element(By.CSS_SELECTOR, "dt a").click()
+            self.addon_reviews_stats.find_element(By.XPATH, "//a[@class='Addon-all-reviews-link']").click()
             return Reviews(self.driver, self.page.base_url).wait_for_page_to_load()
 
         @property
         def no_reviews_stats(self):
-            return self.addon_reviews_stats.find_element(By.CSS_SELECTOR, "dt").text
+            return self.addon_reviews_stats.find_element(By.XPATH, "//div[@data-testid='badge-star-full']//a//span[2]").text
 
         @property
         def addon_star_rating_stats(self):
@@ -304,7 +356,7 @@ class Detail(Base):
 
         @property
         def no_star_ratings(self):
-            return self.addon_star_rating_stats.find_element(By.CSS_SELECTOR, "dt").text
+            return self.addon_star_rating_stats.find_element(By.XPATH, "//div[@class='Addon-read-reviews-footer']").text
 
         @property
         def bar_grouped_ratings(self):
@@ -750,8 +802,8 @@ class Detail(Base):
 
     class AddToCollection(Region):
         _collection_card_header_locator = (
-            By.CSS_SELECTOR,
-            ".AddAddonToCollection header",
+            By.XPATH,
+            "//dt[contains(text(),'Add to collection')]",
         )
         _collection_select_locator = (By.CLASS_NAME, "AddAddonToCollection-select")
         _select_collections_list_locator = (
@@ -811,8 +863,10 @@ class Detail(Base):
             return self.find_element(*self._add_to_collection_error_notice_locator).text
 
     class AddonDescription(Region):
+
         _description_header_locator = (By.CSS_SELECTOR, ".AddonDescription header")
         _description_text_locator = (By.CLASS_NAME, "AddonDescription-contents")
+        _read_more_button_locator = (By.CSS_SELECTOR, ".ShowMoreCard-expand-link")
 
         @property
         def addon_description_header(self):
@@ -827,6 +881,17 @@ class Detail(Base):
                 EC.visibility_of_element_located(self._description_text_locator)
             )
             return self.find_element(*self._description_text_locator)
+
+        @property
+        def read_more_button(self):
+            self.wait.until(
+                EC.visibility_of_element_located(self._read_more_button_locator)
+            )
+            return self.find_element(*self._read_more_button_locator)
+
+        def click_read_more_button(self):
+            self.wait.until(EC.element_to_be_clickable(self._read_more_button_locator))
+            return self.find_element(*self._read_more_button_locator).click()
 
     class AddonRecommendations(Region):
         _addon_recommendations_root_locator = (By.CSS_SELECTOR, ".AddonRecommendations")
@@ -925,7 +990,7 @@ class Detail(Base):
         )
         _write_review_button_locator = (
             By.CSS_SELECTOR,
-            ".AddonReviewCard-writeReviewButton",
+            ".AddonReviewCard .AddonReviewCard-writeReviewButton",
         )
         _review_textarea_locator = (By.CSS_SELECTOR, ".AddonReviewManager textarea")
         _cancel_review_write_locator = (
@@ -934,7 +999,8 @@ class Detail(Base):
         )
         _submit_review_button_locator = (
             By.CSS_SELECTOR,
-            ".AddonReviewManager .DismissibleTextForm-submit",
+            # ".AddonReviewManager .DismissibleTextForm-submit",
+            ".AddonReviewCard .DismissibleTextForm-submit"
         )
         _review_text_locator = (By.CSS_SELECTOR, ".UserReview-body")
         _edit_review_link_locator = (By.CSS_SELECTOR, ".AddonReviewCard-allControls a")
@@ -992,6 +1058,7 @@ class Detail(Base):
                     self._loaded_rating_stars_locator
                 )
             )
+            time.sleep(3)
             # waits for the rating stars to be editable
             self.wait.until(
                 expected.element_to_be_clickable(self._rating_stars_locator)
@@ -1067,9 +1134,9 @@ class Detail(Base):
             return self.find_element(*self._submit_review_button_locator)
 
         def submit_review(self):
-            self.wait.until(
-                EC.element_to_be_clickable(self._submit_review_button_locator)
-            )
+            # self.wait.until(
+            #     EC.element_to_be_clickable(self._submit_review_button_locator)
+            # )
             self.find_element(*self._submit_review_button_locator).click()
             self.wait.until(
                 expected.visibility_of_element_located(self._edit_review_link_locator)
