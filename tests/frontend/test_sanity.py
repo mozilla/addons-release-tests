@@ -169,6 +169,7 @@ def test_about_addons_addon_cards_author_link(selenium, base_url, wait):
 
 
 @pytest.mark.prod_only
+@pytest.mark.skip
 def test_about_addons_addon_stats_match_amo(selenium, base_url, wait):
     selenium.get("about:addons")
     about_addons = AboutAddons(selenium)

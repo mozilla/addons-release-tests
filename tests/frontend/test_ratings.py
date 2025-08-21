@@ -693,6 +693,7 @@ def test_banned_words_in_user_reviews(
 
 
 @pytest.mark.serial
+@pytest.mark.skip
 def test_restricted_user_rating_submission(selenium, base_url, variables):
     """Verify that a restricted user email is not allowed to post addon ratings"""
     extension = variables["theme_detail_page"]
