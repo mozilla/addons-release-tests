@@ -218,7 +218,6 @@ def test_addon_without_stats_summary(selenium, base_url, variables):
 
 @pytest.mark.sanity
 @pytest.mark.nondestructive
-@pytest.mark.fail
 def test_stats_reviews_summary_click(selenium, base_url, variables):
     extension = variables["addon_with_stats"]
     selenium.get(f"{base_url}/addon/{extension}")
@@ -286,7 +285,6 @@ def test_click_stats_grouped_ratings(selenium, base_url, variables):
 
 
 @pytest.mark.nondestructive
-@pytest.mark.fail
 def test_stats_rating_counts_compare(selenium, base_url, variables):
     extension = variables["addon_with_stats"]
     selenium.get(f"{base_url}/addon/{extension}")

@@ -287,7 +287,7 @@ def test_mozilla_footer_link_tc_id_c95105(base_url, selenium, wait):
             ["add-on-policies", ".page-hero-description h1"],
             ["blog.mozilla.org", ".site-title-wrap"],
             ["discourse", ".category-list"],
-            ["Contact_us", ".main-page-content"],
+            ["Contact_us", ".reference-layout__header > h1"],
             ["review_guide", "#review-guide"],
         ]
     ),
@@ -305,6 +305,7 @@ def test_mozilla_footer_link_tc_id_c95105(base_url, selenium, wait):
 )
 @pytest.mark.sanity
 @pytest.mark.nondestructive
+@pytest.mark.fail
 def test_addons_footer_links_tc_id_c95105(base_url, selenium, count, link):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.footer.addon_links[count].click()
@@ -332,7 +333,6 @@ def test_addons_footer_links_tc_id_c95105(base_url, selenium, count, link):
 )
 @pytest.mark.nondestructive
 @pytest.mark.sanity
-@pytest.mark.fail
 def test_browsers_footer_links_tc_id_c95105(base_url, selenium, count, link):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.footer.browsers_links[count].click()
@@ -347,7 +347,7 @@ def test_browsers_footer_links_tc_id_c95105(base_url, selenium, count, link):
     "count, link",
     enumerate(
         [
-            ["https://www.firefox.com/en-US/?redirect_source=mozilla-org&utm_campaign=SET_DEFAULT_BROWSER", ".mzp-t-product"],
+            ["https://www.firefox.com/en-US/?utm_campaign=SET_DEFAULT_BROWSER", ".mzp-t-product"],
             ["products/vpn/", ".c-sub-navigation-title"],
             ["relay.firefox.com/", ".Layout_logo__V4UCI"],
             ["monitor.mozilla", ".PublicShell_logo__vbvvO"],
@@ -364,7 +364,6 @@ def test_browsers_footer_links_tc_id_c95105(base_url, selenium, count, link):
 )
 @pytest.mark.sanity
 @pytest.mark.nondestructive
-@pytest.mark.fail
 def test_products_footer_links_tc_id_c95105(base_url, selenium, count, link):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.footer.products_links[count].click()

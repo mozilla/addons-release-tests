@@ -134,10 +134,10 @@ class DevHubHome(Base):
         self.find_element(*self._documentation_link_locator).click()
         self.wait.until(
             EC.text_to_be_present_in_element(
-                (By.CSS_SELECTOR, ".main-content h1"), "Browser extensions"
+                (By.CSS_SELECTOR, ".reference-layout__header > h1"), "Browser extensions"
             ),
             message=f'Expected "Browser Extensions" in the page title but got'
-            f' "{self.find_element(By.CSS_SELECTOR, ".main-content h1").text}".',
+            f' "{self.find_element(By.CSS_SELECTOR, ".reference-layout__header > h1").text}".',
         )
 
     def click_support(self):
