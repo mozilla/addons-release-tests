@@ -233,7 +233,7 @@ def test_delete_rating(selenium, base_url, variables):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-@pytest.mark.create_session("rating_user")
+@pytest.mark.login("rating_user")
 def test_flag_review_action_tc_id_c1494904(selenium, base_url, variables):
     extension = variables["all_scores_addon"]
     selenium.get(f"{base_url}/addon/{extension}")
@@ -353,7 +353,7 @@ def test_flag_missing_for_empty_review_tc_id_c1494904(selenium, base_url, variab
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-@pytest.mark.create_session("rating_user")
+@pytest.mark.login("rating_user")
 def test_flag_review_menu_options_tc_id_c1494904(selenium, base_url, variables):
     extension = variables["all_scores_addon"]
     selenium.get(f"{base_url}/addon/{extension}")
