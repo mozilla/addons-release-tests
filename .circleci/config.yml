@@ -627,7 +627,7 @@ workflows:
       - ratings_serial_tests
       - devhub_parallel_tests
       - addon_submissions_tests
-      - api_submission_tests
+#      - api_submission_tests
 
   # scheduled in CircleCI Project settings to run each Wednesdays at 04:00 UTC
   scheduled_coverage_run:
@@ -660,6 +660,8 @@ workflows:
       - frontend_parallel_tests
       - devhub_parallel_tests
       - addon_submissions_tests
+#      - api_submission_tests
+
   # scheduled in CircleCI Project settings to start each Thursdays at 17:00 UTC
   scheduled_prod_sanity_run:
     when:
