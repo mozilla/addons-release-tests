@@ -196,7 +196,6 @@ def test_platform_incompatibility_tc_id_c4453(selenium, base_url, variables):
 
 
 @pytest.mark.nondestructive
-@pytest.mark.fail
 def test_addon_with_stats_summary(selenium, base_url, variables):
     extension = variables["addon_with_stats"]
     selenium.get(f"{base_url}/addon/{extension}")

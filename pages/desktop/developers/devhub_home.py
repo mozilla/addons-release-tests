@@ -107,6 +107,10 @@ class DevHubHome(Base):
         By.CSS_SELECTOR,
         ".DevHub-MyAddons .Button:nth-of-type(2)",
     )
+    _documentation_header_page = (
+        By.XPATH,
+        "//div[@class='reference-layout__header']//h1"
+    )
 
     def wait_for_page_to_load(self):
         self.wait.until(lambda _: self.find_element(*self._logo_locator).is_displayed())
@@ -134,10 +138,8 @@ class DevHubHome(Base):
         self.find_element(*self._documentation_link_locator).click()
         self.wait.until(
             EC.text_to_be_present_in_element(
-                (By.CSS_SELECTOR, ".main-content h1"), "Browser extensions"
-            ),
-            message=f'Expected "Browser Extensions" in the page title but got'
-            f' "{self.find_element(By.CSS_SELECTOR, ".main-content h1").text}".',
+                self._documentation_header_page, 'Browser extensions'
+            )
         )
 
     def click_support(self):

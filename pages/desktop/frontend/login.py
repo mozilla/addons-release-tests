@@ -63,11 +63,12 @@ class Login(Base):
     _email_locator = (By.NAME, "email")
     _continue_locator = (By.CSS_SELECTOR, ".button-row button")
     _password_locator = (By.XPATH, "//input[@data-testid='input-field']")
+    _password_register_locator = (By.XPATH, "//input[@data-testid='new-password-input-field']")
     _login_btn_locator = (By.CSS_SELECTOR, "button.cta-primary.cta-xl")
     _repeat_password_locator = (By.ID, "vpassword")
     _age_locator = (By.ID, "age")
-    _code_input_locator = (By.CSS_SELECTOR, ".tooltip-below")
-    _login_card_header_locator = (By.CSS_SELECTOR, ".card-header h1")
+    _code_input_locator = (By.XPATH, "//input[@data-testid='confirm-signup-code-input-field']")
+    _login_card_header_locator = (By.CSS_SELECTOR, ".card h1")
     _2fa_input_locator = (By.CSS_SELECTOR, ".pb-1")
     _confirm_2fa_button_locator = (By.CSS_SELECTOR, ".cta-primary")
     _error_2fa_code_locator = (By.CSS_SELECTOR, ".tooltip-below.invalid")
@@ -216,23 +217,17 @@ class Login(Base):
         self.find_element(*self._email_locator).send_keys(email)
         # catching the geckodriver click() issue, in cae it happens here
         # issue - https://github.com/mozilla/geckodriver/issues/1608
-        try:
-            continue_btn = self.wait.until(
-                EC.element_to_be_clickable((By.ID, "submit-btn"))
+        continue_btn = self.wait.until(
+                EC.element_to_be_clickable((By.CSS_SELECTOR, ".cta-primary"))
             )
-            continue_btn.click()
-        except TimeoutException as error:
-            print(error.msg)
-            pass
+        continue_btn.click()
         # verify that the fxa register form was opened
         self.wait.until(
-            EC.element_to_be_clickable(self._password_locator),
+            EC.element_to_be_clickable(self._password_register_locator),
             message=f"Password input field not displayed; "
             f"FxA card header was {self.find_element(*self._login_card_header_locator).text}",
         )
-        self.find_element(*self._password_locator).send_keys(password)
-        self.find_element(*self._repeat_password_locator).send_keys(password)
-        self.find_element(*self._age_locator).send_keys(23)
+        self.find_element(*self._password_register_locator).send_keys(password)
         self.find_element(*self._login_btn_locator).click()
         # sleep to allow FxA to process the request and communicate with the email client
         time.sleep(3)
