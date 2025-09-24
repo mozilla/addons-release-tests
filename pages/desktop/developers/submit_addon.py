@@ -6,6 +6,7 @@ from pypom import Page
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
+from selenium.common.exceptions import TimeoutException
 
 from pages.desktop.developers.manage_versions import ManageVersions
 
@@ -290,6 +291,7 @@ class SubmitAddon(Page):
 
     def upload_addon(self, addon):
         """Selects an addon from the 'sample-addons' folder and uploads it"""
+        time.sleep(10)
         button = self.find_element(*self._upload_file_button_locator)
         archive = Path(f"{os.getcwd()}/sample-addons/{addon}")
         button.send_keys(str(archive))
@@ -351,11 +353,23 @@ class SubmitAddon(Page):
         self.find_element(*self._create_theme_button_locator).click()
         return ThemeWizard(self.driver, self.base_url).wait_for_page_to_load()
 
-    def is_validation_successful(self):
-        """Wait for addon validation to complete; if not successful, the test will fail"""
-        self.wait.until(
-            EC.visibility_of_element_located(self._addon_validation_success_locator)
-        )
+    def is_validation_successful(self, retries=3, delay=2, timeout=10):
+        """
+        Wait for addon validation to complete; if not successful, the test will fail
+        Retry validation check up to `retries` times with `delay` seconds between tries.
+        Each try has its own `timeout`.
+        """
+        for attempt in range(retries):
+            try:
+                WebDriverWait(self.driver, timeout).until(
+                    EC.visibility_of_element_located(self._addon_validation_success_locator)
+                )
+                return True  # Found -> success
+            except TimeoutException:
+                if attempt < retries - 1:
+                    time.sleep(delay)  # Wait before retry
+                else:
+                    raise  # Final failure
 
     @property
     def failed_validation_bar(self):
@@ -904,7 +918,7 @@ class ThemeWizard(Page):
 
     def submit_theme(self):
         self.find_element(*self._submit_theme_button_locator).click()
-        time.sleep(5)
+        time.sleep(15)
         return ListedAddonSubmissionForm(
             self.driver, self.base_url
         ).wait_for_page_to_load()

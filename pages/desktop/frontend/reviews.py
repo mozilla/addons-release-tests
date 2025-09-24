@@ -111,7 +111,7 @@ class Reviews(Base):
             By.CSS_SELECTOR,
             ".ConfirmationDialog-confirm-button",
         )
-        _flag_review_button_locator = (By.CSS_SELECTOR, ".FlagReviewMenu-menu")
+        _flag_review_button_locator = (By.XPATH, "//button[@class='TooltipMenu-opener AddonReviewCard-control FlagReviewMenu-menu']")
         _flag_review_menu_options = (By.CSS_SELECTOR, ".TooltipMenu-inner button")
         _flag_review_success_text = (By.CSS_SELECTOR, ".TooltipMenu-inner li")
         _flag_review_login_button = (
@@ -129,9 +129,9 @@ class Reviews(Base):
             ".AddonReviewCard-reply .ShowMoreCard-contents > div",
         )
         _dev_reply_header_locator = (By.CSS_SELECTOR, ".UserReview-reply-header")
-        _flag_spam_option_locator = (By.CSS_SELECTOR, ".FlagReviewMenu-flag-spam-item")
-        _flag_bug_option_locator = (By.CSS_SELECTOR, ".FlagReviewMenu-flag-bug-support-item")
-        _flag_language_option_locator = (By.CSS_SELECTOR, ".FlagReviewMenu-flag-language-item")
+        _flag_spam_option_locator = (By.XPATH, "//ul[@class='TooltipMenu-list']//li[1]")
+        _flag_bug_option_locator = (By.XPATH, "//ul[@class='TooltipMenu-list']//li[2]")
+        _flag_language_option_locator = (By.XPATH, "//ul[@class='TooltipMenu-list']//li[3]")
 
         @property
         def rating_stars(self):
@@ -160,7 +160,7 @@ class Reviews(Base):
             self.find_element(*self._flag_review_button_locator).click()
             self.wait.until(
                 expected.visibility_of_element_located(
-                    (By.CSS_SELECTOR, ".TooltipMenu-list")
+                    (By.ID, "flag-review-TooltipMenu")
                 ),
                 message="The flag review menu did not open",
             )

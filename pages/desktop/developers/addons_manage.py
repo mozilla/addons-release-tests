@@ -1,3 +1,5 @@
+import time
+
 from pypom import Region
 
 from selenium.webdriver.common.by import By
@@ -61,5 +63,7 @@ class ManageAddons(Base):
             return self.find_element(*self._addon_name_locator).text
 
         def click_addon_name(self):
+            time.sleep(5)
             self.find_element(*self._addon_edit_link_locator).click()
+            time.sleep(5)
             return EditAddon(self.driver, self.page.base_url).wait_for_page_to_load()

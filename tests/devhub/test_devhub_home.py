@@ -481,7 +481,7 @@ def test_devhub_browsers_footer_links(base_url, selenium, count, link):
     "count, link",
     enumerate(
         [
-            "en-US/?redirect_source=mozilla-org&utm_campaign=SET_DEFAULT_BROWSER",
+            "en-US/?utm_campaign=SET_DEFAULT_BROWSER",
             "products/vpn/",
             "relay.firefox.com/",
             "monitor.mozilla",

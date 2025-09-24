@@ -188,7 +188,7 @@ class ReviewerToolsHomepage(Base):
         new_tab = self.driver.window_handles[1]
         self.driver.switch_to.window(new_tab)
         self.wait.until(
-            EC.visibility_of_element_located((By.ID, "Add-on_Review_Guide"))
+            EC.visibility_of_element_located((By.XPATH, "//span[@id='Add-on_Review_Guide']"))
         )
         self.driver.close()
         self.driver.switch_to.window(current_tab)
