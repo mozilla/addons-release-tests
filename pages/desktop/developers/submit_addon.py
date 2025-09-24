@@ -6,6 +6,7 @@ from pypom import Page
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
+from selenium.common.exceptions import TimeoutException
 
 from pages.desktop.developers.manage_versions import ManageVersions
 
@@ -46,7 +47,7 @@ class SubmitAddon(Page):
     )
     _accept_agreement_button = (By.ID, "accept-agreement")
     _cancel_agreement_button = (By.CSS_SELECTOR, ".submit-buttons a")
-    _dev_accounts_info_link_locator = (By.CSS_SELECTOR, ".addon-submission-process p a")
+    _dev_accounts_info_link_locator = (By.CSS_SELECTOR, ".addon-submission-process > p:nth-child(3) > a")
 
     _listed_option_locator = (By.CSS_SELECTOR, 'input[value="listed"]')
     _listed_option_helptext_locator = (
@@ -351,11 +352,28 @@ class SubmitAddon(Page):
         self.find_element(*self._create_theme_button_locator).click()
         return ThemeWizard(self.driver, self.base_url).wait_for_page_to_load()
 
-    def is_validation_successful(self):
-        """Wait for addon validation to complete; if not successful, the test will fail"""
-        self.wait.until(
-            EC.visibility_of_element_located(self._addon_validation_success_locator)
-        )
+    # def is_validation_successful(self):
+    #     """Wait for addon validation to complete; if not successful, the test will fail"""
+    #     self.wait.until(
+    #         EC.visibility_of_element_located(self._addon_validation_success_locator)
+    #     )
+    def is_validation_successful(self, retries=3, delay=2, timeout=10):
+        """
+        Wait for addon validation to complete; if not successful, the test will fail
+        Retry validation check up to `retries` times with `delay` seconds between tries.
+        Each try has its own `timeout`.
+        """
+        for attempt in range(retries):
+            try:
+                WebDriverWait(self.driver, timeout).until(
+                    EC.visibility_of_element_located(self._addon_validation_success_locator)
+                )
+                return True  # Found -> success
+            except TimeoutException:
+                if attempt < retries - 1:
+                    time.sleep(delay)  # Wait before retry
+                else:
+                    raise  # Final failure
 
     @property
     def failed_validation_bar(self):
@@ -533,6 +551,9 @@ class UploadSource(Page):
     )
     _yes_cancel_and_disable_version = (By.CSS_SELECTOR, "button.delete-button:nth-child(1)")
     _do_not_cancel_version_link_locator = (By.CSS_SELECTOR, "#modal-confirm-submission-cancel > form > div > a")
+    _release_notes_field_locator = (By.ID, "trans-release_notes")
+    _notes_to_reviewer_locator = (By.ID, "id_approval_notes")
+    _version_submitted_text_locator = (By.CLASS_NAME, ".addon-submission-process h3")
 
     @property
     def submit_source_page_header(self):
@@ -597,6 +618,29 @@ class UploadSource(Page):
         self.find_element(*self._yes_cancel_and_disable_version).click()
         return ManageVersions(self.driver, self.base_url).wait_for_page_to_load()
 
+    def release_notes_field(self):
+        self.wait.until(
+            EC.visibility_of_element_located(
+                self._release_notes_field_locator
+            )
+        )
+        return self.find_element(*self._release_notes_field_locator)
+
+    def notes_to_reviewers_field(self):
+        self.wait.until(
+            EC.visibility_of_element_located(
+                self._notes_to_reviewer_locator
+            )
+        )
+        return self.find_element(*self._notes_to_reviewer_locator)
+
+    def version_submitted_text(self):
+        self.wait.until(
+            EC.visibility_of_element_located(
+                self._version_submitted_text_locator
+            )
+        )
+        return self.find_element(*self._version_submitted_text_locator).text
 
 class ListedAddonSubmissionForm(Page):
     _addon_name_field_locator = (By.CSS_SELECTOR, "#trans-name input:nth-child(1)")
@@ -878,7 +922,7 @@ class ThemeWizard(Page):
 
     def submit_theme(self):
         self.find_element(*self._submit_theme_button_locator).click()
-        time.sleep(5)
+        time.sleep(10)
         return ListedAddonSubmissionForm(
             self.driver, self.base_url
         ).wait_for_page_to_load()

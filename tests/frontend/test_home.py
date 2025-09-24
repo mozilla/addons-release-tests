@@ -286,7 +286,7 @@ def test_mozilla_footer_link_tc_id_c95105(base_url, selenium, wait):
             ["add-on-policies", ".page-hero-description h1"],
             ["blog.mozilla.org", ".site-title-wrap"],
             ["discourse", ".category-list"],
-            ["Contact_us", ".main-page-content"],
+            ["Contact_us", ".reference-layout__header h1"],
             ["review_guide", "#review-guide"],
         ]
     ),
@@ -318,9 +318,9 @@ def test_addons_footer_links_tc_id_c95105(base_url, selenium, count, link):
     "count, link",
     enumerate(
         [
-            ["firefox/new", "//a[@data-testid='download-button-thanks']"],
-            ["firefox/browsers/mobile/", "//a[@data-cta-text='Download (Android)']"],
-            ["firefox/enterprise/", "//a[@id='primary-download-button']"],
+            ["https://www.firefox.com/en-US/?redirect_source=mozilla-org&utm_campaign=SET_DEFAULT_BROWSER", "//a[@data-testid='download-button-thanks']"],
+            ["browsers/mobile/", "//a[@data-cta-text='Download (Android)']"],
+            ["browsers/enterprise/", "//a[@id='primary-download-button']"],
         ]
     ),
     ids=[
@@ -345,7 +345,7 @@ def test_browsers_footer_links_tc_id_c95105(base_url, selenium, count, link, wai
     "count, link",
     enumerate(
         [
-            ["https://www.mozilla.org/en-US/firefox/new/?utm_campaign=SET_DEFAULT_BROWSER", ".mzp-t-product-firefox"],
+            ["https://www.firefox.com/en-US/?utm_campaign=SET_DEFAULT_BROWSER", ".c-intro-download"],
             ["products/vpn/", ".c-sub-navigation-title"],
             ["relay.firefox.com/", ".Layout_logo__V4UCI"],
             ["monitor.mozilla", ".PublicShell_logo__vbvvO"],

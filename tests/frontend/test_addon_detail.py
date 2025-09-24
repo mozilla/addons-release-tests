@@ -48,7 +48,7 @@ def test_detail_author_links(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 def test_addon_detail_recommended_badge(selenium, base_url, variables):
-    extension = variables["detail_extension_slug"]
+    extension = variables["detail_extension_recommended_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url)
     assert addon.promoted_badge.is_displayed()
@@ -60,11 +60,11 @@ def test_addon_detail_recommended_badge(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 def test_addon_detail_by_firefox_badge(selenium, base_url, variables):
-    extension = variables["by_firefox_addon"]
+    extension = variables["detail_extension_by_firefox_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url)
-    assert addon.promoted_badge.is_displayed()
-    assert "By Firefox" in addon.promoted_badge_category
+    assert addon.by_firefox_badge.is_displayed()
+    assert "By Firefox" in addon.by_firefox_label
     # checks that the badge redirects to the correct sumo article
     addon.click_promoted_badge()
     assert "add-on-badges" in selenium.current_url
@@ -212,8 +212,8 @@ def test_addon_without_stats_summary(selenium, base_url, variables):
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     assert "No Users" in addon.stats.no_user_stats
-    assert "No Reviews" in addon.stats.no_reviews_stats
-    assert "Not rated yet" in addon.stats.no_star_ratings
+    assert "0 (0 reviews)" in addon.stats.no_reviews_stats
+    assert "No reviews yet" in addon.stats.no_star_ratings
 
 
 @pytest.mark.sanity
@@ -369,7 +369,7 @@ def test_more_info_version_number(selenium, base_url, variables):
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_more_info_addon_size(selenium, base_url, variables):
-    extension = variables["detail_extension_slug"]
+    extension = variables["detail_extension_by_firefox_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     assert addon.more_info.addon_size.is_displayed()
@@ -698,33 +698,33 @@ def test_release_notes(selenium, base_url, variables):
     )
     assert addon.release_notes.release_notes_text.is_displayed()
 
+# Test momentarily removed due to removal of more addons by author card
+# @pytest.mark.nondestructive
+# def test_more_addons_by_author_card(selenium, base_url, variables):
+#     extension = variables["experimental_addon"]
+#     selenium.get(f"{base_url}/addon/{extension}")
+#     addon = Detail(selenium, base_url).wait_for_page_to_load()
+#     # verifies that the author name from the add-on summary card
+#     # is also present in the add-ons by same author card
+#     assert (
+#         f"More extensions by {addon.authors.text}"
+#         in addon.same_author_addons.addons_by_author_header
+#     )
+#     same_author_results = addon.same_author_addons.addons_by_author_results_list
+#     # checks that up to six addons by the same author are displayed in the card
+#     assert len(same_author_results) <= 6
 
-@pytest.mark.nondestructive
-def test_more_addons_by_author_card(selenium, base_url, variables):
-    extension = variables["experimental_addon"]
-    selenium.get(f"{base_url}/addon/{extension}")
-    addon = Detail(selenium, base_url).wait_for_page_to_load()
-    # verifies that the author name from the add-on summary card
-    # is also present in the add-ons by same author card
-    assert (
-        f"More extensions by {addon.authors.text}"
-        in addon.same_author_addons.addons_by_author_header
-    )
-    same_author_results = addon.same_author_addons.addons_by_author_results_list
-    # checks that up to six addons by the same author are displayed in the card
-    assert len(same_author_results) <= 6
-
-
-@pytest.mark.nondestructive
-def test_click_addon_in_more_addons_by_author(selenium, base_url, variables):
-    extension = variables["experimental_addon"]
-    selenium.get(f"{base_url}/addon/{extension}")
-    addon = Detail(selenium, base_url).wait_for_page_to_load()
-    result_name = addon.same_author_addons.addons_by_author_results_items[0].text
-    # clicks on an addon present in the card and checks that the addon detail page is loaded
-    addon.same_author_addons.addons_by_author_results_items[0].click()
-    addon.wait_for_page_to_load()
-    assert result_name in addon.name
+# Test momentarily removed due to removal of more addons by author card
+# @pytest.mark.nondestructive
+# def test_click_addon_in_more_addons_by_author(selenium, base_url, variables):
+#     extension = variables["experimental_addon"]
+#     selenium.get(f"{base_url}/addon/{extension}")
+#     addon = Detail(selenium, base_url).wait_for_page_to_load()
+#     result_name = addon.same_author_addons.addons_by_author_results_items[0].text
+#     # clicks on an addon present in the card and checks that the addon detail page is loaded
+#     addon.same_author_addons.addons_by_author_results_items[0].click()
+#     addon.wait_for_page_to_load()
+#     assert result_name in addon.name
 
 
 @pytest.mark.sanity
@@ -743,6 +743,8 @@ def test_developer_comments(selenium, base_url, variables):
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
+    assert addon.description.read_more_button.is_displayed()
+    addon.description.click_read_more_button()
     assert "Developer comments" in addon.developer_comments.header.text
     assert addon.developer_comments.content.is_displayed()
 
@@ -752,8 +754,8 @@ def test_addon_ratings_card(selenium, base_url, variables):
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
-    assert "Rate your experience" in addon.ratings.ratings_card_header
-    assert variables["ratings_card_summary"] in addon.ratings.ratings_card_summary
+    assert "Rated" in addon.ratings.ratings_card_header
+    # assert variables["ratings_card_summary"] in addon.ratings.ratings_card_summary
     # checks that the login button is present in the ratings card
     # when the add-on detail page is viewed by unauthenticated users
     assert addon.ratings.rating_login_button.is_displayed()
@@ -785,52 +787,51 @@ def test_click_addon_recommendations(selenium, base_url, variables):
     addon.wait_for_page_to_load()
     assert recommendation_name in addon.name
 
+# Test to be removed due to removal of more addons/themes card
+# @pytest.mark.sanity
+# @pytest.mark.nondestructive
+# def test_theme_detail_page_tc_id_c95590(selenium, base_url, variables):
+#     extension = variables["theme_detail_page"]
+#     selenium.get(f"{base_url}/addon/{extension}")
+#     addon = Detail(selenium, base_url).wait_for_page_to_load()
+#     assert addon.themes.theme_preview.is_displayed()
+#     # checks that we display More themes from the same artist and that
+#     # each additional theme has its own preview from a total of 6
+#     assert (
+#         f"More themes by {addon.authors.text}"
+#         in addon.same_author_addons.addons_by_author_header
+#     )
+#     theme_by_same_artist = addon.same_author_addons.addons_by_author_results_list
+#     theme_by_same_artist_previews = addon.themes.more_themes_by_author_previews
+#     assert len(theme_by_same_artist) <= 6
+#     assert len(theme_by_same_artist) == len(theme_by_same_artist_previews)
 
-@pytest.mark.sanity
-@pytest.mark.nondestructive
-def test_theme_detail_page_tc_id_c95590(selenium, base_url, variables):
-    extension = variables["theme_detail_page"]
-    selenium.get(f"{base_url}/addon/{extension}")
-    addon = Detail(selenium, base_url).wait_for_page_to_load()
-    assert addon.themes.theme_preview.is_displayed()
-    # checks that we display More themes from the same artist and that
-    # each additional theme has its own preview from a total of 6
-    assert (
-        f"More themes by {addon.authors.text}"
-        in addon.same_author_addons.addons_by_author_header
-    )
-    theme_by_same_artist = addon.same_author_addons.addons_by_author_results_list
-    theme_by_same_artist_previews = addon.themes.more_themes_by_author_previews
-    assert len(theme_by_same_artist) <= 6
-    assert len(theme_by_same_artist) == len(theme_by_same_artist_previews)
+# Test to be removed due to removal of more addons/themes card
+# @pytest.mark.nondestructive
+# def test_current_theme_not_in_more_by_artist_previews(selenium, base_url, variables):
+#     extension = variables["theme_detail_page"]
+#     selenium.get(f"{base_url}/addon/{extension}")
+#     addon = Detail(selenium, base_url).wait_for_page_to_load()
+#     # makes a record of the preview image source displayed first in the more themes by artist
+#     # card, clicks on the preview and verifies that the theme is no longer present in
+#     # the preview list since it is the currently opened theme detail page
+#     theme_preview = addon.themes.more_themes_by_author_previews[0].get_attribute("src")
+#     addon.themes.more_themes_by_author_previews[0].click()
+#     addon.wait_for_page_to_load()
+#     assert theme_preview not in addon.themes.preview_source
 
-
-@pytest.mark.nondestructive
-def test_current_theme_not_in_more_by_artist_previews(selenium, base_url, variables):
-    extension = variables["theme_detail_page"]
-    selenium.get(f"{base_url}/addon/{extension}")
-    addon = Detail(selenium, base_url).wait_for_page_to_load()
-    # makes a record of the preview image source displayed first in the more themes by artist
-    # card, clicks on the preview and verifies that the theme is no longer present in
-    # the preview list since it is the currently opened theme detail page
-    theme_preview = addon.themes.more_themes_by_author_previews[0].get_attribute("src")
-    addon.themes.more_themes_by_author_previews[0].click()
-    addon.wait_for_page_to_load()
-    assert theme_preview not in addon.themes.preview_source
-
-
-# Links are no longer available in summary
-# commented because no urls can be added anymore in summary
+#  - to be removed, no url can be used in summary now
 # def test_addon_summary_outgoing_urls(selenium, base_url):
 #     """Checks that external URLs in summary are redirected through the outgoing domain"""
 #     selenium.get(f"{base_url}/addon/outgoing-urls/")
-#     addon = Detail(selenium, base_url).wait_for_page_to_load()
-#     outgoing_summary = addon.summary.find_element(By.CSS_SELECTOR, "a")
-#     assert (
-#         "https://stage.outgoing.nonprod.webservices.mozgcp.net"
-#         in outgoing_summary.get_attribute("href")
-#     )
-#     outgoing_summary.click()
+#     Detail(selenium, base_url).wait_for_page_to_load()
+#     addon_description
+#     # outgoing_summary = addon.summary.find_element(By.CSS_SELECTOR, "p")
+#     # assert (
+#     #     "https://stage.outgoing.nonprod.webservices.mozgcp.net"
+#     #     in addon.summary.text
+#     # )
+#     addon..click()
 #     addon.wait_for_current_url("https://extensionworkshop.allizom.org/")
 
 

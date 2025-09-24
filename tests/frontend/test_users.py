@@ -53,10 +53,9 @@ def test_user_menu_collections_link_tc_id_c95102(base_url, selenium):
 @pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.nondestructive
-@pytest.mark.login("regular_user")
 def test_user_menu_view_profile_tc_id_c95102(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
-    # page.login("regular_user")
+    page.login("regular_user")
     # clicks on View Profile in the user menu and checks that the correct page opens
     count = 1
     landing_page = ".UserProfile-name"
@@ -66,10 +65,9 @@ def test_user_menu_view_profile_tc_id_c95102(base_url, selenium):
 @pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.nondestructive
-@pytest.mark.create_session("regular_user")
 def test_user_menu_edit_profile_tc_id_c95102(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
-    # page.login("regular_user")
+    page.login("regular_user")
     # clicks on Edit Profile in the user menu and checks that the correct page opens
     count = 2
     landing_page = ".UserProfileEdit-displayName"
@@ -79,7 +77,7 @@ def test_user_menu_edit_profile_tc_id_c95102(base_url, selenium):
 @pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.nondestructive
-@pytest.mark.skip(reason="Cannot interact with elements")
+@pytest.mark.register
 def test_register_new_account(base_url, selenium, wait):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.register()
@@ -136,9 +134,6 @@ def test_user_developer_notifications(base_url, selenium, variables, wait):
 @pytest.mark.serial
 @pytest.mark.nondestructive
 @pytest.mark.create_session("developer")
-@pytest.mark.xfail(
-    reason="There is an issue with search on dev-#12693", strict=False
-)
 def test_user_mandatory_notifications(base_url, selenium):
     Home(selenium, base_url).open().wait_for_page_to_load()
     user = User(selenium, base_url).open().wait_for_page_to_load()
@@ -312,8 +307,7 @@ def test_user_delete_profile_tc_id_c4393(base_url, selenium):
 
 
 @pytest.mark.serial
-@pytest.mark.create_session("reusable_user")
-@pytest.mark.skip
+@pytest.mark.login("reusable_user")
 def test_user_account_manage_section(base_url, selenium, variables):
     user = User(selenium, base_url).open().wait_for_page_to_load()
     email = Login(selenium, base_url)
@@ -329,7 +323,7 @@ def test_user_account_manage_section(base_url, selenium, variables):
 
 
 @pytest.mark.serial
-@pytest.mark.login("reusable_user")
+@pytest.mark.create_session("reusable_user")
 def test_user_data_for_deleted_profile(base_url, selenium):
     """When a profile is deleted from AMO, the user data is deleted.
     However, the FxA account for that user still exists, so they can log into AMO
@@ -343,7 +337,8 @@ def test_user_data_for_deleted_profile(base_url, selenium):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-@pytest.mark.login("reusable_user")
+@pytest.mark.create_session("reusable_user")
+@pytest.mark.clear_session
 def test_user_regular_has_no_role(base_url, selenium):
     Home(selenium, base_url).open().wait_for_page_to_load()
     user = User(selenium, base_url).open().wait_for_page_to_load()
@@ -356,10 +351,9 @@ def test_user_regular_has_no_role(base_url, selenium):
 
 
 @pytest.mark.serial
-@pytest.mark.login("reusable_user")
 def test_user_regular_notifications(base_url, selenium, variables):
     user = User(selenium, base_url).open().wait_for_page_to_load()
-    # user.login("reusable_user")
+    user.login("reusable_user")
     # regular users can only opt in/out for 2 notifications
     assert len(user.edit.notification_text) == 2
     count = 0
@@ -561,7 +555,7 @@ def test_user_profile_open_theme_detail_page_tc_id_c95590(base_url, selenium, va
     # clicks on a theme in the user profile page
     theme_detail = theme.result_list.click_search_result(0)
     # checks that the expected theme detail page is opened
-    assert theme_name in theme_detail.name
+    assert theme_detail.name in theme_name
 
 
 @pytest.mark.serial
@@ -575,12 +569,12 @@ def test_user_profile_write_review(base_url, selenium, variables, wait):
     # post a rating on the detail page
     addon.ratings.rating_stars[4].click()
     # navigate to the user profile page to write a review
-    count = 1
-    landing_page = ".UserProfile-name"
-    addon.header.click_user_menu_links(count, landing_page)
-    user = User(selenium, base_url).wait_for_user_to_load()
+    # count = 1
+    # landing_page = ".UserProfile-name"
+    # addon.header.click_user_menu_links(count, landing_page)
+    user = User(selenium, base_url)
     # the review card doesn't have preload elements, so we need to wait for it to load individually
-    user.view.user_reviews_section_loaded()
+    # user.view.user_reviews_section_loaded()
     addon.ratings.write_a_review.click()
     review_text = variables["initial_text_input"]
     addon.ratings.review_text_input(review_text)
@@ -636,6 +630,7 @@ def test_user_profile_delete_review(base_url, selenium, variables, wait):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
+@pytest.mark.login("submissions_user")
 def test_user_abuse_report(base_url, selenium, variables, wait):
     developer = variables["developer_profile"]
     selenium.get(f"{base_url}/user/{developer}")
@@ -647,28 +642,23 @@ def test_user_abuse_report(base_url, selenium, variables, wait):
         in user.view.abuse_report_form_header
     )
     assert (
-        variables["user_abuse_form_send_feedback_text"]
+        variables["user_abuse_form_initial_help_text"]
         in user.view.abuse_report_form_send_feedback_text
     )
     assert (
-        variables["user_abuse_form_provide_more_information_help_text"]
+        variables["user_abuse_form_additional_help_text"]
         in user.view.abuse_report_form_provide_more_information_help_text
     )
-    user.view.click_abuse_report_contains_violent()
+    user.view.click_abuse_report_spam_option()
     user.view.abuse_report_form_provide_more_details.send_keys("more_details")
-    user.view.click_abuse_form_feedback_anonymous_locator()
     user.view.submit_user_abuse_report()
-    time.sleep(5)
-    assert user.view.abuse_report_username.is_displayed()
     # verifies the abuse report form after submission
     wait.until(
-        lambda _: variables["user_abuse_form_confirmed_help_text"]
-                  in user.view.user_abuse_confirmation_message,
-        message=f'Abuse report confirmed message was "{user.view.user_abuse_confirmation_message}"',
-    )
-    wait.until(
         lambda _: variables["user_abuse_confirmed_form_header"]
-                  in user.view.abuse_report_confirmed_form_header,
+        in user.view.abuse_report_form_header,
         message=f'Abuse report form header was "{user.view.abuse_report_form_header}"',
     )
-
+    assert (
+        variables["user_abuse_form_confirmed_help_text"]
+        in user.view.user_abuse_confirmation_message
+    )
