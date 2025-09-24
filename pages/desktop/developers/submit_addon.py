@@ -291,6 +291,7 @@ class SubmitAddon(Page):
 
     def upload_addon(self, addon):
         """Selects an addon from the 'sample-addons' folder and uploads it"""
+        time.sleep(10)
         button = self.find_element(*self._upload_file_button_locator)
         archive = Path(f"{os.getcwd()}/sample-addons/{addon}")
         button.send_keys(str(archive))
