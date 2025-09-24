@@ -463,7 +463,7 @@ def test_submit_unicode_addon_tc_id_c4590(
 
 
 @pytest.mark.serial
-@pytest.mark.create_session("submissions_user")
+@pytest.mark.login("submissions_user")
 def test_addon_validation_warning_tc_id_c2283005(selenium, base_url, variables, wait):
     """Test validation results when addons trigger some warnings"""
     selenium.get(f"{base_url}/developers/addon/submit/upload-listed")

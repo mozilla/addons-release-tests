@@ -698,33 +698,33 @@ def test_release_notes(selenium, base_url, variables):
     )
     assert addon.release_notes.release_notes_text.is_displayed()
 
+# Test momentarily removed due to removal of more addons by author card
+# @pytest.mark.nondestructive
+# def test_more_addons_by_author_card(selenium, base_url, variables):
+#     extension = variables["experimental_addon"]
+#     selenium.get(f"{base_url}/addon/{extension}")
+#     addon = Detail(selenium, base_url).wait_for_page_to_load()
+#     # verifies that the author name from the add-on summary card
+#     # is also present in the add-ons by same author card
+#     assert (
+#         f"More extensions by {addon.authors.text}"
+#         in addon.same_author_addons.addons_by_author_header
+#     )
+#     same_author_results = addon.same_author_addons.addons_by_author_results_list
+#     # checks that up to six addons by the same author are displayed in the card
+#     assert len(same_author_results) <= 6
 
-@pytest.mark.nondestructive
-def test_more_addons_by_author_card(selenium, base_url, variables):
-    extension = variables["experimental_addon"]
-    selenium.get(f"{base_url}/addon/{extension}")
-    addon = Detail(selenium, base_url).wait_for_page_to_load()
-    # verifies that the author name from the add-on summary card
-    # is also present in the add-ons by same author card
-    assert (
-        f"More extensions by {addon.authors.text}"
-        in addon.same_author_addons.addons_by_author_header
-    )
-    same_author_results = addon.same_author_addons.addons_by_author_results_list
-    # checks that up to six addons by the same author are displayed in the card
-    assert len(same_author_results) <= 6
-
-
-@pytest.mark.nondestructive
-def test_click_addon_in_more_addons_by_author(selenium, base_url, variables):
-    extension = variables["experimental_addon"]
-    selenium.get(f"{base_url}/addon/{extension}")
-    addon = Detail(selenium, base_url).wait_for_page_to_load()
-    result_name = addon.same_author_addons.addons_by_author_results_items[0].text
-    # clicks on an addon present in the card and checks that the addon detail page is loaded
-    addon.same_author_addons.addons_by_author_results_items[0].click()
-    addon.wait_for_page_to_load()
-    assert result_name in addon.name
+# Test momentarily removed due to removal of more addons by author card
+# @pytest.mark.nondestructive
+# def test_click_addon_in_more_addons_by_author(selenium, base_url, variables):
+#     extension = variables["experimental_addon"]
+#     selenium.get(f"{base_url}/addon/{extension}")
+#     addon = Detail(selenium, base_url).wait_for_page_to_load()
+#     result_name = addon.same_author_addons.addons_by_author_results_items[0].text
+#     # clicks on an addon present in the card and checks that the addon detail page is loaded
+#     addon.same_author_addons.addons_by_author_results_items[0].click()
+#     addon.wait_for_page_to_load()
+#     assert result_name in addon.name
 
 
 @pytest.mark.sanity
@@ -787,38 +787,38 @@ def test_click_addon_recommendations(selenium, base_url, variables):
     addon.wait_for_page_to_load()
     assert recommendation_name in addon.name
 
+# Test to be removed due to removal of more addons/themes card
+# @pytest.mark.sanity
+# @pytest.mark.nondestructive
+# def test_theme_detail_page_tc_id_c95590(selenium, base_url, variables):
+#     extension = variables["theme_detail_page"]
+#     selenium.get(f"{base_url}/addon/{extension}")
+#     addon = Detail(selenium, base_url).wait_for_page_to_load()
+#     assert addon.themes.theme_preview.is_displayed()
+#     # checks that we display More themes from the same artist and that
+#     # each additional theme has its own preview from a total of 6
+#     assert (
+#         f"More themes by {addon.authors.text}"
+#         in addon.same_author_addons.addons_by_author_header
+#     )
+#     theme_by_same_artist = addon.same_author_addons.addons_by_author_results_list
+#     theme_by_same_artist_previews = addon.themes.more_themes_by_author_previews
+#     assert len(theme_by_same_artist) <= 6
+#     assert len(theme_by_same_artist) == len(theme_by_same_artist_previews)
 
-@pytest.mark.sanity
-@pytest.mark.nondestructive
-def test_theme_detail_page_tc_id_c95590(selenium, base_url, variables):
-    extension = variables["theme_detail_page"]
-    selenium.get(f"{base_url}/addon/{extension}")
-    addon = Detail(selenium, base_url).wait_for_page_to_load()
-    assert addon.themes.theme_preview.is_displayed()
-    # checks that we display More themes from the same artist and that
-    # each additional theme has its own preview from a total of 6
-    assert (
-        f"More themes by {addon.authors.text}"
-        in addon.same_author_addons.addons_by_author_header
-    )
-    theme_by_same_artist = addon.same_author_addons.addons_by_author_results_list
-    theme_by_same_artist_previews = addon.themes.more_themes_by_author_previews
-    assert len(theme_by_same_artist) <= 6
-    assert len(theme_by_same_artist) == len(theme_by_same_artist_previews)
-
-
-@pytest.mark.nondestructive
-def test_current_theme_not_in_more_by_artist_previews(selenium, base_url, variables):
-    extension = variables["theme_detail_page"]
-    selenium.get(f"{base_url}/addon/{extension}")
-    addon = Detail(selenium, base_url).wait_for_page_to_load()
-    # makes a record of the preview image source displayed first in the more themes by artist
-    # card, clicks on the preview and verifies that the theme is no longer present in
-    # the preview list since it is the currently opened theme detail page
-    theme_preview = addon.themes.more_themes_by_author_previews[0].get_attribute("src")
-    addon.themes.more_themes_by_author_previews[0].click()
-    addon.wait_for_page_to_load()
-    assert theme_preview not in addon.themes.preview_source
+# Test to be removed due to removal of more addons/themes card
+# @pytest.mark.nondestructive
+# def test_current_theme_not_in_more_by_artist_previews(selenium, base_url, variables):
+#     extension = variables["theme_detail_page"]
+#     selenium.get(f"{base_url}/addon/{extension}")
+#     addon = Detail(selenium, base_url).wait_for_page_to_load()
+#     # makes a record of the preview image source displayed first in the more themes by artist
+#     # card, clicks on the preview and verifies that the theme is no longer present in
+#     # the preview list since it is the currently opened theme detail page
+#     theme_preview = addon.themes.more_themes_by_author_previews[0].get_attribute("src")
+#     addon.themes.more_themes_by_author_previews[0].click()
+#     addon.wait_for_page_to_load()
+#     assert theme_preview not in addon.themes.preview_source
 
 #  - to be removed, no url can be used in summary now
 # def test_addon_summary_outgoing_urls(selenium, base_url):
