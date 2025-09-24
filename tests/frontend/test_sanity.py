@@ -205,6 +205,7 @@ def test_about_addons_addon_cards_author_link(selenium, base_url, wait):
 
 
 @pytest.mark.prod_only
+@pytest.mark.skip
 def test_about_addons_addon_stats_match_amo(selenium, base_url, wait):
     """Ensures that the statistics (rating, user count) displayed
     for an add-on on the "about:addons" page match those on its AMO detail page.

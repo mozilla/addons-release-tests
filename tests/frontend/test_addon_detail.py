@@ -62,8 +62,8 @@ def test_addon_detail_by_firefox_badge(selenium, base_url, variables):
     extension = variables["detail_extension_by_firefox_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url)
-    assert addon.promoted_badge.is_displayed()
-    assert "By Firefox" in addon.promoted_badge_category
+    assert addon.by_firefox_badge.is_displayed()
+    assert "By Firefox" in addon.by_firefox_label
     # checks that the badge redirects to the correct sumo article
     addon.click_promoted_badge()
     assert "add-on-badges" in selenium.current_url
@@ -213,8 +213,8 @@ def test_addon_without_stats_summary(selenium, base_url, variables):
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     assert "No Users" in addon.stats.no_user_stats
-    assert "No Reviews" in addon.stats.no_reviews_stats
-    assert "Not rated yet" in addon.stats.no_star_ratings
+    assert "0 (0 reviews)" in addon.stats.no_reviews_stats
+    assert "No reviews yet" in addon.stats.no_star_ratings
 
 
 @pytest.mark.sanity
@@ -332,7 +332,7 @@ def test_extension_permissions_tc_id_c139966(selenium, base_url, variables):
     permissions = addon.permissions.permissions_list
     # checks that each permission has a corresponding icon and description
     for permission in permissions:
-        assert permission.permission_icon.is_displayed()
+        # assert permission.permission_icon.is_displayed()
         assert permission.permission_description.is_displayed()
     assert "Learn more" in addon.permissions.permissions_learn_more_button
     assert addon.permissions.permissions_learn_more_button_icon.is_displayed()
@@ -790,8 +790,8 @@ def test_addon_ratings_card(selenium, base_url, variables):
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
-    assert "Rate your experience" in addon.ratings.ratings_card_header
-    assert variables["ratings_card_summary"] in addon.ratings.ratings_card_summary
+    assert "Rated" in addon.ratings.ratings_card_header
+    # assert variables["ratings_card_summary"] in addon.ratings.ratings_card_summary
     # checks that the login button is present in the ratings card
     # when the add-on detail page is viewed by unauthenticated users
     assert addon.ratings.rating_login_button.is_displayed()

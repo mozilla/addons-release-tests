@@ -1,3 +1,5 @@
+import time
+
 import pytest
 
 from pages.desktop.developers.devhub_home import DevHubHome
@@ -140,15 +142,6 @@ def test_submit_a_new_version_for_addon_prod(selenium, base_url, variables, wait
     assert manage_versions.invisible_status_text() in variables["invisible_status_text"]
 
 
-
-
-
-
-    
-
-
-
-
 @pytest.mark.serial
 # The first test starts the browser with a normal login in order to store de session cookie
 @pytest.mark.login("submissions_user")
@@ -160,6 +153,7 @@ def test_submit_unlisted_addon_tc_id_c14886(selenium, base_url, variables, wait)
     submit_addon.click_continue()
     # select an addon to upload
     submit_addon.upload_addon("unlisted-addon.zip")
+    time.sleep(5)
     submit_addon.is_validation_successful()
     assert submit_addon.success_validation_message.is_displayed()
     # on submit source code page, select 'No' as we do not test source code upload here
@@ -267,6 +261,7 @@ def test_submit_listed_addon_tc_id_c4369(selenium, base_url, variables, wait):
     submit_addon.click_continue()
     submit_addon.upload_addon("listed-addon.zip")
     # waits for the validation to complete and checks that is successful
+    time.sleep(10)
     submit_addon.is_validation_successful()
     # checking that the Firefox compatibility checkbox is selected by default
     assert submit_addon.firefox_compat_checkbox.is_selected()
@@ -322,6 +317,7 @@ def test_submit_addon_3mb_size_tc_id_c2274214(selenium, base_url, wait, variable
     submit_addon.click_continue()
     submit_addon.upload_addon("listed_addon_with_img.zip")
     # waits for the validation to complete and checks that is successful
+    time.sleep(10)
     submit_addon.is_validation_successful()
     # checking that the Firefox compatibility checkbox is selected by default
     assert submit_addon.firefox_compat_checkbox.is_selected()
@@ -394,6 +390,7 @@ def test_submit_mixed_addon_versions_tc_id_c14981(selenium, base_url, variables,
     submit_version.click_continue()
     submit_version.upload_addon("mixed-addon-versions.zip")
     # wait for the validation to finish and check if it is successful
+    time.sleep(5)
     submit_version.is_validation_successful()
     assert submit_version.success_validation_message.is_displayed()
     # on submit source code page, select No as we do not test source code upload here
@@ -433,6 +430,7 @@ def test_verify_new_unlisted_version_autoapproval_tc_id_C4372(selenium, base_url
     submit_version = SubmitAddon(selenium).wait_for_page_to_load()
     submit_version.upload_addon("make-addon.zip")
     # wait for the validation to finish and check if it is successful
+    time.sleep(5)
     submit_version.is_validation_successful()
     assert submit_version.success_validation_message.is_displayed()
     submit_version.click_continue()
@@ -482,6 +480,7 @@ def test_submit_unicode_addon_tc_id_c4590(
     wait.until(lambda _: submit_addon.firefox_compat_checkbox.is_selected())
     submit_addon.upload_addon("make-addon.zip")
     # waits for the validation to complete and checks that is successful
+    time.sleep(5)
     submit_addon.is_validation_successful()
     # on submit source code page, select 'No' to upload source code
     source = submit_addon.click_continue_upload_button()
@@ -510,6 +509,7 @@ def test_addon_validation_warning_tc_id_c2283005(selenium, base_url, variables, 
     # checking that the Firefox compatibility checkbox is selected by default
     wait.until(lambda _: submit_addon.firefox_compat_checkbox.is_selected())
     submit_addon.upload_addon("validation-warning.zip")
+    time.sleep(5)
     submit_addon.is_validation_successful()
     assert (
         variables["addon_validation_warning"] in submit_addon.validation_warning_message
@@ -537,6 +537,7 @@ def test_cancel_and_disable_version_during_upload(selenium, base_url, wait):
     # checking that the Firefox compatibility checkbox is selected by default
     wait.until(lambda _: submit_addon.firefox_compat_checkbox.is_selected())
     submit_addon.upload_addon("listed-addon.zip")
+    time.sleep(5)
     submit_addon.is_validation_successful()
     source = submit_addon.click_continue_upload_button()
     # on the source code page click on the "Cancel and Disable version' button
@@ -560,6 +561,7 @@ def test_cancel_and_disable_version_during_upload(selenium, base_url, wait):
 
 @pytest.mark.serial
 @pytest.mark.create_session("submissions_user")
+@pytest.mark.fail
 def test_delete_all_extensions(selenium, base_url):
     """This test will delete all the extensions submitted above to make sure
     we can start over with this user in the following runs and also for

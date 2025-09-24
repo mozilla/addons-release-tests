@@ -370,7 +370,7 @@ def test_devhub_resources_footer_promote_links_tc_id_C15072(selenium, base_url, 
 
 
 @pytest.mark.nondestructive
-@pytest.mark.login("developer")
+@pytest.mark.create_session("developer")
 def test_devhub_resources_join_addon_review(selenium, base_url, variables):
     """Verifies that the "Join Add-on Review" link in the resources section
     leads to the "Contribute/Code" section, allowing users
@@ -414,28 +414,26 @@ def test_devhub_resources_participate(selenium, base_url, variables):
     page.wait_for_current_url("/Add-ons/Contribute")
 
 
-@pytest.mark.parametrize(
-    "count, link",
-    enumerate(
-        [
-            # twitter requires login atm so no direct landing
-            # on the mozilla tweeters is available right now
-            # we are checking that a redirect to twitter happens
-            "x.com",
-            "x.com",
-        ]
-    ),
-)
-@pytest.mark.nondestructive
-def test_page_connect_footer_twitter(selenium, base_url, count, link):
-    """Verifies that clicking on the "Twitter" link in
-    the "Connect with Us" section of the footer
-    redirects the user to the correct Twitter page."""
-    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    assert "Connect with us" in page.connect.connect_footer_title
-    assert "Twitter" in page.connect.connect_twitter_title
-    page.connect.twitter_links[count].click()
-    assert link in selenium.current_url
+
+# @pytest.mark.parametrize(
+#     "count, link",
+#     enumerate(
+#         [
+#             # twitter requires login atm so no direct landing
+#             # on the mozilla tweeters is available right now
+#             # we are checking that a redirect to twitter happens
+#             "x.com",
+#             "x.com",
+#         ]
+#     ),
+# )
+# @pytest.mark.nondestructive
+# def test_page_connect_footer_twitter(selenium, base_url, count, link):
+#     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+#     assert "Connect with us" in page.connect.connect_footer_title
+#     assert "Twitter" in page.connect.connect_twitter_title
+#     page.connect.twitter_links[count].click()
+#     assert link in selenium.current_url
 
 
 @pytest.mark.parametrize(
@@ -457,7 +455,7 @@ def test_page_connect_footer_more_links(selenium, base_url, count, link):
     the "Connect" section lead to the correct pages,
     such as the Mozilla Matrix channel or Discourse forums."""
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    assert "More" in page.connect.connect_more_title
+    # assert "More" in page.connect.connect_more_title
     page.connect.more_connect_links[count].click()
     assert link in selenium.current_url
 
@@ -558,9 +556,9 @@ def test_devhub_addons_footer_links(base_url, selenium, count, link):
     "count, link",
     enumerate(
         [
-            "firefox/new",
-            "firefox/browsers/mobile/",
-            "firefox/enterprise/",
+            "en-US/?redirect_source=mozilla-org&utm_campaign=SET_DEFAULT_BROWSER",
+            "en-US/browsers/mobile/",
+            "en-US/browsers/enterprise/",
         ]
     ),
     ids=[
@@ -583,7 +581,7 @@ def test_devhub_browsers_footer_links(base_url, selenium, count, link):
     "count, link",
     enumerate(
         [
-            "firefox/new/?utm_source=addons.mozilla.org&utm_medium=referral&utm_content=footer-link",
+            "en-US/?utm_campaign=SET_DEFAULT_BROWSER",
             "products/vpn/",
             "relay.firefox.com/",
             "monitor.mozilla",

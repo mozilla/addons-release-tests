@@ -50,13 +50,14 @@ def test_collection_addon_count_is_correct_tc_id_c4478(selenium, base_url, varia
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
+@pytest.mark.login("collection_user")
 def test_collection_creator_and_modified_date_tc_id_c4478(selenium, base_url, variables, wait):
     """Tests if the logged-in user's name is correctly
     displayed as the creator of the collection
     and verifies that the modified date updates correctly
     when editing a collection's description."""
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
-    collections.login("collection_user")
+    # collections.login("collection_user")
     collections.select_collection(0)
     # checks that the display name of the logged in user is present in the meta card
     collections.header.user_header_display_name(
@@ -81,13 +82,14 @@ def test_collection_creator_and_modified_date_tc_id_c4478(selenium, base_url, va
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
+@pytest.mark.create_session("collection_user")
 def test_my_collections_page_items_tc_id_c4478(selenium, base_url, variables):
     """Verifies that various elements are present
     and correctly displayed on the "My Collections" page,
     including collection names, addon counts,
     and collection summaries."""
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
-    collections.login("collection_user")
+    # collections.login("collection_user")
     # checking that various elements are present on the user collections page
     assert "Collections" in collections.collections_summary_card_header
     assert variables["collections_card_summary"] in collections.collections_card_summary
@@ -100,12 +102,13 @@ def test_my_collections_page_items_tc_id_c4478(selenium, base_url, variables):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
+@pytest.mark.create_session("collection_user")
 def test_select_collection_from_list(selenium, base_url, wait):
     """Verifies that when a collection is selected from the list,
     the collection name and addon count match
     those displayed in the collection details."""
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
-    collections.login("collection_user")
+    # collections.login("collection_user")
     # capture collection name and number of add-on displayed in My collections list
     list_collection_name = collections.list[0].name.text
     list_addon_count = collections.list[0].list_addons_count
@@ -422,7 +425,7 @@ def test_confirm_delete_dialog(selenium, base_url):
 @pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.create_session("collection_user")
-@pytest.mark.clear_session
+# @pytest.mark.clear_session
 def test_delete_collection(selenium, base_url):
     """Verifies the process of deleting a collection.
     The test ensures that the collection is removed from the "My Collections" page
@@ -443,6 +446,7 @@ def test_delete_collection(selenium, base_url):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
+@pytest.mark.create_session("collection_user")
 def test_create_collection_from_addon_detail_page(selenium, base_url, variables, wait):
     """Verifies the creation of a new collection directly
     from an addon’s detail page.
@@ -453,7 +457,7 @@ def test_create_collection_from_addon_detail_page(selenium, base_url, variables,
     extension = variables["non_recommended_addon"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
-    addon.login("collection_user")
+    # addon.login("collection_user")
     addon_name = addon.name
     select = Select(addon.add_to_collection.collections_select_field)
     # start the collection crete process from the addon detail page
@@ -531,11 +535,12 @@ def test_collection_sort_addons_by_popularity_tc_id_c4477(selenium, base_url, va
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
+@pytest.mark.create_session("collection_user")
 def test_create_collection_empty_name(selenium, base_url):
     """Ensures that the "Create Collection" button remains disabled
     when the collection name is left empty during the creation process."""
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
-    collections.login("collection_user")
+    # collections.login("collection_user")
     collections.click_create_collection()
     assert collections.create.create_button_disabled.is_displayed()
     collections.create.set_slug("abc")
@@ -544,11 +549,12 @@ def test_create_collection_empty_name(selenium, base_url):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
+@pytest.mark.create_session("collection_user")
 def test_create_collection_with_only_symbols_name(selenium, base_url):
     """Verifies that the "Create Collection" button remains
     disabled when the collection name consists solely of symbols."""
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
-    collections.login("collection_user")
+    # collections.login("collection_user")
     collections.click_create_collection()
     collections.create.set_name("<<!§")
     assert collections.create.create_button_disabled.is_displayed()
@@ -556,11 +562,12 @@ def test_create_collection_with_only_symbols_name(selenium, base_url):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
+@pytest.mark.create_session("collection_user")
 def test_create_collection_with_empty_custom_url(selenium, base_url):
     """Ensures that the "Create Collection" button remains disabled
     if the custom URL (slug) field is left empty when creating a collection."""
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
-    collections.login("collection_user")
+    # collections.login("collection_user")
     collections.click_create_collection()
     collections.create.set_name("collection name")
     collections.create.slug_label_element.clear()
@@ -569,12 +576,13 @@ def test_create_collection_with_empty_custom_url(selenium, base_url):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
+@pytest.mark.create_session("collection_user")
 def test_create_collection_with_already_used_url(selenium, base_url, variables):
     """Try to create a collection with a
     name and URL that are already in use
     by another of the same user's collections"""
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
-    collections.login("collection_user")
+    # collections.login("collection_user")
     collections.click_create_collection()
     collections.create.set_name("reused-slug")
     collections.create.save_collection()
@@ -584,12 +592,14 @@ def test_create_collection_with_already_used_url(selenium, base_url, variables):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
+@pytest.mark.create_session("collection_user")
+@pytest.mark.clear_session
 def test_create_collection_with_invalid_symbols_in_url(selenium, base_url, variables):
     """Verifies that an error message is
     displayed when an invalid symbol
     is used in the custom URL (slug) during collection creation."""
     collections = Collections(selenium, base_url).open().wait_for_page_to_load()
-    collections.login("collection_user")
+    # collections.login("collection_user")
     collections.click_create_collection()
     collections.create.set_name("abc")
     collections.create.set_slug("^_^")

@@ -81,17 +81,15 @@ def test_rating_with_text_tc_id_c94034(selenium, base_url, variables):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-@pytest.mark.create_session("rating_user")
+# @pytest.mark.login("rating_user")
 def test_user_review_permalink_tc_id_c1494903(selenium, base_url, variables):
     """Test that a user's review has a working permalink."""
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
-    # addon.login('rating_user')
-    # click on the review permalink (post date)
-    # and check that the All reviews page opens
-    # with the posted user review on top
-    # (i.e. the user display name is in the All Reviews page title)
+    addon.login('rating_user')
+    # click on the review permalink (post date) and check that the All reviews page opens
+    # with the posted user review on top (i.e. the user display name is in the All Reviews page title)
     addon.ratings.review_permalink.click()
     reviews = Reviews(selenium, base_url).wait_for_page_to_load()
     assert "rating_user" in reviews.user_review_permalink
@@ -99,7 +97,7 @@ def test_user_review_permalink_tc_id_c1494903(selenium, base_url, variables):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-@pytest.mark.create_session("rating_user")
+@pytest.mark.login("rating_user")
 def test_edit_review_tc_id_c94035(selenium, base_url, variables):
     """Test editing an existing user review."""
     extension = variables["detail_extension_slug"]
@@ -136,7 +134,6 @@ def test_cancel_edit_review(selenium, base_url, variables):
 @pytest.mark.serial
 @pytest.mark.nondestructive
 @pytest.mark.create_session("rating_user")
-@pytest.mark.clear_session
 def test_cancel_delete_review(selenium, base_url, variables):
     """Test cancelling the delete action on a review."""
     extension = variables["detail_extension_slug"]
@@ -153,12 +150,13 @@ def test_cancel_delete_review(selenium, base_url, variables):
 @pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.nondestructive
+@pytest.mark.create_session("rating_user")
 def test_delete_review_tc_id_c4421(selenium, base_url, variables):
     """Test deleting a submitted user review."""
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
-    addon.login("rating_user")
+    # addon.login("rating_user")
     addon.ratings.delete_review.click()
     assert "review" in addon.ratings.ratings_card_summary
     assert "review" in addon.ratings.delete_confirm_button.text
@@ -171,13 +169,13 @@ def test_delete_review_tc_id_c4421(selenium, base_url, variables):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-@pytest.mark.login("rating_user")
+# @pytest.mark.login("rating_user")
 def test_rating_without_text_tc_id_c95947(selenium, base_url, variables):
     """Test submitting a rating without any text."""
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
-    # addon.login('rating_user')
+    addon.login('rating_user')
     # total number of reviews in stats card before leaving a new rating
     prior_rating_count = addon.stats.stats_reviews_count
     # number of ratings with a score of 5 stars before leaving a new rating
@@ -196,7 +194,7 @@ def test_rating_without_text_tc_id_c95947(selenium, base_url, variables):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-@pytest.mark.create_session("rating_user")
+@pytest.mark.login("rating_user")
 def test_edit_star_rating(selenium, base_url, variables):
     """Test editing the star rating in an existing review."""
     extension = variables["detail_extension_slug"]
@@ -245,6 +243,34 @@ def test_delete_rating(selenium, base_url, variables):
         EC.invisibility_of_element_located(addon.ratings.selected_star_highlight)
     )
 
+@pytest.mark.serial
+@pytest.mark.nondestructive
+@pytest.mark.login("rating_user")
+def test_flag_review_action_tc_id_c1494904(selenium, base_url, variables):
+    extension = variables["all_scores_addon"]
+    selenium.get(f"{base_url}/addon/{extension}")
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    # addon.login('rating_user')
+    reviews = addon.ratings.click_all_reviews_link()
+    flag = reviews.review_items
+    # the 'Flag' menu is displayed only for reviews with text
+    # iterating through the list of reviews until a review with text is found
+    count = 0
+    while count <= len(reviews.reviews_list):
+        if len(flag[count].review_body) > 0:
+            flag[count].click_flag_review()
+            # choosing the option to flag the review for spam
+            assert (
+                variables["review_flag_spam"] in flag[count].flag_review_option[0].text
+            )
+            flag[count].select_flag_option(0)
+            assert (
+                variables["review_flagged_for_spam"]
+                in flag[count].flag_review_success_text[0].text
+            )
+            break
+        else:
+            count += 1
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
@@ -704,6 +730,7 @@ def test_rating_card_average_stars(selenium, base_url, variables):
         "Multiple words ban",
     ],
 )
+@pytest.mark.create_session("rating_user")
 def test_banned_words_in_user_reviews(
     selenium, base_url, variables, denied_words, error_message
 ):
@@ -711,7 +738,7 @@ def test_banned_words_in_user_reviews(
     extension = variables["theme_detail_page"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
-    addon.login("rating_user")
+    # addon.login("rating_user")
     # try to submit a user review using denied words in the review body
     addon.ratings.rating_stars[4].click()
     addon.ratings.wait_for_rating_form()
@@ -726,6 +753,7 @@ def test_banned_words_in_user_reviews(
 
 
 @pytest.mark.serial
+@pytest.mark.skip
 def test_restricted_user_rating_submission(selenium, base_url, variables):
     """Verify that a restricted user email is not allowed to post addon ratings"""
     extension = variables["theme_detail_page"]

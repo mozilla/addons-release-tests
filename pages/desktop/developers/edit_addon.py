@@ -1,4 +1,5 @@
 import os
+import time
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
@@ -59,6 +60,7 @@ class EditAddon(Base):
     @property
     def last_modified_date(self):
         """Get the date string from the Last Update date section and format it"""
+        time.sleep(10)
         site_date = (
             self.find_element(*self._last_modified_date_locator)
             .text.split("Last Updated: ")[1]

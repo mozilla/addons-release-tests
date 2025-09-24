@@ -134,10 +134,10 @@ class DevHubHome(Base):
         self.find_element(*self._documentation_link_locator).click()
         self.wait.until(
             EC.text_to_be_present_in_element(
-                (By.CSS_SELECTOR, ".main-content h1"), "Browser extensions"
+                (By.CSS_SELECTOR, ".reference-layout__header > h1"), "Browser extensions"
             ),
             message=f'Expected "Browser Extensions" in the page title but got'
-            f' "{self.find_element(By.CSS_SELECTOR, ".main-content h1").text}".',
+            f' "{self.find_element(By.CSS_SELECTOR, ".reference-layout__header > h1").text}".',
         )
 
     def click_support(self):
@@ -458,15 +458,15 @@ class ConnectFooter(Region):
     )
     _more_contact_links_locator = (
         By.CSS_SELECTOR,
-        ".DevHub-Connect-section:nth-child(2) > ul a",
+        ".Before-Icon-matrix",
     )
     _newsletter_header_locator = (
         By.CSS_SELECTOR,
-        ".Devhub-content-copy--Connect div:nth-child(3) h4",
+        ".DevHub-Connect-section h4",
     )
     _newsletter_info_text_locator = (
         By.CSS_SELECTOR,
-        ".Devhub-content-copy--Connect div:nth-child(3) p",
+        ".DevHub-Connect-section p",
     )
     _newsletter_email_input_field_locator = (By.ID, "email")
     _newsletter_sign_up_button_locator = (By.CSS_SELECTOR, ".btn-success")

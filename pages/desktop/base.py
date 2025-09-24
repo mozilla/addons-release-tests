@@ -438,7 +438,7 @@ class Header(Region):
         class SearchSuggestionItem(Region):
             _item_name_locator = (By.CLASS_NAME, "SearchSuggestion-name")
             _item_icon_locator = (By.CLASS_NAME, "SearchSuggestion-icon")
-            _promoted_icon_locator = (By.CSS_SELECTOR, ".IconPromotedBadge > span")
+            _promoted_icon_locator = (By.CSS_SELECTOR, ".Icon-recommended")
 
             @property
             def name(self):

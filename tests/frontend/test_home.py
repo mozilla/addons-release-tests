@@ -1,6 +1,7 @@
 """This python file contains tests AMO Home test cases"""
 
 import pytest
+import time
 
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
@@ -306,7 +307,7 @@ def test_mozilla_footer_link_tc_id_c95105(base_url, selenium):
             ["add-on-policies", ".page-hero-description h1"],
             ["blog.mozilla.org", ".site-title-wrap"],
             ["discourse", ".category-list"],
-            ["Contact_us", ".main-page-content"],
+            ["Contact_us", ".reference-layout__header > h1"],
             ["review_guide", "#review-guide"],
         ]
     ),
@@ -324,6 +325,7 @@ def test_mozilla_footer_link_tc_id_c95105(base_url, selenium):
 )
 @pytest.mark.sanity
 @pytest.mark.nondestructive
+@pytest.mark.fail
 def test_addons_footer_links_tc_id_c95105(base_url, selenium, count, link):
     """Verifies the links from the footer"""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
@@ -339,9 +341,9 @@ def test_addons_footer_links_tc_id_c95105(base_url, selenium, count, link):
     "count, link",
     enumerate(
         [
-            ["firefox/new", "#download-button-thanks"],
-            ["firefox/browsers/mobile/", "#android-download"],
-            ["firefox/enterprise/", "#primary-download-button"],
+            ["en-US/?redirect_source", "#download-button-thanks"],
+            ["en-US/browsers/mobile/", "#android-download"],
+            ["en-US/browsers/enterprise/", "#primary-download-button"],
         ]
     ),
     ids=[
@@ -367,7 +369,7 @@ def test_browsers_footer_links_tc_id_c95105(base_url, selenium, count, link):
     "count, link",
     enumerate(
         [
-            ["firefox/new/?utm_content=footer-link&utm_medium=referral&utm_source=addons.mozilla.org", ".mzp-t-product-firefox"],
+            ["https://www.firefox.com/en-US/?utm_campaign=SET_DEFAULT_BROWSER", ".c-intro-download"],
             ["products/vpn/", ".c-sub-navigation-title"],
             ["relay.firefox.com/", ".Layout_logo__V4UCI"],
             ["monitor.mozilla", ".PublicShell_logo__vbvvO"],
@@ -387,6 +389,7 @@ def test_browsers_footer_links_tc_id_c95105(base_url, selenium, count, link):
 def test_products_footer_links_tc_id_c95105(base_url, selenium, count, link):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.footer.products_links[count].click()
+    time.sleep(2)
     page.wait_for_current_url(link[0])
     page.wait.until(
         EC.visibility_of_element_located((By.CSS_SELECTOR, link[1])),
