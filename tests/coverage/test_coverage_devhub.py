@@ -68,7 +68,7 @@ def test_cancel_review_request_tc_id_c1803555(selenium, base_url, variables, wai
 
 
 @pytest.mark.coverage
-@pytest.mark.create_session("submissions_user")
+@pytest.mark.login("submissions_user")
 def test_disable_an_addon_at_submission_tc_id_c1898098(selenium, base_url, wait, variables):
     # Test Case: C1898098 AMO Coverage > Devhub
     """Click on "Submit a new Addon" and upload a listed file"""

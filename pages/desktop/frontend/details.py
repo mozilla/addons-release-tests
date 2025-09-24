@@ -243,6 +243,9 @@ class Detail(Base):
     @property
     def addon_info_text(self):
         """used for privacy policy and license agreement"""
+        self.wait.until(
+            EC.visibility_of_element_located(self._addon_info_text)
+        )
         return self.find_element(*self._addon_info_text)
 
     @property
