@@ -1,3 +1,5 @@
+"""Python file that contains tests regarding categories, badges, extensions"""
+
 import pytest
 
 from selenium.webdriver.support.select import Select
@@ -30,6 +32,7 @@ from pages.desktop.frontend.search import Search
 )
 @pytest.mark.nondestructive
 def test_extensions_categories(base_url, selenium, count, category):
+    """Checks that every exists and works"""
     extensions = Extensions(selenium, base_url).open()
     assert "Categories" in extensions.categories.categories_list_header.text
     # clicking through each Category listed on Extensions homepage
@@ -45,6 +48,7 @@ def test_extensions_categories(base_url, selenium, count, category):
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_extension_landing_header(base_url, selenium):
+    """Test that verifies the extension landing header"""
     extensions = Extensions(selenium, base_url).open()
     # checking that 'Extensions' is underlined in the header menu
     assert "Extensions" in extensions.header.is_active_link
@@ -55,6 +59,7 @@ def test_extension_landing_header(base_url, selenium):
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_recommended_extensions_shelf(base_url, selenium):
+    """Test that verifies the recommended extensions shelf"""
     extensions = Extensions(selenium, base_url).open()
     shelf_items = extensions.shelves.recommended_addons.list
     assert "Recommended extensions" in extensions.shelves.recommended_addons.card_header
@@ -70,6 +75,7 @@ def test_recommended_extensions_shelf(base_url, selenium):
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_browse_more_recommended_extensions(base_url, selenium):
+    """Test that checks the browse more recommended extensions"""
     extensions = Extensions(selenium, base_url).open()
     extensions.shelves.recommended_addons.browse_all()
     assert "type=extension" in selenium.current_url
@@ -82,6 +88,7 @@ def test_browse_more_recommended_extensions(base_url, selenium):
 
 @pytest.mark.nondestructive
 def test_top_rated_extensions(base_url, selenium):
+    """Checks the top rated extensions shelve"""
     extensions = Extensions(selenium, base_url).open()
     shelf_items = extensions.shelves.top_rated_addons.list
     assert "Top rated extensions" in extensions.shelves.top_rated_addons.card_header
@@ -97,6 +104,7 @@ def test_top_rated_extensions(base_url, selenium):
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_browse_more_top_rated_extensions(base_url, selenium):
+    """Checks the browse more top rated extensions"""
     extensions = Extensions(selenium, base_url).open()
     extensions.shelves.top_rated_addons.browse_all()
     assert "sort=rating&type=extension" in selenium.current_url
@@ -114,6 +122,7 @@ def test_browse_more_top_rated_extensions(base_url, selenium):
 
 @pytest.mark.nondestructive
 def test_trending_extensions(base_url, selenium):
+    """Checks the trending extensions shelve"""
     extensions = Extensions(selenium, base_url).open()
     shelf_items = extensions.shelves.trending_addons.list
     assert "Trending extensions" in extensions.shelves.trending_addons.card_header
@@ -129,6 +138,7 @@ def test_trending_extensions(base_url, selenium):
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_browse_more_trending_extensions(base_url, selenium):
+    """Checks the browse more trending extensions page"""
     extensions = Extensions(selenium, base_url).open()
     extensions.shelves.trending_addons.browse_all()
     assert "sort=hotness&type=extension" in selenium.current_url

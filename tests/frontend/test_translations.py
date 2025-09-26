@@ -1,3 +1,4 @@
+"""A python file which contains tests on translations"""
 import pytest
 
 from pages.desktop.frontend.extensions import Extensions
@@ -11,6 +12,7 @@ from pages.desktop.frontend.themes import Themes
     ids=("Italiano", "Español", "Deutsch", "Français"),
 )
 def test_header_translations(base_url, selenium, variables, language):
+    """Tests that the header elements are correctly translated."""
     selenium.get(f"{base_url}/{language}")
     page = Home(selenium, base_url).wait_for_page_to_load()
     assert (
@@ -56,6 +58,7 @@ def test_header_translations(base_url, selenium, variables, language):
     ids=("Italiano", "Español", "Deutsch", "Français"),
 )
 def test_shelf_titles_translations(base_url, selenium, variables, language):
+    """Tests that shelf titles are displayed in the correct language."""
     selenium.get(f"{base_url}/{language}")
     page = Home(selenium, base_url).wait_for_page_to_load()
     assert (
@@ -82,6 +85,7 @@ def test_shelf_titles_translations(base_url, selenium, variables, language):
     ids=("Italiano", "Español", "Deutsch", "Français"),
 )
 def test_extensions_page_translations(base_url, selenium, variables, language):
+    """Tests that the extensions listing page is fully translated."""
     selenium.get(f"{base_url}/{language}/firefox/extensions/")
     page = Extensions(selenium, base_url)
     assert page.title in variables[language]["extensions_page"]["page_header"]
@@ -110,6 +114,7 @@ def test_extensions_page_translations(base_url, selenium, variables, language):
     ids=("Italiano", "Español", "Deutsch", "Français"),
 )
 def test_themes_page_translations(base_url, selenium, variables, language):
+    """Tests that the themes listing page is fully translated."""
     selenium.get(f"{base_url}/{language}/firefox/themes/")
     page = Themes(selenium, base_url)
     assert page.title in variables[language]["themes_page"]["page_header"]

@@ -1,3 +1,4 @@
+"""test_ratings.py focuses on tests regarding the rating fcuntionality"""
 import math
 import pytest
 
@@ -16,8 +17,8 @@ from pages.desktop.frontend.users import User
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_throttled_request_create_rating_spam(selenium, base_url, variables):
-    # this test checks that creating a rating, deleting and trying
-    # to create another rating immediately after will raise throttled request error
+    """this test checks that creating a rating, deleting and trying
+    to create another rating immediately after will raise throttled request error"""
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -39,7 +40,8 @@ def test_throttled_request_create_rating_spam(selenium, base_url, variables):
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_throttled_request_update_rating_spam(selenium, base_url, variables):
-    # this test checks that repeatedly modifying the rating score will raise throttled request error
+    """this test checks that repeatedly modifying
+    the rating score will raise throttled request error"""
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -58,6 +60,7 @@ def test_throttled_request_update_rating_spam(selenium, base_url, variables):
 @pytest.mark.nondestructive
 @pytest.mark.login("rating_user")
 def test_rating_with_text_tc_id_c94034(selenium, base_url, variables):
+    """Test submitting a rating with a text review."""
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -80,6 +83,7 @@ def test_rating_with_text_tc_id_c94034(selenium, base_url, variables):
 @pytest.mark.nondestructive
 # @pytest.mark.login("rating_user")
 def test_user_review_permalink_tc_id_c1494903(selenium, base_url, variables):
+    """Test that a user's review has a working permalink."""
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -95,6 +99,7 @@ def test_user_review_permalink_tc_id_c1494903(selenium, base_url, variables):
 @pytest.mark.nondestructive
 @pytest.mark.login("rating_user")
 def test_edit_review_tc_id_c94035(selenium, base_url, variables):
+    """Test editing an existing user review."""
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -112,6 +117,7 @@ def test_edit_review_tc_id_c94035(selenium, base_url, variables):
 @pytest.mark.nondestructive
 @pytest.mark.create_session("rating_user")
 def test_cancel_edit_review(selenium, base_url, variables):
+    """Test cancelling the edit action on a review."""
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -129,6 +135,7 @@ def test_cancel_edit_review(selenium, base_url, variables):
 @pytest.mark.nondestructive
 @pytest.mark.create_session("rating_user")
 def test_cancel_delete_review(selenium, base_url, variables):
+    """Test cancelling the delete action on a review."""
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -145,6 +152,7 @@ def test_cancel_delete_review(selenium, base_url, variables):
 @pytest.mark.nondestructive
 @pytest.mark.create_session("rating_user")
 def test_delete_review_tc_id_c4421(selenium, base_url, variables):
+    """Test deleting a submitted user review."""
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -163,6 +171,7 @@ def test_delete_review_tc_id_c4421(selenium, base_url, variables):
 @pytest.mark.nondestructive
 # @pytest.mark.login("rating_user")
 def test_rating_without_text_tc_id_c95947(selenium, base_url, variables):
+    """Test submitting a rating without any text."""
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -187,6 +196,7 @@ def test_rating_without_text_tc_id_c95947(selenium, base_url, variables):
 @pytest.mark.nondestructive
 @pytest.mark.login("rating_user")
 def test_edit_star_rating(selenium, base_url, variables):
+    """Test editing the star rating in an existing review."""
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -202,6 +212,7 @@ def test_edit_star_rating(selenium, base_url, variables):
 @pytest.mark.nondestructive
 @pytest.mark.create_session("rating_user")
 def test_link_to_all_reviews(selenium, base_url, variables):
+    """Test the link that navigates to the full list of reviews."""
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -217,6 +228,7 @@ def test_link_to_all_reviews(selenium, base_url, variables):
 @pytest.mark.nondestructive
 @pytest.mark.create_session("rating_user")
 def test_delete_rating(selenium, base_url, variables):
+    """Test deleting a star rating without text."""
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -263,6 +275,7 @@ def test_flag_review_action_tc_id_c1494904(selenium, base_url, variables):
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_all_reviews_page_items(selenium, base_url, variables):
+    """Test that all relevant items are displayed on the all reviews page."""
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -277,6 +290,7 @@ def test_all_reviews_page_items(selenium, base_url, variables):
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_filter_reviews_by_score(selenium, base_url, variables):
+    """Test filtering reviews by score on the all reviews page."""
     extension = variables["all_scores_addon"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -299,6 +313,7 @@ def test_filter_reviews_by_score(selenium, base_url, variables):
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_filter_reviews_from_rating_bars(selenium, base_url, variables):
+    """Test filtering reviews by clicking on rating bars."""
     extension = variables["all_scores_addon"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -319,7 +334,39 @@ def test_filter_reviews_from_rating_bars(selenium, base_url, variables):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
+@pytest.mark.create_session("rating_user")
+def test_flag_review_action_tc_id_c1494904(selenium, base_url, variables):
+    """Test flagging a user review for moderation."""
+    extension = variables["all_scores_addon"]
+    selenium.get(f"{base_url}/addon/{extension}")
+    addon = Detail(selenium, base_url).wait_for_page_to_load()
+    # addon.login('rating_user')
+    reviews = addon.ratings.click_all_reviews_link()
+    flag = reviews.review_items
+    # the 'Flag' menu is displayed only for reviews with text
+    # iterating through the list of reviews until a review with text is found
+    count = 0
+    while count <= len(reviews.reviews_list):
+        if len(flag[count].review_body) > 0:
+            flag[count].click_flag_review()
+            # choosing the option to flag the review for spam
+            assert (
+                variables["review_flag_spam"] in flag[count].flag_review_option[0].text
+            )
+            flag[count].select_flag_option(0)
+            assert (
+                variables["review_flagged_for_spam"]
+                in flag[count].flag_review_success_text[0].text
+            )
+            break
+        else:
+            count += 1
+
+
+@pytest.mark.serial
+@pytest.mark.nondestructive
 def test_flag_missing_for_empty_review_tc_id_c1494904(selenium, base_url, variables):
+    """Test that flag option is not shown for reviews with no text."""
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -355,6 +402,7 @@ def test_flag_missing_for_empty_review_tc_id_c1494904(selenium, base_url, variab
 @pytest.mark.nondestructive
 @pytest.mark.login("rating_user")
 def test_flag_review_menu_options_tc_id_c1494904(selenium, base_url, variables):
+    """Test the options available in the flag review menu."""
     extension = variables["all_scores_addon"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -385,15 +433,14 @@ def test_flag_review_menu_options_tc_id_c1494904(selenium, base_url, variables):
 @pytest.mark.nondestructive
 @pytest.mark.create_session("rating_user")
 def test_click_on_review_posting_time_link(selenium, base_url, variables):
-    # this test checks that if we go to all reviews page and clik on a review's posting time link (ex: 2 months ago)
-    # it displays the review in a different section from the others
+    """this test checks that if we go to all reviews page and clik on a review's posting time link
+        (ex: 2 months ago)
+        it displays the review in a different section from the others"""
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}/reviews")
     reviews = Reviews(selenium, base_url).wait_for_page_to_load()
     # save the review info
-    review_rating = reviews.review_items[0].rating_stars.get_attribute("title")
     review_author = reviews.review_items[0].rating_user.text
-    review_body = reviews.review_items[0].review_body
     # click on posting time link
     reviews.review_items[0].posting_date.click()
     # check that the featured review is the same one
@@ -405,6 +452,7 @@ def test_click_on_review_posting_time_link(selenium, base_url, variables):
 @pytest.mark.nondestructive
 @pytest.mark.create_session("rating_user")
 def test_write_review_in_all_reviews_page(selenium, base_url, variables):
+    """Test writing a new review from the all reviews page."""
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -430,6 +478,7 @@ def test_write_review_in_all_reviews_page(selenium, base_url, variables):
 @pytest.mark.nondestructive
 @pytest.mark.create_session("rating_user")
 def test_edit_review_in_all_reviews_page(selenium, base_url, variables):
+    """Test editing a review directly from the all reviews page."""
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -451,6 +500,7 @@ def test_edit_review_in_all_reviews_page(selenium, base_url, variables):
 @pytest.mark.nondestructive
 @pytest.mark.create_session("rating_user")
 def test_delete_review_in_all_reviews_page(selenium, base_url, variables):
+    """Test deleting a review from the all reviews page."""
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -475,6 +525,7 @@ def test_delete_review_in_all_reviews_page(selenium, base_url, variables):
 @pytest.mark.nondestructive
 @pytest.mark.login("developer")
 def test_developer_reply_to_review(selenium, base_url, variables):
+    """Test that a developer can reply to a user review."""
     extension = variables["dev_reply_review"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -492,6 +543,7 @@ def test_developer_reply_to_review(selenium, base_url, variables):
 @pytest.mark.nondestructive
 @pytest.mark.create_session("developer")
 def test_edit_developer_reply_to_review(selenium, base_url, variables):
+    """Test that a developer can edit their reply to a review."""
     extension = variables["dev_reply_review"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -509,6 +561,7 @@ def test_edit_developer_reply_to_review(selenium, base_url, variables):
 @pytest.mark.nondestructive
 @pytest.mark.create_session("developer")
 def test_delete_developer_reply_to_review(selenium, base_url, variables):
+    """Test that a developer can delete their reply to a review."""
     extension = variables["dev_reply_review"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -528,7 +581,8 @@ def test_delete_developer_reply_to_review(selenium, base_url, variables):
 @pytest.mark.nondestructive
 @pytest.mark.create_session("developer")
 def test_developers_cannot_rate_their_own_addons(selenium, base_url, variables):
-    """Log in as an addon developer and try to post a review to your own addon; the request should fail"""
+    """Log in as an addon developer and try to post a review
+    to your own addon; the request should fail"""
     extension = variables["dev_reply_review"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -539,12 +593,13 @@ def test_developers_cannot_rate_their_own_addons(selenium, base_url, variables):
             (By.CSS_SELECTOR, ".Notice-error"),
             "You can't leave a review on your own add-on.",
         ),
-        message=f"The expected review submission error was not raised",
+        message="The expected review submission error was not raised",
     )
 
 
 @pytest.mark.nondestructive
 def test_rating_card_loaded_correctly(selenium, base_url, variables):
+    """Test that the rating card component loads as expected."""
     selenium.get(variables["addon_version_page_url"])
     page = Versions(selenium, base_url)
     rating_card = page.rating_card
@@ -563,6 +618,7 @@ def test_rating_card_loaded_correctly(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 def test_rating_card_addon_name(selenium, base_url, variables):
+    """Test that the add-on name is correctly displayed in the rating card."""
     selenium.get(variables["addon_version_page_url"])
     page = Versions(selenium, base_url)
     # get title from rating card
@@ -575,6 +631,7 @@ def test_rating_card_addon_name(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 def test_rating_card_authors(selenium, base_url, variables):
+    """Test that author names are displayed on the rating card."""
     selenium.get(f'{base_url}/addon/{variables["addon_with_stats"]}/versions/')
     page = Versions(selenium, base_url)
     addon_title = page.rating_card.addon_title.text
@@ -593,6 +650,7 @@ def test_rating_card_authors(selenium, base_url, variables):
 
 
 def test_rating_card_filled_stars(base_url, selenium, variables):
+    """Test that the correct number of stars are filled in the rating card."""
     selenium.get(variables["addon_version_page_url"])
     page = Versions(selenium, base_url)
     rating = page.rating_card.rating
@@ -609,6 +667,7 @@ def test_rating_card_filled_stars(base_url, selenium, variables):
 
 @pytest.mark.nondestructive
 def test_rating_card_rating_bars(selenium, base_url, variables):
+    """Test that rating bars appear correctly in the rating card."""
     selenium.get(variables["addon_version_page_url"])
     page = Versions(selenium, base_url)
     # iterate through the rating bars
@@ -626,7 +685,7 @@ def test_rating_card_rating_bars(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 def test_rating_card_bar_review_counter(selenium, base_url, variables):
-    # this test verifies that the counter for each bar is correct
+    """this test verifies that the counter for each bar is correct"""
     selenium.get(variables["addon_version_page_url"])
     page = Versions(selenium, base_url)
     for i in range(5):
@@ -639,7 +698,7 @@ def test_rating_card_bar_review_counter(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 def test_rating_card_average_stars(selenium, base_url, variables):
-    # this test calculates the rating average and verifies that the displayed average is correct
+    """this test calculates the rating average and verifies that the displayed average is correct"""
     selenium.get(variables["addon_version_page_url"])
     page = Versions(selenium, base_url)
     total_reviews_number = 0
@@ -675,6 +734,7 @@ def test_rating_card_average_stars(selenium, base_url, variables):
 def test_banned_words_in_user_reviews(
     selenium, base_url, variables, denied_words, error_message
 ):
+    """Test that reviews containing banned words are blocked or flagged."""
     extension = variables["theme_detail_page"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()

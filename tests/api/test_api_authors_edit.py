@@ -21,6 +21,11 @@ _addon_create = "/api/v5/addons/addon/"
 @pytest.mark.serial
 @pytest.mark.create_session("api_user")
 def test_addon_add_new_author(base_url, session_auth, variables):
+    """This test verifies the process of adding a new author to an add-on via the API.
+    It sends a POST request to the API endpoint with the necessary payload containing
+    the new author's details, including their user ID and position in the authors list.
+    The test checks that the response status is 201 Created and verifies that the added
+    author's user ID matches the expected author ID from the payload."""
     addon = payloads.edit_addon_details["slug"]
     author = variables["api_post_valid_author"]
     # create the payload with the fields required for a new author set-up
@@ -42,7 +47,7 @@ def test_addon_add_new_author(base_url, session_auth, variables):
 
 @pytest.mark.serial
 @pytest.mark.create_session("staff_user")
-def test_addon_author_decline_invitation(base_url, session_auth, variables):
+def test_addon_author_decline_invitation(base_url, session_auth):
     """With a user that was invited to become an addon author, decline the invitation received"""
     addon = payloads.edit_addon_details["slug"]
     decline_invite = requests.post(
@@ -120,7 +125,7 @@ def test_addon_add_restricted_author(base_url, session_auth, variables):
 
 @pytest.mark.serial
 @pytest.mark.create_session("api_user")
-def test_addon_add_invalid_authors(base_url, session_auth, variables):
+def test_addon_add_invalid_authors(base_url, session_auth):
     """Try to add a non exiting user as an addon author"""
     addon = payloads.edit_addon_details["slug"]
     payload = {**payloads.author_stats, "user_id": 9999999999, "position": 2}
@@ -327,7 +332,7 @@ def test_addon_invite_same_author_twice(base_url, session_auth, variables):
 
 @pytest.mark.serial
 @pytest.mark.create_session("staff_user")
-def test_addon_confirm_invitation_with_correct_user(base_url, session_auth, variables):
+def test_addon_confirm_invitation_with_correct_user(base_url, session_auth):
     addon = payloads.edit_addon_details["slug"]
     accept_invite = requests.post(
         url=f"{base_url}{_addon_create}{addon}/pending-authors/confirm/",
@@ -400,8 +405,10 @@ def test_addon_developer_role_cannot_edit_pending_author(
 def test_addon_developer_role_cannot_delete_pending_author(
     base_url, session_auth, variables
 ):
-    """Check that an author with a 'developer' role doesn't have the rights to delete other
-    pending authors; only authors with 'owner' roles have the rights to delete them"""
+    """Check that an author with a 'developer' role
+    doesn't have the rights to delete other
+    pending authors; only authors with 'owner'
+    roles have the rights to delete them"""
     addon = payloads.edit_addon_details["slug"]
     author = variables["api_post_additional_author"]
     delete_author = requests.delete(
@@ -457,7 +464,8 @@ def test_addon_author_owner_is_required(base_url, session_auth, variables):
 @pytest.mark.serial
 @pytest.mark.create_session("api_user")
 def test_addon_one_listed_author_is_required(base_url, session_auth, variables):
-    """Check that an addon needs to have at least one author listed on the site"""
+    """Check that an addon needs to have at
+     least one author listed on the site"""
     addon = payloads.edit_addon_details["slug"]
     author = variables["api_addon_author_owner"]
     edit_author = requests.patch(
@@ -479,7 +487,8 @@ def test_addon_one_listed_author_is_required(base_url, session_auth, variables):
 @pytest.mark.serial
 @pytest.mark.create_session("api_user")
 def test_addon_change_non_active_author_details(base_url, session_auth):
-    """Try to edit the details of a user that is not listed as an addon author
+    """Try to edit the details of a user
+    that is not listed as an addon author
     and make sure no unexpected errors are raised"""
     addon = payloads.edit_addon_details["slug"]
     edit_author = requests.patch(
@@ -498,7 +507,9 @@ def test_addon_change_non_active_author_details(base_url, session_auth):
 @pytest.mark.serial
 @pytest.mark.create_session("api_user")
 def test_unauthorized_user_change_author_details(base_url, session_auth, variables):
-    """With a user that is not listed as an addon author, try to edit author details
+    """With a user that is not listed
+    as an addon author,
+    try to edit author details
     and make sure no unexpected errors are raised"""
     author = variables["api_post_valid_author"]
     edit_author = requests.patch(
@@ -517,7 +528,8 @@ def test_unauthorized_user_change_author_details(base_url, session_auth, variabl
 @pytest.mark.serial
 @pytest.mark.create_session("api_user")
 def test_addon_delete_owner_author(base_url, session_auth, variables):
-    """Check that the only owner of an addon cannot be deleted"""
+    """Check that the only owner
+    of an addon cannot be deleted"""
     addon = payloads.edit_addon_details["slug"]
     author = variables["api_addon_author_owner"]
     delete_owner = requests.delete(
@@ -535,7 +547,8 @@ def test_addon_delete_owner_author(base_url, session_auth, variables):
 @pytest.mark.serial
 @pytest.mark.create_session("staff_user")
 def test_addon_developer_role_cannot_edit_authors(base_url, session_auth, variables):
-    """An author with a developer role should not be allowed to edit existing authors,
+    """An author with a developer role should
+    not be allowed to edit existing authors,
     like elevating their role to owners for example"""
     addon = payloads.edit_addon_details["slug"]
     author = variables["api_post_valid_author"]
@@ -559,7 +572,8 @@ def test_addon_developer_role_cannot_edit_authors(base_url, session_auth, variab
 @pytest.mark.serial
 @pytest.mark.create_session("staff_user")
 def test_addon_developer_role_cannot_delete_authors(base_url, session_auth, variables):
-    """An author with a developer role should not be allowed to delete existing authors"""
+    """An author with a developer role should
+    not be allowed to delete existing authors"""
     addon = payloads.edit_addon_details["slug"]
     author = variables["api_post_valid_author"]
     # send the patch author requests with the developer role
@@ -578,7 +592,8 @@ def test_addon_developer_role_cannot_delete_authors(base_url, session_auth, vari
 @pytest.mark.serial
 @pytest.mark.create_session("staff_user")
 def test_addon_developer_role_cannot_delete_addon(base_url, session_auth):
-    """Verify that an addon cannot be deleted by an author with a developer role;
+    """Verify that an addon cannot be deleted
+    by an author with a developer role;
     only owners are allowed to delete addons"""
     addon = payloads.edit_addon_details["slug"]
     delete_addon = requests.get(
@@ -599,7 +614,8 @@ def test_addon_developer_role_cannot_delete_addon(base_url, session_auth):
 def test_addon_developer_role_can_request_author_details(
     selenium, base_url, variables, session_auth
 ):
-    """Verify that an author with a developer role can view details for existing addon authors"""
+    """Verify that an author with a developer
+     role can view details for existing addon authors"""
     addon = payloads.edit_addon_details["slug"]
     author = variables["api_post_valid_author"]
     # send the patch author requests with the developer role
@@ -618,7 +634,8 @@ def test_addon_developer_role_can_request_author_details(
 @pytest.mark.serial
 @pytest.mark.create_session("api_user")
 def test_addon_change_author_stats(base_url, session_auth, variables):
-    """Change the details - role, visibility, position - of an exiting author
+    """Change the details - role, visibility,
+    position - of an exiting author
     and verify that changes were applied correctly"""
     addon = payloads.edit_addon_details["slug"]
     author = variables["api_post_valid_author"]
@@ -641,7 +658,8 @@ def test_addon_change_author_stats(base_url, session_auth, variables):
 @pytest.mark.serial
 @pytest.mark.create_session("api_user")
 def test_addon_delete_all_active_and_pending_authors(base_url, session_auth, variables):
-    """As the addon owner, delete all additional authors (pending or active)"""
+    """As the addon owner, delete all
+     additional authors (pending or active)"""
     addon = payloads.edit_addon_details["slug"]
     active_author = variables["api_post_valid_author"]
     pending_author = variables["api_post_additional_author"]

@@ -1,3 +1,5 @@
+"""This python file contains tests for the pages whose content do not change
+    when a user visits them"""
 import pytest
 import requests
 
@@ -7,10 +9,8 @@ from pages.desktop.frontend.home import Home
 from pages.desktop.frontend.static_pages import StaticPages
 
 @pytest.mark.nondestructive
-@pytest.mark.xfail(
-    reason="There is an issue with search on stage-#16610", strict=False
-)
-def test_about_firefox_addons_page_links(base_url, selenium, variables):
+def test_about_firefox_addons_page_links(base_url, selenium):
+    """Check the links from About Firefox"""
     Home(selenium, base_url).open().wait_for_page_to_load()
     selenium.get(f"{base_url}/about")
     page = StaticPages(selenium, base_url).wait_for_page_to_load()
@@ -30,6 +30,7 @@ def test_about_firefox_addons_page_links(base_url, selenium, variables):
 
 @pytest.mark.nondestructive
 def test_review_guidelines_page_loaded_correctly(base_url, selenium):
+    """Test that verifies the review guidelines page"""
     selenium.get(f"{base_url}/review_guide")
     page = StaticPages(selenium, base_url)
     # verify the tab title
@@ -44,7 +45,8 @@ def test_review_guidelines_page_loaded_correctly(base_url, selenium):
 
 
 @pytest.mark.nondestructive
-def test_about_firefox_addons_page_loaded_correctly(base_url, selenium, variables):
+def test_about_firefox_addons_page_loaded_correctly(base_url, selenium):
+    """Test that verifies the about firefox addons page"""
     selenium.get(f"{base_url}/about")
     page = StaticPages(selenium, base_url)
     # verify the tab title
@@ -69,6 +71,7 @@ def test_about_firefox_addons_page_loaded_correctly(base_url, selenium, variable
 
 @pytest.mark.nondestructive
 def test_blocked_addon_page_loaded_correctly(base_url, selenium, variables):
+    """Test that checks the blocked addon page"""
     selenium.get(variables["static_page_blocked_addon"])
     page = StaticPages(selenium, base_url)
     # verify the tab title
@@ -92,6 +95,7 @@ def test_blocked_addon_page_loaded_correctly(base_url, selenium, variables):
 
 @pytest.mark.nondestructive
 def test_blocked_addon_page_does_not_have_login_button(base_url, selenium, variables):
+    """Checks the blocked addon page without login"""
     selenium.get(variables["static_page_blocked_addon"])
     page = StaticPages(selenium, base_url)
     with pytest.raises(NoSuchElementException):
@@ -99,7 +103,8 @@ def test_blocked_addon_page_does_not_have_login_button(base_url, selenium, varia
 
 
 @pytest.mark.nondestructive
-def test_review_guidelines_page_links(base_url, selenium, variables):
+def test_review_guidelines_page_links(base_url, selenium):
+    """Checks the links from review guidelines page"""
     selenium.get(f"{base_url}/review_guide")
     page = StaticPages(selenium, base_url)
     link_domain = page.forum_link.get_attribute("href").split("/")[2].split(".")[0]
@@ -109,6 +114,7 @@ def test_review_guidelines_page_links(base_url, selenium, variables):
 
 @pytest.mark.nondestructive
 def test_blocked_addon_page_links(base_url, selenium, variables):
+    """Checks the links from blocked addon page"""
     selenium.get(variables["static_page_blocked_addon"])
     page = StaticPages(selenium, base_url)
     for count in range(len(page.page_links)):
@@ -125,6 +131,7 @@ def test_blocked_addon_page_links(base_url, selenium, variables):
 
 @pytest.mark.nondestructive
 def test_login_expired_page(base_url, selenium, variables):
+    """Test that verifies the expired login page"""
     selenium.get(base_url)
     page = Home(selenium, base_url)
     page.login("regular_user")
@@ -148,8 +155,8 @@ def test_login_expired_page(base_url, selenium, variables):
 
 
 @pytest.mark.nondestructive
-def test_not_found_page(base_url, selenium, variables):
-    # go to an addon detail page that does not exist
+def test_not_found_page(base_url, selenium):
+    """Go to an addon detail page that does not exist"""
     selenium.get(f"{base_url}/addon/§§/")
     page = StaticPages(selenium, base_url)
     assert "Oops! We can’t find that page" in page.page_header
