@@ -6,9 +6,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 
-from pages.desktop.about_debug_addons import AboutDebug
-from pages.desktop.view_recent_updates import ViewRecentUpdates
-
 
 class AboutAddons(Page):
     _addon_cards_locator = (By.CLASS_NAME, "card.addon")
@@ -36,44 +33,12 @@ class AboutAddons(Page):
         ".addon-detail-row-version",
     )
     _options_button_locator = (By.CSS_SELECTOR, ".more-options-button")
-    _more_options_button_locator = (By.CSS_SELECTOR, "button[data-l10n-id='addon-options-button']")
-    _panel_item_action_debug_addons = (By.XPATH, "//panel-item[@action='debug-addons']")
-    _panel_item_action_view_recent_updates_locator = (By.XPATH, "//panel-item[@action='view-recent-updates']")
-    _remove_addon_dialog_locator = (By.ID, "commonDialog")
 
     def wait_for_page_to_load(self):
         self.wait.until(
             EC.visibility_of_element_located(self._addon_card_general_locator)
         )
         return self
-
-    def click_more_options_button_addon(self):
-        self.wait.until(
-            EC.visibility_of_element_located(self._more_options_button_locator)
-        )
-        self.find_element(*self._more_options_button_locator).click()
-
-    def click_more_options_remove_addon(self):
-        with self.driver.context(self.driver.CONTEXT_CHROME):
-            el = self.driver.execute_script("""
-                            return document.querySelector('panel-item[action="remove"]');
-                        """)
-            el.click()
-
-    def click_panel_item_action_debug_addon(self):
-        # with self.driver.context(self.driver.CONTEXT_CHROME):
-        el = self.driver.execute_script("""
-                return document.querySelector('panel-item[action="debug-addons"]');
-            """)
-        el.click()
-        return AboutDebug(self.driver, self.base_url).wait_for_page_to_load()
-
-    def click_panel_item_action_check_for_updates(self):
-        el = self.driver.execute_script("""
-            return document.querySelector('panel-item[action="view-recent-updates"]');
-        """)
-        el.click()
-        return ViewRecentUpdates(self.driver, self.base_url).wait_for_page_to_load()
 
     def assert_recommendations_page(self):
         """Assert list of addons"""
@@ -88,78 +53,32 @@ class AboutAddons(Page):
         find_more_addons = self.find_element(*self._recommendations_tab_find_more_addons_locator)
         assert find_more_addons.text in "Find more add-ons"
 
-    def remove_addon_dialog(self):
-        with self.driver.context(self.driver.CONTEXT_CHROME):
-            self.wait.until(
-                EC.visibility_of_element_located(self._remove_addon_dialog_locator)
-            )
-            el = self.driver.execute_script("""
-                        return document.querySelector('button[dlgtype="accept"]');
-                    """)
-            el.click()
-
-
-    # def search_box(self, value):
-    #     self.wait.until(EC.visibility_of_element_located(self._find_more_addons_search_box_locator))
-    #     search_field = self.driver.execute_script(
-    #         "return document.querySelector('moz-input-search[placeholder='Search addons.mozilla.org']')"
-    #     )
-    #     search_field.clear()
-    #     search_field.send_keys(value)
-    #     actions = ActionChains(self.driver)
-    #     actions.send_keys(Keys.TAB)
-    #     actions.send_keys(Keys.ENTER)
-    #
-    #     # AMO search results open in a new tab, so we need to switch windows
-    #     self.wait.until(
-    #         EC.number_of_windows_to_be(2),
-    #         message=f"Number of windows was {len(self.driver.window_handles)}, expected 2",
-    #     )
-    #     self.driver.switch_to.window(self.driver.window_handles[1])
-    #     from pages.desktop.frontend.search import Search
-    #
-    #     return Search(self.driver, self.base_url).wait_for_page_to_load()
 
     def search_box(self, value):
         self.wait.until(EC.visibility_of_element_located(self._find_more_addons_search_box_locator))
+        search_field = self.driver.execute_script(
+            "return document.querySelector('moz-input-search').shadowRoot.querySelector('input')"
+        )
+        search_field.clear()
+        search_field.send_keys(value)
+        actions = ActionChains(self.driver)
+        actions.send_keys(Keys.TAB)
+        actions.send_keys(Keys.ENTER)
 
-        host = self.driver.execute_script("""
-            return document.querySelector("moz-input-search[placeholder='Search addons.mozilla.org']");
-        """)
-        input_el = self.driver.execute_script("return arguments[0].shadowRoot?.querySelector('input')", host)
-
-        input_el.clear()
-        input_el.send_keys(value)
-
-        btn_host = self.driver.execute_script("""
-          return document.querySelector("moz-button[data-l10n-id='addons-heading-search-button']");
-        """)
-
-        inner_btn = self.driver.execute_script("""
-          const host = arguments[0];
-          return host?.shadowRoot?.querySelector("button") || null;
-        """, btn_host)
-
-        assert inner_btn, "Inner <button> not found in moz-button shadowRoot"
-
-        self.driver.execute_script("arguments[0].scrollIntoView({block:'center'});", inner_btn)
-        self.driver.execute_script("arguments[0].click();", inner_btn)  # JS click on real button
-
-        ActionChains(self.driver).move_to_element(inner_btn).click().perform()
-        ActionChains(self.driver).move_to_element(inner_btn).send_keys(Keys.ENTER).perform()
-
-        self.wait.until(EC.number_of_windows_to_be(2))
+        # AMO search results open in a new tab, so we need to switch windows
+        self.wait.until(
+            EC.number_of_windows_to_be(2),
+            message=f"Number of windows was {len(self.driver.window_handles)}, expected 2",
+        )
         self.driver.switch_to.window(self.driver.window_handles[1])
-
         from pages.desktop.frontend.search import Search
+
         return Search(self.driver, self.base_url).wait_for_page_to_load()
 
     def find_more_addons_search_box(self, value):
         self.wait.until(EC.visibility_of_element_located(self._find_more_addons_search_box_locator))
-        search_field = self.driver.execute_script(
-            "return document.querySelector('moz-input-search[placeholder='Search addons.mozilla.org']')"
-        )
-        search_field.send_keys(value)
+        find_more_addons_box = self.find_element(*self._find_more_addons_search_box_locator)
+        find_more_addons_box.send_keys(value)
         self.wait.until(
             EC.number_of_windows_to_be(2),
             message=f"Number of windows was {len(self.driver.window_handles)}, expected 2",
@@ -201,7 +120,7 @@ class AboutAddons(Page):
         self.find_element(*self._recommendations_tab_button_locator).click()
         self.wait.until(
             EC.text_to_be_present_in_element(
-                (By.XPATH, "//h1[@class='header-name']"), "Personalize Your"
+                (By.XPATH, "//h1[@class='header-name']"), "Personalize Your Firefox"
             )
         )
 
@@ -322,8 +241,7 @@ class AboutAddons(Page):
         _addon_name_locator = (By.CLASS_NAME, "addon-name")
         _addon_author_locator = (By.CSS_SELECTOR, ".addon-detail-row-author a")
         _addon_detail_row_updates_locator = (By.CSS_SELECTOR, ".addon-detail-row-updates span")
-        _addon_detail_row_private_browsing_locator = (
-        By.CSS_SELECTOR, "span[data-l10n-id='detail-private-browsing-label']")
+        _addon_detail_row_private_browsing_locator =(By.CSS_SELECTOR, "span[data-l10n-id='detail-private-browsing-label']")
         _addon_detail_version_locator = (By.CSS_SELECTOR, ".addon-detail-row-version label")
         _addon_detail_last_updated_locator = (By.CSS_SELECTOR, ".addon-detail-row-lastUpdated label")
         _addon_detail_rating_locator = (By.CSS_SELECTOR, ".addon-detail-row-rating label")
@@ -402,6 +320,7 @@ class AboutAddons(Page):
             assert self.addon_detail_last_updated() in "Last Updated", "Last updated row is not displayed or text has been modified"
             assert self.addon_detail_version() in "Version", "Version row is not displayed or text has been modified"
 
+
     class AddonCards(Region):
         _theme_image_locator = (By.CLASS_NAME, "card-heading-image")
         _extension_icon_locator = (By.CLASS_NAME, "card-heading-icon")
@@ -416,10 +335,6 @@ class AboutAddons(Page):
         _addon_install_button_locator = (
             By.CSS_SELECTOR,
             'button[action="install-addon"]',
-        )
-        _manage_addon_button_locator = (
-            By.CSS_SELECTOR,
-            "div[class='addon-name-container'] button[action='manage-addon']"
         )
 
         def is_extension_card(self):
@@ -502,10 +417,3 @@ class AboutAddons(Page):
                 EC.visibility_of_element_located(self._addon_install_button_locator)
             )
             return self.find_element(*self._addon_install_button_locator)
-
-        @property
-        def manage_addon_button(self):
-            self.wait.until(
-                EC.visibility_of_element_located(self._manage_addon_button_locator)
-            )
-            return self.find_element(*self._manage_addon_button_locator)
