@@ -1,6 +1,7 @@
 from pypom import Page, Region
 
 from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
@@ -8,9 +9,16 @@ from selenium.webdriver.support import expected_conditions as EC
 
 class AboutAddons(Page):
     _addon_cards_locator = (By.CLASS_NAME, "card.addon")
+    _addon_card_general_locator = (By.CSS_SELECTOR, ".card.addon")
     _search_box_locator = (By.CSS_SELECTOR, ".main-search search-textbox")
+    _find_more_addons_search_box_locator = (By.XPATH, "//moz-input-search[@data-l10n-id='addons-heading-search-input']")
+    _find_more_addons_text_locator = (By.CSS_SELECTOR, ".search-label")
     _extension_tab_button_locator = (By.CSS_SELECTOR, 'button[name = "extension"]')
+    _recommendations_tab_button_locator = (By.CSS_SELECTOR, 'button[name = discover]')
+    _recommendations_tab_addon_list_locator = (By.CSS_SELECTOR, "card addon")
+    _recommendations_tab_find_more_addons_locator = (By.CSS_SELECTOR, "button.primary")
     _theme_tab_button_locator = (By.CSS_SELECTOR, 'button[name = "theme"]')
+    _plugins_tab_button_locator = (By.CSS_SELECTOR, 'button[name = "plugin"]')
     _dictionary_tab_button_locator = (By.CSS_SELECTOR, 'button[name = "dictionary"]')
     _langpack_tab_button_locator = (By.CSS_SELECTOR, 'button[name = "locale"]')
     _extension_disable_toggle_locator = (By.CLASS_NAME, "extension-enable-button")
@@ -28,17 +36,49 @@ class AboutAddons(Page):
 
     def wait_for_page_to_load(self):
         self.wait.until(
-            EC.visibility_of_element_located(self._find_more_addons_button_locator)
+            EC.visibility_of_element_located(self._addon_card_general_locator)
         )
         return self
 
+    def assert_recommendations_page(self):
+        """Assert list of addons"""
+        self.wait.until(
+            EC.visibility_of_element_located(self._recommendations_tab_addon_list_locator)
+        )
+        addon_cards = self.find_elements(*self._recommendations_tab_addon_list_locator)
+        assert len(addon_cards) == 7, f"Expected 7 addon cards, got {len(addon_cards)}"
+        self.wait.until(
+            EC.visibility_of_element_located(self._recommendations_tab_find_more_addons_locator)
+        )
+        find_more_addons = self.find_element(*self._recommendations_tab_find_more_addons_locator)
+        assert find_more_addons.text in "Find more add-ons"
+
+
     def search_box(self, value):
-        self.wait.until(EC.visibility_of_element_located(self._search_box_locator))
-        search_field = self.find_element(*self._search_box_locator)
+        self.wait.until(EC.visibility_of_element_located(self._find_more_addons_search_box_locator))
+        search_field = self.driver.execute_script(
+            "return document.querySelector('moz-input-search').shadowRoot.querySelector('input')"
+        )
+        search_field.clear()
         search_field.send_keys(value)
-        # send Enter to initiate search redirection to AMO
-        search_field.send_keys(Keys.ENTER)
+        actions = ActionChains(self.driver)
+        actions.send_keys(Keys.TAB)
+        actions.send_keys(Keys.ENTER)
+
         # AMO search results open in a new tab, so we need to switch windows
+        self.wait.until(
+            EC.number_of_windows_to_be(2),
+            message=f"Number of windows was {len(self.driver.window_handles)}, expected 2",
+        )
+        self.driver.switch_to.window(self.driver.window_handles[1])
+        from pages.desktop.frontend.search import Search
+
+        return Search(self.driver, self.base_url).wait_for_page_to_load()
+
+    def find_more_addons_search_box(self, value):
+        self.wait.until(EC.visibility_of_element_located(self._find_more_addons_search_box_locator))
+        find_more_addons_box = self.find_element(*self._find_more_addons_search_box_locator)
+        find_more_addons_box.send_keys(value)
         self.wait.until(
             EC.number_of_windows_to_be(2),
             message=f"Number of windows was {len(self.driver.window_handles)}, expected 2",
@@ -57,9 +97,36 @@ class AboutAddons(Page):
             )
         )
 
+    def click_extensions_side_button_no_addon(self):
+        self.wait.until(EC.element_to_be_clickable(self._extension_tab_button_locator))
+        self.find_element(*self._extension_tab_button_locator).click()
+        self.wait.until(
+            EC.text_to_be_present_in_element(
+                (By.CLASS_NAME, "header-name"), "Manage Your Extensions"
+            )
+        )
+
     def click_themes_side_button(self):
         self.wait.until(EC.element_to_be_clickable(self._theme_tab_button_locator))
         self.find_element(*self._theme_tab_button_locator).click()
+        self.wait.until(
+            EC.text_to_be_present_in_element(
+                (By.CLASS_NAME, "list-section-heading"), "Enabled"
+            )
+        )
+
+    def click_recommendations_side_button(self):
+        self.wait.until(EC.element_to_be_clickable(self._recommendations_tab_button_locator))
+        self.find_element(*self._recommendations_tab_button_locator).click()
+        self.wait.until(
+            EC.text_to_be_present_in_element(
+                (By.XPATH, "//h1[@class='header-name']"), "Personalize Your Firefox"
+            )
+        )
+
+    def click_plugins_side_button(self):
+        self.wait.until(EC.element_to_be_clickable(self._plugins_tab_button_locator))
+        self.find_element(*self._plugins_tab_button_locator).click()
         self.wait.until(
             EC.text_to_be_present_in_element(
                 (By.CLASS_NAME, "list-section-heading"), "Enabled"
@@ -100,6 +167,13 @@ class AboutAddons(Page):
     @property
     def installed_addon_name(self):
         return self.find_elements(*self._installed_addon_name_locator)
+
+    @property
+    def find_more_addons_text(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._find_more_addons_text_locator)
+        )
+        return self.find_element(*self._find_more_addons_text_locator).text
 
     @property
     def installed_addon_author_name(self):
@@ -156,6 +230,96 @@ class AboutAddons(Page):
     def click_options_button(self):
         self.wait.until(EC.element_to_be_clickable(self._options_button_locator))
         self.find_element(*self._options_button_locator).click()
+
+    def click_addon_name(self):
+        self.wait.until(EC.element_to_be_clickable(self._installed_addon_name_locator))
+        self.find_element(*self._installed_addon_name_locator).click()
+        return self.ExtensionDetail(self).wait_for_region_to_load()
+
+    class ExtensionDetail(Region):
+        _addon_card_locator = (By.CSS_SELECTOR, "addon-card")
+        _addon_name_locator = (By.CLASS_NAME, "addon-name")
+        _addon_author_locator = (By.CSS_SELECTOR, ".addon-detail-row-author a")
+        _addon_detail_row_updates_locator = (By.CSS_SELECTOR, ".addon-detail-row-updates span")
+        _addon_detail_row_private_browsing_locator =(By.CSS_SELECTOR, "span[data-l10n-id='detail-private-browsing-label']")
+        _addon_detail_version_locator = (By.CSS_SELECTOR, ".addon-detail-row-version label")
+        _addon_detail_last_updated_locator = (By.CSS_SELECTOR, ".addon-detail-row-lastUpdated label")
+        _addon_detail_rating_locator = (By.CSS_SELECTOR, ".addon-detail-row-rating label")
+        _addon_detail_row_version_locator = (By.CSS_SELECTOR, ".addon-detail-row-version")
+        _updates_message_locator = (By.ID, "updates-message")
+
+        def wait_for_region_to_load(self):
+            self.wait.until(
+                EC.visibility_of_element_located((By.CSS_SELECTOR, "addon-card")),
+                message="Addon Card region was not loaded",
+            )
+            return self
+
+        def addon_name(self):
+            self.wait.until(
+                EC.visibility_of_element_located(self._addon_name_locator)
+            )
+            return self.find_element(*self._addon_name_locator).text
+
+        def addon_author(self):
+            self.wait.until(
+                EC.visibility_of_element_located(self._addon_author_locator)
+            )
+            return self.find_element(*self._addon_author_locator).text
+
+        def addon_detail_updates_locator(self):
+            self.wait.until(
+                EC.visibility_of_element_located(self._addon_detail_row_updates_locator)
+            )
+            return self.find_element(*self._addon_detail_row_updates_locator).text
+
+        def addon_detail_private_browsing(self):
+            self.wait.until(
+                EC.visibility_of_element_located(self._addon_detail_row_private_browsing_locator)
+            )
+            return self.find_element(*self._addon_detail_row_private_browsing_locator).text
+
+        def addon_detail_version(self):
+            self.wait.until(
+                EC.visibility_of_element_located(self._addon_detail_version_locator)
+            )
+            return self.find_element(*self._addon_detail_version_locator).text
+
+        def addon_detail_version_number(self):
+            self.wait.until(
+                EC.visibility_of_element_located(self._addon_detail_row_version_locator)
+            )
+            return self.find_element(*self._addon_detail_row_version_locator).text.split()[1]
+
+        def addon_detail_last_updated(self):
+            self.wait.until(
+                EC.visibility_of_element_located(self._addon_detail_last_updated_locator)
+            )
+            return self.find_element(*self._addon_detail_last_updated_locator).text
+
+        def addon_detail_rating(self):
+            self.wait.until(
+                EC.visibility_of_element_located(self._addon_detail_rating_locator)
+            )
+            return self.find_element(*self._addon_detail_rating_locator).text
+
+        def updates_message(self):
+            self.wait.until(
+                EC.visibility_of_element_located(self._updates_message_locator)
+            )
+            self.wait.until(
+                lambda d: d.find_element(*self._updates_message_locator).get_attribute("state") == "installed",
+                message="Addon did not reach state=installed within timeout"
+            )
+            return self.find_element(*self._updates_message_locator).text
+
+        def assert_extension_detail_rows(self):
+            assert self.addon_detail_updates_locator() in "Allow automatic updates", "Detail Updates Row is not displayed or text has been modified"
+            assert self.addon_detail_rating() in "Rating", "Rating Row is not displayed or text has been modified"
+            assert self.addon_detail_private_browsing() in "Run in Private Windows", "Private browsing row is not displayed or text has been modified"
+            assert self.addon_detail_last_updated() in "Last Updated", "Last updated row is not displayed or text has been modified"
+            assert self.addon_detail_version() in "Version", "Version row is not displayed or text has been modified"
+
 
     class AddonCards(Region):
         _theme_image_locator = (By.CLASS_NAME, "card-heading-image")

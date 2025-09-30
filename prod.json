@@ -19,6 +19,8 @@
   "ratings_card_summary": "How are you enjoying Privacy Badger?",
   "contribute_card_summary": "The developer of this extension asks that you help support its continued development by making a small contribution.",
   "contribute_utm_param": "utm_content=product-page-contribute&utm_medium=referral&utm_source=addons.mozilla.org",
+  "addon_version_update_webext": "https://addons.mozilla.org/en-US/firefox/addon/worldwide-radio/versions/",
+  "addon_version_updated_message": "Your add-ons have been updated.",
 
   "all_scores_addon": "ublock-origin",
   "initial_text_input": "original text",

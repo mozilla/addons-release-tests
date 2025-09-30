@@ -224,5 +224,8 @@
 
   "card_header_text": "Test Tab Mix is blocked for violating Mozilla policies",
   "why_was_it_blocked": "Why did this happen?",
-  "block_metadata": "Versions blocked: all versions."
+  "block_metadata": "Versions blocked: all versions.",
+
+  "addon_version_update_webext": "https://addons.allizom.org/en-US/firefox/addon/listed_addon_1_1_sdnaiuda/versions/",
+  "addon_version_updated_message": "Your add-ons have been updated."
 }

@@ -629,6 +629,15 @@ workflows:
       - addon_submissions_tests
 #      - api_submission_tests
 
+  scheduled_webext_release_stage_run:
+    when:
+      and:
+        - equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
+        - equal: [ "scheduled_webext_release_stage_run", << pipeline.schedule.name >> ]
+    jobs:
+      - coverage_devhub_tests
+      - coverage_frontend_tests
+
   # scheduled in CircleCI Project settings to run each Wednesdays at 04:00 UTC
   scheduled_coverage_run:
     when:
