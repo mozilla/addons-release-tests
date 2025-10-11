@@ -195,6 +195,8 @@ class Login(Base):
             message="There was no input added in the password field",
         )
         self.find_element(*self._login_btn_locator).click()
+        ua = self.driver.execute_script("return navigator.userAgent")
+        print(f"\n[QA] User-Agent used by test:\n{ua}\n")
         # logic for 2fa enabled accounts
         if key != "":
             self.wait.until(EC.url_contains("signin_totp_code"))

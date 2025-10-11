@@ -134,8 +134,9 @@ class Search(Page):
         class ResultListItems(Region):
             _rating_locator = (By.CSS_SELECTOR, ".Rating--small")
             _search_item_name_locator = (By.CSS_SELECTOR, ".SearchResult-link")
-            _promoted_badge_locator = (By.XPATH, "//div[@class='Badge Badge-border']")
-            _promoted_badge_label_locator = (By.XPATH, "//div[@class='Badge Badge-border']//span[2]")
+            _promoted_badge_locator = (By.XPATH, "//div[@data-testid='badge-recommended']")
+            _by_firefox_badge_locator = (By.XPATH, "//div[@data-testid='badge-line']")
+            _promoted_badge_label_locator = (By.XPATH, "//div[@data-testid='badge-recommended']//a//span[2]")
             _users_locator = (By.CLASS_NAME, "SearchResult-users")
             _users_number_locator = (By.CLASS_NAME, "SearchResult-users-text")
             _icon_locator = (By.CLASS_NAME, "SearchResult-icon")
@@ -214,6 +215,14 @@ class Search(Page):
                 WebDriverWait(self.driver, 10).until(
                     EC.visibility_of_element_located(self._promoted_badge_locator),
                     message="Promoted badge was not found for these search results",
+                )
+                return self
+
+            @property
+            def by_firefox_badge(self):
+                WebDriverWait(self.driver, 10).until(
+                    EC.visibility_of_element_located(self._by_firefox_badge_locator),
+                    message="By Firefox badge was not found for these search results"
                 )
                 return self
 
