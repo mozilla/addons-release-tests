@@ -219,6 +219,7 @@ def test_addon_without_stats_summary(selenium, base_url, variables):
 
 @pytest.mark.sanity
 @pytest.mark.nondestructive
+@pytest.mark.fail
 def test_stats_reviews_summary_click(selenium, base_url, variables):
     """Tests clicking on the reviews summary in stats."""
     extension = variables["addon_with_stats"]
@@ -229,6 +230,8 @@ def test_stats_reviews_summary_click(selenium, base_url, variables):
     reviews = addon.stats.stats_reviews_link()
     review_page_counts = reviews.reviews_title_count
     # checks that stats review numbers and all reviews page count match
+    print(stats_review_counts)
+    print(review_page_counts)
     assert stats_review_counts == review_page_counts
 
 
@@ -731,6 +734,7 @@ def test_release_notes(selenium, base_url, variables):
 
 
 @pytest.mark.nondestructive
+@pytest.mark.skip(reason = "More addons section was removed")
 def test_more_addons_by_author_card(selenium, base_url, variables):
     """Tests the display of other add-ons by the same author."""
     extension = variables["experimental_addon"]
@@ -748,6 +752,7 @@ def test_more_addons_by_author_card(selenium, base_url, variables):
 
 
 @pytest.mark.nondestructive
+@pytest.mark.skip(reason = "More addons section was removed")
 def test_click_addon_in_more_addons_by_author(selenium, base_url, variables):
     """Tests navigation when clicking an add-on in the author's section."""
     extension = variables["experimental_addon"]

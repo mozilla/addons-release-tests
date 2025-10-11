@@ -13,7 +13,6 @@ from scripts import reusables
 from api import api_helpers, payloads
 
 
-
 def test_devhub_developer_agreement_page_contents(selenium, base_url, variables, wait):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     page.devhub_login("regular_user")
@@ -40,7 +39,6 @@ def test_devhub_developer_agreement_page_contents(selenium, base_url, variables,
     dist_agreement.cancel_agreement.click()
     page = DevHubHome(selenium, base_url).wait_for_page_to_load()
     assert page.page_logo.is_displayed()
-
 
 def test_devhub_developer_agreement_page_links(selenium, base_url):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
@@ -561,7 +559,6 @@ def test_cancel_and_disable_version_during_upload(selenium, base_url, wait):
 
 @pytest.mark.serial
 @pytest.mark.create_session("submissions_user")
-@pytest.mark.fail
 def test_delete_all_extensions(selenium, base_url):
     """This test will delete all the extensions submitted above to make sure
     we can start over with this user in the following runs and also for

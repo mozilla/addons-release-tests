@@ -325,7 +325,6 @@ def test_mozilla_footer_link_tc_id_c95105(base_url, selenium):
 )
 @pytest.mark.sanity
 @pytest.mark.nondestructive
-@pytest.mark.fail
 def test_addons_footer_links_tc_id_c95105(base_url, selenium, count, link):
     """Verifies the links from the footer"""
     page = Home(selenium, base_url).open().wait_for_page_to_load()

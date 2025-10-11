@@ -450,6 +450,9 @@ def test_filter_promoted(base_url, selenium, sort_attr, title):
     search_page.wait_for_contextcard_update("results found")
     results = search_page.result_list.search_results
     for result in results:
-        assert result.promoted_badge
-        if title != "All Reviewed":
-            assert title.title() in result.promoted_badge_label
+        if title == "By Firefox":
+            assert result.by_firefox_badge
+        else:
+            assert result.promoted_badge
+            if title != "All Reviewed":
+                assert title.title() in result.promoted_badge_label
