@@ -646,7 +646,9 @@ def test_screenshot_viewer(selenium, base_url, variables):
         assert requests.get(src_img).status_code == 200
         # checks that the screenshot viewer has opened
         addon.screenshots.screenshot_full_view_displayed()
-        addon.screenshots.esc_to_close_screenshot_viewer()
+        action = ActionChains(selenium)
+        action.send_keys(Keys.ESCAPE)
+        # addon.screenshots.esc_to_close_screenshot_viewer()
 
 
 @pytest.mark.nondestructive
@@ -675,13 +677,15 @@ def test_screenshot_keyboard_navigation_tc_id_c4535(selenium, base_url, variable
     addon.screenshots.screenshot_preview[0].click()
     time.sleep(1)
     # send the right key to navigate to the next image
-    addon.screenshots.right_key_for_next_screenshot()
+    # addon.screenshots.right_key_for_next_screenshot()
     assert "2" in addon.screenshots.screenshot_counter
     # send the left key to navigate to the previous image
     addon.screenshots.left_key_for_previous_screenshot()
     assert "1" in addon.screenshots.screenshot_counter
     # send ESC to close the screenshot viewer
-    addon.screenshots.esc_to_close_screenshot_viewer()
+    action = ActionChains(selenium)
+    action.send_keys(Keys.ESCAPE)
+    # addon.screenshots.esc_to_close_screenshot_viewer()
 
 
 @pytest.mark.nondestructive

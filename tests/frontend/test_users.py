@@ -324,7 +324,7 @@ def test_user_account_manage_section(base_url, selenium, variables):
 
 
 @pytest.mark.serial
-@pytest.mark.create_session("reusable_user")
+@pytest.mark.login("reusable_user")
 def test_user_data_for_deleted_profile(base_url, selenium):
     """When a profile is deleted from AMO, the user data is deleted.
     However, the FxA account for that user still exists, so they can log into AMO
