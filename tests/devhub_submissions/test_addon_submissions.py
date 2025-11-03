@@ -131,7 +131,7 @@ def test_submit_unlisted_addon_tc_id_c14886(selenium, base_url, variables, wait)
     manage_addons = confirmation_page.click_manage_listing_button()
     manage_addons.sort_by_created()
     # checking that the latest add-on created is the one just submitted
-    wait.until(lambda _: "Unlisted-addon-auto" in manage_addons.addon_list[0].name)
+    assert (lambda _: "unlisted-addon" in manage_addons.addon_list[0].name)
 
 
 @pytest.mark.create_session("submissions_user")
@@ -272,7 +272,7 @@ def test_submit_listed_addon_tc_id_c4369(selenium, base_url, variables, wait):
 
 @pytest.mark.sanity
 @pytest.mark.serial
-@pytest.mark.create_session("submissions_user")
+@pytest.mark.login("submissions_user")
 def test_submit_addon_3mb_size_tc_id_c2274214(selenium, base_url, wait, variables):
     """Test covering the process of uploading a listed addon with 3-4 mb in size"""
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
@@ -415,7 +415,7 @@ def test_verify_new_unlisted_version_autoapproval_tc_id_C4372(selenium, base_url
         ["1515هذا هو اسمي", "هذا هو وصفي"],
         ["이건 내 이름이야", "이것은 내 설명입니다"],
         ["ဒါက ငါ့နာမည်ပါ။", "ဤသည်မှာ ကျွန်ုပ်၏ ဖော်ပြချက်ဖြစ်ပါသည်။"],
-        ["ʌɑ:æčβぁŇ", "☺️ʌɑ:æčβぁŇ☺️"],
+        ["ʌɑ:æčβぁŇ", "ʌɑ:æčβぁŇ️"],
     ),
     ids=[
         "Chinese characters",

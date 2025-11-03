@@ -4,6 +4,13 @@ from scripts import reusables
 minimal_manifest = {
     'manifest_version': 2,
     'version': '1.0',
+    'browser_specific_settings': {
+        'gecko': {
+            'data_collection_permissions': {
+                'required': ["none"]
+            }
+        }
+    }
 }
 
 

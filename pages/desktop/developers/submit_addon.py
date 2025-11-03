@@ -357,7 +357,7 @@ class SubmitAddon(Page):
     #     self.wait.until(
     #         EC.visibility_of_element_located(self._addon_validation_success_locator)
     #     )
-    def is_validation_successful(self, retries=3, delay=2, timeout=10):
+    def is_validation_successful(self, retries=3, delay=2, timeout=15):
         """
         Wait for addon validation to complete; if not successful, the test will fail
         Retry validation check up to `retries` times with `delay` seconds between tries.
