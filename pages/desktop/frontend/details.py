@@ -318,7 +318,7 @@ class Detail(Base):
         @property
         def stats_reviews_count(self):
             count = self.addon_reviews_stats
-            text = count.find_element(By.XPATH, "//div[@data-testid='badge-star-full']//a").text
+            text = count.find_element(By.XPATH, "//div[@data-testid='badge-star-full']//a//span[2]").text
             match = re.search(r'\((\d+)\s+reviews\)', text)
             if match:
                 return int(match.group(1))
