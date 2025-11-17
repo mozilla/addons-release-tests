@@ -77,6 +77,11 @@ class Login(Base):
     _confirm_2fa_button_locator = (By.CSS_SELECTOR, ".cta-primary")
     _error_2fa_code_locator = (By.CSS_SELECTOR, ".text-xs")
 
+    @property
+    def click_login_button(self):
+        self.wait_for_element_to_be_displayed(self._login_btn_locator)
+        return self.find_element(*self._login_btn_locator).click()
+
     def account(self, user):
         if user == "reusable_user":
             self.fxa_login(self.REUSABLE_USER_EMAIL, self.REUSABLE_USER_PASSWORD, "")

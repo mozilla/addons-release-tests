@@ -201,7 +201,7 @@
        "ru": "Privacy Badger автоматически учится блокировать невидимые трекеры.",
        "zh-CN": "隐私獾会自动学习去阻止不可见的追踪器。"
   },
-  "addon_validation_message": "Your add-on was validated with no errors and 1 message.",
+  "addon_validation_message": "Your add-on was validated with no errors and 2 warnings.",
   "on_this_site_label_message": "On this site. Your submission is publicly listed on addons.allizom.org.",
   "on_your_own_label_message": "On your own. After your submission is signed by Mozilla, you can download the .xpi file from the Developer Hub and distribute it to your audience. Please make sure the add-on manifest’s update_url is provided, as this is the URL where Firefox finds updates for automatic deployment to your users.",
   "upload_details_text": "Your add-on should end with .zip, .xpi or .crx",
@@ -215,7 +215,7 @@
   "text_block_for_use": "Olim puer varius et ad iram promptus misere flebat.",
   "please_specify_your_license_agreement": "Please specify your add-on's End-User License Agreement:",
   "please_specify_your_privacy_policy": "Please specify your add-on's Privacy Policy:",
-  "mv3_extension_without_id_message": "The extension ID is required in Manifest Version 3 and above.",
+  "mv3_extension_without_id_message": "The add-on ID is required in Manifest Version 3 and above.",
 
   "reviewer_tools_no_results_in_this_period_message": "No reviews found for this period.",
 
