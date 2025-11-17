@@ -11,6 +11,8 @@ from pages.desktop.base import Base
 from pages.desktop.frontend.home import Home
 from pages.desktop.frontend.reviews import Reviews
 from pages.desktop.frontend.search import Search
+from pages.desktop.frontend.login import Login
+
 
 
 class User(Base):
@@ -555,6 +557,10 @@ class User(Base):
             By.CSS_SELECTOR,
             ".Notice-error .Notice-text",
         )
+        _login_btn_locator = (
+            By.CSS_SELECTOR,
+            "button.cta-primary.cta-xl"
+        )
 
         def click_view_profile_link(self):
             link = WebDriverWait(
@@ -593,6 +599,8 @@ class User(Base):
             self.wait.until(EC.element_to_be_clickable(self._fxa_account_link_locator))
             self.find_element(*self._fxa_account_link_locator).click()
             # waits for the fxa account page to be opened - check logo visibility
+            self.wait.until(EC.visibility_of_element_located(self._login_btn_locator))
+            self.find_element(*self._login_btn_locator).click()
             self.wait.until(
                 EC.visibility_of_element_located((By.CSS_SELECTOR, ".flex h1 span"))
             )
