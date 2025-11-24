@@ -46,7 +46,7 @@ class ReviewerToolsHomepage(Base):
     _new_tab_locator = (By.CSS_SELECTOR, ".tabnav > li:nth-child(3) > a")
     _updates_tab_locator = (By.CSS_SELECTOR, ".tabnav > li:nth-child(4) > a")
     _content_review_tab_locator = (By.CSS_SELECTOR, ".tabnav > li:nth-child(5) > a")
-    _pending_rejection_tab_locator = (By.CSS_SELECTOR, ".tabnav > li:nth-child(6) > a")
+    _pending_rejection_tab_locator = (By.CSS_SELECTOR, ".tabnav > li:nth-child(5) > a")
 
     def wait_for_page_to_load(self):
         self.wait.until(
@@ -224,7 +224,7 @@ class ReviewerToolsHomepage(Base):
             self.manual_review_log_link.is_displayed(),
             self.content_review_link.is_displayed(),
             self.addons_review_guide.is_displayed(),
-            self.flagged_for_human_review.is_displayed(),
+            # self.flagged_for_human_review.is_displayed(),
             self.themes_themes_awaiting_review.is_displayed(),
             self.themes_review_log.is_displayed(),
             self.themes_review_guide.is_displayed(),

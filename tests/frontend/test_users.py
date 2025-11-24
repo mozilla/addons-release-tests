@@ -332,7 +332,6 @@ def test_user_delete_profile_tc_id_c4393(base_url, selenium):
 
 @pytest.mark.serial
 @pytest.mark.login("reusable_user")
-@pytest.mark.skip(reason="update flow of the test")
 def test_user_account_manage_section(base_url, selenium, variables):
     """Confirms that the correct email is
     displayed in the account management section."""
