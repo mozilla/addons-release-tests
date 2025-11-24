@@ -95,7 +95,7 @@ def test_queues_themes_awaiting_review_tc_id_c325790(selenium, base_url):
     b) A tab nav containing all queues corresponding to your reviewer permissions is displayed and "New" """
     reviewer_tools_page.assert_tab_viewing()
     assert (
-        EC.url_contains("reviewers/queue/theme_new")
+        EC.url_contains("/reviewers/queue/theme")
     )
     """d) Under the selected tab there is a list of add-ons with various information: "Add-on ", "Type", "Waiting time", "Flags"
        e) The pending list contains only static themes"""
