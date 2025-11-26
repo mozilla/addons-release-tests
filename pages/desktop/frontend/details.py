@@ -17,7 +17,7 @@ class Detail(Base):
     _root_locator = (By.CLASS_NAME, "Addon-extension")
     _addon_name_locator = (By.CLASS_NAME, "AddonTitle")
     _compatible_locator = (By.CSS_SELECTOR, ".AddonCompatibilityError")
-    _new_compatibility_banner_locator = (By.CLASS_NAME, "GetFirefoxButton-callout-text")
+    _new_compatibility_banner_locator = (By.CSS_SELECTOR, ".GetFirefoxButton-button")
     _get_firefox_button_locator = (By.CLASS_NAME, "GetFirefoxButton-button")
     _install_button_locator = (By.CLASS_NAME, "AMInstallButton-button")
     _install_button_state_locator = (By.CSS_SELECTOR, ".AMInstallButton a")
@@ -744,7 +744,7 @@ class Detail(Base):
         )
         _release_notes_content_locator = (
             By.CSS_SELECTOR,
-            ".AddonDescription-version-notes .ShowMoreCard-contents",
+            ".Card-contents .ShowMoreCard-contents",
         )
 
         @property
