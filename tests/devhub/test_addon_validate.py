@@ -7,6 +7,7 @@ from pages.desktop.developers.devhub_home import DevHubHome
 
 @pytest.mark.sanity
 @pytest.mark.login("developer")
+@pytest.mark.fail
 def test_validate_addon_listed(selenium, base_url, variables):
     """Verifies the process of validating a listed addon using the "On This Site"
     checkbox in the DevHub Addon Validate page.
@@ -117,7 +118,7 @@ def test_validate_addon_unlisted(selenium, base_url, variables):
     """Click on On Your Own Checkbox"""
     devhub_addon_validate.click_on_your_own_text_checkbox()
     assert devhub_addon_validate.on_your_own_text_checkbox.is_selected()
-    devhub_addon_validate.upload_file("unlisted-addon.zip")
+    devhub_addon_validate.upload_file("listed-addon.zip")
     devhub_addon_validate.is_validation_approved()
     assert (
         variables["addon_validation_message"]

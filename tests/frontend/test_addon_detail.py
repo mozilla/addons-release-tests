@@ -385,6 +385,7 @@ def test_more_info_version_number(selenium, base_url, variables):
 
 @pytest.mark.sanity
 @pytest.mark.nondestructive
+@pytest.mark.fail
 def test_more_info_addon_size(selenium, base_url, variables):
     """Tests the add-on size value in the 'More Info' section."""
     extension = variables["addon_size_extension"]
@@ -395,7 +396,7 @@ def test_more_info_addon_size(selenium, base_url, variables):
     # get the file URL and read its size
     file = urllib.request.urlopen(addon.addon_xpi)
     # convert the size returned by the file.length from bytes to the unit displayed on AMO
-    size = reusables.convert_bytes(file.length)
+    size = reusables.convert_bytes(file.length/10)
     assert size == more_info_size
 
 
@@ -651,9 +652,8 @@ def test_more_info_addon_tags(selenium, base_url, variables):
         count += 1
 
 
-@pytest.mark.sanity
 @pytest.mark.nondestructive
-@pytest.mark.skip(reason = "need to update way of interaction")
+@pytest.mark.skip(reason="need to update way of interaction")
 def test_screenshot_viewer(selenium, base_url, variables):
     """Tests that the screenshot viewer works as expected."""
     extension = variables["detail_extension_slug"]
