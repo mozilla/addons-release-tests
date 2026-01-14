@@ -73,6 +73,10 @@ def firefox_options(firefox_options, base_url, variables):
             "extensions.update.background.url",
             variables["extensions_update_background_url"]
         )
+        firefox_options.set_preference(
+            "general.useragent.override",
+            "Mozilla(User Agent Addons QA)"
+        )
     else:
         firefox_options.set_preference("extensions.install.requireBuiltInCerts", False)
         firefox_options.set_preference("xpinstall.signatures.required", True)
@@ -91,6 +95,7 @@ def firefox_options(firefox_options, base_url, variables):
         firefox_options.set_preference(
             "extensions.update.url", variables["extensions_update_url"]
         )
+        firefox_options.set_preference("general.useragent.override", "Mozilla(User Agent Addons QA)")
         firefox_options.add_argument("-remote-allow-system-access")
         firefox_options.add_argument("-headless")
         firefox_options.log.level = "trace"
