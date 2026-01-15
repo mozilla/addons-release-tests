@@ -50,6 +50,11 @@ def firefox_options(firefox_options, base_url, variables):
     '-headless': Firefox will run headless
 
     """
+    user_agent = os.environ.get("CUSTOM_USER_AGENT")
+    if user_agent:
+        # Use a custom user-agent if one is provided in the environment, which
+        # allows the test to be identified as such where necessary.
+        firefox_options.set_preference("general.useragent.override", user_agent)
     # for prod installation tests, we do not need to set special prefs, so we
     # separate the browser set-up based on the AMO environments
     if base_url == "https://addons.mozilla.org":
