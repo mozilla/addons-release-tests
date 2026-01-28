@@ -48,4 +48,3 @@ class Toolbar(Page):
                     EC.visibility_of_element_located(self._wheel_option_manage_extension_locator)
                 )
                 self.find_element(*self._wheel_option_manage_extension_locator).click()
-        return AboutAddons(self.driver, self.base_url).wait_for_page_to_load()
