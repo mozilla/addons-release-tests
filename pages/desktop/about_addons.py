@@ -7,6 +7,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 
 from pages.desktop.about_debug_addons import AboutDebug
+from pages.desktop.view_recent_updates import ViewRecentUpdates
 
 
 class AboutAddons(Page):
@@ -35,7 +36,8 @@ class AboutAddons(Page):
         ".addon-detail-row-version",
     )
     _options_button_locator = (By.CSS_SELECTOR, ".more-options-button")
-    _panel_item_action_debug_addons = (By.XPATH, "//panel-item[@action='check-for-updates']")
+    _panel_item_action_debug_addons = (By.XPATH, "//panel-item[@action='debug-addons']")
+    _panel_item_action_view_recent_updates_locator = (By.XPATH, "//panel-item[@action='view-recent-updates']")
 
     def wait_for_page_to_load(self):
         self.wait.until(
@@ -50,6 +52,13 @@ class AboutAddons(Page):
             """)
         el.click()
         return AboutDebug(self.driver, self.base_url).wait_for_page_to_load()
+
+    def click_panel_item_action_check_for_updates(self):
+        el = self.driver.execute_script("""
+            return document.querySelector('panel-item[action="view-recent-updates"]');
+        """)
+        el.click()
+        return ViewRecentUpdates(self.driver, self.base_url).wait_for_page_to_load()
 
     def assert_recommendations_page(self):
         """Assert list of addons"""
@@ -166,7 +175,7 @@ class AboutAddons(Page):
         self.find_element(*self._recommendations_tab_button_locator).click()
         self.wait.until(
             EC.text_to_be_present_in_element(
-                (By.XPATH, "//h1[@class='header-name']"), "Personalize Your Firefox"
+                (By.XPATH, "//h1[@class='header-name']"), "Personalize Your"
             )
         )
 
@@ -382,6 +391,10 @@ class AboutAddons(Page):
             By.CSS_SELECTOR,
             'button[action="install-addon"]',
         )
+        _manage_addon_button_locator = (
+            By.CSS_SELECTOR,
+            "div[class='addon-name-container'] button[action='manage-addon']"
+        )
 
         def is_extension_card(self):
             """Determines if we have an extension of a theme card.
@@ -463,3 +476,10 @@ class AboutAddons(Page):
                 EC.visibility_of_element_located(self._addon_install_button_locator)
             )
             return self.find_element(*self._addon_install_button_locator)
+
+        @property
+        def manage_addon_button(self):
+            self.wait.until(
+                EC.visibility_of_element_located(self._manage_addon_button_locator)
+            )
+            return self.find_element(*self._manage_addon_button_locator)
