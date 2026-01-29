@@ -151,6 +151,7 @@ def test_secondary_hero_modules_tc_id_c95105(base_url, selenium):
 )
 @pytest.mark.sanity
 @pytest.mark.nondestructive
+@pytest.mark.fail
 def test_click_module_link_tc_id_c95105(base_url, selenium, count, module):
     """Check that the content linked in the secondary modules is available"""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
@@ -368,7 +369,7 @@ def test_browsers_footer_links_tc_id_c95105(base_url, selenium, count, link):
     "count, link",
     enumerate(
         [
-            ["https://www.firefox.com/en-US/?utm_campaign=SET_DEFAULT_BROWSER", ".c-intro-download"],
+            ["https://www.firefox.com/en-US/?utm_content=footer-link&utm_medium=referral&utm_source=addons.mozilla.org", ".c-intro-download"],
             ["products/vpn/", ".c-sub-navigation-title"],
             ["relay.firefox.com/", ".Layout_logo__V4UCI"],
             ["monitor.mozilla", ".PublicShell_logo__vbvvO"],
@@ -385,7 +386,8 @@ def test_browsers_footer_links_tc_id_c95105(base_url, selenium, count, link):
 )
 @pytest.mark.sanity
 @pytest.mark.nondestructive
-def test_products_footer_links_tc_id_c95105(base_url, selenium, count, link):
+@pytest.mark.fail
+def test_products_footer_links_tc_id_c95105(base_url, selenium, count, link, wait):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.footer.products_links[count].click()
     time.sleep(2)

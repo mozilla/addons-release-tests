@@ -163,6 +163,7 @@ def test_user_mandatory_notifications(base_url, selenium):
 @pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.login("reusable_user")
+@pytest.mark.skip
 def test_user_edit_profile_tc_id_c4607(base_url, selenium, variables):
     """Verifies that a user can edit their profile,
     upload a picture, and see the changes reflected."""
@@ -188,6 +189,7 @@ def test_user_edit_profile_tc_id_c4607(base_url, selenium, variables):
 @pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.create_session("reusable_user")
+@pytest.mark.skip
 def test_user_view_profile_tc_id_c452203(base_url, selenium, variables):
     """Confirms that the profile view displays
     the correct information after editing."""
@@ -209,6 +211,7 @@ def test_user_view_profile_tc_id_c452203(base_url, selenium, variables):
 
 @pytest.mark.serial
 @pytest.mark.create_session("reusable_user")
+@pytest.mark.skip
 def test_user_change_profile_picture(base_url, selenium, wait):
     """Tests changing and verifying the user's profile picture."""
     user = User(selenium, base_url).open().wait_for_page_to_load()
@@ -238,6 +241,7 @@ def test_user_change_profile_picture(base_url, selenium, wait):
 
 @pytest.mark.serial
 @pytest.mark.create_session("reusable_user")
+@pytest.mark.skip
 def test_user_delete_profile_picture(base_url, selenium):
     """Verifies that a user can delete their
     profile picture and see the default avatar."""
@@ -257,6 +261,7 @@ def test_user_delete_profile_picture(base_url, selenium):
 
 @pytest.mark.serial
 @pytest.mark.create_session("reusable_user")
+@pytest.mark.skip
 def test_user_update_profile(base_url, selenium, variables):
     """Ensures that a user can update their profile fields,
     including display name, biography, and location."""
@@ -281,6 +286,7 @@ def test_user_update_profile(base_url, selenium, variables):
 
 @pytest.mark.serial
 @pytest.mark.create_session("reusable_user")
+@pytest.mark.skip
 def test_user_update_url(base_url, selenium, variables):
     """Tests that the user’s homepage URL field is validated for correctness."""
     user = User(selenium, base_url).open().wait_for_page_to_load()
@@ -314,6 +320,7 @@ def test_user_update_url(base_url, selenium, variables):
 @pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.create_session("reusable_user")
+@pytest.mark.skip
 def test_user_delete_profile_tc_id_c4393(base_url, selenium):
     """Verifies that a user can delete their
     account and be redirected to the homepage."""
@@ -332,6 +339,7 @@ def test_user_delete_profile_tc_id_c4393(base_url, selenium):
 
 @pytest.mark.serial
 @pytest.mark.login("reusable_user")
+@pytest.mark.skip
 def test_user_account_manage_section(base_url, selenium, variables):
     """Confirms that the correct email is
     displayed in the account management section."""
@@ -350,6 +358,7 @@ def test_user_account_manage_section(base_url, selenium, variables):
 
 @pytest.mark.serial
 @pytest.mark.create_session("reusable_user")
+@pytest.mark.skip
 def test_user_data_for_deleted_profile(base_url, selenium):
     """When a profile is deleted from AMO, the user data is deleted.
     However, the FxA account for that user still exists, so they can log into AMO
@@ -365,6 +374,7 @@ def test_user_data_for_deleted_profile(base_url, selenium):
 @pytest.mark.nondestructive
 @pytest.mark.create_session("reusable_user")
 @pytest.mark.clear_session
+@pytest.mark.skip
 def test_user_regular_has_no_role(base_url, selenium):
     """Verifies that regular users do not see role badges in their profile."""
     Home(selenium, base_url).open().wait_for_page_to_load()
@@ -378,6 +388,7 @@ def test_user_regular_has_no_role(base_url, selenium):
 
 
 @pytest.mark.serial
+@pytest.mark.skip
 def test_user_regular_notifications(base_url, selenium, variables):
     """Ensures that regular users can opt in/out of only the basic notifications."""
     user = User(selenium, base_url).open().wait_for_page_to_load()

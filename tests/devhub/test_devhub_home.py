@@ -310,6 +310,7 @@ def test_devhub_click_first_theme_button(selenium, base_url, variables):
 
 
 @pytest.mark.nondestructive
+@pytest.mark.fail
 def test_devhub_resources_footer_documentation_links_tc_id_C15072(selenium, base_url, variables):
     """Verifies that all "Documentation" links in the resources
     footer lead to the correct pages, confirming that
@@ -399,6 +400,7 @@ def test_devhub_resources_join_addon_review(selenium, base_url, variables):
 
 
 @pytest.mark.nondestructive
+@pytest.mark.fail
 def test_devhub_resources_participate(selenium, base_url, variables):
     """Ensures that the "More Ways to Participate" link
     in the resources section redirects the user to the
@@ -556,7 +558,7 @@ def test_devhub_addons_footer_links(base_url, selenium, count, link):
     "count, link",
     enumerate(
         [
-            "en-US/?redirect_source=mozilla-org&utm_campaign=SET_DEFAULT_BROWSER",
+            "en-US/?redirect_source=mozilla-org&utm_source=addons.mozilla.org&utm_medium=referral&utm_content=footer-link",
             "en-US/browsers/mobile/",
             "en-US/browsers/enterprise/",
         ]
@@ -568,6 +570,7 @@ def test_devhub_addons_footer_links(base_url, selenium, count, link):
     ],
 )
 @pytest.mark.nondestructive
+@pytest.mark.fail
 def test_devhub_browsers_footer_links(base_url, selenium, count, link):
     """Verifies that the links under the "Browsers" section
     in the DevHub footer lead to the correct pages
@@ -581,7 +584,7 @@ def test_devhub_browsers_footer_links(base_url, selenium, count, link):
     "count, link",
     enumerate(
         [
-            "en-US/?utm_campaign=SET_DEFAULT_BROWSER",
+            "en-US/?utm_source=addons.mozilla.org&utm_medium=referral&utm_content=footer-link",
             "products/vpn/",
             "relay.firefox.com/",
             "monitor.mozilla",
@@ -597,6 +600,7 @@ def test_devhub_browsers_footer_links(base_url, selenium, count, link):
     ],
 )
 @pytest.mark.nondestructive
+@pytest.mark.fail
 def test_devhub_products_footer_links(base_url, selenium, count, link):
     """Ensures that the links under the "Products" section
     in the DevHub footer lead to the correct pages for
