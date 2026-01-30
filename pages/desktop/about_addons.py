@@ -36,14 +36,29 @@ class AboutAddons(Page):
         ".addon-detail-row-version",
     )
     _options_button_locator = (By.CSS_SELECTOR, ".more-options-button")
+    _more_options_button_locator = (By.CSS_SELECTOR, "button[data-l10n-id='addon-options-button']")
     _panel_item_action_debug_addons = (By.XPATH, "//panel-item[@action='debug-addons']")
     _panel_item_action_view_recent_updates_locator = (By.XPATH, "//panel-item[@action='view-recent-updates']")
+    _remove_addon_dialog_locator = (By.ID, "commonDialog")
 
     def wait_for_page_to_load(self):
         self.wait.until(
             EC.visibility_of_element_located(self._addon_card_general_locator)
         )
         return self
+
+    def click_more_options_button_addon(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._more_options_button_locator)
+        )
+        self.find_element(*self._more_options_button_locator).click()
+
+    def click_more_options_remove_addon(self):
+        with self.driver.context(self.driver.CONTEXT_CHROME):
+            el = self.driver.execute_script("""
+                            return document.querySelector('panel-item[action="remove"]');
+                        """)
+            el.click()
 
     def click_panel_item_action_debug_addon(self):
         # with self.driver.context(self.driver.CONTEXT_CHROME):
@@ -72,6 +87,17 @@ class AboutAddons(Page):
         )
         find_more_addons = self.find_element(*self._recommendations_tab_find_more_addons_locator)
         assert find_more_addons.text in "Find more add-ons"
+
+    def remove_addon_dialog(self):
+        with self.driver.context(self.driver.CONTEXT_CHROME):
+            self.wait.until(
+                EC.visibility_of_element_located(self._remove_addon_dialog_locator)
+            )
+            el = self.driver.execute_script("""
+                        return document.querySelector('button[dlgtype="accept"]');
+                    """)
+            el.click()
+
 
     # def search_box(self, value):
     #     self.wait.until(EC.visibility_of_element_located(self._find_more_addons_search_box_locator))

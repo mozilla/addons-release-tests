@@ -10,7 +10,7 @@ from pages.desktop.frontend.versions import Versions
 
 
 # @pytest.mark.webext
-@pytest.mark.prod
+@pytest.mark.webext
 def test_addon_version_check_in_addons_manager_C617022_and_C1770375(selenium, base_url, wait, firefox, firefox_notifications, variables):
     """Test Cases: - https://mozilla.testrail.io/index.php?/cases/view/1770375
                    - https://mozilla.testrail.io/index.php?/cases/view/617022"""
@@ -44,4 +44,30 @@ def test_addon_version_check_in_addons_manager_C617022_and_C1770375(selenium, ba
     action.send_keys("c").perform()
     assert variables["addon_version_updated_message"] in extension_detail_region.updates_message()
     assert latest_version_number in extension_detail_region.addon_detail_version_number()
+
+# @pytest.mark.webext
+# def test_check_for_updates_with_automatic_updates_disabled_C617062(selenium, base_url, wait, firefox, firefox_notifications, variables):
+#     """Install an addon to have test data to work with"""
+#     selenium.get(variables["addon_version_update_webext"])
+#     versions_page = Versions(selenium, base_url).wait_for_page_to_load()
+#     latest_version_number = versions_page.latest_version_number
+#     older_version_number = versions_page.versions_list[1].version_number
+#     versions_page.versions_list[1].click_download_link()
+#     firefox.browser.wait_for_notification(
+#         firefox_notifications.AddOnInstallConfirmation
+#     ).install()
+#     firefox.browser.wait_for_notification(
+#         firefox_notifications.AddOnInstallComplete
+#     ).close()
+#     """The “Add-ons Manager” page is loaded without any display or layout issues."""
+#     selenium.get("about:addons")
+#     about_addons_page = AboutAddons(selenium, base_url).wait_for_page_to_load()
+#     """Select “Extensions” from the left side menu."""
+#     """A list with all installed extensions is displayed."""
+#     about_addons_page.click_extensions_side_button()
+#     about_addons_page.click_options_button()
+#     action = ActionChains(selenium)
+#     action.send_keys("a").perform()
+
+
 
