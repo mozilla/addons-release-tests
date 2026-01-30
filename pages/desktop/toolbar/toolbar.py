@@ -13,9 +13,49 @@ class Toolbar(Page):
     _manage_extension_button_locator = (By.ID, "unified-extensions-button")
     _extensions_menu_addon_locator = (By.CSS_SELECTOR, ".unified-extensions-item-action-button")
     _extensions_menu_wheel_button_locator = (By.CSS_SELECTOR, ".unified-extensions-item-menu-button")
+    _unified_extensions_discover_extensions_locator = (By.ID, ".unified-extensions-discover-extensions")
     _wheel_option_manage_extension_locator = (By.ID, "unified-extensions-context-menu-manage-extension")
     _wheel_option_remove_extension_locator = (By.ID, "unified-extensions-context-menu-remove-extension")
     _wheel_option_report_extension_locator = (By.ID, "unified-extensions-context-menu-report-extension")
+    _panel_ui_menu_button_locator = (By.ID, "PanelUI-menu-button")
+    _panel_ui_menu_extensions_and_themes_locator = (By.ID, "appMenu-extensions-themes-button")
+    _panel_ui_container_locator = (By.ID, "appMenu-mainView")
+
+    @property
+    def manage_extension_toolbar(self):
+        with self.driver.context(self.driver.CONTEXT_CHROME):
+            self.wait.until(
+                EC.visibility_of_element_located(self._manage_extension_button_locator)
+            )
+            return self.find_element(*self._manage_extension_button_locator)
+
+    @property
+    def panel_ui_container(self):
+        with self.driver.context(self.driver.CONTEXT_CHROME):
+            self.wait.until(
+                EC.visibility_of_element_located(self._panel_ui_container_locator)
+            )
+            return self.find_element(*self._panel_ui_container_locator)
+
+    def click_panel_ui_menu(self):
+        with self.driver.context(self.driver.CONTEXT_CHROME):
+            self.wait.until(
+                EC.visibility_of_element_located(self._panel_ui_menu_button_locator)
+            )
+            self.find_element(*self._panel_ui_menu_button_locator).click()
+
+    def click_panel_ui_extensions_and_themes(self):
+        with self.driver.context(self.driver.CONTEXT_CHROME):
+            self.wait.until(
+                EC.visibility_of_element_located(self._panel_ui_menu_extensions_and_themes_locator)
+            )
+            self.find_element(*self._panel_ui_menu_extensions_and_themes_locator).click()
+        self.wait.until(
+            EC.number_of_windows_to_be(2),
+            message=f"Number of windows was {len(self.driver.window_handles)}, expected 2",
+        )
+        self.driver.switch_to.window(self.driver.window_handles[1])
+        return AboutAddons(self.driver, self.base_url).wait_for_page_to_load()
 
     def click_manage_extension_button_no_addon(self):
         with self.driver.context(self.driver.CONTEXT_CHROME):
@@ -23,6 +63,10 @@ class Toolbar(Page):
                 EC.visibility_of_element_located(self._manage_extension_button_locator)
             )
             self.find_element(*self._manage_extension_button_locator).click()
+            host = self.driver.execute_script("""
+                    return document.querySelector("button[id='main-button']");
+                """)
+            host.click()
         self.wait.until(
             EC.number_of_windows_to_be(2),
             message=f"Number of windows was {len(self.driver.window_handles)}, expected 2",
