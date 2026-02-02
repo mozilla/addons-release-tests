@@ -47,11 +47,11 @@ class DevHubHome(Base):
     )
     _get_involved_title_locator = (
         By.CSS_SELECTOR,
-        ".DevHub-content-container--get-involved h3",
+        ".DevHub-Footer-sections-header",
     )
     _get_involved_summary_locator = (
         By.CSS_SELECTOR,
-        ".DevHub-content-container--get-involved p",
+        ".DevHub-Footer-section p",
     )
     _add_ons_contribute_title_locator = (
         By.CSS_SELECTOR,
