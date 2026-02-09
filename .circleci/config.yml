@@ -348,7 +348,7 @@ jobs:
           command: .\.venv\Scripts\python -m pip install -U pip setuptools wheel
       - run:
           name: Install requirements (no deps)
-          command: .\.venv\Scripts\python -m pip install -r ./requirements.txt
+          command: .\.venv\Scripts\python -m pip install --no-deps -r ./requirements.txt
       - run:
           name: Verify pkg_resources exists
           command: .\.venv\Scripts\python -c "import pkg_resources; print('OK:', pkg_resources.__file__)"
