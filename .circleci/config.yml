@@ -347,9 +347,6 @@ jobs:
           name: Install requirements (no deps)
           command: py -m pip install --no-deps -r requirements.txt
       - run:
-          name: Install Setup Tools
-          command: pip install setuptools
-      - run:
           name: Verify pkg_resources exists
           command: py -c "import pkg_resources; print('OK')"
       - run:
