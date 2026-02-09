@@ -337,37 +337,32 @@ jobs:
     executor:
       name: win/default
       size: "large"
-      working_directory: ~/addons-release-tests/
-      steps:
-        - checkout
-        - run:
-            name: Create venv
-            command: py -m venv .venv
-        - run:
-            name: Upgrade tooling (venv)
-            command: .\.venv\Scripts\python -m pip install -U pip setuptools wheel
-        - run:
-            name: Install requirements (venv + constraints)
-            command: .\.venv\Scripts\python -m pip install -r .\requirements.txt -c .\constraints.txt
-        - run:
-            name: Verify critical packages
-            command: |
-              .\.venv\Scripts\python -c "import pkg_resources; print('pkg_resources OK')"
-              .\.venv\Scripts\python -m pip show pytest-dependency
-        - run:
-            name: Install geckodriver
-            command: choco install selenium-gecko-driver -y
-        - run:
-            name: Install Firefox
-            command: choco install firefox-nightly --pre --ignore-checksums -y
-        - run:
-            name: Run frontend parallel tests
-            environment:
-              MOZ_HEADLESS: "1"
-              PYTEST_ADDOPTS: "-n 4 --reruns 2"
-            command: .\.venv\Scripts\python -m pytest tests\frontend -m "not serial and not prod_only" --driver Firefox --variables translations.json --variables stage.json --html=frontend-parallel-test-results.html --self-contained-html
-            no_output_timeout: 30m
-        - store_artifacts:
+    working_directory: ~/addons-release-tests/
+    steps:
+      - checkout
+      - run:
+          name: Upgrade pip
+          command: py -m pip install --upgrade pip --user
+      - run:
+          name: Install requirements
+          command: py -m pip install --no-deps -r ./requirements.txt
+      - run:
+          name: Install geckodriver
+          command: choco install selenium-gecko-driver -y
+      - run:
+          name: Install Firefox
+          command: choco install firefox-nightly --pre --ignore-checksums -y
+      - run:
+          name: Install Setup Tools
+          command: python -m pip install --upgrade pip setuptools wheel
+      - run:
+          name: Run frontend parallel tests
+          environment:
+            MOZ_HEADLESS: 1
+            PYTEST_ADDOPTS: -n 4 --reruns 2
+          command: py -m pytest tests\frontend -m "not serial and not prod_only" --driver Firefox --variables translations.json --variables dev.json --html=frontend-dev-parallel-test-results.html --self-contained-html
+          no_output_timeout: 30m
+      - store_artifacts:
           path: frontend-dev-parallel-test-results.html
 
   # run the user profile tests for the AMO -dev regression suites
