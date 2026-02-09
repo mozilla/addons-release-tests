@@ -341,11 +341,14 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Upgrade pip
-          command: py -m pip install --upgrade pip --user
+          name: Upgrade tooling
+          command: py -m pip install -U pip setuptools wheel
       - run:
-          name: Install requirements
-          command: py -m pip install --no-deps -r ./requirements.txt
+          name: Install requirements (no deps)
+          command: py -m pip install --no-deps -r requirements.txt
+      - run:
+          name: Verify pkg_resources exists
+          command: py -c "import pkg_resources; print('OK')"
       - run:
           name: Install geckodriver
           command: choco install selenium-gecko-driver -y
