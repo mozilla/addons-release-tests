@@ -340,39 +340,28 @@ jobs:
     working_directory: ~/addons-release-tests/
     steps:
       - checkout
-
       - run:
-          name: Create venv
-          command: py -m venv .venv
-
-      - run:
-          name: Upgrade tooling
-          command: .\.venv\Scripts\python -m pip install -U pip setuptools wheel
-
+          name: Upgrade pip
+          command: py -m pip install --upgrade pip --user
       - run:
           name: Install requirements
-          command: .\.venv\Scripts\python -m pip install -r .\requirements.txt
-
-      - run:
-          name: Verify pkg_resources exists
-          command: .\.venv\Scripts\python -c "import pkg_resources; print('OK:', pkg_resources.__file__)"
-
+          command: py -m pip install --no-deps -r ./requirements.txt
       - run:
           name: Install geckodriver
           command: choco install selenium-gecko-driver -y
-
       - run:
           name: Install Firefox
           command: choco install firefox-nightly --pre --ignore-checksums -y
-
+      - run:
+          name: Install Setup Tools
+          command: pip install setuptools
       - run:
           name: Run frontend parallel tests
           environment:
-            MOZ_HEADLESS: "1"
-            PYTEST_ADDOPTS: "-n 4 --reruns 2"
-          command: .\.venv\Scripts\python -m pytest tests\frontend -m "not serial and not prod_only" --driver Firefox --variables translations.json --variables dev.json --html=frontend-dev-parallel-test-results.html --self-contained-html
+            MOZ_HEADLESS: 1
+            PYTEST_ADDOPTS: -n 4 --reruns 2
+          command: py -m pytest tests\frontend -m "not serial and not prod_only" --driver Firefox --variables translations.json --variables dev.json --html=frontend-dev-parallel-test-results.html --self-contained-html
           no_output_timeout: 30m
-
       - store_artifacts:
           path: frontend-dev-parallel-test-results.html
 
