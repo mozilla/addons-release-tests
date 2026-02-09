@@ -443,8 +443,8 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Upgrade pip
-          command: py -m pip install --upgrade pip --user
+          name: Upgrade build tooling
+          command: py -m pip install -U pip setuptools wheel --user
       - run:
           name: Install requirements
           command: py -m pip install --no-deps -r ./requirements.txt
