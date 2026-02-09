@@ -344,9 +344,6 @@ jobs:
           name: Upgrade pip
           command: py -m pip install --upgrade pip --user
       - run:
-          name: Install dependency
-          command: python -m pip install --no-build-isolation pytest-dependency
-      - run:
           name: Install requirements
           command: py -m pip install --no-deps -r ./requirements.txt
       - run:
@@ -443,11 +440,11 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Upgrade build tooling
-          command: py -m pip install -U pip setuptools wheel
+          name: Upgrade pip
+          command: py -m pip install --upgrade pip --user
       - run:
           name: Install requirements
-          command: py -m pip install -r ./requirements.txt
+          command: py -m pip install --no-deps -r ./requirements.txt
       - run:
           name: Install geckodriver
           command: choco install selenium-gecko-driver -y
