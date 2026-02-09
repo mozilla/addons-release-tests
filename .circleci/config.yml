@@ -342,10 +342,10 @@ jobs:
       - checkout
       - run:
           name: Upgrade pip
-          command: py -m pip install --upgrade pip --user
+          command: py -m pip install --upgrade pip
       - run:
           name: Install requirements
-          command: py -m pip install --no-deps -r ./requirements.txt
+          command: py -m pip install -r ./requirements.txt
       - run:
           name: Install geckodriver
           command: choco install selenium-gecko-driver -y
