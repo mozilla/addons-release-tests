@@ -454,9 +454,9 @@ jobs:
       - run:
           name: Install Firefox
           command: choco install firefox-nightly --pre --ignore-checksums -y
-      - run:
-          name: Install Setup Tools
-          command: pip install setuptools
+#      - run:
+#          name: Install Setup Tools
+#          command: pip install setuptools
       - run:
           name: Run ratings serial tests
           environment:
