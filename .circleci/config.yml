@@ -444,7 +444,7 @@ jobs:
       - checkout
       - run:
           name: Upgrade build tooling
-          command: py -m pip install -U pip setuptools wheel --user
+          command: py -m pip install -U pip setuptools wheel
       - run:
           name: Install requirements
           command: py -m pip install --no-deps -r ./requirements.txt
@@ -454,9 +454,9 @@ jobs:
       - run:
           name: Install Firefox
           command: choco install firefox-nightly --pre --ignore-checksums -y
-#      - run:
-#          name: Install Setup Tools
-#          command: pip install setuptools
+      - run:
+          name: Install Setup Tools
+          command: pip install setuptools
       - run:
           name: Run ratings serial tests
           environment:
