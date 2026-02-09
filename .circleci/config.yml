@@ -342,7 +342,7 @@ jobs:
       - checkout
       - run:
           name: Upgrade tooling
-          command: py -m pip install -U pip setuptools wheel
+          command: py -m pip install -U pip setuptools wheel --user
       - run:
           name: Install requirements (no deps)
           command: py -m pip install --no-deps -r requirements.txt
