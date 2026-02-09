@@ -344,8 +344,8 @@ jobs:
           name: Upgrade pip
           command: py -m pip install --upgrade pip --user
       - run:
-        - name: Install dependency
-        - command: python -m pip install --no-build-isolation pytest-dependency
+          name: Install dependency
+          command: python -m pip install --no-build-isolation pytest-dependency
       - run:
           name: Install requirements
           command: py -m pip install --no-deps -r ./requirements.txt
