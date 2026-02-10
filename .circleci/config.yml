@@ -342,7 +342,7 @@ jobs:
       - checkout
       - run:
           name: Install Python 3.11
-          command: choco install python --version=3.11.9
+          command: choco install python --version=3.11.9 --allow-downgrade
       - run:
           name: Check Python Version
           command: python --version
