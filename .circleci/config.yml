@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
   win: circleci/windows@4.1.1
+  python: circleci/python@3.11.9
 jobs:
   # run coverage devhub tests in a separate job in order to run in parallel with the other coverage runs
   coverage_devhub_tests:
