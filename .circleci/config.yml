@@ -1,7 +1,6 @@
 version: 2.1
 orbs:
   win: circleci/windows@4.1.1
-  python: circleci/python@3.11.9
 jobs:
   # run coverage devhub tests in a separate job in order to run in parallel with the other coverage runs
   coverage_devhub_tests:
@@ -341,6 +340,9 @@ jobs:
     working_directory: ~/addons-release-tests/
     steps:
       - checkout
+      - run:
+          name: Install Python 3.11
+          command: choco install python --version=3.11.9
       - run:
           name: Check Python Version
           command: python --version
