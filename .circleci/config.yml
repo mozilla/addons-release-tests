@@ -341,6 +341,9 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Check Python Version
+          command: python --version
+      - run:
           name: Upgrade pip
           command: py -m pip install --upgrade pip --user
       - run:
