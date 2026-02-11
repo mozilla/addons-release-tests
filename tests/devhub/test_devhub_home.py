@@ -91,7 +91,7 @@ def test_devhub_click_header_profile_icon(selenium, base_url):
 
 
 @pytest.mark.nondestructive
-@pytest.mark.create_session("developer")
+@pytest.mark.login("developer")
 def test_devhub_my_addons_list_items(selenium, base_url, wait):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     # check that logged-in users can see up to 3 latest addons they've submitted

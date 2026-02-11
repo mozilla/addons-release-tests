@@ -109,7 +109,7 @@ class DevHubHome(Base):
     )
     _documentation_header_page = (
         By.XPATH,
-        "//div[@class='reference-layout__header']//h1"
+        "//div[@class='layout__header reference-layout__header']//h1"
     )
 
     def wait_for_page_to_load(self):

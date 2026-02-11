@@ -137,7 +137,7 @@ class Search(Page):
             _promoted_badge_locator = (By.XPATH, "//div[@class='Badge Badge--has-link']")
             _promoted_badge_label_locator = (By.XPATH, "//div[@class='Badge Badge--has-link']//span[2]")
             _users_locator = (By.CLASS_NAME, "SearchResult-users")
-            _users_number_locator = (By.CLASS_NAME, "SearchResult-users-text")
+            _users_number_locator = (By.XPATH, "//span[@class='SearchResult-users-text']")
             _icon_locator = (By.CLASS_NAME, "SearchResult-icon")
             _rating_stars_locator = (By.CLASS_NAME, "SearchResult-rating")
             _author_locator = (By.CLASS_NAME, "SearchResult-author")
