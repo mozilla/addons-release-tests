@@ -368,10 +368,10 @@ def test_browsers_footer_links_tc_id_c95105(base_url, selenium, count, link):
     "count, link",
     enumerate(
         [
-            ["https://www.firefox.com/en-US/?utm_campaign=SET_DEFAULT_BROWSER", ".c-intro-download"],
+            ["https://www.firefox.com/en-US/?utm_content=footer-link&utm_medium=referral&utm_source=addons.mozilla.org", ".c-intro-download"],
             ["products/vpn/", ".c-sub-navigation-title"],
-            ["relay.firefox.com/", ".Layout_logo__V4UCI"],
-            ["monitor.mozilla", ".PublicShell_logo__vbvvO"],
+            ["relay.firefox.com/", "img[alt='Firefox Relay Premium']"],
+            ["monitor.mozilla", "img[alt='Mozilla Monitor']"],
             ["getpocket.com", ".logo"],
         ]
     ),
