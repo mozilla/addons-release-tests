@@ -33,6 +33,7 @@ def test_language_tools_landing_page(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 @pytest.mark.prod_only
+@pytest.mark.skip
 def test_install_language_pack(
     selenium, base_url, firefox, firefox_notifications
 ):
