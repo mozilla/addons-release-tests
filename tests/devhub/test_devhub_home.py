@@ -556,7 +556,7 @@ def test_devhub_addons_footer_links(base_url, selenium, count, link):
     "count, link",
     enumerate(
         [
-            "en-US/?redirect_source=mozilla-org&utm_campaign=SET_DEFAULT_BROWSER",
+            "https://www.firefox.com/en-US/?redirect_source=mozilla-org&utm_source=addons.mozilla.org&utm_medium=referral&utm_content=footer-link",
             "en-US/browsers/mobile/",
             "en-US/browsers/enterprise/",
         ]
@@ -581,7 +581,7 @@ def test_devhub_browsers_footer_links(base_url, selenium, count, link):
     "count, link",
     enumerate(
         [
-            "en-US/?utm_campaign=SET_DEFAULT_BROWSER",
+            "https://www.firefox.com/en-US/?utm_source=addons.mozilla.org&utm_medium=referral&utm_content=footer-link",
             "products/vpn/",
             "relay.firefox.com/",
             "monitor.mozilla",
