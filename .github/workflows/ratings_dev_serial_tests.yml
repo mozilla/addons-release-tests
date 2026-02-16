@@ -1,0 +1,17 @@
+name: Ratings Dev Serial Tests
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  test:
+    uses: ./.github/workflows/_test.yml
+    with:
+      artifact_name: ratings-dev-test-results.html
+      pytest_parallel: 1
+      pytest_path: tests/frontend/test_ratings.py
+      pytest_report: ratings-dev-test-results.html
+      pytest_reruns: 2
+      pytest_variables: dev.json
+      python_version: 3.x
