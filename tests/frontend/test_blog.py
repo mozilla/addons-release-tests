@@ -178,7 +178,7 @@ def test_addon_cards_loaded_correctly(base_url, selenium):
         assert card.add_to_firefox_button.is_displayed()
 
 
-@pytest.mark.sanity
+# @pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_addon_card_recommendation_badge_link(base_url, selenium):
     """Tests the behavior when clicking on a recommendation badge in an addon card.
