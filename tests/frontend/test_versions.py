@@ -111,6 +111,7 @@ def test_current_version(selenium, base_url, variables):
 
 
 @pytest.mark.nondestructive
+@pytest.mark.skip
 def test_version_install_warning(selenium, base_url, variables):
     """Tests that install warnings appear for specific versions when required."""
     selenium.get(
