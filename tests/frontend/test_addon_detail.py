@@ -384,6 +384,7 @@ def test_more_info_version_number(selenium, base_url, variables):
 
 @pytest.mark.sanity
 @pytest.mark.nondestructive
+@pytest.mark.fail
 @pytest.mark.skip
 def test_more_info_addon_size(selenium, base_url, variables):
     """Tests the add-on size value in the 'More Info' section."""
