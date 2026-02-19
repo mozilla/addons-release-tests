@@ -7,7 +7,6 @@ from pages.desktop.developers.devhub_home import DevHubHome
 
 @pytest.mark.sanity
 @pytest.mark.login("developer")
-@pytest.mark.fail
 def test_validate_addon_listed(selenium, base_url, variables):
     """Verifies the process of validating a listed addon using the "On This Site"
     checkbox in the DevHub Addon Validate page.

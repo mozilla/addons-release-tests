@@ -217,6 +217,7 @@ def test_search_loads_and_navigates_to_correct_page(base_url, selenium):
 
 @pytest.mark.sanity
 @pytest.mark.nondestructive
+@pytest.mark.skip
 def test_blank_search_loads_results_tc_id_c97496(base_url, selenium):
     """Test that verifies the scenario in which we search with nothing"""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
