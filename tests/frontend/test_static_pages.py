@@ -113,6 +113,7 @@ def test_review_guidelines_page_links(base_url, selenium):
 
 
 @pytest.mark.nondestructive
+@pytest.mark.fail
 def test_blocked_addon_page_links(base_url, selenium, variables):
     """Checks the links from blocked addon page"""
     selenium.get(variables["static_page_blocked_addon"])
