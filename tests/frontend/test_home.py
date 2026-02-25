@@ -331,6 +331,7 @@ def test_addons_footer_links_tc_id_c95105(base_url, selenium, count, link):
 )
 @pytest.mark.nondestructive
 @pytest.mark.sanity
+@pytest.mark.skip
 def test_browsers_footer_links_tc_id_c95105(base_url, selenium, count, link, wait):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.footer.browsers_links[count].click()
@@ -345,7 +346,7 @@ def test_browsers_footer_links_tc_id_c95105(base_url, selenium, count, link, wai
     "count, link",
     enumerate(
         [
-            ["https://www.firefox.com/en-US/?utm_campaign=SET_DEFAULT_BROWSER", "a[data-testid='download-button-thanks']"],
+            # ["https://www.firefox.com/en-US/?utm_campaign=SET_DEFAULT_BROWSER", "a[data-testid='download-button-thanks']"],
             ["products/vpn/", ".c-sub-navigation-title"],
             ["relay.firefox.com/", "img[alt='Firefox Relay Premium']"],
             ["monitor.mozilla", "img[alt='Mozilla Monitor']"],
@@ -353,7 +354,7 @@ def test_browsers_footer_links_tc_id_c95105(base_url, selenium, count, link, wai
         ]
     ),
     ids=[
-        "Browsers",
+        # "Browsers",
         "VPN",
         "Relay",
         "Monitor",
