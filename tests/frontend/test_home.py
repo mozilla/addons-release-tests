@@ -340,8 +340,8 @@ def test_addons_footer_links_tc_id_c95105(base_url, selenium, count, link):
     "count, link",
     enumerate(
         [
-            ["en-US/?redirect_source", "#download-button-thanks"],
-            ["en-US/browsers/mobile/", "#android-download"],
+            ["en-US/?redirect_source=mozilla-org", "a[data-testid='download-button-thanks']"],
+            ["en-US/browsers/mobile/", "a[data-cta-text='Play Store']"],
             ["en-US/browsers/enterprise/", "#primary-download-button"],
         ]
     ),
@@ -368,7 +368,7 @@ def test_browsers_footer_links_tc_id_c95105(base_url, selenium, count, link):
     "count, link",
     enumerate(
         [
-            ["https://www.firefox.com/en-US/?utm_content=footer-link&utm_medium=referral&utm_source=addons.mozilla.org", ".c-intro-download"],
+            ["https://www.firefox.com/en-US/?utm_content=footer-link&utm_medium=referral&utm_source=addons.mozilla.org", "a[data-testid='download-button-thanks']"],
             ["products/vpn/", ".c-sub-navigation-title"],
             ["relay.firefox.com/", "img[alt='Firefox Relay Premium']"],
             ["monitor.mozilla", "img[alt='Mozilla Monitor']"],
