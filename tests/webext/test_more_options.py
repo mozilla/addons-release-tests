@@ -1,13 +1,15 @@
-# import pytest
-# import time
-#
-# from selenium.webdriver.support import expected_conditions as EC
-# from selenium.webdriver import ActionChains
-# from selenium.common.exceptions import TimeoutException
-#
-# from pages.desktop.about_addons import AboutAddons
-# from pages.desktop.frontend.versions import Versions
-# from pages.desktop.toolbar.toolbar import Toolbar
+import pytest
+import time
+
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver import ActionChains
+from selenium.common.exceptions import TimeoutException
+
+from pages.desktop.about_addons import AboutAddons
+from pages.desktop.frontend.versions import Versions
+from pages.desktop.toolbar.toolbar import Toolbar
+from pages.desktop.frontend.details import Detail
+
 #
 #
 # # @pytest.mark.webext
@@ -57,3 +59,9 @@
 #
 #
 #
+
+@pytest.mark.webext
+@pytest.mark.prod
+def test_default_shortcut_more_than_one_extension_C617068(selenium, base_url):
+    selenium.get("https://addons.mozilla.org/en-US/firefox/addon/tree-style-tab/")
+    detail_page = Detail(selenium, base_url).wait_for_page_to_load()
