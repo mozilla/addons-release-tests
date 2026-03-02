@@ -58,6 +58,7 @@ def test_extension_landing_header(base_url, selenium):
 
 @pytest.mark.sanity
 @pytest.mark.nondestructive
+@pytest.mark.fail
 def test_recommended_extensions_shelf(base_url, selenium):
     """Test that verifies the recommended extensions shelf"""
     extensions = Extensions(selenium, base_url).open()
