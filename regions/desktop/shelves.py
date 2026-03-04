@@ -55,7 +55,7 @@ class Shelves(Region):
         class ShelfDetail(Region):
             _addon_name_locator = (By.CLASS_NAME, 'SearchResult-name')
             _addon_icon_locator = (By.CLASS_NAME, 'SearchResult-icon')
-            _addon_users_locator = (By.CLASS_NAME, 'SearchResult-users-text')
+            _addon_users_locator = (By.CSS_SELECTOR, 'span[class="SearchResult-users-text"]')
 
             @property
             def name(self):
