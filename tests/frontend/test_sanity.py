@@ -1,7 +1,7 @@
 import time
 
-import pytest
 import random
+import pytest
 
 import requests
 
@@ -16,6 +16,11 @@ from pages.desktop.frontend.language_tools import LanguageTools
 @pytest.mark.nondestructive
 @pytest.mark.prod_only
 def test_language_tools_landing_page(selenium, base_url, variables):
+    """Verifies that the language tools landing page loads correctly,
+    with key information such as page header,
+    dictionaries info, and language packs info displayed.
+    Additionally, it ensures that the number of supported languages falls
+    within an expected range (130-150)."""
     page = LanguageTools(selenium, base_url).open().wait_for_page_to_load()
     # verify the information present on the landing page
     assert variables["language_tools_page_header"] in page.language_tools_header
@@ -29,8 +34,13 @@ def test_language_tools_landing_page(selenium, base_url, variables):
 @pytest.mark.nondestructive
 @pytest.mark.prod_only
 def test_install_language_pack(
-    selenium, base_url, variables, firefox, firefox_notifications
+    selenium, base_url, firefox, firefox_notifications
 ):
+    """Tests the process of installing and uninstalling
+    a language pack through the language tools page.
+    A random language pack is selected and installed,
+    followed by uninstalling it and checking
+    if the installation button changes appropriately."""
     page = LanguageTools(selenium, base_url).open().wait_for_page_to_load()
     lang_packs_list = page.available_language_packs
     # pick a random language pack from the list and install it
@@ -49,8 +59,13 @@ def test_install_language_pack(
 @pytest.mark.sanity
 @pytest.mark.prod_only
 def test_install_dictionary(
-    selenium, base_url, variables, firefox, firefox_notifications
+    selenium, base_url, firefox, firefox_notifications
 ):
+    """Verifies the installation and uninstallation of a dictionary
+    from the language tools page.
+    The test selects a random dictionary, installs it,
+    then checks the button text to confirm the dictionary
+    is installed and ready for removal."""
     page = LanguageTools(selenium, base_url).open().wait_for_page_to_load()
     dictionaries_list = page.available_dictionaries
     # pick a random dictionary from the list and install it
@@ -71,6 +86,11 @@ def test_install_dictionary(
 def test_install_extension(
     selenium, base_url, variables, firefox, firefox_notifications
 ):
+    """Verifies the installation and uninstallation of an extension.
+    After selecting an extension from the language tools page,
+    it confirms installation through the notification,
+    and ensures that the installation button reflects
+    the correct state when the extension is removed."""
     extension = variables["install_extension"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -87,6 +107,10 @@ def test_install_extension(
 @pytest.mark.sanity
 @pytest.mark.prod_only
 def test_install_theme(selenium, base_url, variables, firefox, firefox_notifications):
+    """This test ensures that the installation
+    process works for themes as well,
+    verifying that the "Install Theme" button changes state
+    to "Remove" after installation."""
     extension = variables["install_theme"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -105,6 +129,10 @@ def test_install_theme(selenium, base_url, variables, firefox, firefox_notificat
     reason="Still investigating why this test has started failing recently"
 )
 def test_about_addons_search(selenium, base_url):
+    """Verifies the functionality of the search feature on the "about:addons" page.
+    A search for "privacy" is performed,
+    and the results are checked to ensure that the correct number of items
+    are returned and that the query string appears in the results."""
     selenium.get("about:addons")
     about_addons = AboutAddons(selenium).wait_for_page_to_load()
     amo_search_results = about_addons.search_box("privacy")
@@ -118,6 +146,8 @@ def test_about_addons_search(selenium, base_url):
 
 @pytest.mark.prod_only
 def test_about_addons_find_more_addons(selenium, base_url, wait):
+    """Ensures that clicking the "Find More Add-ons" button on the "about:addons" page
+    redirects correctly to the AMO (Add-ons Marketplace) homepage."""
     selenium.get("about:addons")
     about_addons = AboutAddons(selenium).wait_for_page_to_load()
     amo_home = about_addons.click_find_more_addons()
@@ -127,6 +157,10 @@ def test_about_addons_find_more_addons(selenium, base_url, wait):
 
 @pytest.mark.prod_only
 def test_about_addons_addon_cards(selenium, base_url, wait):
+    """Verifies that the add-on cards displayed on
+    the "about:addons" page contain the necessary information,
+    including extension details like author, rating, and user count.
+    It checks for visibility and correct data for both extensions and themes."""
     selenium.get("about:addons")
     about_addons = AboutAddons(selenium)
     # waits for the list of addon cards to be loaded (currently we have minimum 7 cards)
@@ -154,6 +188,8 @@ def test_about_addons_addon_cards(selenium, base_url, wait):
 
 @pytest.mark.prod_only
 def test_about_addons_addon_cards_author_link(selenium, base_url, wait):
+    """Verifies that clicking on the author name in an add-on card correctly navigates
+    to the author's add-on detail page on AMO."""
     selenium.get("about:addons")
     about_addons = AboutAddons(selenium)
     # waiting for the addon cards data to be retrieved (the author names in this case)
@@ -171,6 +207,9 @@ def test_about_addons_addon_cards_author_link(selenium, base_url, wait):
 @pytest.mark.prod_only
 @pytest.mark.skip
 def test_about_addons_addon_stats_match_amo(selenium, base_url, wait):
+    """Ensures that the statistics (rating, user count) displayed
+    for an add-on on the "about:addons" page match those on its AMO detail page.
+    This test helps confirm consistency between the two pages."""
     selenium.get("about:addons")
     about_addons = AboutAddons(selenium)
     # waiting for the addon cards data to be retrieved (the author names in this case)
@@ -197,6 +236,10 @@ def test_about_addons_addon_stats_match_amo(selenium, base_url, wait):
 def test_about_addons_install_extension(
     selenium, base_url, wait, firefox, firefox_notifications
 ):
+    """Tests the installation process for an extension
+    from the "about:addons" page,
+    ensuring that the extension is installed correctly
+    and appears in the list of installed extensions."""
     selenium.get("about:addons")
     about_addons = AboutAddons(selenium)
     # waiting for the addon cards data to be retrieved (the install buttons in this case)
@@ -233,6 +276,8 @@ def test_about_addons_install_extension(
 def test_about_addons_install_theme(
     selenium, base_url, wait, firefox, firefox_notifications
 ):
+    """Verifies the installation of a theme from the "about:addons" page
+    and checks that the installed theme appears on the "Manage Themes" page."""
     selenium.get("about:addons")
     about_addons = AboutAddons(selenium)
     # waiting for the addon cards data to be retrieved (the install buttons in this case)

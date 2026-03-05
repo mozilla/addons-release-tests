@@ -59,7 +59,7 @@ def test_upload_addon_without_dev_agreement(base_url, selenium):
 
 @pytest.mark.serial
 @pytest.mark.login("api_user")
-def test_bad_authentication_addon_upload(selenium, base_url,session_auth):
+def test_bad_authentication_addon_upload(base_url,session_auth):
     with open("sample-addons/unlisted-addon.zip", "rb") as file:
         upload = requests.post(
             url=f"{base_url}{_upload}",

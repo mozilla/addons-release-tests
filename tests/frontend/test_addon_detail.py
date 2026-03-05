@@ -1,7 +1,7 @@
 import time
-import pytest
 import urllib.request
 import urllib.parse
+import pytest
 import requests
 
 from selenium.common.exceptions import NoSuchElementException
@@ -18,11 +18,10 @@ from pages.desktop.frontend.reviews import Reviews
 from pages.desktop.frontend.versions import Versions
 from scripts import reusables
 
-
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_extension_meta_card_tc_id_c392798(selenium, base_url, variables):
-    # Checks addon essential data (name, icon, author name, summary)
+    """Checks addon essential data (name, icon, author name, summary)"""
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url)
@@ -31,10 +30,10 @@ def test_extension_meta_card_tc_id_c392798(selenium, base_url, variables):
     assert addon.authors.is_displayed()
     assert addon.summary.is_displayed()
 
-
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_detail_author_links(selenium, base_url, variables):
+    """Tests that the author's links are present and correct on the detail page."""
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     # read the add-on author name and clicks on it
@@ -45,9 +44,9 @@ def test_detail_author_links(selenium, base_url, variables):
     user = User(selenium, base_url).wait_for_page_to_load()
     assert author in user.user_display_name.text
 
-
 @pytest.mark.nondestructive
 def test_addon_detail_recommended_badge(selenium, base_url, variables):
+    """Tests that the recommended badge appears on the add-on detail page."""
     extension = variables["detail_extension_recommended_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url)
@@ -57,9 +56,9 @@ def test_addon_detail_recommended_badge(selenium, base_url, variables):
     addon.click_promoted_badge()
     assert "add-on-badges" in selenium.current_url
 
-
 @pytest.mark.nondestructive
 def test_addon_detail_by_firefox_badge(selenium, base_url, variables):
+    """Tests that the 'By Firefox' badge is displayed for official add-ons."""
     extension = variables["detail_extension_by_firefox_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url)
@@ -69,9 +68,9 @@ def test_addon_detail_by_firefox_badge(selenium, base_url, variables):
     addon.click_promoted_badge()
     assert "add-on-badges" in selenium.current_url
 
-
 @pytest.mark.nondestructive
 def test_non_promoted_addon(selenium, base_url, variables):
+    """Tests behavior for a non-promoted add-on."""
     extension = variables["experimental_addon"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url)
@@ -87,11 +86,11 @@ def test_non_promoted_addon(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 def test_experimental_addon(selenium, base_url, variables):
+    """Tests how an experimental add-on is displayed or handled."""
     extension = variables["experimental_addon"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url)
     assert addon.experimental_badge.is_displayed()
-
 
 @pytest.mark.nondestructive
 def test_invisible_addon(selenium, base_url, variables):
@@ -110,43 +109,40 @@ def test_invisible_addon(selenium, base_url, variables):
         in addon.non_public_addon_notice.text
     )
 
-
 @pytest.mark.nondestructive
 def test_access_addon_by_guid(selenium, base_url, variables):
     """Access an addon detail page by its guid"""
     extension = variables["addon_detail_guid"]
-    selenium.get(f"{base_url}/addon/{extension}")
+    selenium.get(f"{base_url}/addon/{extension}") # pylint: disable=missing-timeout
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     # making sure that the page doesn't return a 404
-    response = requests.get(selenium.current_url)
+    response = requests.get(selenium.current_url, timeout=10)
     assert (
         response.status_code == 200
     ), f'Actual status code for "{selenium.current_url}" was "{response.status_code}"'
     assert addon.summary.is_displayed()
-
 
 @pytest.mark.nondestructive
 def test_access_addon_by_id(selenium, base_url, variables):
     """Access an addon detail page by its internal AMO id"""
     extension = variables["addon_detail_id"]
-    selenium.get(f"{base_url}/addon/{extension}")
+    selenium.get(f"{base_url}/addon/{extension}") # pylint: disable=missing-timeout
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     # making sure that the page doesn't return a 404
-    response = requests.get(selenium.current_url)
+    response = requests.get(selenium.current_url, timeout=10)
     assert (
         response.status_code == 200
     ), f'Actual status code for "{selenium.current_url}" was "{response.status_code}"'
     assert addon.summary.is_displayed()
 
-
 @pytest.mark.nondestructive
 def test_access_addon_by_unicode_slug(selenium, base_url, variables):
     """Access an addon detail page with a unicode slug"""
     extension = variables["addon_unicode_slug"]
-    selenium.get(f"{base_url}/addon/{extension}")
+    selenium.get(f"{base_url}/addon/{extension}") # pylint: disable=missing-timeout
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     # making sure that the page doesn't return a 404
-    response = requests.get(selenium.current_url)
+    response = requests.get(selenium.current_url, timeout=10)
     assert (
         response.status_code == 200
     ), f'Actual status code for "{selenium.current_url}" was "{response.status_code}"'
@@ -155,6 +151,7 @@ def test_access_addon_by_unicode_slug(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 def test_lower_firefox_incompatibility(selenium, base_url, variables):
+    """Tests behavior when an add-on is incompatible with lower Firefox versions."""
     extension = variables["lower_firefox_version"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url)
@@ -167,6 +164,7 @@ def test_lower_firefox_incompatibility(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 def test_higher_firefox_incompatibility(selenium, base_url, variables):
+    """Tests behavior when an add-on is incompatible with higher Firefox versions."""
     extension = variables["higher_firefox_version"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -185,6 +183,7 @@ def test_higher_firefox_incompatibility(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 def test_platform_incompatibility_tc_id_c4453(selenium, base_url, variables):
+    """Tests display and behavior for platform-incompatible add-ons."""
     extension = variables["incompatible_platform"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url)
@@ -197,6 +196,7 @@ def test_platform_incompatibility_tc_id_c4453(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 def test_addon_with_stats_summary(selenium, base_url, variables):
+    """Tests display of stats summary for an add-on that has data."""
     extension = variables["addon_with_stats"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -208,6 +208,7 @@ def test_addon_with_stats_summary(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 def test_addon_without_stats_summary(selenium, base_url, variables):
+    """Tests behavior when an add-on has no stats summary available."""
     extension = variables["addon_without_stats"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -219,6 +220,7 @@ def test_addon_without_stats_summary(selenium, base_url, variables):
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_stats_reviews_summary_click(selenium, base_url, variables):
+    """Tests clicking on the reviews summary in stats."""
     extension = variables["addon_with_stats"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -232,6 +234,7 @@ def test_stats_reviews_summary_click(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 def test_stats_rating_bars_summary(selenium, base_url, variables):
+    """Tests that rating bars summary is displayed in stats section."""
     extension = variables["addon_with_stats"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -246,6 +249,7 @@ def test_stats_rating_bars_summary(selenium, base_url, variables):
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_click_stats_rating_bar(selenium, base_url, variables):
+    """Tests clicking on a specific rating bar in the stats."""
     extension = variables["addon_with_stats"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -259,6 +263,7 @@ def test_click_stats_rating_bar(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 def test_click_stats_bar_rating_counts(selenium, base_url, variables):
+    """Tests the rating counts when a stats bar is clicked."""
     extension = variables["addon_with_stats"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -273,6 +278,7 @@ def test_click_stats_bar_rating_counts(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 def test_click_stats_grouped_ratings(selenium, base_url, variables):
+    """Tests grouped ratings behavior when clicked."""
     extension = variables["addon_with_stats"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -286,6 +292,7 @@ def test_click_stats_grouped_ratings(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 def test_stats_rating_counts_compare(selenium, base_url, variables):
+    """Tests comparison of rating counts between different add-ons or versions."""
     extension = variables["addon_with_stats"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -299,6 +306,7 @@ def test_stats_rating_counts_compare(selenium, base_url, variables):
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_contribute_button_tc_id_c4402(selenium, base_url, variables):
+    """Tests visibility and behavior of the contribute button."""
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url)
@@ -316,6 +324,7 @@ def test_contribute_button_tc_id_c4402(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 def test_extension_permissions_tc_id_c139966(selenium, base_url, variables):
+    """Tests that extension permissions are displayed correctly."""
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url)
@@ -333,6 +342,7 @@ def test_extension_permissions_tc_id_c139966(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 def test_more_info_card_header(selenium, base_url, variables):
+    """Tests the header of the 'More Info' card on the detail page."""
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -345,6 +355,7 @@ def test_more_info_card_header(selenium, base_url, variables):
 )
 @pytest.mark.nondestructive
 def test_more_info_support_links(selenium, base_url, variables, count, link):
+    """Tests the support links under the 'More Info' section."""
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -360,6 +371,7 @@ def test_more_info_support_links(selenium, base_url, variables, count, link):
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_more_info_version_number(selenium, base_url, variables):
+    """Tests that the correct version number is displayed in 'More Info'."""
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -369,6 +381,7 @@ def test_more_info_version_number(selenium, base_url, variables):
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_more_info_addon_size(selenium, base_url, variables):
+    """Tests the add-on size value in the 'More Info' section."""
     extension = variables["addon_size_extension"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -384,6 +397,7 @@ def test_more_info_addon_size(selenium, base_url, variables):
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_more_info_addon_last_update(selenium, base_url, variables):
+    """Tests that the last updated date is shown in 'More Info'."""
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -393,6 +407,7 @@ def test_more_info_addon_last_update(selenium, base_url, variables):
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_more_info_related_categories(selenium, base_url, variables):
+    """Tests that related categories are listed under 'More Info'."""
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -416,6 +431,7 @@ def test_more_info_related_categories(selenium, base_url, variables):
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_more_info_external_license(selenium, base_url, variables):
+    """Tests that an external license link is displayed if available."""
     extension = variables["addon_with_stats"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -512,6 +528,7 @@ def test_more_info_reserved_license_is_not_linkified(selenium, base_url):
 
 @pytest.mark.nondestructive
 def test_more_info_custom_license(selenium, base_url, variables):
+    """Tests display of a custom license in 'More Info'."""
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -528,6 +545,7 @@ def test_more_info_custom_license(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 def test_more_info_privacy_policy(selenium, base_url, variables):
+    """Tests presence and rendering of the add-on's privacy policy."""
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -543,6 +561,7 @@ def test_more_info_privacy_policy(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 def test_more_info_privacy_policy_missing(selenium, base_url, variables):
+    """Tests behavior when privacy policy is missing."""
     extension = variables["addon_without_stats"]
     selenium.get(f"{base_url}/addon/{extension}")
     Detail(selenium, base_url).wait_for_page_to_load()
@@ -553,6 +572,7 @@ def test_more_info_privacy_policy_missing(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 def test_more_info_eula(selenium, base_url, variables):
+    """Tests that the End-User License Agreement (EULA) is shown."""
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -569,6 +589,7 @@ def test_more_info_eula(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 def test_more_info_eula_missing(selenium, base_url, variables):
+    """Tests behavior when EULA is missing."""
     extension = variables["addon_without_stats"]
     selenium.get(f"{base_url}/addon/{extension}")
     Detail(selenium, base_url).wait_for_page_to_load()
@@ -579,6 +600,7 @@ def test_more_info_eula_missing(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 def test_compare_more_info_latest_version(selenium, base_url, variables):
+    """Tests that the latest version info is used in the 'More Info' section."""
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -594,6 +616,7 @@ def test_compare_more_info_latest_version(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 def test_more_info_addon_tags(selenium, base_url, variables):
+    """Tests that relevant tags are displayed in 'More Info'."""
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -610,7 +633,8 @@ def test_more_info_addon_tags(selenium, base_url, variables):
         try:
             same_tag_results.result_list.click_search_result(count)
             # the 'click_search_result' function should already wait for the detail page to load
-            # but I also want to check that the page switch occurred; helps with debugging test failures
+            # but I also want to check that the page switch occurred;
+            # helps with debugging test failures
             addon.wait_for_current_url("firefox/addon/")
             tag_name_from_search = [el.text for el in addon.more_info.addon_tags]
             assert tag_name in tag_name_from_search, f"for {addon.name}"
@@ -625,12 +649,15 @@ def test_more_info_addon_tags(selenium, base_url, variables):
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_screenshot_viewer(selenium, base_url, variables):
+    """Tests that the screenshot viewer works as expected."""
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     assert "Screenshots" in addon.screenshots.screenshot_section_header.text
-    # clicks through each screenshot and verifies that the screenshot full size viewer is opened
-    # also check that the image preview sources are actually retrieved from the server (no broken previews)
+    # clicks through each screenshot
+    # and verifies that the screenshot full size viewer is opened
+    # also check that the image preview sources
+    # are actually retrieved from the server (no broken previews)
     for preview in addon.screenshots.screenshot_preview:
         preview_count = addon.screenshots.screenshot_preview.index(preview)
         preview.click()
@@ -639,7 +666,7 @@ def test_screenshot_viewer(selenium, base_url, variables):
         src_img = selenium.find_elements(By.CSS_SELECTOR, ".ScreenShots-image")[
             preview_count
         ].get_attribute("src")
-        assert requests.get(src_img).status_code == 200
+        assert requests.get(src_img, timeout=10).status_code == 200
         # checks that the screenshot viewer has opened
         addon.screenshots.screenshot_full_view_displayed()
         addon.screenshots.esc_to_close_screenshot_viewer()
@@ -647,6 +674,7 @@ def test_screenshot_viewer(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 def test_screenshot_ui_navigation(selenium, base_url, variables):
+    """Tests UI navigation controls in the screenshot viewer."""
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -662,6 +690,7 @@ def test_screenshot_ui_navigation(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 def test_screenshot_keyboard_navigation_tc_id_c4535(selenium, base_url, variables):
+    """Tests keyboard navigation for screenshots."""
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -679,6 +708,7 @@ def test_screenshot_keyboard_navigation_tc_id_c4535(selenium, base_url, variable
 
 @pytest.mark.nondestructive
 def test_add_to_collection_card(selenium, base_url, variables):
+    """Tests the add-to-collection card on the add-on detail page."""
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -689,6 +719,7 @@ def test_add_to_collection_card(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 def test_release_notes(selenium, base_url, variables):
+    """Tests the presence of release notes."""
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -701,6 +732,7 @@ def test_release_notes(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 def test_more_addons_by_author_card(selenium, base_url, variables):
+    """Tests the display of other add-ons by the same author."""
     extension = variables["experimental_addon"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -717,6 +749,7 @@ def test_more_addons_by_author_card(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 def test_click_addon_in_more_addons_by_author(selenium, base_url, variables):
+    """Tests navigation when clicking an add-on in the author's section."""
     extension = variables["experimental_addon"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -730,6 +763,7 @@ def test_click_addon_in_more_addons_by_author(selenium, base_url, variables):
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_addon_description(selenium, base_url, variables):
+    """Tests that the add-on description is displayed correctly."""
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -740,6 +774,7 @@ def test_addon_description(selenium, base_url, variables):
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_developer_comments(selenium, base_url, variables):
+    """Tests display of developer comments on the add-on page."""
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -751,6 +786,7 @@ def test_developer_comments(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 def test_addon_ratings_card(selenium, base_url, variables):
+    """Tests display of the add-on's ratings card."""
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -767,6 +803,7 @@ def test_addon_ratings_card(selenium, base_url, variables):
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_addon_recommendations(selenium, base_url, variables):
+    """Tests display of recommended add-ons."""
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -778,6 +815,7 @@ def test_addon_recommendations(selenium, base_url, variables):
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_click_addon_recommendations(selenium, base_url, variables):
+    """Tests clicking on a recommended add-on."""
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -791,6 +829,7 @@ def test_click_addon_recommendations(selenium, base_url, variables):
 @pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_theme_detail_page_tc_id_c95590(selenium, base_url, variables):
+    """Tests display and content of a theme's detail page."""
     extension = variables["theme_detail_page"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
@@ -809,6 +848,7 @@ def test_theme_detail_page_tc_id_c95590(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 def test_current_theme_not_in_more_by_artist_previews(selenium, base_url, variables):
+    """Tests that the current theme is not duplicated in the 'more by artist' section."""
     extension = variables["theme_detail_page"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
