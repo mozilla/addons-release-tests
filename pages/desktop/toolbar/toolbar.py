@@ -12,6 +12,7 @@ from pages.desktop.about_addons import AboutAddons
 class Toolbar(Page):
     _manage_extension_button_locator = (By.ID, "unified-extensions-button")
     _extensions_menu_addon_locator = (By.CSS_SELECTOR, ".unified-extensions-item-action-button")
+    _extensions_menu_label_name_locator = (By.CSS_SELECTOR, "label[class='unified-extensions-item-name']")
     _extensions_menu_wheel_button_locator = (By.CSS_SELECTOR, ".unified-extensions-item-menu-button")
     _unified_extensions_discover_extensions_locator = (By.ID, ".unified-extensions-discover-extensions")
     _wheel_option_manage_extension_locator = (By.ID, "unified-extensions-context-menu-manage-extension")
@@ -30,12 +31,27 @@ class Toolbar(Page):
             return self.find_element(*self._manage_extension_button_locator)
 
     @property
+    def extensions_menu_addon(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._extensions_menu_addon_locator)
+        )
+        return self.find_element(*self._extensions_menu_addon_locator)
+
+    @property
     def panel_ui_container(self):
         with self.driver.context(self.driver.CONTEXT_CHROME):
             self.wait.until(
                 EC.visibility_of_element_located(self._panel_ui_container_locator)
             )
             return self.find_element(*self._panel_ui_container_locator)
+
+    @property
+    def extensions_menu_label_name(self):
+        # with self.driver.context(self.driver.CONTEXT_CHROME):
+        self.wait.until(
+            EC.visibility_of_element_located(self._extensions_menu_label_name_locator)
+        )
+        return self.find_element(*self._extensions_menu_label_name_locator)
 
     def click_panel_ui_menu(self):
         with self.driver.context(self.driver.CONTEXT_CHROME):

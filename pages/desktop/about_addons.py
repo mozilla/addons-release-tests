@@ -1,3 +1,5 @@
+import time
+
 from pypom import Page, Region
 
 from selenium.common.exceptions import NoSuchElementException
@@ -14,7 +16,7 @@ class AboutAddons(Page):
     _addon_cards_locator = (By.CLASS_NAME, "card.addon")
     _addon_card_general_locator = (By.CSS_SELECTOR, ".card.addon")
     _search_box_locator = (By.CSS_SELECTOR, ".main-search search-textbox")
-    _find_more_addons_search_box_locator = (By.XPATH, "//moz-input-search[@data-l10n-id='addons-heading-search-input']")
+    _find_more_addons_search_box_locator = (By.CSS_SELECTOR, "moz-input-search[placeholder='Search addons.mozilla.org']")
     _find_more_addons_text_locator = (By.CSS_SELECTOR, ".search-label")
     _extension_tab_button_locator = (By.CSS_SELECTOR, 'button[name = "extension"]')
     _recommendations_tab_button_locator = (By.CSS_SELECTOR, 'button[name = discover]')
@@ -40,12 +42,47 @@ class AboutAddons(Page):
     _panel_item_action_debug_addons = (By.XPATH, "//panel-item[@action='debug-addons']")
     _panel_item_action_view_recent_updates_locator = (By.XPATH, "//panel-item[@action='view-recent-updates']")
     _remove_addon_dialog_locator = (By.ID, "commonDialog")
+    _more_options_panel_item_remove_button_locator = (By.CSS_SELECTOR, "panel-item[action='remove']")
+    _more_options_panel_item_preferences_locator = (By.CSS_SELECTOR, "panel-item[action='preferences']")
+    _more_options_panel_item_report_locator = (By.CSS_SELECTOR, "panel-item[action='report']")
+    _more_options_panel_item_manage_locator = (By.CSS_SELECTOR, "panel-item[action='expand']")
+    _extensions_side_toggle_addon_locator = (By.CSS_SELECTOR, "moz-toggle[class='extension-enable-button']")
+    _extensions_side_addon_name_link_locator = (By.CSS_SELECTOR, "a[class='addon-name-link']")
+    _firefox_recommends_link_locator = (By.CSS_SELECTOR, "a[class='discopane-intro-learn-more-link']")
 
     def wait_for_page_to_load(self):
         self.wait.until(
             EC.visibility_of_element_located(self._addon_card_general_locator)
         )
         return self
+
+    @property
+    def more_options_remove_button(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._more_options_panel_item_remove_button_locator)
+        )
+        return self.find_element(*self._more_options_panel_item_remove_button_locator)
+
+    @property
+    def more_options_preferences_button(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._more_options_panel_item_preferences_locator)
+        )
+        return self.find_element(*self._more_options_panel_item_preferences_locator)
+
+    @property
+    def more_options_report_button(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._more_options_panel_item_report_locator)
+        )
+        return self.find_element(*self._more_options_panel_item_report_locator)
+
+    @property
+    def more_options_manage_button(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._more_options_panel_item_manage_locator)
+        )
+        return self.find_element(*self._more_options_panel_item_manage_locator)
 
     def click_more_options_button_addon(self):
         self.wait.until(
@@ -54,11 +91,34 @@ class AboutAddons(Page):
         self.find_element(*self._more_options_button_locator).click()
 
     def click_more_options_remove_addon(self):
-        with self.driver.context(self.driver.CONTEXT_CHROME):
-            el = self.driver.execute_script("""
-                            return document.querySelector('panel-item[action="remove"]');
-                        """)
-            el.click()
+        self.wait.until(
+            EC.visibility_of_element_located(self._more_options_panel_item_remove_button_locator)
+        )
+        self.find_element(*self._more_options_panel_item_remove_button_locator).click()
+
+    def click_more_options_report_addon(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._more_options_panel_item_report_locator)
+        )
+        self.find_element(*self._more_options_panel_item_report_locator).click()
+        self.driver.switch_to.window(self.driver.window_handles[1])
+        self.wait.until(EC.url_contains("/firefox/feedback/addon"))
+
+    def extensions_side_toggle_addon(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._extensions_side_toggle_addon_locator)
+        )
+        self.find_element(*self._extensions_side_toggle_addon_locator).click()
+        time.sleep(2)
+        return self.find_element(*self._extensions_side_addon_name_link_locator).text
+
+
+    # def click_more_options_remove_addon(self):
+    #     with self.driver.context(self.driver.CONTEXT_CHROME):
+    #         el = self.driver.execute_script("""
+    #                         return document.querySelector('panel-item[action="remove"]');
+    #                     """)
+    #         el.click()
 
     def click_panel_item_action_debug_addon(self):
         # with self.driver.context(self.driver.CONTEXT_CHROME):
@@ -98,6 +158,12 @@ class AboutAddons(Page):
                     """)
             el.click()
 
+    @property
+    def search_box(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._find_more_addons_search_box_locator)
+        )
+        return self.find_element(*self._find_more_addons_search_box_locator)
 
     # def search_box(self, value):
     #     self.wait.until(EC.visibility_of_element_located(self._find_more_addons_search_box_locator))
@@ -316,6 +382,12 @@ class AboutAddons(Page):
         self.wait.until(EC.element_to_be_clickable(self._installed_addon_name_locator))
         self.find_element(*self._installed_addon_name_locator).click()
         return self.ExtensionDetail(self).wait_for_region_to_load()
+
+    def firefox_recommends_link(self):
+        self.wait.until(EC.element_to_be_clickable(self._firefox_recommends_link_locator))
+        self.find_element(*self._firefox_recommends_link_locator).click()
+        self.driver.switch_to.window(self.driver.window_handles[1])
+
 
     class ExtensionDetail(Region):
         _addon_card_locator = (By.CSS_SELECTOR, "addon-card")
