@@ -1,8 +1,3 @@
-""" This file contains fixtures in order for the tests to run
-    Example of fixtures used:
-    - firefox_options: in which we customize the configuration
-    - selenium: which sets up basic things for the browser"""
-
 import os
 
 import pytest
@@ -15,7 +10,6 @@ from selenium.webdriver.support import expected_conditions as EC
 
 from pages.desktop.frontend.home import Home
 from pages.desktop.frontend.login import Login
-from pages.desktop.developers.devhub_home import DevHubHome
 
 # Window resolutions
 DESKTOP = (1920, 1080)
@@ -23,13 +17,12 @@ DESKTOP = (1920, 1080)
 
 @pytest.fixture(scope="session")
 def base_url(base_url, variables):
-    """ Returns the base url depending on the environment used"""
     return variables["base_url"]
 
 
 @pytest.fixture(scope="session")
 def sensitive_url(request, base_url):
-    """Override sensitive url check"""
+    # Override sensitive url check
     return False
 
 
@@ -50,11 +43,6 @@ def firefox_options(firefox_options, base_url, variables):
     '-headless': Firefox will run headless
 
     """
-    user_agent = os.environ.get("CUSTOM_USER_AGENT")
-    if user_agent:
-        # Use a custom user-agent if one is provided in the environment, which
-        # allows the test to be identified as such where necessary.
-        firefox_options.set_preference("general.useragent.override", user_agent)
     # for prod installation tests, we do not need to set special prefs, so we
     # separate the browser set-up based on the AMO environments
     if base_url == "https://addons.mozilla.org":
@@ -63,20 +51,20 @@ def firefox_options(firefox_options, base_url, variables):
         firefox_options.log.level = "trace"
         firefox_options.set_preference(
             "extensions.getAddons.discovery.api_url",
-            variables["extensions_getAddons_discovery_api_url"],
+            "https://services.addons.mozilla.org/api/v4/discovery/?lang=%LOCALE%&edition=%DISTRIBUTION%",
         )
         firefox_options.set_preference("extensions.getAddons.cache.enabled", True)
         firefox_options.set_preference(
             "extensions.getAddons.get.url",
-            variables["extensions_getAddons_get_url"],
+            "https://services.addons.mozilla.org/api/v4/addons/search/?guid=%IDS%&lang=%LOCALE%",
         )
         firefox_options.set_preference(
             "extensions.update.url",
-            variables["extensions_update_url"]
+            "https://versioncheck.addons.mozilla.org/update/VersionCheck.php?reqVersion=%REQ_VERSION%&id=%ITEM_ID%&version=%ITEM_VERSION%&maxAppVersion=%ITEM_MAXAPPVERSION%&status=%ITEM_STATUS%&appID=%APP_ID%&appVersion=%APP_VERSION%&appOS=%APP_OS%&appABI=%APP_ABI%&locale=%APP_LOCALE%&currentAppVersion=%CURRENT_APP_VERSION%&updateType=%UPDATE_TYPE%&compatMode=%COMPATIBILITY_MODE%"
         )
         firefox_options.set_preference(
             "extensions.update.background.url",
-            variables["extensions_update_background_url"]
+            "https://versioncheck-bg.addons.mozilla.org/update/VersionCheck.php?reqVersion=%REQ_VERSION%&id=%ITEM_ID%&version=%ITEM_VERSION%&maxAppVersion=%ITEM_MAXAPPVERSION%&status=%ITEM_STATUS%&appID=%APP_ID%&appVersion=%APP_VERSION%&appOS=%APP_OS%&appABI=%APP_ABI%&locale=%APP_LOCALE%&currentAppVersion=%CURRENT_APP_VERSION%&updateType=%UPDATE_TYPE%&compatMode=%COMPATIBILITY_MODE%"
         )
     else:
         firefox_options.set_preference("extensions.install.requireBuiltInCerts", False)
@@ -164,7 +152,7 @@ def selenium(selenium, base_url, session_auth, request):
         assert (
             delete_session.status_code == 200
         ), f"Actual status code was {delete_session.status_code}"
-        # test that session was invalidated correctly accessing the account with the deleted session
+        # test that session was invalidated correctly by trying to access the account with the deleted session
         get_user = requests.get(
             url=f"{base_url}/api/v5/accounts/profile/",
             headers={"Authorization": f"Session {session_auth}"},
@@ -213,6 +201,8 @@ def delete_themes(selenium, base_url):
     """Use this fixture in devhub theme submission tests when we want to
     immediately delete the theme once the test has completed"""
     yield
+
+    from pages.desktop.developers.devhub_home import DevHubHome
 
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     manage_addons = page.click_my_addons_header_link()
