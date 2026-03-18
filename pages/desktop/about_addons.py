@@ -49,6 +49,7 @@ class AboutAddons(Page):
     _extensions_side_toggle_addon_locator = (By.CSS_SELECTOR, "moz-toggle[class='extension-enable-button']")
     _extensions_side_addon_name_link_locator = (By.CSS_SELECTOR, "a[class='addon-name-link']")
     _firefox_recommends_link_locator = (By.CSS_SELECTOR, "a[class='discopane-intro-learn-more-link']")
+    _recommends_link_header_text_locator = (By.CSS_SELECTOR, "//h1[contains(text(), 'Recommended Extensions program')]")
 
     def wait_for_page_to_load(self):
         self.wait.until(
@@ -83,6 +84,14 @@ class AboutAddons(Page):
             EC.visibility_of_element_located(self._more_options_panel_item_manage_locator)
         )
         return self.find_element(*self._more_options_panel_item_manage_locator)
+
+    @property
+    def recommends_link_header_text(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._recommends_link_header_text_locator)
+        )
+        return self.find_element(*self._recommends_link_header_text_locator)
+
 
     def click_more_options_button_addon(self):
         self.wait.until(
@@ -387,6 +396,11 @@ class AboutAddons(Page):
         self.wait.until(EC.element_to_be_clickable(self._firefox_recommends_link_locator))
         self.find_element(*self._firefox_recommends_link_locator).click()
         self.driver.switch_to.window(self.driver.window_handles[1])
+        assert self.recommends_link_header_text.is_displayed()
+        self.driver.close()
+        self.driver.switch_to.window(self.driver.window_handles[0])
+
+
 
 
     class ExtensionDetail(Region):

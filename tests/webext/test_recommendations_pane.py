@@ -81,6 +81,10 @@ def test_recommendations_page_layout_TC_ID_C617018(selenium, base_url, wait):
     about_addons = AboutAddons(selenium, base_url).wait_for_page_to_load()
     about_addons.click_recommendations_side_button()
     assert about_addons.search_box().is_displayed()
+    assert "Search addons.mozilla.org" in about_addons.search_box.text
+    about_addons.firefox_recommends_link()
+    
+
 
 
 
