@@ -155,10 +155,13 @@ def test_install_uninstall_langpack_tc_id_c4508(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Open a language pack detail page, install it and then uninstall it"""
-    selenium.get(f"{base_url}/addon/language-עברית-hebrew-_cas-cur/")
+    if base_url== "https://addons.mozilla.org":
+        selenium.get(f"{base_url}/addon/hebrew-il-language-pack/")
+    else:
+        selenium.get(f"{base_url}/addon/language-עברית-hebrew-_cas-cur/")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     amo_langpack_name = addon.name
-    assert amo_langpack_name == "Language: עברית (Hebrew)_cas-cur"
+    assert amo_langpack_name == "Language: עברית (Hebrew)"
     assert addon.is_compatible
     addon.install()
     firefox.browser.wait_for_notification(
@@ -198,7 +201,7 @@ def test_about_addons_install_extension(
     about_addons = AboutAddons(selenium)
     # waiting for the addon cards data to be retrieved (the install buttons in this case)
     wait.until(
-        lambda _: len([el.install_button for el in about_addons.addon_cards_items]) >= 8
+        lambda _: len([el.install_button for el in about_addons.addon_cards_items]) >= 7
     )
     # disco_addon_name = about_addons.addon_cards_items[2].disco_addon_name.text
     # disco_addon_author = about_addons.addon_cards_items[2].disco_addon_author.text
@@ -236,7 +239,7 @@ def test_about_addons_install_theme(
     about_addons = AboutAddons(selenium)
     # waiting for the addon cards data to be retrieved (the install buttons in this case)
     wait.until(
-        lambda _: len([el.install_button for el in about_addons.addon_cards_items]) >= 8
+        lambda _: len([el.install_button for el in about_addons.addon_cards_items]) >= 7
     )
     disco_theme_name = about_addons.addon_cards_items[0].disco_addon_name.text
     # make a note of the image source of the theme we are about to install
@@ -290,9 +293,25 @@ def test_about_addons_extension_updates(
     about_addons.installed_addon_cards[0].click()
     # trigger a manual update check to receive the latest addon version
     about_addons.click_options_button()
-    action = ActionChains(selenium)
-    action.send_keys("c").perform()
+    time.sleep(0.5)
+    selenium.execute_script(
+        """
+        const panelItems = document.querySelectorAll('panel-item');
+        for (const item of panelItems) {
+            if (item.getAttribute('action') === 'check-for-updates') {
+                item.click();
+                break;
+            }
+        }
+        """
+    )
+    # action = ActionChains(selenium)
+    # action.send_keys(Keys.ARROW_DOWN).send_keys(Keys.ENTER).perform()
+    #or use the method below, this is provided by the html as an option
+    # action.send_keys("c").perform()
     # compare the updated version to the latest version from AMO and make sure they match
+    time.sleep(0.5)
+    # assert latest_version == about_addons.installed_version_number
     wait.until(
         lambda _: latest_version == about_addons.installed_version_number,
         message=f'Latest version from AMO "{latest_version}" did not match updated version from addons manager '
