@@ -55,7 +55,7 @@ pytest-xdist==3.8.0
 pyotp==2.9.0
 regex==2026.4.4
 requests==2.33.1
-selenium==4.43.0
+selenium==4.32.0
 setuptools==75.8.2
 six==1.17.0
 tenacity==9.1.4

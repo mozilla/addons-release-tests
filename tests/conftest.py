@@ -58,7 +58,12 @@ def firefox_options(firefox_options, base_url, variables):
     # for prod installation tests, we do not need to set special prefs, so we
     # separate the browser set-up based on the AMO environments
     if base_url == "https://addons.mozilla.org":
-        firefox_options.add_argument("-headless")
+        if os.path.exists("/Applications/Firefox.app/Contents/MacOS/firefox"):
+            firefox_options.binary_location = "/Applications/Firefox.app/Contents/MacOS/firefox"
+        elif os.path.exists(r"C:\Program Files\Mozilla Firefox\firefox.exe"):
+            firefox_options.binary_location = r"C:\Program Files\Mozilla Firefox\firefox.exe"
+        if os.environ.get("MOZ_HEADLESS"):
+            firefox_options.add_argument("-headless")
         firefox_options.add_argument("-remote-allow-system-access")
         firefox_options.log.level = "trace"
         firefox_options.set_preference(
@@ -79,8 +84,14 @@ def firefox_options(firefox_options, base_url, variables):
             variables["extensions_update_background_url"]
         )
     else:
+        if os.path.exists("/Applications/Firefox Nightly.app/Contents/MacOS/firefox"):
+            firefox_options.binary_location = "/Applications/Firefox Nightly.app/Contents/MacOS/firefox"
+        elif os.path.exists(r"C:\Program Files\Firefox Nightly\firefox.exe"):
+            firefox_options.binary_location = r"C:\Program Files\Firefox Nightly\firefox.exe"
+        elif os.path.exists("/usr/bin/firefox-nightly"):
+            firefox_options.binary_location = "/usr/bin/firefox-nightly"
         firefox_options.set_preference("extensions.install.requireBuiltInCerts", False)
-        firefox_options.set_preference("xpinstall.signatures.required", True)
+        firefox_options.set_preference("xpinstall.signatures.required", False)
         firefox_options.set_preference("xpinstall.signatures.dev-root", True)
         firefox_options.set_preference("extensions.webapi.testing", True)
         firefox_options.set_preference("ui.popup.disable_autohide", True)
@@ -97,7 +108,8 @@ def firefox_options(firefox_options, base_url, variables):
             "extensions.update.url", variables["extensions_update_url"]
         )
         firefox_options.add_argument("-remote-allow-system-access")
-        firefox_options.add_argument("-headless")
+        if os.environ.get("MOZ_HEADLESS"):
+            firefox_options.add_argument("-headless")
         firefox_options.log.level = "trace"
     return firefox_options
 
@@ -152,6 +164,12 @@ def selenium(selenium, base_url, session_auth, request):
         with open(user + ".txt", "w") as file:
             file.write(session_cookie["value"])
     yield selenium
+
+    # close any extra tabs/windows opened during the test
+    while len(selenium.window_handles) > 1:
+        selenium.switch_to.window(selenium.window_handles[-1])
+        selenium.close()
+    selenium.switch_to.window(selenium.window_handles[0])
 
     # delete the user session and files created for a test suite;
     # this is normally used in the last test of a suite to handle the clean-up part
