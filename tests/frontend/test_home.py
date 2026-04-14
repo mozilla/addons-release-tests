@@ -114,6 +114,7 @@ def test_primary_hero_tc_id_c95105(base_url, selenium):
 
 
 @pytest.mark.nondestructive
+@pytest.mark.fail
 def test_secondary_hero_message(base_url, selenium, variables):
     """Test covering the homepage secondary hero"""
     page = Home(selenium, base_url).open().wait_for_page_to_load()

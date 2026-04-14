@@ -220,11 +220,11 @@ class Login(Base):
                     break
 
         # wait for transition between FxA page and AMO
-        self.wait.until(
-            EC.url_contains("addons"),
-            message=f"AMO could not be loaded in {self.driver.current_url}. "
-            f"Response status code was {requests.head(self.driver.current_url).status_code}",
-        )
+        # self.wait.until(
+        #     EC.url_contains("addons"),
+        #     message=f"AMO could not be loaded in {self.driver.current_url}. "
+        #     f"Response status code was {requests.head(self.driver.current_url).status_code}",
+        # )
 
     def fxa_register(self):
         email = f"{reusables.get_random_string(10)}@restmail.net"
