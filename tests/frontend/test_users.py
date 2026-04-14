@@ -17,6 +17,7 @@ from pages.desktop.frontend.users import User
 @pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.nondestructive
+@pytest.mark.users
 def test_login(selenium, base_url, wait):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.login("regular_user")
@@ -30,6 +31,7 @@ def test_login(selenium, base_url, wait):
 @pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.nondestructive
+@pytest.mark.users
 def test_logout_tc_id_c95092(base_url, selenium):
     """User can logout"""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
@@ -40,6 +42,7 @@ def test_logout_tc_id_c95092(base_url, selenium):
 @pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.nondestructive
+@pytest.mark.users
 def test_user_menu_collections_link_tc_id_c95102(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.login("regular_user")
