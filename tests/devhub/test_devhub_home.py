@@ -557,7 +557,7 @@ def test_devhub_addons_footer_links(base_url, selenium, count, link):
     enumerate(
         [
             "https://www.firefox.com/en-US/?redirect_source=mozilla-org&utm_source=addons.mozilla.org&utm_medium=referral&utm_content=footer-link",
-            "en-US/browsers/mobile/",
+            "en-US/mobile/",
             "en-US/browsers/enterprise/",
         ]
     ),
@@ -574,6 +574,7 @@ def test_devhub_browsers_footer_links(base_url, selenium, count, link):
     for Firefox Desktop, Mobile, and Enterprise."""
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     page.footer.browsers_links[count].click()
+    time.sleep(5)
     page.wait_for_current_url(link)
 
 
