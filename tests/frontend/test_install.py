@@ -236,7 +236,7 @@ def test_about_addons_install_theme(
 
 
 @pytest.mark.sanity
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_about_addons_extension_updates(
     selenium, base_url, wait, firefox, firefox_notifications, variables
 ):
@@ -271,8 +271,11 @@ def test_about_addons_extension_updates(
     about_addons.installed_addon_cards[0].click()
     # trigger a manual update check to receive the latest addon version
     about_addons.click_options_button()
-    action = ActionChains(selenium)
-    action.send_keys("c").perform()
+    # action = ActionChains(selenium)
+    # action.send_keys("c").perform()
+    selenium.execute_script("""
+        document.querySelector('panel-item[action="check-for-updates"]').click();
+    """)
     # compare the updated version to the latest version from AMO and make sure they match
     wait.until(
         lambda _: latest_version == about_addons.installed_version_number,
