@@ -19,10 +19,7 @@ DESKTOP = (1920, 1080)
 
 @pytest.fixture(scope="session")
 def waf_bypass_addon(tmp_path_factory):
-    header_value = os.environ.get(
-        "FXA_CI_HEADER",
-        "379ECA0E-6D25-4473-A25D-184022C51106",
-    )
+    header_value = os.environ.get("FXA_CI_HEADER")
 
     addon_dir = tmp_path_factory.mktemp("waf_bypass_addon")
 
