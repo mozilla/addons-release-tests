@@ -25,17 +25,27 @@ DESKTOP = (1920, 1080)
 
 @pytest.fixture(scope="session")
 def waf_bypass_addon(tmp_path_factory):
-    header_value = os.environ.get(
-        "FXA_CI_HEADER",
-        "379ECA0E-6D25-4473-A25D-184022C51106",
-    )
+    header_value = os.environ.get("FXA_CI_HEADER", "")
 
     addon_dir = tmp_path_factory.mktemp("waf_bypass_addon")
 
+    # Note: this addon's webRequest listener is gated by Firefox's
+    # `extensions.webextensions.restrictedDomains` pref. Mozilla domains like
+    # `accounts.firefox.com` and `addons.mozilla.org` are on that list by
+    # default, which is why the listener fires on dev (FxA stage at
+    # `accounts.stage.mozaws.net`, not restricted) but not on stage
+    # (FxA prod at `accounts.firefox.com`, restricted). The `firefox_options`
+    # fixture clears that pref for non-prod runs so this addon can apply the
+    # header on `accounts.firefox.com`.
     manifest = {
         "manifest_version": 2,
         "name": "WAF Bypass Header",
         "version": "1.0",
+        "browser_specific_settings": {
+            "gecko": {
+                "id": "waf-bypass@amo-tests.mozilla.org",
+            },
+        },
         "permissions": [
             "webRequest",
             "webRequestBlocking",
@@ -43,22 +53,27 @@ def waf_bypass_addon(tmp_path_factory):
         ],
         "background": {
             "scripts": ["background.js"],
+            "persistent": True,
         },
     }
 
     background_js = f"""
-browser.webRequest.onBeforeSendHeaders.addListener(
-  function(details) {{
-    details.requestHeaders.push({{
-      name: "fxa-ci",
-      value: "{header_value}"
-    }});
+const HEADER_NAME = "fxa-ci";
+const HEADER_VALUE = "{header_value}";
 
-    return {{ requestHeaders: details.requestHeaders }};
-  }},
-  {{ urls: ["<all_urls>"] }},
-  ["blocking", "requestHeaders"]
-);
+if (HEADER_VALUE) {{
+  browser.webRequest.onBeforeSendHeaders.addListener(
+    function(details) {{
+      const headers = details.requestHeaders.filter(
+        (h) => h.name.toLowerCase() !== HEADER_NAME
+      );
+      headers.push({{ name: HEADER_NAME, value: HEADER_VALUE }});
+      return {{ requestHeaders: headers }};
+    }},
+    {{ urls: ["<all_urls>"] }},
+    ["blocking", "requestHeaders"]
+  );
+}}
 """
 
     (addon_dir / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
@@ -71,6 +86,7 @@ browser.webRequest.onBeforeSendHeaders.addListener(
         zip_file.write(addon_dir / "background.js", "background.js")
 
     return str(addon_zip)
+
 
 @pytest.fixture(scope="session")
 def base_url(base_url, variables):
@@ -109,7 +125,7 @@ def firefox_options(firefox_options, base_url, variables):
     # for prod installation tests, we do not need to set special prefs, so we
     # separate the browser set-up based on the AMO environments
     if base_url == "https://addons.mozilla.org":
-        firefox_options.add_argument("-headless")
+        firefox_options.add_argument("-foreground")
         firefox_options.add_argument("-remote-allow-system-access")
         firefox_options.log.level = "trace"
         firefox_options.set_preference(
@@ -136,6 +152,12 @@ def firefox_options(firefox_options, base_url, variables):
         firefox_options.set_preference("extensions.webapi.testing", True)
         firefox_options.set_preference("ui.popup.disable_autohide", True)
         firefox_options.set_preference("devtools.console.stdout.content", True)
+        # Clear the WebExtensions restricted-domain list so the waf_bypass_addon
+        # can attach its `webRequest` listener to Mozilla domains that are
+        # restricted by default. Without this, stage runs hit the FxA captcha
+        # on `accounts.firefox.com` because the addon's listener is silently
+        # skipped on restricted domains.
+        firefox_options.set_preference("extensions.webextensions.restrictedDomains", "")
         firefox_options.set_preference(
             "extensions.getAddons.discovery.api_url",
             variables["extensions_getAddons_discovery_api_url"],
