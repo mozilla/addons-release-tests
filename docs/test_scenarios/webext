@@ -1,0 +1,27 @@
+Test 1:
+
+In about:addons go to Options ⚙️ and select "Debug Add-ons."
+about:debugging#/runtime/this-firefox is loaded in a new tab.
+
+Test 2:
+
+In about:addons go to Options ⚙️ and select "manage Extensions Shortcuts"
+"manage extension Shortcuts" section is loaded and
+each extension casseste contain the extension name and shortcuts.
+Extension that do not have shortcuts are listed at the the bottom of the page under the line"The following extensions do not have shortcuts:"
+
+Select one of the shortcut fields.
+Field is highlighted while selected.
+
+Type in a shortcut in one of the shortcut fields using CTRL /ALT as the first key.
+A tooltip will appear with the suggestion to type another letter.
+
+Add a shortcut which is not used,
+Key combination is saved. When focus is set on the field it will show as empty aside the "Type a shortcut suggestion"
+
+Delete Shortcut.
+Shortcut is deleted and the field will show as empty even when not in focus.
+
+Click on the Back button on the left side of the "Manage Extension Shortcuts" header.
+User is returned to last visited section.
+

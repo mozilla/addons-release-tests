@@ -5,6 +5,9 @@
 
 import os
 
+import json
+import zipfile
+
 import pytest
 import requests
 
@@ -19,6 +22,52 @@ from pages.desktop.developers.devhub_home import DevHubHome
 
 # Window resolutions
 DESKTOP = (1920, 1080)
+
+@pytest.fixture(scope="session")
+def waf_bypass_addon(tmp_path_factory):
+    header_value = os.environ.get("FXA_CI_HEADER")
+
+    addon_dir = tmp_path_factory.mktemp("waf_bypass_addon")
+
+    manifest = {
+        "manifest_version": 2,
+        "name": "WAF Bypass Header",
+        "version": "1.0",
+        "permissions": [
+            "webRequest",
+            "webRequestBlocking",
+            "<all_urls>",
+        ],
+        "background": {
+            "scripts": ["background.js"],
+        },
+    }
+
+    background_js = f"""
+browser.webRequest.onBeforeSendHeaders.addListener(
+  function(details) {{
+    details.requestHeaders.push({{
+      name: "fxa-ci",
+      value: "{header_value}"
+    }});
+
+    return {{ requestHeaders: details.requestHeaders }};
+  }},
+  {{ urls: ["<all_urls>"] }},
+  ["blocking", "requestHeaders"]
+);
+"""
+
+    (addon_dir / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
+    (addon_dir / "background.js").write_text(background_js, encoding="utf-8")
+
+    addon_zip = addon_dir / "waf_bypass_addon.zip"
+
+    with zipfile.ZipFile(addon_zip, "w") as zip_file:
+        zip_file.write(addon_dir / "manifest.json", "manifest.json")
+        zip_file.write(addon_dir / "background.js", "background.js")
+
+    return str(addon_zip)
 
 
 @pytest.fixture(scope="session")
@@ -58,7 +107,7 @@ def firefox_options(firefox_options, base_url, variables):
     # for prod installation tests, we do not need to set special prefs, so we
     # separate the browser set-up based on the AMO environments
     if base_url == "https://addons.mozilla.org":
-        firefox_options.add_argument("-headless")
+        firefox_options.add_argument("-foreground")
         firefox_options.add_argument("-remote-allow-system-access")
         firefox_options.log.level = "trace"
         firefox_options.set_preference(
@@ -112,9 +161,10 @@ def firefox_notifications(notifications):
     params=[DESKTOP],
     ids=["Desktop"],
 )
-def selenium(selenium, base_url, session_auth, request):
+def selenium(selenium, base_url, session_auth, request, waf_bypass_addon):
     """Fixture to set a custom resolution for tests running on Desktop
     and handle browser sessions when needed"""
+    selenium.install_addon(waf_bypass_addon, temporary=True)
     selenium.set_window_size(*request.param)
     # establishing actions  based on markers
     create_session = request.node.get_closest_marker("create_session")

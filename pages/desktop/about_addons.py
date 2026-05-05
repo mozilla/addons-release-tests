@@ -24,7 +24,15 @@ class AboutAddons(Page):
         By.CSS_SELECTOR,
         ".addon-detail-row-version",
     )
-    _options_button_locator = (By.CSS_SELECTOR, ".more-options-button")
+    _options_button_locator = (By.CSS_SELECTOR, "button.more-options-button[action='more-options']")
+    _menu_remove_item_locator = (By.CSS_SELECTOR, 'panel-item[action="remove"]')
+    _menu_report_item_locator = (By.CSS_SELECTOR, 'panel-item[action="report"]')
+    _menu_expand_item_locator = (By.CSS_SELECTOR, 'panel-item[action="expand"]')
+    _menu_preferences_item_locator = (
+        By.CSS_SELECTOR,
+        'panel-item[action="preferences"]',
+    )
+    _undo_remove_button_locator = (By.CSS_SELECTOR, 'button[action="undo"]')
 
     def wait_for_page_to_load(self):
         self.wait.until(
@@ -32,9 +40,18 @@ class AboutAddons(Page):
         )
         return self
 
+    @property
+    def search_field(self):
+        self.wait.until(EC.presence_of_element_located(self._search_box_locator))
+        host = self.find_element(*self._search_box_locator)
+        inner_input = self.driver.execute_script(
+            "return arguments[0].shadowRoot && arguments[0].shadowRoot.querySelector('input')",
+            host,
+        )
+        return inner_input if inner_input else host
+
     def search_box(self, value):
-        self.wait.until(EC.visibility_of_element_located(self._search_box_locator))
-        search_field = self.find_element(*self._search_box_locator)
+        search_field = self.search_field
         search_field.send_keys(value)
         # send Enter to initiate search redirection to AMO
         search_field.send_keys(Keys.ENTER)
@@ -153,9 +170,71 @@ class AboutAddons(Page):
             *self._installed_extension_version_locator
         ).text.replace("Version\n", "")
 
+    @property
+    def menu_remove_item_locator(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._menu_remove_item_locator)
+        )
+        return self.find_element(*self._menu_remove_item_locator)
+
     def click_options_button(self):
         self.wait.until(EC.element_to_be_clickable(self._options_button_locator))
         self.find_element(*self._options_button_locator).click()
+
+    def click_panel_item_action_check_for_updates(self):
+        el = self.driver.execute_script(
+            "return document.querySelector('panel-item[action=\"view-recent-updates\"]')"
+        )
+        el.click()
+        from pages.desktop.view_recent_updates import ViewRecentUpdates
+
+        return ViewRecentUpdates(self.driver, self.base_url).wait_for_page_to_load()
+
+    def click_panel_item_action_debug_addons(self):
+        initial_handles = list(self.driver.window_handles)
+        el = self.driver.execute_script(
+            "return document.querySelector('panel-item[action=\"debug-addons\"]')"
+        )
+        el.click()
+        self.wait.until(
+            lambda _: len(self.driver.window_handles) > len(initial_handles),
+            message="Debug Add-ons did not open in a new tab",
+        )
+        new_handle = next(
+            h for h in self.driver.window_handles if h not in initial_handles
+        )
+        self.driver.switch_to.window(new_handle)
+        from pages.desktop.about_debug_addons import AboutDebug
+
+        return AboutDebug(self.driver, self.base_url).wait_for_page_to_load()
+
+    def click_panel_item_action_manage_shortcuts(self):
+        el = self.driver.execute_script(
+            "return document.querySelector('panel-item[action=\"manage-shortcuts\"]')"
+        )
+        el.click()
+        from pages.desktop.manage_shortcuts import ManageShortcuts
+
+        return ManageShortcuts(self.driver, self.base_url).wait_for_page_to_load()
+
+    def menu_item_actions(self):
+        return [
+            el.get_attribute("action")
+            for el in self.find_elements(By.CSS_SELECTOR, "button.more-options-button[action='more-options']")
+            if el.is_displayed()
+        ]
+
+    def click_menu_remove(self):
+        self.wait.until(EC.element_to_be_clickable(self._menu_remove_item_locator))
+        self.find_element(*self._menu_remove_item_locator).click()
+
+    def click_menu_report(self):
+        self.wait.until(EC.element_to_be_clickable(self._menu_report_item_locator))
+        self.find_element(*self._menu_report_item_locator).click()
+
+    def click_undo_remove(self):
+        self.wait.until(EC.element_to_be_clickable(self._undo_remove_button_locator))
+        self.find_element(*self._undo_remove_button_locator).click()
 
     class AddonCards(Region):
         _theme_image_locator = (By.CLASS_NAME, "card-heading-image")
