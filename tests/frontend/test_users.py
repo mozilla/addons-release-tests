@@ -393,7 +393,6 @@ def test_user_regular_notifications(base_url, selenium, variables):
         )
         count += 1
 
-
 @pytest.mark.serial
 @pytest.mark.nondestructive
 @pytest.mark.skip(
