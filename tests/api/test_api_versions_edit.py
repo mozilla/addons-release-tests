@@ -12,6 +12,66 @@ from scripts import reusables
 _addon_create = "/api/v5/addons/addon/"
 _upload = "/api/v5/addons/upload/"
 
+
+@pytest.mark.serial
+@pytest.mark.nondestructive
+@pytest.mark.login("api_user")
+def test_aaa_setup_api_user_addon(base_url, selenium):
+    """Synthetic setup that (1) produces api_user.txt via the login marker so
+    later tests using @pytest.mark.create_session("api_user") can read it, and
+    (2) creates a fresh api_user-owned add-on at a random slug that every other
+    test in this file targets via payloads.edit_addon_details["slug"].
+
+    Named with leading 'aaa' so pytest's file-order collection runs it first.
+    Needed for two reasons: the default "new_sluggish_slug" is owned by another
+    account, and test_delete_extension_valid_token at the bottom of this file
+    deletes the add-on (and clears the session) on teardown, so each pytest
+    invocation must recreate both.
+    """
+    session = selenium.get_cookie("sessionid")["value"]
+    auth_header = {"Authorization": f"Session {session}"}
+    # idempotent cleanup of any leftover add-on at the create-time slug
+    confirm = requests.get(
+        url=f"{base_url}{_addon_create}my_sluggish_slug_api/delete_confirm/",
+        headers=auth_header,
+    )
+    if confirm.status_code == 200:
+        token = confirm.json()["delete_confirm"]
+        requests.delete(
+            url=f"{base_url}{_addon_create}my_sluggish_slug_api/",
+            headers=auth_header,
+            params={"delete_confirm": token},
+        )
+        time.sleep(3)
+    # upload the listed add-on xpi and create the add-on
+    with open("sample-addons/listed-addon-api.zip", "rb") as fp:
+        upload = requests.post(
+            url=f"{base_url}{_upload}",
+            headers=auth_header,
+            files={"upload": fp},
+            data={"channel": "listed"},
+        )
+    upload.raise_for_status()
+    uuid = upload.json()["uuid"]
+    time.sleep(10)
+    payload = payloads.listed_addon_details(uuid)
+    create = requests.post(
+        url=f"{base_url}{_addon_create}",
+        headers={**auth_header, "Content-Type": "application/json"},
+        data=json.dumps(payload),
+    )
+    create.raise_for_status()
+    # rename to a unique slug and broadcast it through the shared payload dict so
+    # every test in this module reads the right slug from payloads.edit_addon_details
+    new_slug = f"new_sluggish_slug_{reusables.get_random_string(8)}"
+    payloads.edit_addon_details["slug"] = new_slug
+    rename = requests.patch(
+        url=f"{base_url}{_addon_create}my_sluggish_slug_api/",
+        headers={**auth_header, "Content-Type": "application/json"},
+        data=json.dumps({"slug": new_slug}),
+    )
+    rename.raise_for_status()
+
 # These tests are covering various valid and invalid scenarios for editing
 # addon version details such as: compatibility, license, release notes, source code,
 # uploading new versions, deleting the addons;
@@ -195,8 +255,16 @@ def test_upload_new_unlisted_version_with_put_method(base_url, session_auth):
         headers={"Authorization": f"Session {session_auth}"},
     )
     guid = get_addon_details.json()["guid"]
+    # build a zip whose manifest carries this add-on's GUID so AMO matches the
+    # uploaded version to the existing add-on (PUT requires GUID parity)
+    api_helpers.make_addon({
+        **payloads.minimal_manifest,
+        "name": "EN-US Name edited",
+        "version": "1.2",
+        "browser_specific_settings": {"gecko": {"id": guid}},
+    })
     # upload a new unlisted version
-    with open("sample-addons/mixed-addon-versions.zip", "rb") as file:
+    with open("sample-addons/make-addon.zip", "rb") as file:
         upload = requests.post(
             url=f"{base_url}{_upload}",
             headers={"Authorization": f"Session {session_auth}"},
@@ -221,7 +289,7 @@ def test_upload_new_unlisted_version_with_put_method(base_url, session_auth):
     new_version.raise_for_status()
     response = new_version.json()
     # this property needs to exist if the unlisted submission was successful
-    return response["latest_unlisted_version"]["id"]
+    assert response["latest_unlisted_version"]["id"]
 
 
 @pytest.mark.serial
@@ -372,16 +440,10 @@ def test_edit_version_change_sources(base_url, session_auth):
             headers={"Authorization": f"Session {session_auth}"},
             files={"source": source},
         )
-
-    print("previous source: " + f"{previous_source.json()}")
-    print("change source: " + f"{change_source.json()}")
-
-    # download the new source code attached to the  version
+    # the source URL serves the raw zip bytes, so download via .content rather than .json()
     new_source = requests.get(
         change_source.json()["source"], cookies={"sessionid": session_auth}, timeout=10
     )
-    print("new source: " + f"{new_source.json()}")
-
     # compare that the previous source and the new source do not match
     api_helpers.compare_source_files(previous_source, new_source, "PATCH")
 

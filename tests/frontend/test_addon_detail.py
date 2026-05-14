@@ -1,5 +1,4 @@
 import time
-import urllib.request
 import urllib.parse
 import pytest
 import requests
@@ -221,7 +220,6 @@ def test_addon_without_stats_summary(selenium, base_url, variables):
 
 @pytest.mark.sanity
 @pytest.mark.nondestructive
-@pytest.mark.skip(reason="update assert")
 def test_stats_reviews_summary_click(selenium, base_url, variables):
     """Tests clicking on the reviews summary in stats."""
     extension = variables["addon_with_stats"]
@@ -384,7 +382,6 @@ def test_more_info_version_number(selenium, base_url, variables):
 
 @pytest.mark.sanity
 @pytest.mark.nondestructive
-@pytest.mark.skip
 def test_more_info_addon_size(selenium, base_url, variables):
     """Tests the add-on size value in the 'More Info' section."""
     extension = variables["addon_size_extension"]
@@ -392,10 +389,11 @@ def test_more_info_addon_size(selenium, base_url, variables):
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     assert addon.more_info.addon_size.is_displayed()
     more_info_size = addon.more_info.addon_size.text
-    # get the file URL and read its size
-    file = urllib.request.urlopen(addon.addon_xpi)
-    # convert the size returned by the file.length from bytes to the unit displayed on AMO
-    size = reusables.convert_bytes(file.length/10)
+    # get the file URL and read its size from the Content-Length header
+    response = requests.head(addon.addon_xpi, allow_redirects=True, timeout=10)
+    file_length = int(response.headers["Content-Length"])
+    # convert the size from bytes to the unit displayed on AMO
+    size = reusables.convert_bytes(file_length)
     assert size == more_info_size
 
 
@@ -652,30 +650,19 @@ def test_more_info_addon_tags(selenium, base_url, variables):
 
 
 @pytest.mark.nondestructive
-@pytest.mark.skip(reason="need to update way of interaction")
 def test_screenshot_viewer(selenium, base_url, variables):
     """Tests that the screenshot viewer works as expected."""
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     assert "Screenshots" in addon.screenshots.screenshot_section_header.text
-    # clicks through each screenshot
-    # and verifies that the screenshot full size viewer is opened
-    # also check that the image preview sources
-    # are actually retrieved from the server (no broken previews)
+    # verify each thumbnail's source resolves on the server (no broken previews)
     for preview in addon.screenshots.screenshot_preview:
-        preview_count = addon.screenshots.screenshot_preview.index(preview)
-        preview.click()
-        time.sleep(1)
-        # check that he image preview is not broken
-        src_img = selenium.find_elements(By.CSS_SELECTOR, ".ScreenShots-image")[
-            preview_count
-        ].get_attribute("src")
+        src_img = preview.get_attribute("src")
         assert requests.get(src_img, timeout=10).status_code == 200
-        # checks that the screenshot viewer has opened
-        addon.screenshots.screenshot_full_view_displayed()
-        action = ActionChains(selenium)
-        action.send_keys(Keys.ESCAPE)
+    # click the first thumbnail and verify the full-size viewer opens
+    addon.screenshots.screenshot_preview[0].click()
+    addon.screenshots.screenshot_full_view_displayed()
 
 
 @pytest.mark.nondestructive

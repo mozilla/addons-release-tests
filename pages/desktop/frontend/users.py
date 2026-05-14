@@ -598,12 +598,9 @@ class User(Base):
         def link_to_fxa_account(self):
             self.wait.until(EC.element_to_be_clickable(self._fxa_account_link_locator))
             self.find_element(*self._fxa_account_link_locator).click()
-            # waits for the fxa account page to be opened - check logo visibility
-            self.wait.until(EC.visibility_of_element_located(self._login_btn_locator))
-            self.find_element(*self._login_btn_locator).click()
-            self.wait.until(
-                EC.visibility_of_element_located((By.CSS_SELECTOR, ".flex h1 span"))
-            )
+            # the AMO user is already authenticated in FxA, so the manage-account link
+            # opens the FxA settings page directly (no login button to click first)
+            self.wait.until(EC.url_contains("accounts.firefox.com/settings"))
 
         def display_name(self, value):
             self.wait.until(
