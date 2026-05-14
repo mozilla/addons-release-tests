@@ -16,7 +16,13 @@ class RatingStats(Region):
         By.CSS_SELECTOR,
         '.AddonSummaryCard .Rating-half-star',
     )
-    _rating_by_star_locator = (By.CSS_SELECTOR, '.RatingsByStar-graph > a')
+    # each bar exposes 3 separate <a> children (star number, bar, count) all linking to the
+    # same ?score=N URL. nth-child(3n+1) selects exactly one anchor per bar so indexing
+    # 0..4 maps to 5..1 stars
+    _rating_by_star_locator = (
+        By.CSS_SELECTOR,
+        '.RatingsByStar-graph > a:nth-child(3n+1)',
+    )
     _rating_bars_locator = (By.CSS_SELECTOR, '.RatingsByStar-barFrame')
 
     @property

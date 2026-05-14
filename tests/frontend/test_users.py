@@ -332,7 +332,6 @@ def test_user_delete_profile_tc_id_c4393(base_url, selenium):
 
 @pytest.mark.serial
 @pytest.mark.login("reusable_user")
-@pytest.mark.skip
 def test_user_account_manage_section(base_url, selenium, variables):
     """Confirms that the correct email is
     displayed in the account management section."""
@@ -379,13 +378,17 @@ def test_user_regular_has_no_role(base_url, selenium):
 
 
 @pytest.mark.serial
-@pytest.mark.skip
-def test_user_regular_notifications(base_url, selenium, variables):
+def test_user_regular_notifications(base_url, selenium, variables, wait):
     """Ensures that regular users can opt in/out of only the basic notifications."""
     user = User(selenium, base_url).open().wait_for_page_to_load()
     user.login("reusable_user")
-    # regular users can only opt in/out for 2 notifications
-    assert len(user.edit.notification_text) == 2
+    # regular users can only opt in/out for 2 notifications; wait until the labels are
+    # populated since AMO renders LoadingText placeholders before the data resolves
+    wait.until(
+        lambda _: len(user.edit.notification_text) == 2
+        and all(label.text for label in user.edit.notification_text),
+        message="Regular user's two notification labels did not finish loading",
+    )
     count = 0
     while count < len(user.edit.notification_text):
         assert (
@@ -395,9 +398,6 @@ def test_user_regular_notifications(base_url, selenium, variables):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-@pytest.mark.skip(
-    reason="Intermittent issue, see https://github.com/mozilla/addons-server/issues/20965"
-)
 def test_user_notifications_subscriptions(base_url, selenium, wait):
     """Tests subscribing and unsubscribing from notifications for a user."""
     edit_user = User(selenium, base_url).open().wait_for_page_to_load()

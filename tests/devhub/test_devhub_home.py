@@ -93,7 +93,6 @@ def test_devhub_page_overview(selenium, base_url, variables):
     # checks that the link redirects to the extension workshop
     page.extension_workshop_is_loaded()
 
-@pytest.mark.skip
 @pytest.mark.nondestructive
 def test_devhub_page_get_involved(selenium, base_url, variables, wait):
     """Tests the "Get Involved" section on the DevHub homepage,
@@ -478,7 +477,7 @@ def test_connect_newsletter_section(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 @pytest.mark.skip(
-    reason= "Skipped until this issue is fixed: https://github.com/mozilla/addons-server/issues/21335"
+    reason="Skipped until this issue is fixed: https://github.com/mozilla/addons-server/issues/21335"
 )
 def test_verify_newsletter_signup_confirmation(selenium, base_url, variables, wait):
     """Ensures that after signing up for the newsletter,

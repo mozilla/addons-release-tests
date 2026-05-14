@@ -9,7 +9,6 @@ from api import payloads, api_helpers, responses
 # endpoints used in the post abuse report tests
 _post_abuse_report = "/api/v5/abuse/report/addon/"
 
-@pytest.mark.skip(reason="Skipped for the moment due to throttle in place, to be removed with next pr")
 def test_abuse_report_unauthenticated_post(base_url, selenium):
     """Verifies that an unauthenticated user can successfully
     submit an abuse report and receive the correct response."""
@@ -42,6 +41,7 @@ def test_abuse_report_authenticated(base_url, selenium):
             "Content-Type": "application/json",
             "Authorization": f'Session {session_cookie["value"]}'
         },
+
         data=json.dumps(payload)
     )
     assert (

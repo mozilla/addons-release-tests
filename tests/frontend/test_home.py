@@ -341,25 +341,25 @@ def test_addons_footer_links_tc_id_c95105(base_url, selenium, count, link):
     "count, link",
     enumerate(
         [
-            # ["en-US/?redirect_source=mozilla-org", "a[class='download-link c-button-download-thanks-link mzp-c-button mzp-t-product mzp-t-xl']"],
-            ["en-US/browsers/mobile/", "a[href='/ro/browsers/mobile/android/']"],
-            ["en-US/browsers/enterprise/", "#primary-download-button"],
+            # mozilla.org/firefox/{new,mobile,enterprise}/ now redirect to firefox.com.
+            # Use a generic <main> selector since destination pages change frequently.
+            ["firefox.com/en-US/?", "main"],
+            ["firefox.com/en-US/mobile/", "main"],
+            ["firefox.com/en-US/browsers/enterprise/", "main"],
         ]
     ),
     ids=[
-        # "Firefox Desktop",
+        "Firefox Desktop",
         "Firefox Mobile",
         "Firefox Enterprise",
     ],
 )
 @pytest.mark.nondestructive
 @pytest.mark.sanity
-@pytest.mark.skip
 def test_browsers_footer_links_tc_id_c95105(base_url, selenium, count, link):
     """Verifies the browsers footer links"""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.footer.browsers_links[count].click()
-    time.sleep(5)
     page.wait_for_current_url(link[0])
     page.wait.until(
         EC.visibility_of_element_located((By.CSS_SELECTOR, link[1])),
@@ -371,15 +371,17 @@ def test_browsers_footer_links_tc_id_c95105(base_url, selenium, count, link):
     "count, link",
     enumerate(
         [
-            # ["/?utm_content=footer-link&", "a[class='download-link c-button-download-thanks-link mzp-c-button mzp-t-product mzp-t-xl']"],
-            ["products/vpn/", ".c-sub-navigation-title"],
-            ["relay.firefox.com/", "img[alt='Firefox Relay Premium']"],
-            ["monitor.mozilla", "img[alt='Mozilla Monitor']"],
-            ["getpocket.com", ".logo"],
+            # The "Browsers" product link redirects to firefox.com/en-US/.
+            # Use a generic <main> selector since destination pages change frequently.
+            ["firefox.com/en-US/?", "main"],
+            ["mozilla.org/en-US/products/vpn/", "main"],
+            ["relay.firefox.com/", "main"],
+            ["monitor.mozilla", "main"],
+            ["getpocket.com", "main"],
         ]
     ),
     ids=[
-        # "Browsers",
+        "Browsers",
         "VPN",
         "Relay",
         "Monitor",
@@ -388,11 +390,10 @@ def test_browsers_footer_links_tc_id_c95105(base_url, selenium, count, link):
 )
 @pytest.mark.sanity
 @pytest.mark.nondestructive
-@pytest.mark.skip
 def test_products_footer_links_tc_id_c95105(base_url, selenium, count, link):
+    """Verifies the products footer links"""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.footer.products_links[count].click()
-    time.sleep(2)
     page.wait_for_current_url(link[0])
     page.wait.until(
         EC.visibility_of_element_located((By.CSS_SELECTOR, link[1])),

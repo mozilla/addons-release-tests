@@ -6,8 +6,9 @@ abuse_report_unauthenticated_response = {
     'reporter_email': "reporter@test.com",
     'addon': {
         'guid': '{463b483d-6150-43c9-9b52-a3d08d5ecd3a}',
-        'id': 1018565,
-        'slug': 'automation-abuse-report-add-on'
+        # unauthenticated reports get the guid but not the addon's id/slug
+        'id': None,
+        'slug': None,
     },
     'addon_install_method': 'link',
     'addon_install_origin': 'https://addons-server.readthedocs.io/en/latest/topics/api/abuse.html',
@@ -43,8 +44,9 @@ abuse_report_authenticated_response = {
     "reporter_email": "reporter@test.com",
     "addon": {
         "guid": "{463b483d-6150-43c9-9b52-a3d08d5ecd3a}",
-        "id": 1018565,
-        "slug": "automation-abuse-report-add-on"
+        # the abuse report API masks the addon's id/slug in the response
+        "id": None,
+        "slug": None,
     },
     "addon_install_method": "link",
     "addon_install_origin": "https://addons-server.readthedocs.io/en/latest/topics/api/abuse.html",
@@ -80,8 +82,9 @@ abuse_report_minimal_details = {
     "reporter_email": None,
     "addon": {
         "guid": "{463b483d-6150-43c9-9b52-a3d08d5ecd3a}",
-        "id": 1018565,
-        "slug": "automation-abuse-report-add-on"
+        # the abuse report API masks the addon's id/slug in the response
+        "id": None,
+        "slug": None,
     },
     "addon_install_method": None,
     "addon_install_origin": None,

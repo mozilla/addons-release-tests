@@ -33,10 +33,26 @@ def test_upload_listed_extension_tc_id_c4369(base_url, selenium):
     and ensures the correct registration of the add-on details by using the create API endpoint.
     The uploaded add-on is validated by comparing the response with the expected payload."""
     session_cookie = selenium.get_cookie("sessionid")
+    auth_header = {"Authorization": f'Session {session_cookie["value"]}'}
+    # downstream tests rely on hardcoded slugs; delete any stale add-ons from a previous run
+    # so the test is idempotent. "new_sluggish_slug" is what test_edit_listed_addon_details
+    # renames the add-on to, so it can linger if the suite was interrupted mid-way.
+    confirm = requests.get(
+        url=f"{base_url}{_addon_create}my_sluggish_slug_api/delete_confirm/",
+        headers=auth_header,
+    )
+    if confirm.status_code == 200:
+        token = confirm.json()["delete_confirm"]
+        requests.delete(
+            url=f"{base_url}{_addon_create}my_sluggish_slug_api/",
+            headers=auth_header,
+            params={"delete_confirm": token},
+        )
+        time.sleep(3)
     with open("sample-addons/listed-addon-api.zip", "rb") as file:
         upload = requests.post(
             url=f"{base_url}{_upload}",
-            headers={"Authorization": f'Session {session_cookie["value"]}'},
+            headers=auth_header,
             files={"upload": file},
             data={"channel": "listed"},
         )
@@ -73,6 +89,10 @@ def test_edit_listed_addon_details(base_url, session_auth):
     """This test checks the process of editing an existing listed add-on's details.
     It uses the patch method to update add-on details
     and verifies that the changes are correctly applied and reflected in the API response."""
+    # randomise the target slug to avoid conflict with leftover add-ons from prior runs
+    # that may be owned by a different account (and thus undeletable). Mutating the dict
+    # propagates the new slug to all downstream tests that read edit_addon_details["slug"]
+    payloads.edit_addon_details["slug"] = f"new_sluggish_slug_{reusables.get_random_string(8)}"
     payload = payloads.edit_addon_details
     edit_addon = requests.patch(
         url=f"{base_url}{_addon_create}my_sluggish_slug_api/",

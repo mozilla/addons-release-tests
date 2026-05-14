@@ -1,0 +1,276 @@
+1778232031049	geckodriver	INFO	Listening on 127.0.0.1:52605
+1778232031106	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/App ... s" "localhost" "-foreground" "-no-remote" "-profile" "/var/folders/v_/6jd_d5kn7ss0v8hd92jqglz80000gq/T/rust_mozprofileLbLi7D"
+*** You are running in headless mode.
+1778232037430	Marionette	INFO	Marionette enabled
+1778232037914	Marionette	INFO	Listening on port 52612
+WebDriver BiDi listening on ws://127.0.0.1:52606
+1778232038102	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+console.error: RSLoader: 
+  Failed to retrieve recipes from Remote Settings
+  Message: Error: Could not sync nimbus-desktop-experiments: get-exception
+  Stack:
+    RemoteSettingsSyncError@resource://nimbus/lib/RemoteSettingsExperimentLoader.sys.mjs:1414:5
+getRecipesFromCollection@resource://nimbus/lib/RemoteSettingsExperimentLoader.sys.mjs:681:13
+
+console.error: (new NotFoundError("Could not find fa0fc42c-d91d-fca7-34eb-806ff46062dc in cache or dump", "resource://services-settings/Attachments.sys.mjs", 48))
+console.warn: "Unable to find the attachment for" "fa0fc42c-d91d-fca7-34eb-806ff46062dc"
+1778232047195	Marionette	INFO	Stopped listening on port 52612
+JavaScript error: resource://gre/modules/PrivateBrowsingUtils.sys.mjs, line 50: TypeError: can't access property "QueryInterface", aWindow.docShell is null
+1778232107734	geckodriver	INFO	Listening on 127.0.0.1:52745
+1778232107836	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/App ... s" "localhost" "-foreground" "-no-remote" "-profile" "/var/folders/v_/6jd_d5kn7ss0v8hd92jqglz80000gq/T/rust_mozprofile9dwdrl"
+*** You are running in headless mode.
+1778232113986	Marionette	INFO	Marionette enabled
+1778232114438	Marionette	INFO	Listening on port 52752
+WebDriver BiDi listening on ws://127.0.0.1:52746
+1778232114607	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+console.error: RSLoader: 
+  Failed to retrieve recipes from Remote Settings
+  Message: Error: Could not sync nimbus-desktop-experiments: get-exception
+  Stack:
+    RemoteSettingsSyncError@resource://nimbus/lib/RemoteSettingsExperimentLoader.sys.mjs:1414:5
+getRecipesFromCollection@resource://nimbus/lib/RemoteSettingsExperimentLoader.sys.mjs:681:13
+
+console.error: (new NotFoundError("Could not find fa0fc42c-d91d-fca7-34eb-806ff46062dc in cache or dump", "resource://services-settings/Attachments.sys.mjs", 48))
+console.warn: "Unable to find the attachment for" "fa0fc42c-d91d-fca7-34eb-806ff46062dc"
+console.error: (new Error("Polling for changes failed: Unexpected content-type \"text/plain;charset=US-ASCII\".", "resource://services-settings/remote-settings.sys.mjs", 482))
+console.error: "Could not download new icon" (new ServerInfoError("Server response is invalid SyntaxError: JSON.parse: unexpected end of data at line 1 column 1 of the JSON data", "resource://services-settings/Attachments.sys.mjs", 40))
+1778232177333	Marionette	INFO	Stopped listening on port 52752
+JavaScript error: resource://gre/modules/PrivateBrowsingUtils.sys.mjs, line 50: TypeError: can't access property "QueryInterface", aWindow.docShell is null
+1778232229149	geckodriver	INFO	Listening on 127.0.0.1:53011
+1778232229554	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/App ... s" "localhost" "-foreground" "-no-remote" "-profile" "/var/folders/v_/6jd_d5kn7ss0v8hd92jqglz80000gq/T/rust_mozprofilewViqP7"
+*** You are running in headless mode.
+1778232235780	Marionette	INFO	Marionette enabled
+1778232236268	Marionette	INFO	Listening on port 53020
+WebDriver BiDi listening on ws://127.0.0.1:53012
+1778232236436	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+console.error: RSLoader: 
+  Failed to retrieve recipes from Remote Settings
+  Message: Error: Could not sync nimbus-desktop-experiments: get-exception
+  Stack:
+    RemoteSettingsSyncError@resource://nimbus/lib/RemoteSettingsExperimentLoader.sys.mjs:1414:5
+getRecipesFromCollection@resource://nimbus/lib/RemoteSettingsExperimentLoader.sys.mjs:681:13
+
+console.error: (new NotFoundError("Could not find fa0fc42c-d91d-fca7-34eb-806ff46062dc in cache or dump", "resource://services-settings/Attachments.sys.mjs", 48))
+console.warn: "Unable to find the attachment for" "fa0fc42c-d91d-fca7-34eb-806ff46062dc"
+1778232244771	Marionette	INFO	Stopped listening on port 53020
+JavaScript error: resource://gre/modules/PrivateBrowsingUtils.sys.mjs, line 50: TypeError: can't access property "QueryInterface", aWindow.docShell is null
+1778232288000	geckodriver	INFO	Listening on 127.0.0.1:53128
+1778232288523	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/App ... s" "localhost" "-foreground" "-no-remote" "-profile" "/var/folders/v_/6jd_d5kn7ss0v8hd92jqglz80000gq/T/rust_mozprofileXt2of0"
+*** You are running in headless mode.
+1778232294882	Marionette	INFO	Marionette enabled
+1778232295360	Marionette	INFO	Listening on port 53137
+WebDriver BiDi listening on ws://127.0.0.1:53129
+1778232295539	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+console.error: RSLoader: 
+  Failed to retrieve recipes from Remote Settings
+  Message: Error: Could not sync nimbus-desktop-experiments: get-exception
+  Stack:
+    RemoteSettingsSyncError@resource://nimbus/lib/RemoteSettingsExperimentLoader.sys.mjs:1414:5
+getRecipesFromCollection@resource://nimbus/lib/RemoteSettingsExperimentLoader.sys.mjs:681:13
+
+console.error: (new NotFoundError("Could not find fa0fc42c-d91d-fca7-34eb-806ff46062dc in cache or dump", "resource://services-settings/Attachments.sys.mjs", 48))
+console.warn: "Unable to find the attachment for" "fa0fc42c-d91d-fca7-34eb-806ff46062dc"
+1778232305714	Marionette	INFO	Stopped listening on port 53137
+JavaScript error: resource://gre/modules/PrivateBrowsingUtils.sys.mjs, line 50: TypeError: can't access property "QueryInterface", aWindow.docShell is null
+1778234296840	geckodriver	INFO	Listening on 127.0.0.1:59733
+1778234297356	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/App ... s" "localhost" "-foreground" "-no-remote" "-profile" "/var/folders/v_/6jd_d5kn7ss0v8hd92jqglz80000gq/T/rust_mozprofilemOz2hj"
+*** You are running in headless mode.
+1778234303535	Marionette	INFO	Marionette enabled
+1778234303984	Marionette	INFO	Listening on port 59744
+WebDriver BiDi listening on ws://127.0.0.1:59734
+1778234304163	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+console.error: RSLoader: 
+  Failed to retrieve recipes from Remote Settings
+  Message: Error: Could not sync nimbus-desktop-experiments: get-exception
+  Stack:
+    RemoteSettingsSyncError@resource://nimbus/lib/RemoteSettingsExperimentLoader.sys.mjs:1414:5
+getRecipesFromCollection@resource://nimbus/lib/RemoteSettingsExperimentLoader.sys.mjs:681:13
+
+console.error: (new NotFoundError("Could not find fa0fc42c-d91d-fca7-34eb-806ff46062dc in cache or dump", "resource://services-settings/Attachments.sys.mjs", 48))
+console.warn: "Unable to find the attachment for" "fa0fc42c-d91d-fca7-34eb-806ff46062dc"
+1778234312917	Marionette	INFO	Stopped listening on port 59744
+JavaScript error: resource://gre/modules/PrivateBrowsingUtils.sys.mjs, line 50: TypeError: can't access property "QueryInterface", aWindow.docShell is null
+1778236289697	geckodriver	INFO	Listening on 127.0.0.1:60068
+1778236289909	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/App ... s" "localhost" "-foreground" "-no-remote" "-profile" "/var/folders/v_/6jd_d5kn7ss0v8hd92jqglz80000gq/T/rust_mozprofileLR17nU"
+*** You are running in headless mode.
+1778236297898	Marionette	INFO	Marionette enabled
+1778236298450	Marionette	INFO	Listening on port 60081
+WebDriver BiDi listening on ws://127.0.0.1:60069
+1778236298623	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+console.error: RSLoader: 
+  Failed to retrieve recipes from Remote Settings
+  Message: Error: Could not sync nimbus-desktop-experiments: get-exception
+  Stack:
+    RemoteSettingsSyncError@resource://nimbus/lib/RemoteSettingsExperimentLoader.sys.mjs:1414:5
+getRecipesFromCollection@resource://nimbus/lib/RemoteSettingsExperimentLoader.sys.mjs:681:13
+
+console.error: (new NotFoundError("Could not find fa0fc42c-d91d-fca7-34eb-806ff46062dc in cache or dump", "resource://services-settings/Attachments.sys.mjs", 48))
+console.warn: "Unable to find the attachment for" "fa0fc42c-d91d-fca7-34eb-806ff46062dc"
+console.error: "Could not download new icon" (new ServerInfoError("Server response is invalid SyntaxError: JSON.parse: unexpected end of data at line 1 column 1 of the JSON data", "resource://services-settings/Attachments.sys.mjs", 40))
+console.error: (new Error("Polling for changes failed: Unexpected content-type \"text/plain;charset=US-ASCII\".", "resource://services-settings/remote-settings.sys.mjs", 482))
+1778236338259	Marionette	INFO	Stopped listening on port 60081
+JavaScript error: resource://gre/modules/PrivateBrowsingUtils.sys.mjs, line 50: TypeError: can't access property "QueryInterface", aWindow.docShell is null
+1778236809716	geckodriver	INFO	Listening on 127.0.0.1:60840
+1778236809840	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/App ... s" "localhost" "-foreground" "-no-remote" "-profile" "/var/folders/v_/6jd_d5kn7ss0v8hd92jqglz80000gq/T/rust_mozprofile2giqgJ"
+*** You are running in headless mode.
+1778236816143	Marionette	INFO	Marionette enabled
+1778236816609	Marionette	INFO	Listening on port 60848
+WebDriver BiDi listening on ws://127.0.0.1:60841
+1778236816781	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+console.error: RSLoader: 
+  Failed to retrieve recipes from Remote Settings
+  Message: Error: Could not sync nimbus-desktop-experiments: get-exception
+  Stack:
+    RemoteSettingsSyncError@resource://nimbus/lib/RemoteSettingsExperimentLoader.sys.mjs:1414:5
+getRecipesFromCollection@resource://nimbus/lib/RemoteSettingsExperimentLoader.sys.mjs:681:13
+
+console.error: (new NotFoundError("Could not find fa0fc42c-d91d-fca7-34eb-806ff46062dc in cache or dump", "resource://services-settings/Attachments.sys.mjs", 48))
+console.warn: "Unable to find the attachment for" "fa0fc42c-d91d-fca7-34eb-806ff46062dc"
+1778236825475	Marionette	INFO	Stopped listening on port 60848
+JavaScript error: resource://gre/modules/PrivateBrowsingUtils.sys.mjs, line 50: TypeError: can't access property "QueryInterface", aWindow.docShell is null
+1778236933453	geckodriver	INFO	Listening on 127.0.0.1:60989
+1778236933535	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/App ... s" "localhost" "-foreground" "-no-remote" "-profile" "/var/folders/v_/6jd_d5kn7ss0v8hd92jqglz80000gq/T/rust_mozprofileNn0qQX"
+*** You are running in headless mode.
+1778236939936	Marionette	INFO	Marionette enabled
+1778236940402	Marionette	INFO	Listening on port 60996
+WebDriver BiDi listening on ws://127.0.0.1:60990
+1778236940578	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+console.error: RSLoader: 
+  Failed to retrieve recipes from Remote Settings
+  Message: Error: Could not sync nimbus-desktop-experiments: get-exception
+  Stack:
+    RemoteSettingsSyncError@resource://nimbus/lib/RemoteSettingsExperimentLoader.sys.mjs:1414:5
+getRecipesFromCollection@resource://nimbus/lib/RemoteSettingsExperimentLoader.sys.mjs:681:13
+
+console.error: (new NotFoundError("Could not find fa0fc42c-d91d-fca7-34eb-806ff46062dc in cache or dump", "resource://services-settings/Attachments.sys.mjs", 48))
+console.warn: "Unable to find the attachment for" "fa0fc42c-d91d-fca7-34eb-806ff46062dc"
+JavaScript warning: https://www.googletagmanager.com/gtm.js?id=GTM-WVHFHF6, line 264: Script terminated by timeout at:
+Ni@https://www.googletagmanager.com/gtm.js?id=GTM-WVHFHF6:264:881
+Tl@https://www.googletagmanager.com/gtm.js?id=GTM-WVHFHF6:313:391
+Ul</<@https://www.googletagmanager.com/gtm.js?id=GTM-WVHFHF6:313:507
+
+JavaScript warning: https://accounts.firefox.com/_fs-ch-1T1wmsGaOgGaSxcX/script.js?reload=true, line 1: Failed to create WebGL context: WebGL disabled, see about:support for why
+console.error: (new Error("Polling for changes failed: Unexpected content-type \"text/plain;charset=US-ASCII\".", "resource://services-settings/remote-settings.sys.mjs", 482))
+console.error: "Could not download new icon" (new ServerInfoError("Server response is invalid SyntaxError: JSON.parse: unexpected end of data at line 1 column 1 of the JSON data", "resource://services-settings/Attachments.sys.mjs", 40))
+1778236980535	Marionette	INFO	Stopped listening on port 60996
+JavaScript error: resource://gre/modules/PrivateBrowsingUtils.sys.mjs, line 50: TypeError: can't access property "QueryInterface", aWindow.docShell is null
+1778237100376	geckodriver	INFO	Listening on 127.0.0.1:61140
+1778237100451	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/App ... s" "localhost" "-foreground" "-no-remote" "-profile" "/var/folders/v_/6jd_d5kn7ss0v8hd92jqglz80000gq/T/rust_mozprofilezdwsNM"
+*** You are running in headless mode.
+1778237106742	Marionette	INFO	Marionette enabled
+1778237107218	Marionette	INFO	Listening on port 61147
+WebDriver BiDi listening on ws://127.0.0.1:61141
+1778237107391	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+console.error: RSLoader: 
+  Failed to retrieve recipes from Remote Settings
+  Message: Error: Could not sync nimbus-desktop-experiments: get-exception
+  Stack:
+    RemoteSettingsSyncError@resource://nimbus/lib/RemoteSettingsExperimentLoader.sys.mjs:1414:5
+getRecipesFromCollection@resource://nimbus/lib/RemoteSettingsExperimentLoader.sys.mjs:681:13
+
+console.error: (new NotFoundError("Could not find fa0fc42c-d91d-fca7-34eb-806ff46062dc in cache or dump", "resource://services-settings/Attachments.sys.mjs", 48))
+console.warn: "Unable to find the attachment for" "fa0fc42c-d91d-fca7-34eb-806ff46062dc"
+1778237115615	Marionette	INFO	Stopped listening on port 61147
+JavaScript error: resource://gre/modules/PrivateBrowsingUtils.sys.mjs, line 50: TypeError: can't access property "QueryInterface", aWindow.docShell is null
+1778237489835	geckodriver	INFO	Listening on 127.0.0.1:61648
+1778237490191	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/App ... s" "localhost" "-foreground" "-no-remote" "-profile" "/var/folders/v_/6jd_d5kn7ss0v8hd92jqglz80000gq/T/rust_mozprofilefnWXq4"
+*** You are running in headless mode.
+1778237496842	Marionette	INFO	Marionette enabled
+1778237497371	Marionette	INFO	Listening on port 61657
+WebDriver BiDi listening on ws://127.0.0.1:61649
+1778237497561	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+console.error: RSLoader: 
+  Failed to retrieve recipes from Remote Settings
+  Message: Error: Could not sync nimbus-desktop-experiments: get-exception
+  Stack:
+    RemoteSettingsSyncError@resource://nimbus/lib/RemoteSettingsExperimentLoader.sys.mjs:1414:5
+getRecipesFromCollection@resource://nimbus/lib/RemoteSettingsExperimentLoader.sys.mjs:681:13
+
+console.error: (new NotFoundError("Could not find fa0fc42c-d91d-fca7-34eb-806ff46062dc in cache or dump", "resource://services-settings/Attachments.sys.mjs", 48))
+console.warn: "Unable to find the attachment for" "fa0fc42c-d91d-fca7-34eb-806ff46062dc"
+JavaScript warning: https://www.googletagmanager.com/gtm.js?id=GTM-WVHFHF6, line 264: Script terminated by timeout at:
+Ni@https://www.googletagmanager.com/gtm.js?id=GTM-WVHFHF6:264:881
+Tl@https://www.googletagmanager.com/gtm.js?id=GTM-WVHFHF6:313:391
+Ul</<@https://www.googletagmanager.com/gtm.js?id=GTM-WVHFHF6:313:507
+
+JavaScript warning: https://accounts.firefox.com/_fs-ch-1T1wmsGaOgGaSxcX/script.js?reload=true, line 1: Failed to create WebGL context: WebGL disabled, see about:support for why
+console.error: "Could not download new icon" (new ServerInfoError("Server response is invalid SyntaxError: JSON.parse: unexpected end of data at line 1 column 1 of the JSON data", "resource://services-settings/Attachments.sys.mjs", 40))
+console.error: (new Error("Polling for changes failed: Unexpected content-type \"text/plain;charset=US-ASCII\".", "resource://services-settings/remote-settings.sys.mjs", 482))
+1778237544332	Marionette	INFO	Stopped listening on port 61657
+JavaScript error: resource://gre/modules/PrivateBrowsingUtils.sys.mjs, line 50: TypeError: can't access property "QueryInterface", aWindow.docShell is null
+1778237581406	geckodriver	INFO	Listening on 127.0.0.1:61791
+1778237581920	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/App ... s" "localhost" "-foreground" "-no-remote" "-profile" "/var/folders/v_/6jd_d5kn7ss0v8hd92jqglz80000gq/T/rust_mozprofile90teIJ"
+*** You are running in headless mode.
+1778237588149	Marionette	INFO	Marionette enabled
+1778237588571	Marionette	INFO	Listening on port 61800
+WebDriver BiDi listening on ws://127.0.0.1:61792
+1778237588750	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+console.error: RSLoader: 
+  Failed to retrieve recipes from Remote Settings
+  Message: Error: Could not sync nimbus-desktop-experiments: get-exception
+  Stack:
+    RemoteSettingsSyncError@resource://nimbus/lib/RemoteSettingsExperimentLoader.sys.mjs:1414:5
+getRecipesFromCollection@resource://nimbus/lib/RemoteSettingsExperimentLoader.sys.mjs:681:13
+
+console.error: (new NotFoundError("Could not find fa0fc42c-d91d-fca7-34eb-806ff46062dc in cache or dump", "resource://services-settings/Attachments.sys.mjs", 48))
+console.warn: "Unable to find the attachment for" "fa0fc42c-d91d-fca7-34eb-806ff46062dc"
+JavaScript warning: https://www.googletagmanager.com/gtm.js?id=GTM-WVHFHF6, line 264: Script terminated by timeout at:
+Ni@https://www.googletagmanager.com/gtm.js?id=GTM-WVHFHF6:264:881
+Tl@https://www.googletagmanager.com/gtm.js?id=GTM-WVHFHF6:313:391
+Ul</<@https://www.googletagmanager.com/gtm.js?id=GTM-WVHFHF6:313:507
+
+JavaScript warning: https://accounts.firefox.com/_fs-ch-1T1wmsGaOgGaSxcX/script.js?reload=true, line 1: Failed to create WebGL context: WebGL disabled, see about:support for why
+console.error: "Could not download new icon" (new ServerInfoError("Server response is invalid SyntaxError: JSON.parse: unexpected end of data at line 1 column 1 of the JSON data", "resource://services-settings/Attachments.sys.mjs", 40))
+console.error: (new Error("Polling for changes failed: Unexpected content-type \"text/plain;charset=US-ASCII\".", "resource://services-settings/remote-settings.sys.mjs", 482))
+1778237619095	Marionette	INFO	Stopped listening on port 61800
+JavaScript error: resource://gre/modules/PrivateBrowsingUtils.sys.mjs, line 50: TypeError: can't access property "QueryInterface", aWindow.docShell is null
+1778239304302	geckodriver	INFO	Listening on 127.0.0.1:63509
+1778239304893	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/App ... s" "localhost" "-foreground" "-no-remote" "-profile" "/var/folders/v_/6jd_d5kn7ss0v8hd92jqglz80000gq/T/rust_mozprofileDvOdkY"
+*** You are running in headless mode.
+1778239311532	Marionette	INFO	Marionette enabled
+1778239312053	Marionette	INFO	Listening on port 63523
+WebDriver BiDi listening on ws://127.0.0.1:63510
+1778239312223	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+console.error: RSLoader: 
+  Failed to retrieve recipes from Remote Settings
+  Message: Error: Could not sync nimbus-desktop-experiments: get-exception
+  Stack:
+    RemoteSettingsSyncError@resource://nimbus/lib/RemoteSettingsExperimentLoader.sys.mjs:1414:5
+getRecipesFromCollection@resource://nimbus/lib/RemoteSettingsExperimentLoader.sys.mjs:681:13
+
+console.error: (new NotFoundError("Could not find fa0fc42c-d91d-fca7-34eb-806ff46062dc in cache or dump", "resource://services-settings/Attachments.sys.mjs", 48))
+console.warn: "Unable to find the attachment for" "fa0fc42c-d91d-fca7-34eb-806ff46062dc"
+JavaScript warning: https://accounts.firefox.com/_fs-ch-1T1wmsGaOgGaSxcX/script.js?reload=true, line 1: Failed to create WebGL context: WebGL disabled, see about:support for why
+1778239324299	Marionette	INFO	Stopped listening on port 63523
+JavaScript error: resource://gre/modules/PrivateBrowsingUtils.sys.mjs, line 50: TypeError: can't access property "QueryInterface", aWindow.docShell is null
+1778239663360	geckodriver	INFO	Listening on 127.0.0.1:64081
+1778239663866	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/App ... s" "localhost" "-foreground" "-no-remote" "-profile" "/var/folders/v_/6jd_d5kn7ss0v8hd92jqglz80000gq/T/rust_mozprofileFf5eCS"
+*** You are running in headless mode.
+1778239670311	Marionette	INFO	Marionette enabled
+1778239670737	Marionette	INFO	Listening on port 64090
+WebDriver BiDi listening on ws://127.0.0.1:64082
+1778239670900	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+console.error: RSLoader: 
+  Failed to retrieve recipes from Remote Settings
+  Message: Error: Could not sync nimbus-desktop-experiments: get-exception
+  Stack:
+    RemoteSettingsSyncError@resource://nimbus/lib/RemoteSettingsExperimentLoader.sys.mjs:1414:5
+getRecipesFromCollection@resource://nimbus/lib/RemoteSettingsExperimentLoader.sys.mjs:681:13
+
+console.error: (new NotFoundError("Could not find fa0fc42c-d91d-fca7-34eb-806ff46062dc in cache or dump", "resource://services-settings/Attachments.sys.mjs", 48))
+console.warn: "Unable to find the attachment for" "fa0fc42c-d91d-fca7-34eb-806ff46062dc"
+1778239679658	Marionette	INFO	Stopped listening on port 64090
+JavaScript error: resource://gre/modules/PrivateBrowsingUtils.sys.mjs, line 50: TypeError: can't access property "QueryInterface", aWindow.docShell is null
