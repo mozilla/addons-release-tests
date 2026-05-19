@@ -85,7 +85,6 @@ def test_click_aside_closes_suggestion_list(base_url, selenium, variables):
         selenium.find_element(By.CSS_SELECTOR, "AutoSearchInput-suggestions-list")
 
 
-@pytest.mark.skip(reason="this test requires more optimization")
 @pytest.mark.nondestructive
 def test_long_terms_dont_break_suggestions(base_url, selenium):
     page = Home(selenium, base_url).open().wait_for_page_to_load()
