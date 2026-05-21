@@ -139,6 +139,10 @@ def firefox_options(firefox_options, base_url, variables):
             "https://versioncheck-bg.addons.mozilla.org/update/VersionCheck.php?reqVersion=%REQ_VERSION%&id=%ITEM_ID%&version=%ITEM_VERSION%&maxAppVersion=%ITEM_MAXAPPVERSION%&status=%ITEM_STATUS%&appID=%APP_ID%&appVersion=%APP_VERSION%&appOS=%APP_OS%&appABI=%APP_ABI%&locale=%APP_LOCALE%&currentAppVersion=%CURRENT_APP_VERSION%&updateType=%UPDATE_TYPE%&compatMode=%COMPATIBILITY_MODE%"
         )
     else:
+        # Don't let Marionette auto-dismiss chrome-level dialogs (e.g. the
+        # uninstall confirmation in about:addons) so webext tests can accept
+        # them via the CONTEXT_CHROME helper in `remove_addon_dialog`.
+        firefox_options.unhandled_prompt_behavior = "ignore"
         firefox_options.set_preference("extensions.install.requireBuiltInCerts", False)
         firefox_options.set_preference("xpinstall.signatures.required", True)
         firefox_options.set_preference("xpinstall.signatures.dev-root", True)

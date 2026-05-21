@@ -2,7 +2,7 @@ import time
 
 from pypom import Page, Region
 
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -48,8 +48,29 @@ class AboutAddons(Page):
     _more_options_panel_item_manage_locator = (By.CSS_SELECTOR, "panel-item[action='expand']")
     _extensions_side_toggle_addon_locator = (By.CSS_SELECTOR, "moz-toggle[class='extension-enable-button']")
     _extensions_side_addon_name_link_locator = (By.CSS_SELECTOR, "a[class='addon-name-link']")
+    # the undo control on the pending-uninstall message bar — Firefox has used a few
+    # different attribute combinations over time, so we match either form
+    _undo_remove_addon_button_locator = (
+        By.CSS_SELECTOR,
+        "button[data-l10n-id='pending-uninstall-undo-button'], button[action='undo']",
+    )
     _firefox_recommends_link_locator = (By.CSS_SELECTOR, "a[class='discopane-intro-learn-more-link']")
-    _recommends_link_header_text_locator = (By.CSS_SELECTOR, "//h1[contains(text(), 'Recommended Extensions program')]")
+    _recommends_link_header_text_locator = (
+        By.XPATH,
+        "//h1[contains(text(), 'Recommended Extensions program')]",
+    )
+    _personalized_recommendations_link_locator = (
+        By.CSS_SELECTOR,
+        "a[href*='personalized-extension-recommendations']",
+    )
+    _personalized_recommendations_header_locator = (
+        By.XPATH,
+        "//h1[contains(text(), 'Personalized')]",
+    )
+    _privacy_policy_link_locator = (
+        By.CSS_SELECTOR,
+        "a[href*='privacy/firefox']",
+    )
 
     def wait_for_page_to_load(self):
         self.wait.until(
@@ -121,6 +142,20 @@ class AboutAddons(Page):
         time.sleep(2)
         return self.find_element(*self._extensions_side_addon_name_link_locator).text
 
+    @property
+    def undo_remove_button(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._undo_remove_addon_button_locator)
+        )
+        return self.find_element(*self._undo_remove_addon_button_locator)
+
+    def click_undo_remove(self):
+        self.undo_remove_button.click()
+        # the message bar disappears after Undo and the addon name link reappears
+        self.wait.until(
+            EC.visibility_of_element_located(self._extensions_side_addon_name_link_locator)
+        )
+
 
     # def click_more_options_remove_addon(self):
     #     with self.driver.context(self.driver.CONTEXT_CHROME):
@@ -169,6 +204,15 @@ class AboutAddons(Page):
 
     @property
     def search_box(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._find_more_addons_search_box_locator)
+        )
+        return self.find_element(*self._find_more_addons_search_box_locator)
+
+    @property
+    def search_box_element(self):
+        # the same moz-input-search element as `search_box` but exposed as a property
+        # that does not collide with the `search_box(value)` method overload below
         self.wait.until(
             EC.visibility_of_element_located(self._find_more_addons_search_box_locator)
         )
@@ -395,8 +439,42 @@ class AboutAddons(Page):
     def firefox_recommends_link(self):
         self.wait.until(EC.element_to_be_clickable(self._firefox_recommends_link_locator))
         self.find_element(*self._firefox_recommends_link_locator).click()
+        self.wait.until(EC.number_of_windows_to_be(2))
         self.driver.switch_to.window(self.driver.window_handles[1])
-        assert self.recommends_link_header_text.is_displayed()
+        # the SUMO kb article URL is more stable than its h1 text
+        self.wait.until(
+            EC.url_contains("recommended-extensions-program"),
+            message=f"Unexpected URL after clicking recommends link: "
+                    f"{self.driver.current_url}",
+        )
+        self.driver.close()
+        self.driver.switch_to.window(self.driver.window_handles[0])
+
+    def personalized_recommendations_link(self):
+        self.wait.until(
+            EC.element_to_be_clickable(self._personalized_recommendations_link_locator)
+        )
+        self.find_element(*self._personalized_recommendations_link_locator).click()
+        self.wait.until(EC.number_of_windows_to_be(2))
+        self.driver.switch_to.window(self.driver.window_handles[1])
+        self.wait.until(
+            EC.url_contains("personalized-extension-recommendations"),
+            message=f"Unexpected URL after clicking personalized recommendations link: "
+                    f"{self.driver.current_url}",
+        )
+        self.driver.close()
+        self.driver.switch_to.window(self.driver.window_handles[0])
+
+    def privacy_policy_link(self):
+        self.wait.until(EC.element_to_be_clickable(self._privacy_policy_link_locator))
+        self.find_element(*self._privacy_policy_link_locator).click()
+        self.wait.until(EC.number_of_windows_to_be(2))
+        self.driver.switch_to.window(self.driver.window_handles[1])
+        self.wait.until(
+            EC.url_contains("privacy"),
+            message=f"Unexpected URL after clicking privacy policy link: "
+                    f"{self.driver.current_url}",
+        )
         self.driver.close()
         self.driver.switch_to.window(self.driver.window_handles[0])
 
@@ -505,17 +583,19 @@ class AboutAddons(Page):
         )
         _manage_addon_button_locator = (
             By.CSS_SELECTOR,
-            "div[class='addon-name-container'] button[action='manage-addon']"
+            "button[action='manage-addon']:not([hidden])",
         )
 
         def is_extension_card(self):
-            """Determines if we have an extension of a theme card.
-            If it is a Theme, we return false"""
+            """Determines if we have an extension or a theme card.
+            Theme cassettes label their install button with
+            `data-l10n-id="install-theme-button"`, extensions with
+            `data-l10n-id="install-extension-button"`."""
             try:
-                # this statement returns true if the card has an extension
-                return self.disco_extension_rating.is_displayed()
+                btn = self.find_element(*self._addon_install_button_locator)
             except NoSuchElementException:
                 return False
+            return btn.get_attribute("data-l10n-id") == "install-extension-button"
 
         @property
         def theme_image(self):
