@@ -3,3 +3,9 @@ test-results.html
 frontend-parallel-test-results.html
 **/__pycache__/
 
+.env
+run-*.sh
+reusable_user.txt
+assets/
+baseline-*.html
+.python-version
