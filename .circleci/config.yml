@@ -11,14 +11,14 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install Python 3.11
-          command: choco install python --version=3.11.9 --allow-downgrade
+          name: Install Python 3.14
+          command: choco install python --version=3.14.4 --allow-downgrade
       - run:
           name: Upgrade pip
           command: py -m pip install --upgrade pip --user
       - run:
           name: Install requirements
-          command: py -3.11 -m pip install --no-deps -r ./requirements.txt
+          command: py -3.14 -m pip install -r ./requirements.txt
       - run:
           name: Install geckodriver
           command: choco install selenium-gecko-driver -y
@@ -27,229 +27,175 @@ jobs:
           command: choco install firefox-nightly --pre --ignore-checksums -y
       - run:
           name: Install Setup Tools
-          command: py -3.11 -m pip install "setuptools<70.0.0"
+          command: py -3.14 -m pip install "setuptools<70.0.0"
       - run:
           name: Run coverage devhub tests
           environment:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 1 --reruns 2
-          command: py -3.11 -m pytest tests\coverage\test_coverage_devhub.py --driver Firefox --variables stage.json --html=coverage-devhub-tests-results.html --self-contained-html
+          command: py -3.14 -m pytest tests\coverage\test_coverage_devhub.py --driver Firefox --variables stage.json --html=coverage-devhub-tests-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: coverage-devhub-tests-results.html
 
   # run collections tests in a separate serial job to make serial workflows more granular
   collections_serial_tests:
-    executor:
-      name: win/default
-      size: "large"
-    working_directory:  ~/addons-release-tests/
+    docker:
+      - image: cimg/python:3.14-browsers
     steps:
       - checkout
       - run:
-          name: Install Python 3.11
-          command: choco install python --version=3.11.9 --allow-downgrade
-      - run:
-          name: Upgrade pip
-          command: py -m pip install --upgrade pip --user
+          name: Install Firefox Nightly via Mozilla APT
+          command: |
+            wget -q https://packages.mozilla.org/apt/repo-signing-key.gpg -O- | sudo gpg --dearmor -o /etc/apt/keyrings/packages.mozilla.org.gpg
+            echo "deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.gpg] https://packages.mozilla.org/apt mozilla main" | sudo tee /etc/apt/sources.list.d/mozilla.list
+            sudo apt-get update -qq -o Dir::Etc::sourcelist=/etc/apt/sources.list.d/mozilla.list -o Dir::Etc::sourceparts="-"
+            sudo apt-get install -y -qq firefox-nightly
+            firefox-nightly --version
       - run:
           name: Install requirements
-          command: py -3.11 -m pip install --no-deps -r ./requirements.txt
-      - run:
-          name: Install geckodriver
-          command: choco install selenium-gecko-driver -y
-      - run:
-          name: Install Firefox
-          command: choco install firefox-nightly --pre --ignore-checksums -y
-      - run:
-          name: Install Setup Tools
-          command: py -3.11 -m pip install "setuptools<70.0.0"
+          command: pip install -r ./requirements.txt
       - run:
           name: Run collections serial tests
           environment:
-            MOZ_HEADLESS: 1
+            DISPLAY: :99
             PYTEST_ADDOPTS: -n 1 --reruns 2
-          command: py -3.11 -m pytest tests\frontend\test_collections.py --driver Firefox --variables stage.json --html=collections-test-results.html --self-contained-html
+          command: python -m pytest tests/frontend/test_collections.py --driver Firefox --variables stage.json --html=collections-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: collections-test-results.html
 
   # run ratings tests in a separate serial job to make serial workflows more granular
   ratings_serial_tests:
-    executor:
-      name: win/default
-      size: "large"
-    working_directory: ~/addons-release-tests/
+    docker:
+      - image: cimg/python:3.14-browsers
     steps:
       - checkout
       - run:
-          name: Install Python 3.11
-          command: choco install python --version=3.11.9 --allow-downgrade
-      - run:
-          name: Upgrade pip
-          command: py -m pip install --upgrade pip --user
+          name: Install Firefox Nightly via Mozilla APT
+          command: |
+            wget -q https://packages.mozilla.org/apt/repo-signing-key.gpg -O- | sudo gpg --dearmor -o /etc/apt/keyrings/packages.mozilla.org.gpg
+            echo "deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.gpg] https://packages.mozilla.org/apt mozilla main" | sudo tee /etc/apt/sources.list.d/mozilla.list
+            sudo apt-get update -qq -o Dir::Etc::sourcelist=/etc/apt/sources.list.d/mozilla.list -o Dir::Etc::sourceparts="-"
+            sudo apt-get install -y -qq firefox-nightly
+            firefox-nightly --version
       - run:
           name: Install requirements
-          command: py -3.11 -m pip install --no-deps -r ./requirements.txt
-      - run:
-          name: Install geckodriver
-          command: choco install selenium-gecko-driver -y
-      - run:
-          name: Install Firefox
-          command: choco install firefox-nightly --pre --ignore-checksums -y
-      - run:
-          name: Install Setup Tools
-          command: py -3.11 -m pip install "setuptools<70.0.0"
+          command: pip install -r ./requirements.txt
       - run:
           name: Run ratings serial tests
           environment:
-            MOZ_HEADLESS: 1
+            DISPLAY: :99
             PYTEST_ADDOPTS: -n 1 --reruns 2
-          command: py -3.11 -m pytest tests\frontend\test_ratings.py -m "serial" --driver Firefox --variables stage.json --html=ratings-test-results.html --self-contained-html
+          command: python -m pytest tests/frontend/test_ratings.py -m "serial" --driver Firefox --variables stage.json --html=ratings-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: ratings-test-results.html
 
   # run user tests in a separate serial job to make serial workflows more granular
   user_serial_tests:
-    executor:
-      name: win/default
-      size: "large"
-    working_directory: ~/addons-release-tests/
+    docker:
+      - image: cimg/python:3.14-browsers
     steps:
       - checkout
       - run:
-          name: Install Python 3.11
-          command: choco install python --version=3.11.9 --allow-downgrade
-      - run:
-          name: Upgrade pip
-          command: py -m pip install --upgrade pip --user
+          name: Install Firefox Nightly via Mozilla APT
+          command: |
+            wget -q https://packages.mozilla.org/apt/repo-signing-key.gpg -O- | sudo gpg --dearmor -o /etc/apt/keyrings/packages.mozilla.org.gpg
+            echo "deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.gpg] https://packages.mozilla.org/apt mozilla main" | sudo tee /etc/apt/sources.list.d/mozilla.list
+            sudo apt-get update -qq -o Dir::Etc::sourcelist=/etc/apt/sources.list.d/mozilla.list -o Dir::Etc::sourceparts="-"
+            sudo apt-get install -y -qq firefox-nightly
+            firefox-nightly --version
       - run:
           name: Install requirements
-          command: py -3.11 -m pip install --no-deps -r ./requirements.txt
-      - run:
-          name: Install geckodriver
-          command: choco install selenium-gecko-driver -y
-      - run:
-          name: Install Firefox
-          command: choco install firefox-nightly --pre --ignore-checksums -y
-      - run:
-          name: Install Setup Tools
-          command: py -3.11 -m pip install "setuptools<70.0.0"
+          command: pip install -r ./requirements.txt
       - run:
           name: Run user serial tests
           environment:
-            MOZ_HEADLESS: 1
+            DISPLAY: :99
             PYTEST_ADDOPTS: -n 1 --reruns 2
-          command: py -3.11 -m pytest tests\frontend\test_users.py -m "serial" --driver Firefox --variables stage.json --html=user-test-results.html --self-contained-html
+          command: python -m pytest tests/frontend/test_users.py -m "serial" --driver Firefox --variables stage.json --html=user-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: user-test-results.html
 
   # tests that do not require login; they include homepage, addon detail, search, addon landing pages, translations, install and other misc tests
   frontend_parallel_tests:
-    executor:
-      name: win/default
-      size: "large"
-    working_directory: ~/addons-release-tests/
+    docker:
+      - image: cimg/python:3.14-browsers
     steps:
       - checkout
       - run:
-          name: Install Python 3.11
-          command: choco install python --version=3.11.9 --allow-downgrade
-      - run:
-          name: Upgrade pip
-          command: py -m pip install --upgrade pip --user
+          name: Install Firefox Nightly via Mozilla APT
+          command: |
+            wget -q https://packages.mozilla.org/apt/repo-signing-key.gpg -O- | sudo gpg --dearmor -o /etc/apt/keyrings/packages.mozilla.org.gpg
+            echo "deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.gpg] https://packages.mozilla.org/apt mozilla main" | sudo tee /etc/apt/sources.list.d/mozilla.list
+            sudo apt-get update -qq -o Dir::Etc::sourcelist=/etc/apt/sources.list.d/mozilla.list -o Dir::Etc::sourceparts="-"
+            sudo apt-get install -y -qq firefox-nightly
+            firefox-nightly --version
       - run:
           name: Install requirements
-          command: py -3.11 -m pip install --no-deps -r ./requirements.txt
-      - run:
-          name: Install geckodriver
-          command: choco install selenium-gecko-driver -y
-      - run:
-          name: Install Firefox
-          command: choco install firefox-nightly --pre --ignore-checksums -y
-      - run:
-          name: Install Setup Tools
-          command: py -3.11 -m pip install "setuptools<70.0.0"
+          command: pip install -r ./requirements.txt
       - run:
           name: Run frontend parallel tests
           environment:
-            MOZ_HEADLESS: 1
+            DISPLAY: :99
             PYTEST_ADDOPTS: -n 4 --reruns 2
-          command: py -3.11 -m pytest tests\frontend -m "not serial and not prod_only" --driver Firefox --variables translations.json --variables stage.json --html=frontend-parallel-test-results.html --self-contained-html
+          command: python -m pytest tests/frontend -m "not serial and not prod_only" --driver Firefox --variables translations.json --variables stage.json --html=frontend-parallel-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: frontend-parallel-test-results.html
 
   # tests that are covering the developer hub homepage
   devhub_parallel_tests:
-    executor:
-      name: win/default
-      size: "large"
-    working_directory: ~/addons-release-tests/
+    docker:
+      - image: cimg/python:3.14-browsers
     steps:
       - checkout
       - run:
-          name: Install Python 3.11
-          command: choco install python --version=3.11.9 --allow-downgrade
-      - run:
-          name: Upgrade pip
-          command: py -m pip install --upgrade pip --user
+          name: Install Firefox Nightly via Mozilla APT
+          command: |
+            wget -q https://packages.mozilla.org/apt/repo-signing-key.gpg -O- | sudo gpg --dearmor -o /etc/apt/keyrings/packages.mozilla.org.gpg
+            echo "deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.gpg] https://packages.mozilla.org/apt mozilla main" | sudo tee /etc/apt/sources.list.d/mozilla.list
+            sudo apt-get update -qq -o Dir::Etc::sourcelist=/etc/apt/sources.list.d/mozilla.list -o Dir::Etc::sourceparts="-"
+            sudo apt-get install -y -qq firefox-nightly
+            firefox-nightly --version
       - run:
           name: Install requirements
-          command: py -3.11 -m pip install --no-deps -r ./requirements.txt
-      - run:
-          name: Install geckodriver
-          command: choco install selenium-gecko-driver -y
-      - run:
-          name: Install Firefox
-          command: choco install firefox-nightly --pre --ignore-checksums -y
-      - run:
-          name: Install Setup Tools
-          command: py -3.11 -m pip install "setuptools<70.0.0"
+          command: pip install -r ./requirements.txt
       - run:
           name: Run devhub parallel tests
           environment:
-            MOZ_HEADLESS: 1
+            DISPLAY: :99
             PYTEST_ADDOPTS: -n 4 --reruns 2
-          command: py -3.11 -m pytest tests\devhub -m "not serial and not prod_only" --driver Firefox --variables stage.json --html=devhub-parallel-test-results.html --self-contained-html
+          command: python -m pytest tests/devhub -m "not serial and not prod_only" --driver Firefox --variables stage.json --html=devhub-parallel-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: devhub-parallel-test-results.html
 
   # tests covering addon submissions through DevHub
   addon_submissions_tests:
-    executor:
-      name: win/default
-      size: "large"
-    working_directory: ~/addons-release-tests/
+    docker:
+      - image: cimg/python:3.14-browsers
     steps:
       - checkout
       - run:
-          name: Install Python 3.11
-          command: choco install python --version=3.11.9 --allow-downgrade
-      - run:
-          name: Upgrade pip
-          command: py -m pip install --upgrade pip --user
+          name: Install Firefox Nightly via Mozilla APT
+          command: |
+            wget -q https://packages.mozilla.org/apt/repo-signing-key.gpg -O- | sudo gpg --dearmor -o /etc/apt/keyrings/packages.mozilla.org.gpg
+            echo "deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.gpg] https://packages.mozilla.org/apt mozilla main" | sudo tee /etc/apt/sources.list.d/mozilla.list
+            sudo apt-get update -qq -o Dir::Etc::sourcelist=/etc/apt/sources.list.d/mozilla.list -o Dir::Etc::sourceparts="-"
+            sudo apt-get install -y -qq firefox-nightly
+            firefox-nightly --version
       - run:
           name: Install requirements
-          command: py -3.11 -m pip install --no-deps -r ./requirements.txt
-      - run:
-          name: Install geckodriver
-          command: choco install selenium-gecko-driver -y
-      - run:
-          name: Install Firefox
-          command: choco install firefox-nightly --pre --ignore-checksums -y
-      - run:
-          name: Install Setup Tools
-          command: py -3.11 -m pip install "setuptools<70.0.0"
+          command: pip install -r ./requirements.txt
       - run:
           name: Run addon submissions tests
           environment:
-            MOZ_HEADLESS: 1
+            DISPLAY: :99
             PYTEST_ADDOPTS: -n 1 --reruns 2
-          command: py -3.11 -m pytest tests\devhub_submissions\test_addon_submissions.py --driver Firefox --variables stage.json --html=submissions-test-results.html --self-contained-html
+          command: python -m pytest tests/devhub_submissions/test_addon_submissions.py --driver Firefox --variables stage.json --html=submissions-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: submissions-test-results.html
@@ -263,14 +209,14 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install Python 3.11
-          command: choco install python --version=3.11.9 --allow-downgrade
+          name: Install Python 3.14
+          command: choco install python --version=3.14.4 --allow-downgrade
       - run:
           name: Upgrade pip
           command: py -m pip install --upgrade pip --user
       - run:
           name: Install requirements
-          command: py -3.11 -m pip install --no-deps -r ./requirements.txt
+          command: py -3.14 -m pip install -r ./requirements.txt
       - run:
           name: Install geckodriver
           command: choco install selenium-gecko-driver -y
@@ -279,13 +225,13 @@ jobs:
           command: choco install firefox -y
       - run:
           name: Install Setup Tools
-          command: py -3.11 -m pip install "setuptools<70.0.0"
+          command: py -3.14 -m pip install "setuptools<70.0.0"
       - run:
           name: Sanity parallel tests
           environment:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 4 --reruns 2
-          command: py -3.11 -m pytest -m "prod_only or sanity and not serial" --driver Firefox --variables prod.json --html=sanity-parallel-test-results.html --self-contained-html
+          command: py -3.14 -m pytest -m "prod_only or sanity and not serial" --driver Firefox --variables prod.json --html=sanity-parallel-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: sanity-parallel-test-results.html
@@ -299,14 +245,14 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install Python 3.11
-          command: choco install python --version=3.11.9 --allow-downgrade
+          name: Install Python 3.14
+          command: choco install python --version=3.14.4 --allow-downgrade
       - run:
           name: Upgrade pip
           command: py -m pip install --upgrade pip --user
       - run:
           name: Install requirements
-          command: py -3.11 -m pip install --no-deps -r ./requirements.txt
+          command: py -3.14 -m pip install -r ./requirements.txt
       - run:
           name: Install geckodriver
           command: choco install selenium-gecko-driver -y
@@ -315,13 +261,13 @@ jobs:
           command: choco install firefox -y
       - run:
           name: Install Setup Tools
-          command: py -3.11 -m pip install "setuptools<70.0.0"
+          command: py -3.14 -m pip install "setuptools<70.0.0"
       - run:
           name: Sanity serial tests
           environment:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 1 --reruns 2
-          command: py -3.11 -m pytest -m "sanity and serial" --driver Firefox --variables prod.json --html=sanity-serial-test-results.html --self-contained-html
+          command: py -3.14 -m pytest -m "sanity and serial" --driver Firefox --variables prod.json --html=sanity-serial-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: sanity-serial-test-results.html
@@ -335,14 +281,14 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install Python 3.11
-          command: choco install python --version=3.11.9 --allow-downgrade
+          name: Install Python 3.14
+          command: choco install python --version=3.14.4 --allow-downgrade
       - run:
           name: Upgrade pip
           command: py -m pip install --upgrade pip --user
       - run:
           name: Install requirements
-          command: py -3.11 -m pip install --no-deps -r ./requirements.txt
+          command: py -3.14 -m pip install -r ./requirements.txt
       - run:
           name: Install geckodriver
           command: choco install selenium-gecko-driver -y
@@ -351,13 +297,13 @@ jobs:
           command: choco install firefox -y
       - run:
           name: Install Setup Tools
-          command: py -3.11 -m pip install "setuptools<70.0.0"
+          command: py -3.14 -m pip install "setuptools<70.0.0"
       - run:
           name: API submission tests
           environment:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 1 --reruns 2
-          command: py -3.11 -m pytest tests\api_w --driver Firefox --variables stage.json --html=api_submission_tests.html --self-contained-html
+          command: py -3.14 -m pytest tests\api_w --driver Firefox --variables stage.json --html=api_submission_tests.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: api_submission_tests.html
@@ -371,14 +317,14 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install Python 3.11
-          command: choco install python --version=3.11.9 --allow-downgrade
+          name: Install Python 3.14
+          command: choco install python --version=3.14.4 --allow-downgrade
       - run:
           name: Upgrade pip
           command: py -m pip install --upgrade pip --user
       - run:
           name: Install requirements
-          command: py -3.11 -m pip install --no-deps -r ./requirements.txt
+          command: py -3.14 -m pip install -r ./requirements.txt
       - run:
           name: Install geckodriver
           command: choco install selenium-gecko-driver -y
@@ -387,15 +333,15 @@ jobs:
           command: choco install firefox-nightly --pre --ignore-checksums -y
       - run:
           name: Install Setup Tools
-          command: py -3.11 -m pip install "setuptools<70.0.0"
+          command: py -3.14 -m pip install "setuptools<70.0.0"
       - run:
           name: Run frontend parallel tests
           environment:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 4 --reruns 2
           command: |
-              # Run pytest through the same 3.11 interpreter
-              py -3.11 -m pytest tests\frontend -m "not serial and not prod_only" --driver Firefox --variables translations.json --variables dev.json --html=frontend-dev-parallel-test-results.html --self-contained-html
+              # Run pytest through the same 3.14 interpreter
+              py -3.14 -m pytest tests\frontend -m "not serial and not prod_only" --driver Firefox --variables translations.json --variables dev.json --html=frontend-dev-parallel-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: frontend-dev-parallel-test-results.html
@@ -409,14 +355,14 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install Python 3.11
-          command: choco install python --version=3.11.9 --allow-downgrade
+          name: Install Python 3.14
+          command: choco install python --version=3.14.4 --allow-downgrade
       - run:
           name: Upgrade pip
           command: py -m pip install --upgrade pip --user
       - run:
           name: Install requirements
-          command: py -3.11 -m pip install --no-deps -r ./requirements.txt
+          command: py -3.14 -m pip install -r ./requirements.txt
       - run:
           name: Install geckodriver
           command: choco install selenium-gecko-driver -y
@@ -425,13 +371,13 @@ jobs:
           command: choco install firefox-nightly --pre --ignore-checksums -y
       - run:
           name: Install Setup Tools
-          command: py -3.11 -m pip install "setuptools<70.0.0"
+          command: py -3.14 -m pip install "setuptools<70.0.0"
       - run:
           name: Run user serial tests
           environment:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 1 --reruns 2
-          command: py -3.11 -m pytest tests\frontend\test_users.py --driver Firefox --variables dev.json --html=user-dev-test-results.html --self-contained-html
+          command: py -3.14 -m pytest tests\frontend\test_users.py --driver Firefox --variables dev.json --html=user-dev-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: user-dev-test-results.html
@@ -445,14 +391,14 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install Python 3.11
-          command: choco install python --version=3.11.9 --allow-downgrade
+          name: Install Python 3.14
+          command: choco install python --version=3.14.4 --allow-downgrade
       - run:
           name: Upgrade pip
           command: py -m pip install --upgrade pip --user
       - run:
           name: Install requirements
-          command: py -3.11 -m pip install --no-deps -r ./requirements.txt
+          command: py -3.14 -m pip install -r ./requirements.txt
       - run:
           name: Install geckodriver
           command: choco install selenium-gecko-driver -y
@@ -461,13 +407,13 @@ jobs:
           command: choco install firefox-nightly --pre --ignore-checksums -y
       - run:
           name: Install Setup Tools
-          command: py -3.11 -m pip install "setuptools<70.0.0"
+          command: py -3.14 -m pip install "setuptools<70.0.0"
       - run:
           name: Run collections serial tests
           environment:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 1 --reruns 2
-          command: py -3.11 -m pytest tests\frontend\test_collections.py --driver Firefox --variables dev.json --html=collections-dev-test-results.html --self-contained-html
+          command: py -3.14 -m pytest tests\frontend\test_collections.py --driver Firefox --variables dev.json --html=collections-dev-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: collections-dev-test-results.html
@@ -481,14 +427,14 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install Python 3.11
-          command: choco install python --version=3.11.9 --allow-downgrade
+          name: Install Python 3.14
+          command: choco install python --version=3.14.4 --allow-downgrade
       - run:
           name: Upgrade pip
           command: py -m pip install --upgrade pip --user
       - run:
           name: Install requirements
-          command: py -3.11 -m pip install --no-deps -r ./requirements.txt
+          command: py -3.14 -m pip install -r ./requirements.txt
       - run:
           name: Install geckodriver
           command: choco install selenium-gecko-driver -y
@@ -497,13 +443,13 @@ jobs:
           command: choco install firefox-nightly --pre --ignore-checksums -y
       - run:
           name: Install Setup Tools
-          command: py -3.11 -m pip install "setuptools<70.0.0"
+          command: py -3.14 -m pip install "setuptools<70.0.0"
       - run:
           name: Run ratings serial tests
           environment:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 1 --reruns 2
-          command: py -3.11 -m pytest tests\frontend\test_ratings.py --driver Firefox --variables dev.json --html=ratings-dev-test-results.html --self-contained-html
+          command: py -3.14 -m pytest tests\frontend\test_ratings.py --driver Firefox --variables dev.json --html=ratings-dev-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: ratings-dev-test-results.html
@@ -517,14 +463,14 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install Python 3.11
-          command: choco install python --version=3.11.9 --allow-downgrade
+          name: Install Python 3.14
+          command: choco install python --version=3.14.4 --allow-downgrade
       - run:
           name: Upgrade pip
           command: py -m pip install --upgrade pip --user
       - run:
           name: Install requirements
-          command: py -3.11 -m pip install --no-deps -r ./requirements.txt
+          command: py -3.14 -m pip install -r ./requirements.txt
       - run:
           name: Install geckodriver
           command: choco install selenium-gecko-driver -y
@@ -533,13 +479,13 @@ jobs:
           command: choco install firefox-nightly --pre --ignore-checksums -y
       - run:
           name: Install Setup Tools
-          command: py -3.11 -m pip install "setuptools<70.0.0"
+          command: py -3.14 -m pip install "setuptools<70.0.0"
       - run:
           name: Run devhub parallel tests
           environment:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 4 --reruns 2
-          command: py -3.11 -m pytest tests\devhub -m "not serial and not prod_only" --driver Firefox --variables dev.json --html=devhub-dev-parallel-test-results.html --self-contained-html
+          command: py -3.14 -m pytest tests\devhub -m "not serial and not prod_only" --driver Firefox --variables dev.json --html=devhub-dev-parallel-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: devhub-dev-parallel-test-results.html
@@ -553,14 +499,14 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install Python 3.11
-          command: choco install python --version=3.11.9 --allow-downgrade
+          name: Install Python 3.14
+          command: choco install python --version=3.14.4 --allow-downgrade
       - run:
           name: Upgrade pip
           command: py -m pip install --upgrade pip --user
       - run:
           name: Install requirements
-          command: py -3.11 -m pip install --no-deps -r ./requirements.txt
+          command: py -3.14 -m pip install -r ./requirements.txt
       - run:
           name: Install geckodriver
           command: choco install selenium-gecko-driver -y
@@ -569,13 +515,13 @@ jobs:
           command: choco install firefox-nightly --pre --ignore-checksums -y
       - run:
           name: Install Setup Tools
-          command: py -3.11 -m pip install "setuptools<70.0.0"
+          command: py -3.14 -m pip install "setuptools<70.0.0"
       - run:
           name: Run addon submissions tests
           environment:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 1 --reruns 2
-          command: py -3.11 -m pytest tests\devhub_submissions\test_addon_submissions.py --driver Firefox --variables dev.json --html=submissions-dev-test-results.html --self-contained-html
+          command: py -3.14 -m pytest tests\devhub_submissions\test_addon_submissions.py --driver Firefox --variables dev.json --html=submissions-dev-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: submissions-dev-test-results.html
@@ -589,14 +535,14 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install Python 3.11
-          command: choco install python --version=3.11.9 --allow-downgrade
+          name: Install Python 3.14
+          command: choco install python --version=3.14.4 --allow-downgrade
       - run:
           name: Upgrade pip
           command: py -m pip install --upgrade pip --user
       - run:
           name: Install requirements
-          command: py -3.11 -m pip install --no-deps -r ./requirements.txt
+          command: py -3.14 -m pip install -r ./requirements.txt
       - run:
           name: Install geckodriver
           command: choco install selenium-gecko-driver -y
@@ -605,13 +551,13 @@ jobs:
           command: choco install firefox-nightly --pre --ignore-checksums -y
       - run:
           name: Install Setup Tools
-          command: py -3.11 -m pip install "setuptools<70.0.0"
+          command: py -3.14 -m pip install "setuptools<70.0.0"
       - run:
           name: Reviewer Tools Tests
           environment:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 1 --reruns 2
-          command: py -3.11 -m pytest tests\reviewer_tools\test_reviewer_tools_release.py --driver Firefox --variables stage.json --html=submissions-dev-test-results.html --self-contained-html
+          command: py -3.14 -m pytest tests\reviewer_tools\test_reviewer_tools_release.py --driver Firefox --variables stage.json --html=submissions-dev-test-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: reviewer-tools-stage-test-results.html
