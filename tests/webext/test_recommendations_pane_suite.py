@@ -4,7 +4,8 @@
 Many controls on the recommendations pane are Mozilla custom elements
 (`moz-input-search`, `moz-button`, `moz-toggle`, ...) whose real content lives
 inside shadow DOM. Marionette's `WebElement.shadow_root` accessor is not
-implemented for Firefox, so shadow DOM is queried via `execute_script` here.
+implemented for Firefox, so shadow DOM is queried through the helpers in
+`scripts.shadow_dom`.
 """
 import pytest
 
@@ -13,40 +14,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
 from pages.desktop.about_addons import AboutAddons
-
-
-# -------- shadow DOM helpers ----------------------------------------------
-
-def _shadow_query(driver, host_css, inner_css):
-    """Return the first element matching `inner_css` inside the shadow root of
-    the element matching `host_css`. Returns None when nothing is found."""
-    return driver.execute_script(
-        """
-        const host = document.querySelector(arguments[0]);
-        if (!host || !host.shadowRoot) return null;
-        return host.shadowRoot.querySelector(arguments[1]);
-        """,
-        host_css,
-        inner_css,
-    )
-
-
-def _shadow_visible(driver, host_css, inner_css):
-    """True when the shadow-dom element exists and is rendered."""
-    return bool(
-        driver.execute_script(
-            """
-            const host = document.querySelector(arguments[0]);
-            if (!host || !host.shadowRoot) return false;
-            const el = host.shadowRoot.querySelector(arguments[1]);
-            if (!el) return false;
-            const rect = el.getBoundingClientRect();
-            return rect.width > 0 && rect.height > 0;
-            """,
-            host_css,
-            inner_css,
-        )
-    )
+from scripts.shadow_dom import shadow_visible
 
 
 # -------- chrome-level dialog helper --------------------------------------
@@ -230,7 +198,7 @@ def test_suite_recommendations_pane_layout_TC_ID_C617018(
     # placed in the layout and that its shadow-root <input> is rendered.
     search_host_css = "moz-input-search[placeholder='Search addons.mozilla.org']"
     assert selenium.find_element(By.CSS_SELECTOR, search_host_css).is_displayed()
-    assert _shadow_visible(selenium, search_host_css, "input"), (
+    assert shadow_visible(selenium, search_host_css, "input"), (
         "moz-input-search did not render its shadow-DOM <input>"
     )
 

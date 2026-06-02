@@ -616,27 +616,57 @@ jobs:
       - store_artifacts:
           path: reviewer-tools-stage-test-results.html
 
+  # tests covering reviewer tools through DevHub from AMO dev
+  webext_release_prod_run:
+    executor:
+      name: win/default
+      size: "large"
+    working_directory: ~/addons-release-tests/
+    steps:
+      - checkout
+      - run:
+          name: Install Python 3.11
+          command: choco install python --version=3.11.9 --allow-downgrade
+      - run:
+          name: Upgrade pip
+          command: py -m pip install --upgrade pip --user
+      - run:
+          name: Install requirements
+          command: py -3.11 -m pip install --no-deps -r ./requirements.txt
+      - run:
+          name: Install geckodriver
+          command: choco install selenium-gecko-driver -y
+      - run:
+          name: Install Firefox
+          command: choco install firefox-nightly --pre --ignore-checksums -y
+      - run:
+          name: Install Setup Tools
+          command: py -3.11 -m pip install "setuptools<70.0.0"
+      - run:
+          name: Reviewer Tools Tests
+          environment:
+            MOZ_HEADLESS: 1
+            PYTEST_ADDOPTS: -n 1 --reruns 2
+          command: py -3.11 -m pytest tests\webext\ --driver Firefox --variables prod.json --html=webext-release_prod-results.html --self-contained-html
+          no_output_timeout: 30m
+      - store_artifacts:
+          path: webext-release_prod-results.html
+
 workflows:
   commit_workflow:
     when:
       not:
         equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
     jobs:
-      - frontend_parallel_tests
-      - user_serial_tests
-      - collections_serial_tests
-      - ratings_serial_tests
-      - devhub_parallel_tests
-      - addon_submissions_tests
+      - webext_release_prod_run
 
-  scheduled_webext_release_stage_run:
+  scheduled_webext_release_prod_run:
     when:
       and:
         - equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
-        - equal: [ "scheduled_webext_release_stage_run", << pipeline.schedule.name >> ]
+        - equal: [ "scheduled_webext_release_prod_run", << pipeline.schedule.name >> ]
     jobs:
-      - coverage_devhub_tests
-      - coverage_frontend_tests
+      - webext_release_prod_run
 
   # scheduled in CircleCI Project settings to run each Wednesdays at 04:00 UTC
   scheduled_coverage_run:

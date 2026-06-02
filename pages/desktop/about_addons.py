@@ -18,14 +18,17 @@ class AboutAddons(Page):
     _search_box_locator = (By.CSS_SELECTOR, ".main-search search-textbox")
     _find_more_addons_search_box_locator = (By.CSS_SELECTOR, "moz-input-search[placeholder='Search addons.mozilla.org']")
     _find_more_addons_text_locator = (By.CSS_SELECTOR, ".search-label")
-    _extension_tab_button_locator = (By.CSS_SELECTOR, 'button[name = "extension"]')
-    _recommendations_tab_button_locator = (By.CSS_SELECTOR, 'button[name = discover]')
+    # Side-tab buttons — recent Firefox versions render them as
+    # `moz-page-nav-button` instead of legacy `button[name=...]`. Selecting
+    # the `id` works for both shapes.
+    _extension_tab_button_locator = (By.CSS_SELECTOR, "#category-extension")
+    _recommendations_tab_button_locator = (By.CSS_SELECTOR, "#category-discover")
     _recommendations_tab_addon_list_locator = (By.CSS_SELECTOR, "card addon")
     _recommendations_tab_find_more_addons_locator = (By.CSS_SELECTOR, "button.primary")
-    _theme_tab_button_locator = (By.CSS_SELECTOR, 'button[name = "theme"]')
-    _plugins_tab_button_locator = (By.CSS_SELECTOR, 'button[name = "plugin"]')
-    _dictionary_tab_button_locator = (By.CSS_SELECTOR, 'button[name = "dictionary"]')
-    _langpack_tab_button_locator = (By.CSS_SELECTOR, 'button[name = "locale"]')
+    _theme_tab_button_locator = (By.CSS_SELECTOR, "#category-theme")
+    _plugins_tab_button_locator = (By.CSS_SELECTOR, "#category-plugin")
+    _dictionary_tab_button_locator = (By.CSS_SELECTOR, "#category-dictionary")
+    _langpack_tab_button_locator = (By.CSS_SELECTOR, "#category-locale")
     _extension_disable_toggle_locator = (By.CLASS_NAME, "extension-enable-button")
     _enabled_theme_status_locator = (By.CLASS_NAME, "card.addon")
     _installed_addon_cards_locator = (By.CSS_SELECTOR, ".card.addon")
@@ -178,6 +181,36 @@ class AboutAddons(Page):
         """)
         el.click()
         return ViewRecentUpdates(self.driver, self.base_url).wait_for_page_to_load()
+
+    def _click_options_menu_action(self, action):
+        """Click an Options-menu panel-item by its `action` attribute."""
+        el = self.driver.execute_script(
+            "return document.querySelector(arguments[0]);",
+            f'panel-item[action="{action}"]',
+        )
+        if el is None:
+            raise NoSuchElementException(f"panel-item[action='{action}']")
+        el.click()
+
+    def click_view_recent_updates(self):
+        """Open the Options menu's "View Recent Updates" entry."""
+        self._click_options_menu_action("view-recent-updates")
+        return ViewRecentUpdates(self.driver, self.base_url).wait_for_page_to_load()
+
+    def click_check_for_updates(self):
+        """Trigger an addon update check via the Options menu."""
+        self._click_options_menu_action("check-for-updates")
+
+    def click_install_addon_from_file(self):
+        """Click the Options menu's "Install Add-on From File…" entry. The
+        native file picker that this opens is owned by the OS and cannot be
+        driven from a content-context Selenium session — callers must handle
+        the picker via Marionette's chrome context (or skip the assertion)."""
+        self._click_options_menu_action("install-from-file")
+
+    def click_manage_shortcuts(self):
+        """Open the Options menu's "Manage Extension Shortcuts" entry."""
+        self._click_options_menu_action("manage-shortcuts")
 
     def assert_recommendations_page(self):
         """Assert list of addons"""

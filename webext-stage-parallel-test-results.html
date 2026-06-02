@@ -429,10 +429,10 @@ function filterTable(elem) { // eslint-disable-line no-unused-vars
 }
 </script>
     <h1>webext-stage-parallel-test-results.html</h1>
-    <p>Report generated on 21-May-2026 at 00:56:14 by <a href="https://pypi.python.org/pypi/pytest-html">pytest-html</a> v3.1.1</p>
+    <p>Report generated on 21-May-2026 at 20:00:26 by <a href="https://pypi.python.org/pypi/pytest-html">pytest-html</a> v3.1.1</p>
     <h2>Summary</h2>
-    <p>3 tests ran in 34.73 seconds. </p>
-    <p class="filter" hidden="true">(Un)check the boxes to filter the results.</p><input checked="true" class="filter" data-test-result="passed" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="passed">3 passed</span>, <input checked="true" class="filter" data-test-result="skipped" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="skipped">0 skipped</span>, <input checked="true" class="filter" data-test-result="failed" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="failed">0 failed</span>, <input checked="true" class="filter" data-test-result="error" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="error">0 errors</span>, <input checked="true" class="filter" data-test-result="xfailed" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="xfailed">0 expected failures</span>, <input checked="true" class="filter" data-test-result="xpassed" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="xpassed">0 unexpected passes</span>, <input checked="true" class="filter" data-test-result="rerun" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="rerun">0 rerun</span>
+    <p>23 tests ran in 248.97 seconds. </p>
+    <p class="filter" hidden="true">(Un)check the boxes to filter the results.</p><input checked="true" class="filter" data-test-result="passed" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="passed">23 passed</span>, <input checked="true" class="filter" data-test-result="skipped" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="skipped">11 skipped</span>, <input checked="true" class="filter" data-test-result="failed" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="failed">0 failed</span>, <input checked="true" class="filter" data-test-result="error" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="error">0 errors</span>, <input checked="true" class="filter" data-test-result="xfailed" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="xfailed">0 expected failures</span>, <input checked="true" class="filter" data-test-result="xpassed" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="xpassed">0 unexpected passes</span>, <input checked="true" class="filter" data-test-result="rerun" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="rerun">0 rerun</span>
     <h2>Results</h2>
     <table id="results-table">
       <thead id="results-table-head">
@@ -443,11 +443,272 @@ function filterTable(elem) { // eslint-disable-line no-unused-vars
           <th class="sortable links" col="links">Links</th></tr>
         <tr hidden="true" id="not-found-message">
           <th colspan="4">No results found. Try to check the filters</th></tr></thead>
+      <tbody class="skipped results-table-row">
+        <tr>
+          <td class="col-result">Skipped</td>
+          <td class="col-name">tests/webext/test_about_addons_navigation_and_functionality.py::test_suite_addons_search_opens_amo_results_TC1[Desktop]</td>
+          <td class="col-duration">0.00</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">(&#x27;/Users/alexandru.schek/addons-release-tests/tests/webext/test_about_addons_navigation_and_functionality.py&#x27;, 119, &quot;Skipped: The about:addons search → AMO commit can&#x27;t be triggered via Selenium/Marionette synthetic input on current Firefox builds: the moz-input-search element ignores send_keys(Keys.ENTER), clicking the associated moz-button (host and shadow inner &lt;button&gt;) is a no-op, and dispatched MozInputSearch:search / CustomEvent(&#x27;search&#x27;) events are not consumed. The same limitation blocks TC2 and TC3.&quot;)<br/></div></td></tr></tbody>
+      <tbody class="skipped results-table-row">
+        <tr>
+          <td class="col-result">Skipped</td>
+          <td class="col-name">tests/webext/test_about_addons_navigation_and_functionality.py::test_suite_addons_search_full_name_TC2[Desktop]</td>
+          <td class="col-duration">0.00</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">(&#x27;/Users/alexandru.schek/addons-release-tests/tests/webext/test_about_addons_navigation_and_functionality.py&#x27;, 143, &#x27;Skipped: Depends on the same moz-input-search commit path as TC1, which is not reachable via Selenium/Marionette synthetic input.&#x27;)<br/></div></td></tr></tbody>
+      <tbody class="skipped results-table-row">
+        <tr>
+          <td class="col-result">Skipped</td>
+          <td class="col-name">tests/webext/test_about_addons_navigation_and_functionality.py::test_suite_keyboard_disable_enable_TC4[Desktop]</td>
+          <td class="col-duration">11.84</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">(&#x27;/Users/alexandru.schek/addons-release-tests/tests/webext/test_about_addons_navigation_and_functionality.py&#x27;, 210, &#x27;Skipped: Alt+Shift+D no longer toggles disable in current Firefox builds — the chord reaches the chrome command system (verified with Cmd/Ctrl+Shift+A working via the same helper) but the about:addons app no longer wires it up. Spec-asserted UI behaviour is absent in this Firefox version.&#x27;)<br/></div></td></tr></tbody>
+      <tbody class="skipped results-table-row">
+        <tr>
+          <td class="col-result">Skipped</td>
+          <td class="col-name">tests/webext/test_about_addons_navigation_and_functionality.py::test_suite_keyboard_remove_TC5[Desktop]</td>
+          <td class="col-duration">17.15</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">(&#x27;/Users/alexandru.schek/addons-release-tests/tests/webext/test_about_addons_navigation_and_functionality.py&#x27;, 263, &#x27;Skipped: Alt+Shift+R no longer triggers addon removal in current Firefox builds — same UI-drift situation as TC4.&#x27;)<br/></div></td></tr></tbody>
+      <tbody class="skipped results-table-row">
+        <tr>
+          <td class="col-result">Skipped</td>
+          <td class="col-name">tests/webext/test_about_addons_navigation_and_functionality.py::test_suite_keyboard_disable_enable_private_TC6[Desktop]</td>
+          <td class="col-duration">13.60</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">(&#x27;/Users/alexandru.schek/addons-release-tests/tests/webext/test_about_addons_navigation_and_functionality.py&#x27;, 297, &#x27;Skipped: Alt+Shift+D no longer toggles disable in current Firefox builds (verified in private window too).&#x27;)<br/></div></td></tr></tbody>
+      <tbody class="skipped results-table-row">
+        <tr>
+          <td class="col-result">Skipped</td>
+          <td class="col-name">tests/webext/test_about_addons_navigation_and_functionality.py::test_suite_keyboard_remove_private_TC7[Desktop]</td>
+          <td class="col-duration">17.94</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">(&#x27;/Users/alexandru.schek/addons-release-tests/tests/webext/test_about_addons_navigation_and_functionality.py&#x27;, 345, &#x27;Skipped: Alt+Shift+R no longer triggers addon removal in current Firefox builds (verified in private window too).&#x27;)<br/></div></td></tr></tbody>
+      <tbody class="skipped results-table-row">
+        <tr>
+          <td class="col-result">Skipped</td>
+          <td class="col-name">tests/webext/test_about_addons_navigation_and_functionality.py::test_suite_ctrl_f_focuses_search_bar_TC10[Desktop]</td>
+          <td class="col-duration">10.58</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">(&#x27;/Users/alexandru.schek/addons-release-tests/tests/webext/test_about_addons_navigation_and_functionality.py&#x27;, 548, &quot;Skipped: Cmd/Ctrl+F no longer overrides Firefox&#x27;s Find toolbar to focus the about:addons search input on the current Firefox build — the chord reaches the chrome command system but the spec&#x27;d about:addons override is absent.&quot;)<br/></div></td></tr></tbody>
+      <tbody class="skipped results-table-row">
+        <tr>
+          <td class="col-result">Skipped</td>
+          <td class="col-name">tests/webext/test_extension_install_uninstall_suite.py::test_suite_install_addon_from_file_TC6[Desktop]</td>
+          <td class="col-duration">0.00</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">(&#x27;/Users/alexandru.schek/addons-release-tests/tests/webext/test_extension_install_uninstall_suite.py&#x27;, 251, &quot;Skipped: Verifying the &#x27;Install Add-on From File…&#x27; dialog elements requires (1) driving the native OS file picker that the menu entry opens, which Marionette cannot do from a content-context session, and (2) inspecting the chrome popupnotification while it is showing — every Marionette command throws while a prompt is open. A future test could bypass the picker via a chrome-context AddonManager getInstallForFile call but the dialog-state inspection problem remains.&quot;)<br/></div></td></tr></tbody>
+      <tbody class="skipped results-table-row">
+        <tr>
+          <td class="col-result">Skipped</td>
+          <td class="col-name">tests/webext/test_more_options_suite.py::test_suite_install_from_file_TC3[Desktop]</td>
+          <td class="col-duration">0.00</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">(&#x27;/Users/alexandru.schek/addons-release-tests/tests/webext/test_more_options_suite.py&#x27;, 202, &quot;Skipped: The &#x27;Install Add-on From File…&#x27; entry opens the native OS file picker, which Marionette cannot drive from a content-context Selenium session. Exercising this case requires Firefox-side picker mocking (nsIFilePicker override) that the test infrastructure does not yet provide.&quot;)<br/></div></td></tr></tbody>
+      <tbody class="skipped results-table-row">
+        <tr>
+          <td class="col-result">Skipped</td>
+          <td class="col-name">tests/webext/test_more_options_suite.py::test_suite_manage_shortcuts_already_in_use_TC6[Desktop]</td>
+          <td class="col-duration">0.00</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">(&#x27;/Users/alexandru.schek/addons-release-tests/tests/webext/test_more_options_suite.py&#x27;, 297, &quot;Skipped: Asserting the &#x27;Already in use by [name]&#x27; tooltip requires capturing a multi-key chord (CTRL/ALT + letter) inside the shortcut input widget. Marionette&#x27;s send_keys does not reach the underlying key handler in this widget, so a reliable assertion needs a chrome-context synthetic-key utility that does not yet exist in this repo.&quot;)<br/></div></td></tr></tbody>
+      <tbody class="skipped results-table-row">
+        <tr>
+          <td class="col-result">Skipped</td>
+          <td class="col-name">tests/webext/test_more_options_suite.py::test_suite_manage_shortcuts_conflict_banner_TC7[Desktop]</td>
+          <td class="col-duration">0.00</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">(&#x27;/Users/alexandru.schek/addons-release-tests/tests/webext/test_more_options_suite.py&#x27;, 315, &#x27;Skipped: This case requires installing two specific extensions (tree-style-tab and enhancer-for-youtube) that share a default shortcut. Neither is present in the staging discovery feed, and side-loading a known-good copy needs a curated xpi fixture that the test infrastructure does not yet ship.&#x27;)<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">tests/webext/test_about_addons_navigation_and_functionality.py::test_suite_addons_search_input_length_limit_TC3[Desktop]</td>
+          <td class="col-duration">6.75</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="empty log">No log output captured.</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">tests/webext/test_about_addons_navigation_and_functionality.py::test_suite_toolbar_manage_back_button_TC8[Desktop]</td>
+          <td class="col-duration">7.50</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="empty log">No log output captured.</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">tests/webext/test_about_addons_navigation_and_functionality.py::test_suite_keyboard_open_addons_install_uninstall_TC9[Desktop]</td>
+          <td class="col-duration">10.27</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="empty log">No log output captured.</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">tests/webext/test_extension_install_uninstall_suite.py::test_suite_hamburger_addons_extensions_TC1[Desktop]</td>
+          <td class="col-duration">6.84</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="empty log">No log output captured.</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">tests/webext/test_extension_install_uninstall_suite.py::test_suite_remove_extension_via_three_dot_TC2[Desktop]</td>
+          <td class="col-duration">7.16</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="empty log">No log output captured.</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">tests/webext/test_extension_install_uninstall_suite.py::test_suite_remove_theme_via_three_dot_TC3[Desktop]</td>
+          <td class="col-duration">7.35</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="empty log">No log output captured.</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">tests/webext/test_extension_install_uninstall_suite.py::test_suite_install_extension_from_private_window_TC4[Desktop]</td>
+          <td class="col-duration">7.92</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="empty log">No log output captured.</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">tests/webext/test_extension_install_uninstall_suite.py::test_suite_about_debugging_load_temp_addon_TC5[Desktop]</td>
+          <td class="col-duration">7.25</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="empty log">No log output captured.</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">tests/webext/test_extension_theme_report_abuse_suite.py::test_suite_three_dot_remove_with_report_extension_TC1[Desktop]</td>
+          <td class="col-duration">7.08</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="empty log">No log output captured.</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">tests/webext/test_extension_theme_report_abuse_suite.py::test_suite_three_dot_report_extension_TC2[Desktop]</td>
+          <td class="col-duration">7.94</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="empty log">No log output captured.</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">tests/webext/test_extension_theme_report_abuse_suite.py::test_suite_toolbar_remove_with_report_extension_TC3[Desktop]</td>
+          <td class="col-duration">6.88</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="empty log">No log output captured.</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">tests/webext/test_extension_theme_report_abuse_suite.py::test_suite_toolbar_report_extension_TC4[Desktop]</td>
+          <td class="col-duration">7.60</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="empty log">No log output captured.</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">tests/webext/test_extension_theme_report_abuse_suite.py::test_suite_three_dot_remove_with_report_theme_TC5[Desktop]</td>
+          <td class="col-duration">7.30</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="empty log">No log output captured.</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">tests/webext/test_extension_theme_report_abuse_suite.py::test_suite_three_dot_report_theme_TC6[Desktop]</td>
+          <td class="col-duration">8.73</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="empty log">No log output captured.</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">tests/webext/test_more_options_suite.py::test_suite_toolbar_extension_menu_TC1[Desktop]</td>
+          <td class="col-duration">8.13</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="empty log">No log output captured.</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">tests/webext/test_more_options_suite.py::test_suite_view_recent_updates_TC2[Desktop]</td>
+          <td class="col-duration">6.91</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="empty log">No log output captured.</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">tests/webext/test_more_options_suite.py::test_suite_debug_addons_TC4[Desktop]</td>
+          <td class="col-duration">5.84</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="empty log">No log output captured.</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">tests/webext/test_more_options_suite.py::test_suite_manage_extension_shortcuts_TC5[Desktop]</td>
+          <td class="col-duration">6.77</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="empty log">No log output captured.</div></td></tr></tbody>
       <tbody class="passed results-table-row">
         <tr>
           <td class="col-result">Passed</td>
           <td class="col-name">tests/webext/test_recommendations_pane_suite.py::test_suite_install_extension_from_recommendations_TC_ID_C617016[Desktop]</td>
-          <td class="col-duration">10.84</td>
+          <td class="col-duration">8.13</td>
           <td class="col-links"></td></tr>
         <tr>
           <td class="extra" colspan="4">
@@ -456,7 +717,7 @@ function filterTable(elem) { // eslint-disable-line no-unused-vars
         <tr>
           <td class="col-result">Passed</td>
           <td class="col-name">tests/webext/test_recommendations_pane_suite.py::test_suite_install_theme_from_recommendations_TC_ID_C617017[Desktop]</td>
-          <td class="col-duration">8.98</td>
+          <td class="col-duration">8.92</td>
           <td class="col-links"></td></tr>
         <tr>
           <td class="extra" colspan="4">
@@ -465,7 +726,25 @@ function filterTable(elem) { // eslint-disable-line no-unused-vars
         <tr>
           <td class="col-result">Passed</td>
           <td class="col-name">tests/webext/test_recommendations_pane_suite.py::test_suite_recommendations_pane_layout_TC_ID_C617018[Desktop]</td>
-          <td class="col-duration">14.84</td>
+          <td class="col-duration">10.68</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="empty log">No log output captured.</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">tests/webext/test_update_methods_and_results_suite.py::test_suite_check_for_updates_after_older_install_TC1[Desktop]</td>
+          <td class="col-duration">8.05</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="empty log">No log output captured.</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">tests/webext/test_update_methods_and_results_suite.py::test_suite_toggle_auto_update_and_check_TC2[Desktop]</td>
+          <td class="col-duration">7.57</td>
           <td class="col-links"></td></tr>
         <tr>
           <td class="extra" colspan="4">
