@@ -617,7 +617,7 @@ jobs:
           path: reviewer-tools-stage-test-results.html
 
   # tests covering reviewer tools through DevHub from AMO dev
-  webext_release_prod_run:
+  webext_release_stage_run:
     executor:
       name: win/default
       size: "large"
@@ -643,14 +643,14 @@ jobs:
           name: Install Setup Tools
           command: py -3.11 -m pip install "setuptools<70.0.0"
       - run:
-          name: WEBEXT Tests
+          name: WEBEXT - Stage Tests
           environment:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 1 --reruns 2
-          command: py -3.11 -m pytest tests\webext\ --driver Firefox --variables stage.json --html=webext-release_prod-results.html --self-contained-html
+          command: py -3.11 -m pytest tests\webext\ --driver Firefox --variables stage.json --html=webext-release-stage-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
-          path: webext-release_prod-results.html
+          path: webext-release-stage-results.html
 
 workflows:
   commit_workflow:
@@ -660,11 +660,11 @@ workflows:
     jobs:
       - webext_release_prod_run
 
-  scheduled_webext_release_prod_run:
+  scheduled_webext_release_stage_run:
     when:
       and:
         - equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
-        - equal: [ "scheduled_webext_release_prod_run", << pipeline.schedule.name >> ]
+        - equal: [ "scheduled_webext_release_stage_run", << pipeline.schedule.name >> ]
     jobs:
       - webext_release_prod_run
 
