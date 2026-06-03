@@ -279,9 +279,11 @@ def test_suite_manage_extension_shortcuts_TC5(
         "addon-shortcuts container missing from the shortcuts page"
     )
 
-    # Step 6 — Back button (plain `<button action='go-back'>` here, no shadow
-    # DOM wrapper). Clicking it returns to the previously viewed side-tab.
-    selenium.find_element(By.CSS_SELECTOR, "button[action='go-back']").click()
+    # Step 6 — Back button: it is now a `<moz-button action='go-back'>`, so
+    # match on the attribute alone to handle both the legacy `<button>` and
+    # the current `<moz-button>` shapes. Clicking returns to the previously
+    # viewed side-tab.
+    selenium.find_element(By.CSS_SELECTOR, "[action='go-back']").click()
     # We end up back on the Extensions side-tab — confirmed by the side-tab
     # button being active again.
     WebDriverWait(selenium, 10).until(

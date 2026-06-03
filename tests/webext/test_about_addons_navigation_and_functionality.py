@@ -391,7 +391,7 @@ def test_suite_toolbar_manage_back_button_TC8(
     )
     WebDriverWait(selenium, 10).until(
         EC.visibility_of_element_located(
-            (By.CSS_SELECTOR, "button[action='go-back']")
+            (By.CSS_SELECTOR, "[action='go-back']")
         ),
         message="Back button not visible on detail page",
     )
@@ -399,7 +399,7 @@ def test_suite_toolbar_manage_back_button_TC8(
     # Firefox routes "back" to whatever side-tab list the user came from
     # (Extensions / Themes / etc.); the strongest cross-tab signal is that
     # the `<addon-card>` detail element is no longer the main content.
-    selenium.find_element(By.CSS_SELECTOR, "button[action='go-back']").click()
+    selenium.find_element(By.CSS_SELECTOR, "[action='go-back']").click()
     WebDriverWait(selenium, 10).until(
         lambda d: not d.find_elements(
             By.CSS_SELECTOR, "section[current-view='detail'] addon-card"

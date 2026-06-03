@@ -41,14 +41,23 @@ class AboutAddons(Page):
         ".addon-detail-row-version",
     )
     _options_button_locator = (By.CSS_SELECTOR, ".more-options-button")
-    _more_options_button_locator = (By.CSS_SELECTOR, "button[data-l10n-id='addon-options-button']")
+    # In current Firefox the three-dot trigger is a `<moz-button>`, not a
+    # plain `<button>`. There are also `.more-options-button` triggers at the
+    # page level (the "Tools for all add-ons" gear) and one per addon-card —
+    # scope to `addon-card` so we don't accidentally click the page gear.
+    _more_options_button_locator = (By.CSS_SELECTOR, "addon-card .more-options-button")
     _panel_item_action_debug_addons = (By.XPATH, "//panel-item[@action='debug-addons']")
     _panel_item_action_view_recent_updates_locator = (By.XPATH, "//panel-item[@action='view-recent-updates']")
     _remove_addon_dialog_locator = (By.ID, "commonDialog")
-    _more_options_panel_item_remove_button_locator = (By.CSS_SELECTOR, "panel-item[action='remove']")
-    _more_options_panel_item_preferences_locator = (By.CSS_SELECTOR, "panel-item[action='preferences']")
-    _more_options_panel_item_report_locator = (By.CSS_SELECTOR, "panel-item[action='report']")
-    _more_options_panel_item_manage_locator = (By.CSS_SELECTOR, "panel-item[action='expand']")
+    # Every addon-card renders its own `panel-list` with the same set of
+    # `panel-item[action='…']` entries, so an unscoped selector returns the
+    # *first* one in document order — which is hidden until that specific
+    # panel is opened. Scope to `panel-list[open]` so we only resolve items
+    # inside the panel that is actually showing.
+    _more_options_panel_item_remove_button_locator = (By.CSS_SELECTOR, "panel-list[open] panel-item[action='remove']")
+    _more_options_panel_item_preferences_locator = (By.CSS_SELECTOR, "panel-list[open] panel-item[action='preferences']")
+    _more_options_panel_item_report_locator = (By.CSS_SELECTOR, "panel-list[open] panel-item[action='report']")
+    _more_options_panel_item_manage_locator = (By.CSS_SELECTOR, "panel-list[open] panel-item[action='expand']")
     _extensions_side_toggle_addon_locator = (By.CSS_SELECTOR, "moz-toggle[class='extension-enable-button']")
     _extensions_side_addon_name_link_locator = (By.CSS_SELECTOR, "a[class='addon-name-link']")
     # the undo control on the pending-uninstall message bar — Firefox has used a few

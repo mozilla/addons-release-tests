@@ -643,11 +643,11 @@ jobs:
           name: Install Setup Tools
           command: py -3.11 -m pip install "setuptools<70.0.0"
       - run:
-          name: Reviewer Tools Tests
+          name: WEBEXT Tests
           environment:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 1 --reruns 2
-          command: py -3.11 -m pytest tests\webext\ --driver Firefox --variables prod.json --html=webext-release_prod-results.html --self-contained-html
+          command: py -3.11 -m pytest tests\webext\ --driver Firefox --variables stage.json --html=webext-release_prod-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: webext-release_prod-results.html

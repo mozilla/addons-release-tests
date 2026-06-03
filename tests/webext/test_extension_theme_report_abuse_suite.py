@@ -75,10 +75,22 @@ def _install_first_theme(selenium, base_url, firefox, firefox_notifications):
 
 def _click_three_dot_action(page, action):
     """Open the addon's three-dot menu and click the panel-item with the given
-    action attribute (e.g. ``remove``, ``report``)."""
+    action attribute (e.g. ``remove``, ``report``).
+
+    Scope the panel-item lookup to `panel-list[open]` so the click always
+    targets the panel we just opened — every addon-card carries the same set
+    of `panel-item[action='…']` entries and an unscoped selector would hit
+    the first (still-closed) card's hidden item.
+    """
     page.click_more_options_button_addon()
+    WebDriverWait(page.driver, 10).until(
+        EC.visibility_of_element_located(
+            (By.CSS_SELECTOR, f"panel-list[open] panel-item[action='{action}']")
+        ),
+        message=f"panel-item[action='{action}'] did not become visible",
+    )
     page.driver.find_element(
-        By.CSS_SELECTOR, f"panel-item[action='{action}']"
+        By.CSS_SELECTOR, f"panel-list[open] panel-item[action='{action}']"
     ).click()
 
 
