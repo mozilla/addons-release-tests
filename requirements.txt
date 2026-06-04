@@ -64,7 +64,7 @@ typing-extensions==4.15.0
 urllib3==2.6.3
 virtualenv==21.2.1
 wcwidth==0.6.0
-WebOb==1.8.9
+WebOb==1.8.10
 wrapt==2.1.2
 zipp==3.23.0
 zope.component==7.1
