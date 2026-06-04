@@ -1,16 +1,3 @@
-"""Suite implementing the two test cases described in
-`.claude/WEBEXT_TESTCASES_UPDATE_METHODS_AND_RESULTS.md`.
-
-Both cases install an older version of an extension from AMO, then trigger
-the about:addons "Check for Updates" flow and assert that Firefox runs the
-update check to completion. The post-check confirmation surfaces through
-the ``#updates-message`` element's ``state`` attribute (values such as
-``installed``, ``none-found``, or ``manual-updates-found``); the attribute
-is empty/unset before the check and gains a value afterwards.
-
-Shadow-DOM access is available through ``scripts.shadow_dom`` if needed
-(none of the assertions in this suite have so far required it).
-"""
 import pytest
 
 from selenium.webdriver.common.by import By
@@ -80,13 +67,8 @@ def _wait_check_for_updates_finished(selenium, timeout=20):
         message="Check for Updates did not finish — #updates-message has no state",
     )
 
-
-# ==========================================================================
-# Test Case 1 — Install older version → Check for Updates
-# ==========================================================================
-
 @pytest.mark.webext
-def test_suite_check_for_updates_after_older_install_TC1(
+def test_suite_check_for_updates_after_older_install(
     selenium, base_url, firefox, firefox_notifications, variables, wait
 ):
     """Install an older version of the AMO test extension referenced by
@@ -109,13 +91,8 @@ def test_suite_check_for_updates_after_older_install_TC1(
     page.click_check_for_updates()
     _wait_check_for_updates_finished(selenium)
 
-
-# ==========================================================================
-# Test Case 2 — Toggle "Update Add-ons Automatically" + Check for Updates
-# ==========================================================================
-
 @pytest.mark.webext
-def test_suite_toggle_auto_update_and_check_TC2(
+def test_suite_toggle_auto_update_and_check(
     selenium, base_url, firefox, firefox_notifications, variables, wait
 ):
     """Install an older version (same as TC1), navigate to the Extensions

@@ -1,13 +1,3 @@
-"""Suite implementing the seven test cases described in
-`.claude/WEBEXT_TESTCASES_MORE_OPTIONS.md` for the about:addons more-options
-flows: toolbar extension menu, View Recent Updates, Install from File, Debug
-Add-ons, and Manage Extension Shortcuts.
-
-Shadow-DOM access goes through ``scripts.shadow_dom`` (shared with
-``test_recommendations_pane_suite``). Chrome-level dialogs (commonDialog,
-unified-extensions context menu) are interacted with via Marionette's
-``CONTEXT_CHROME`` switch and the standard ``switch_to.alert`` API.
-"""
 import pytest
 
 from selenium.webdriver.common.by import By
@@ -61,13 +51,8 @@ def _open_options_menu(page):
         lambda d: d.find_elements(By.CSS_SELECTOR, "panel-item[action='debug-addons']")
     )
 
-
-# ==========================================================================
-# Test Case 1 — toolbar extension icon menu (Manage / Remove / Report)
-# ==========================================================================
-
 @pytest.mark.webext
-def test_suite_toolbar_extension_menu_TC1(
+def test_suite_toolbar_extension_menu(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Right-clicking an installed extension's entry in the unified-extensions
@@ -166,13 +151,8 @@ def test_suite_toolbar_extension_menu_TC1(
         message=f"Abuse-report tab did not load — URL is {selenium.current_url}",
     )
 
-
-# ==========================================================================
-# Test Case 2 — View Recent Updates section
-# ==========================================================================
-
 @pytest.mark.webext
-def test_suite_view_recent_updates_TC2(
+def test_suite_view_recent_updates(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Selecting Options → View Recent Updates loads the Recent Updates page
@@ -194,11 +174,6 @@ def test_suite_view_recent_updates_TC2(
         By.XPATH, "//h2[contains(text(), 'Recent Updates')]"
     ), "Recent Updates header still present after switching tabs"
 
-
-# ==========================================================================
-# Test Case 3 — Install Add-on From File…
-# ==========================================================================
-
 @pytest.mark.skip(
     reason="The 'Install Add-on From File…' entry opens the native OS file "
     "picker, which Marionette cannot drive from a content-context Selenium "
@@ -207,20 +182,15 @@ def test_suite_view_recent_updates_TC2(
     "provide."
 )
 @pytest.mark.webext
-def test_suite_install_from_file_TC3(selenium, base_url, wait):
+def test_suite_install_from_file(selenium, base_url, wait):
     selenium.get("about:addons")
     page = AboutAddons(selenium, base_url).wait_for_page_to_load()
     _open_options_menu(page)
     page.click_install_addon_from_file()
 
-
-# ==========================================================================
-# Test Case 4 — Debug Add-ons
-# ==========================================================================
-
 @pytest.mark.webext
-def test_suite_debug_addons_TC4(
-    selenium, base_url, firefox, firefox_notifications, wait
+def test_suite_debug_addons(
+    selenium, base_url, firefox_notifications, wait
 ):
     """Options → Debug Add-ons opens about:debugging#/runtime/this-firefox
     in a new tab."""
@@ -242,13 +212,8 @@ def test_suite_debug_addons_TC4(
     )
     assert "/runtime/this-firefox" in selenium.current_url
 
-
-# ==========================================================================
-# Test Case 5 — Manage Extension Shortcuts (basic flow)
-# ==========================================================================
-
 @pytest.mark.webext
-def test_suite_manage_extension_shortcuts_TC5(
+def test_suite_manage_extension_shortcuts(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Options → Manage Extension Shortcuts loads the shortcuts page with at
@@ -291,11 +256,6 @@ def test_suite_manage_extension_shortcuts_TC5(
         message="Still on the shortcuts page after clicking Back",
     )
 
-
-# ==========================================================================
-# Test Case 6 — Manage Shortcuts: "Already in use" tooltip
-# ==========================================================================
-
 @pytest.mark.skip(
     reason="Asserting the 'Already in use by [name]' tooltip requires "
     "capturing a multi-key chord (CTRL/ALT + letter) inside the shortcut "
@@ -304,15 +264,10 @@ def test_suite_manage_extension_shortcuts_TC5(
     "context synthetic-key utility that does not yet exist in this repo."
 )
 @pytest.mark.webext
-def test_suite_manage_shortcuts_already_in_use_TC6(
+def test_suite_manage_shortcuts_already_in_use(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     pass
-
-
-# ==========================================================================
-# Test Case 7 — Conflicting default shortcuts banner
-# ==========================================================================
 
 @pytest.mark.skip(
     reason="This case requires installing two specific extensions "
@@ -322,7 +277,7 @@ def test_suite_manage_shortcuts_already_in_use_TC6(
     "test infrastructure does not yet ship."
 )
 @pytest.mark.webext
-def test_suite_manage_shortcuts_conflict_banner_TC7(
+def test_suite_manage_shortcuts_conflict_banner(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     pass

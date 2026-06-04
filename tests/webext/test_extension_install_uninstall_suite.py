@@ -1,17 +1,3 @@
-"""Suite implementing the six test cases described in
-`.claude/WEBEXT_TESTCASES_EXTENSION_INSTALL_UNINSTALL.md`.
-
-The cases cover the install / uninstall flows reachable from the Firefox
-hamburger menu, the about:addons three-dot menu, and from a Private Window.
-Shadow-DOM access goes through ``scripts.shadow_dom`` (shared with the other
-webext suites).
-
-Two cases (TC5 / TC6) involve the native OS file picker invoked from
-about:debugging's "Load Temporary Add-on" and about:addons' "Install Add-on
-From File…". Marionette cannot drive a native picker from a content-context
-WebDriver session, so those tests verify everything up to the click that
-opens the picker and stop there, with a clear docstring note.
-"""
 import pytest
 
 from selenium.webdriver.common.by import By
@@ -66,13 +52,8 @@ def _install_first_theme(selenium, base_url, firefox, firefox_notifications):
     page.click_themes_side_button()
     return page
 
-
-# ==========================================================================
-# Test Case 1 — Hamburger Menu → Add-ons → Extensions
-# ==========================================================================
-
 @pytest.mark.webext
-def test_suite_hamburger_addons_extensions_TC1(
+def test_suite_hamburger_addons_extensions(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Pre-condition: one or more extensions are installed (the spec's
@@ -98,13 +79,8 @@ def test_suite_hamburger_addons_extensions_TC1(
         "Extensions tab is missing entries after install"
     )
 
-
-# ==========================================================================
-# Test Case 2 — Three-dot Remove on an extension (accept dialog)
-# ==========================================================================
-
 @pytest.mark.webext
-def test_suite_remove_extension_via_three_dot_TC2(
+def test_suite_remove_extension_via_three_dot(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Install an extension, then Remove it via the three-dot menu and accept
@@ -137,13 +113,8 @@ def test_suite_remove_extension_via_three_dot_TC2(
         ),
     )
 
-
-# ==========================================================================
-# Test Case 3 — Three-dot Remove on a theme
-# ==========================================================================
-
 @pytest.mark.webext
-def test_suite_remove_theme_via_three_dot_TC3(
+def test_suite_remove_theme_via_three_dot(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Install a theme via the disco feed (the spec asks for "from AMO" which
@@ -176,13 +147,8 @@ def test_suite_remove_theme_via_three_dot_TC3(
         ),
     )
 
-
-# ==========================================================================
-# Test Case 4 — Install an extension from a Private Window
-# ==========================================================================
-
 @pytest.mark.webext
-def test_suite_install_extension_from_private_window_TC4(
+def test_suite_install_extension_from_private_window(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Hamburger menu → New Private Window. In the private window, install
@@ -214,13 +180,8 @@ def test_suite_install_extension_from_private_window_TC4(
         firefox_notifications.AddOnInstallConfirmation
     ).install()
 
-
-# ==========================================================================
-# Test Case 5 — about:debugging in a Private Window
-# ==========================================================================
-
 @pytest.mark.webext
-def test_suite_about_debugging_load_temp_addon_TC5(
+def test_suite_about_debugging_load_temp_addon(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Hamburger menu → New Private Window. Navigate to about:debugging and
@@ -243,11 +204,6 @@ def test_suite_about_debugging_load_temp_addon_TC5(
         message="Load Temporary Add-on button not found on about:debugging",
     )
 
-
-# ==========================================================================
-# Test Case 6 — Install Add-on From File…
-# ==========================================================================
-
 @pytest.mark.skip(
     reason="Verifying the 'Install Add-on From File…' dialog elements "
     "requires (1) driving the native OS file picker that the menu entry "
@@ -259,7 +215,7 @@ def test_suite_about_debugging_load_temp_addon_TC5(
     "remains."
 )
 @pytest.mark.webext
-def test_suite_install_addon_from_file_TC6(selenium, base_url, wait):
+def test_suite_install_addon_from_file(selenium, base_url, wait):
     selenium.get("about:addons")
     page = AboutAddons(selenium, base_url).wait_for_page_to_load()
     page.click_options_button()

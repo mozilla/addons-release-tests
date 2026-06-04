@@ -1,16 +1,3 @@
-"""Suite implementing the two test cases described in
-`.claude/WEBEXT_TESTCASES_TOP_EXTENSIONS_FUNCTIONALITY.md`.
-
-TC1 (Greasemonkey + greasyfork.org user-script flow) is skipped — see the
-``@pytest.mark.skip`` reason on that test for the infrastructure gap. TC2
-exercises the "top listed extensions can be installed" claim by walking
-the top of the about:addons Recommendations feed and installing each
-extension cassette in turn, asserting that every one reaches the
-Extensions tab.
-
-Shadow-DOM access is available through ``scripts.shadow_dom`` if any of
-the assertions need it; none of the current ones do.
-"""
 import time
 
 import pytest
@@ -20,17 +7,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from pages.desktop.about_addons import AboutAddons
 
-
-# Walking the entire recommendations feed (typically 6+ extensions) would
-# make the test runtime balloon. Three top entries is enough to demonstrate
-# the "top listed extensions can be installed" claim without paying for
-# every single install.
 TOP_N_EXTENSIONS = 3
-
-
-# ==========================================================================
-# Test Case 1 — Greasemonkey + greasyfork.org script-install verification
-# ==========================================================================
 
 @pytest.mark.skip(
     reason="The Greasemonkey extension referenced in the spec lives only on "
@@ -47,13 +24,8 @@ def test_suite_greasemonkey_script_install_and_update_TC1(
 ):
     pass
 
-
-# ==========================================================================
-# Test Case 2 — Top listed extensions install cleanly
-# ==========================================================================
-
 @pytest.mark.webext
-def test_suite_top_listed_extensions_install_TC2(
+def test_suite_top_listed_extensions_install(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Install the first ``TOP_N_EXTENSIONS`` extension cassettes returned

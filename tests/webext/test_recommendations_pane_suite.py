@@ -1,12 +1,3 @@
-"""Suite implementing the three test cases described in
-`.claude/WEBEXT_TESTCASES.md` for the about:addons Recommendations pane.
-
-Many controls on the recommendations pane are Mozilla custom elements
-(`moz-input-search`, `moz-button`, `moz-toggle`, ...) whose real content lives
-inside shadow DOM. Marionette's `WebElement.shadow_root` accessor is not
-implemented for Firefox, so shadow DOM is queried through the helpers in
-`scripts.shadow_dom`.
-"""
 import pytest
 
 from selenium.webdriver.common.by import By
@@ -47,11 +38,6 @@ def _first_card(cards, *, want_extension):
         if c.is_extension_card() == want_extension:
             return i, c
     return None, None
-
-
-# ==========================================================================
-# Test Case 1 — install an extension from the Recommendations pane
-# ==========================================================================
 
 @pytest.mark.webext
 def test_suite_install_extension_from_recommendations_TC_ID_C617016(
@@ -129,11 +115,6 @@ def test_suite_install_extension_from_recommendations_TC_ID_C617016(
         "Extension was not restored after Undo"
     )
 
-
-# ==========================================================================
-# Test Case 2 — install a theme from the Recommendations pane
-# ==========================================================================
-
 @pytest.mark.webext
 def test_suite_install_theme_from_recommendations_TC_ID_C617017(
     selenium, base_url, firefox, firefox_notifications, wait
@@ -177,11 +158,6 @@ def test_suite_install_theme_from_recommendations_TC_ID_C617017(
     assert page.undo_remove_button.is_displayed()
     page.click_undo_remove()
     assert page.installed_addon_name, "Theme was not restored after Undo"
-
-
-# ==========================================================================
-# Test Case 3 — recommendations pane layout / content
-# ==========================================================================
 
 @pytest.mark.webext
 def test_suite_recommendations_pane_layout_TC_ID_C617018(

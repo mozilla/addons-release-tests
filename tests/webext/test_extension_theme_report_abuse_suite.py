@@ -1,20 +1,3 @@
-"""Suite implementing the six test cases described in
-`.claude/WEBEXT_TESTCASES_EXTENSION_THEME_REPORT.md`.
-
-Two flavors are covered for both extensions and themes:
-  * direct Report from the three-dot menu (and the equivalent
-    "Report Extension" from the toolbar kebab) — opens the AMO abuse-report
-    form in a new tab,
-  * Remove with the "I want to report this extension to Mozilla" checkbox in
-    the chrome-level confirm dialog — this case is exercised up to the
-    dialog assertion only, because Marionette cannot toggle a checkbox in a
-    Firefox commonDialog (every WebDriver command throws while the dialog is
-    open, and `switch_to.alert` has no checkbox accessor). The post-checkbox
-    sub-step is marked skipped on the affected tests with a clear reason.
-
-Shadow-DOM access goes through ``scripts.shadow_dom`` (shared with the other
-webext suites).
-"""
 import pytest
 
 from selenium.webdriver.common.by import By
@@ -106,13 +89,8 @@ def _wait_for_abuse_report_tab(selenium, timeout=20):
         message=f"Tab URL did not become an abuse-report URL — got {selenium.current_url}",
     )
 
-
-# ==========================================================================
-# Test Case 1 — three-dot Remove with "I want to report" checkbox (extension)
-# ==========================================================================
-
 @pytest.mark.webext
-def test_suite_three_dot_remove_with_report_extension_TC1(
+def test_suite_three_dot_remove_with_report_extension(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     """three-dot menu → Remove on an extension opens the chrome confirm
@@ -142,13 +120,8 @@ def test_suite_three_dot_remove_with_report_extension_TC1(
         "Cancelling the Remove dialog should leave the extension installed"
     )
 
-
-# ==========================================================================
-# Test Case 2 — three-dot Report (extension)
-# ==========================================================================
-
 @pytest.mark.webext
-def test_suite_three_dot_report_extension_TC2(
+def test_suite_three_dot_report_extension(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     """three-dot menu → Report on an extension opens the AMO abuse-report
@@ -160,13 +133,8 @@ def test_suite_three_dot_report_extension_TC2(
     _click_three_dot_action(page, "report")
     _wait_for_abuse_report_tab(selenium)
 
-
-# ==========================================================================
-# Test Case 3 — toolbar kebab Remove with "I want to report" (extension)
-# ==========================================================================
-
 @pytest.mark.webext
-def test_suite_toolbar_remove_with_report_extension_TC3(
+def test_suite_toolbar_remove_with_report_extension(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Toolbar kebab → Remove Extension on a unified-extensions entry opens
@@ -205,13 +173,8 @@ def test_suite_toolbar_remove_with_report_extension_TC3(
     )
     selenium.switch_to.alert.dismiss()
 
-
-# ==========================================================================
-# Test Case 4 — toolbar kebab Report Extension
-# ==========================================================================
-
 @pytest.mark.webext
-def test_suite_toolbar_report_extension_TC4(
+def test_suite_toolbar_report_extension(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Toolbar kebab → Report Extension opens the AMO abuse-report form for
@@ -240,13 +203,8 @@ def test_suite_toolbar_report_extension_TC4(
         ).click()
     _wait_for_abuse_report_tab(selenium)
 
-
-# ==========================================================================
-# Test Case 5 — three-dot Remove with "I want to report" (theme)
-# ==========================================================================
-
 @pytest.mark.webext
-def test_suite_three_dot_remove_with_report_theme_TC5(
+def test_suite_three_dot_remove_with_report_theme(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Identical to TC1 but on a theme cassette installed from the
@@ -263,13 +221,8 @@ def test_suite_three_dot_remove_with_report_theme_TC5(
     )
     selenium.switch_to.alert.dismiss()
 
-
-# ==========================================================================
-# Test Case 6 — three-dot Report (theme)
-# ==========================================================================
-
 @pytest.mark.webext
-def test_suite_three_dot_report_theme_TC6(
+def test_suite_three_dot_report_theme(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Identical to TC2 but on a theme cassette. Skipped when the disco feed

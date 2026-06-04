@@ -1,22 +1,3 @@
-"""Suite implementing the ten test cases described in
-`.claude/WEBEXT_TESTCASES_NAVIGATION_AND_FUNCTIONALITY.MD`.
-
-The cases cover the search-from-about:addons → AMO flow, keyboard shortcut
-disable/enable/remove behaviour in normal and private windows, the toolbar
-Manage Extension → details Back button, Cmd/Ctrl+Shift+A entry point with
-install/uninstall through the Recommendations pane and Extensions/Themes
-tabs, and the Cmd/Ctrl+F search-bar focus shortcut.
-
-Keyboard shortcuts use ``scripts.kbd``'s OS-aware helpers — Firefox binds
-its primary modifier to Cmd on macOS and Ctrl on Windows / Linux, and the
-chords are routed via Marionette's chrome context so they reach Firefox's
-command system. Shortcuts that the current Firefox build no longer wires up
-(e.g. some of the Alt+Shift+D/E/R commands the spec was written against)
-``pytest.skip`` at runtime rather than failing.
-
-Shadow-DOM access goes through ``scripts.shadow_dom`` (shared with the
-other webext suites).
-"""
 import time
 
 import pytest
@@ -110,12 +91,6 @@ def _wait_amo_search_tab(selenium, query, timeout=20):
     )
     return selenium.current_url
 
-
-# ==========================================================================
-# Test Case 1 — Search from about:addons opens AMO in a new tab with correct
-# query / platform / appversion parameters
-# ==========================================================================
-
 @pytest.mark.skip(
     reason="The about:addons search → AMO commit can't be triggered via "
     "Selenium/Marionette synthetic input on current Firefox builds: the "
@@ -125,7 +100,7 @@ def _wait_amo_search_tab(selenium, query, timeout=20):
     "are not consumed. The same limitation blocks TC2 and TC3."
 )
 @pytest.mark.webext
-def test_suite_addons_search_opens_amo_results_TC1(selenium, base_url, wait):
+def test_suite_addons_search_opens_amo_results_TC617019(selenium, base_url, wait):
     selenium.get("about:addons")
     page = AboutAddons(selenium, base_url).wait_for_page_to_load()
     page.click_extensions_side_button()
@@ -136,16 +111,12 @@ def test_suite_addons_search_opens_amo_results_TC1(selenium, base_url, wait):
     assert "appversion=" in url
 
 
-# ==========================================================================
-# Test Case 2 — Searching a full add-on name surfaces a matching result list
-# ==========================================================================
-
 @pytest.mark.skip(
     reason="Depends on the same moz-input-search commit path as TC1, which "
     "is not reachable via Selenium/Marionette synthetic input."
 )
 @pytest.mark.webext
-def test_suite_addons_search_full_name_TC2(selenium, base_url, wait):
+def test_suite_addons_search_full_name(selenium, base_url, wait):
     selenium.get("about:addons")
     page = AboutAddons(selenium, base_url).wait_for_page_to_load()
     page.click_extensions_side_button()
@@ -153,12 +124,8 @@ def test_suite_addons_search_full_name_TC2(selenium, base_url, wait):
     _wait_amo_search_tab(selenium, "Dark Reader")
 
 
-# ==========================================================================
-# Test Case 3 — Search box enforces a 100-character limit
-# ==========================================================================
-
 @pytest.mark.webext
-def test_suite_addons_search_input_length_limit_TC3(selenium, base_url, wait):
+def test_suite_addons_search_input_length_limit(selenium, base_url, wait):
     """The about:addons search box's `maxlength` is 100 — typing 150 characters
     must result in only 100 being accepted. The post-typing "commit search to
     AMO" sub-step is not asserted here because it depends on the same broken
@@ -182,12 +149,8 @@ def test_suite_addons_search_input_length_limit_TC3(selenium, base_url, wait):
     )
 
 
-# ==========================================================================
-# Test Case 4 — Disable / Enable via Alt+Shift+D / Alt+Shift+E
-# ==========================================================================
-
 @pytest.mark.webext
-def test_suite_keyboard_disable_enable_TC4(
+def test_suite_keyboard_disable_enable(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     """On the extension detail page, Alt+Shift+D disables the extension and
@@ -221,12 +184,8 @@ def test_suite_keyboard_disable_enable_TC4(
     )
 
 
-# ==========================================================================
-# Test Case 5 — Remove via Alt+Shift+R
-# ==========================================================================
-
 @pytest.mark.webext
-def test_suite_keyboard_remove_TC5(
+def test_suite_keyboard_remove(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     """On the extension detail page, Alt+Shift+R removes the extension and
@@ -266,12 +225,8 @@ def test_suite_keyboard_remove_TC5(
         )
 
 
-# ==========================================================================
-# Test Case 6 — Keyboard disable/enable inside a Private Window
-# ==========================================================================
-
 @pytest.mark.webext
-def test_suite_keyboard_disable_enable_private_TC6(
+def test_suite_keyboard_disable_enable_private(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Same flow as TC4 but inside a Private Window. The OS-aware chord is
@@ -304,13 +259,8 @@ def test_suite_keyboard_disable_enable_private_TC6(
         message="Alt+Shift+E did not re-enable the addon in private window",
     )
 
-
-# ==========================================================================
-# Test Case 7 — Keyboard remove inside a Private Window
-# ==========================================================================
-
 @pytest.mark.webext
-def test_suite_keyboard_remove_private_TC7(
+def test_suite_keyboard_remove_private(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Same flow as TC5 (Alt+Shift+R remove) but inside a Private Window."""
@@ -347,13 +297,8 @@ def test_suite_keyboard_remove_private_TC7(
             "Firefox builds (verified in private window too)."
         )
 
-
-# ==========================================================================
-# Test Case 8 — Toolbar Manage Extension → details page Back button
-# ==========================================================================
-
 @pytest.mark.webext
-def test_suite_toolbar_manage_back_button_TC8(
+def test_suite_toolbar_manage_back_button(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Toolbar kebab → "Manage Extension" lands on the extension's about:addons
@@ -409,12 +354,8 @@ def test_suite_toolbar_manage_back_button_TC8(
     )
 
 
-# ==========================================================================
-# Test Case 9 — Ctrl+Shift+A entry point with install/uninstall flows
-# ==========================================================================
-
 @pytest.mark.webext
-def test_suite_keyboard_open_addons_install_uninstall_TC9(
+def test_suite_keyboard_open_addons_install_uninstall(
     selenium, base_url, firefox, firefox_notifications, wait
 ):
     """Open about:addons by sending the Ctrl+Shift+A keyboard chord, then
@@ -504,12 +445,8 @@ def test_suite_keyboard_open_addons_install_uninstall_TC9(
     )
 
 
-# ==========================================================================
-# Test Case 10 — Ctrl/Cmd+F focuses the about:addons search bar
-# ==========================================================================
-
 @pytest.mark.webext
-def test_suite_ctrl_f_focuses_search_bar_TC10(selenium, base_url, wait):
+def test_suite_ctrl_f_focuses_search_bar(selenium, base_url, wait):
     """In about:addons, Cmd+F (macOS) / Ctrl+F (Windows / Linux) must hand
     focus to the moz-input-search input. Pressing `/` while focus is
     elsewhere must do the same. Both chords are sent via the OS-aware
