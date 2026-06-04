@@ -152,12 +152,6 @@ def firefox_options(firefox_options, base_url, variables):
         firefox_options.set_preference("extensions.webapi.testing", True)
         firefox_options.set_preference("ui.popup.disable_autohide", True)
         firefox_options.set_preference("devtools.console.stdout.content", True)
-        # Clear the WebExtensions restricted-domain list so the waf_bypass_addon
-        # can attach its `webRequest` listener to Mozilla domains that are
-        # restricted by default. Without this, stage runs hit the FxA captcha
-        # on `accounts.firefox.com` because the addon's listener is silently
-        # skipped on restricted domains.
-        firefox_options.set_preference("extensions.webextensions.restrictedDomains", "")
         firefox_options.set_preference(
             "extensions.getAddons.discovery.api_url",
             variables["extensions_getAddons_discovery_api_url"],
@@ -170,7 +164,7 @@ def firefox_options(firefox_options, base_url, variables):
             "extensions.update.url", variables["extensions_update_url"]
         )
         firefox_options.add_argument("-remote-allow-system-access")
-        firefox_options.add_argument("-foreground")
+        firefox_options.add_argument("-headless")
         firefox_options.log.level = "trace"
     return firefox_options
 

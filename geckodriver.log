@@ -1,0 +1,46 @@
+1779185106915	geckodriver	INFO	Listening on 127.0.0.1:56177
+1779185107024	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/App ... s" "localhost" "-foreground" "-no-remote" "-profile" "/var/folders/v_/6jd_d5kn7ss0v8hd92jqglz80000gq/T/rust_mozprofileOQTZ7L"
+1779185108753	Marionette	INFO	Marionette enabled
+2026-05-19 10:05:09.318 Firefox Nightly GPU Helper[28939:2326795] Failure on line 687 in function id scheduleApplicationNotification(LSNotificationCode, NSWorkspaceNotificationCenter *): noErr == _LSModifyNotification(notificationID, 1, &code, 0, NULL, NULL, NULL)
+1779185109572	Marionette	INFO	Listening on port 56184
+WebDriver BiDi listening on ws://127.0.0.1:56178
+2026-05-19 10:05:09.763 Firefox Nightly GPU Helper[28939:2326795] Error received in message reply handler: Connection invalid
+2026-05-19 10:05:09.763 Firefox Nightly GPU Helper[28939:2326875] Connection Invalid error for service com.apple.hiservices-xpcservice.
+1779185109766	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+console.error: RSLoader: 
+  Failed to retrieve recipes from Remote Settings
+  Message: Error: Could not sync nimbus-desktop-experiments: get-exception
+  Stack:
+    RemoteSettingsSyncError@resource://nimbus/lib/RemoteSettingsExperimentLoader.sys.mjs:1409:5
+getRecipesFromCollection@resource://nimbus/lib/RemoteSettingsExperimentLoader.sys.mjs:681:13
+
+console.error: (new NotFoundError("Could not find fa0fc42c-d91d-fca7-34eb-806ff46062dc in cache or dump", "resource://services-settings/Attachments.sys.mjs", 48))
+console.warn: "Unable to find the attachment for" "fa0fc42c-d91d-fca7-34eb-806ff46062dc"
+1779185112370	Marionette	INFO	Stopped listening on port 56184
+JavaScript error: resource://gre/modules/PrivateBrowsingUtils.sys.mjs, line 50: TypeError: can't access property "QueryInterface", aWindow.docShell is null
+assertion failed [arm_interval().contains(address)]: code fragment does not contain the given arm address
+(CodeFragmentMetadata.cpp:53 instruction_extents_for_arm_address)
+ 1779369696249	geckodriver	INFO	Listening on 127.0.0.1:57511
+1779369696282	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/App ... s" "localhost" "-foreground" "-no-remote" "-profile" "/var/folders/v_/6jd_d5kn7ss0v8hd92jqglz80000gq/T/rust_mozprofilesR8WoQ"
+1779369697776	Marionette	INFO	Marionette enabled
+2026-05-21 13:21:38.154 Firefox Nightly GPU Helper[54903:7108256] Failure on line 687 in function id scheduleApplicationNotification(LSNotificationCode, NSWorkspaceNotificationCenter *): noErr == _LSModifyNotification(notificationID, 1, &code, 0, NULL, NULL, NULL)
+1779369698385	Marionette	INFO	Listening on port 57519
+WebDriver BiDi listening on ws://127.0.0.1:57512
+1779369698575	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+2026-05-21 13:21:38.605 Firefox Nightly GPU Helper[54903:7108280] Connection Invalid error for service com.apple.hiservices-xpcservice.
+2026-05-21 13:21:38.605 Firefox Nightly GPU Helper[54903:7108256] Error received in message reply handler: Connection invalid
+console.error: RSLoader: 
+  Failed to retrieve recipes from Remote Settings
+  Message: Error: Could not sync nimbus-desktop-experiments: get-exception
+  Stack:
+    RemoteSettingsSyncError@resource://nimbus/lib/RemoteSettingsExperimentLoader.sys.mjs:1409:5
+getRecipesFromCollection@resource://nimbus/lib/RemoteSettingsExperimentLoader.sys.mjs:681:13
+
+console.error: (new NotFoundError("Could not find fa0fc42c-d91d-fca7-34eb-806ff46062dc in cache or dump", "resource://services-settings/Attachments.sys.mjs", 48))
+console.warn: "Unable to find the attachment for" "fa0fc42c-d91d-fca7-34eb-806ff46062dc"
+console.error: "Could not download new icon" (new ServerInfoError("Server response is invalid SyntaxError: JSON.parse: unexpected end of data at line 1 column 1 of the JSON data", "resource://services-settings/Attachments.sys.mjs", 40))
+console.error: (new Error("Polling for changes failed: Unexpected content-type \"text/plain;charset=US-ASCII\".", "resource://services-settings/remote-settings.sys.mjs", 482))
+JavaScript error: resource:///modules/sessionstore/SessionStore.sys.mjs, line 4504: TypeError: can't access property "closedGroups", winData is undefined
+1779381621787	Marionette	INFO	Stopped listening on port 57519
+JavaScript error: resource://gre/modules/PrivateBrowsingUtils.sys.mjs, line 50: TypeError: can't access property "QueryInterface", aWindow.docShell is null
+JavaScript error: resource://gre/modules/PrivateBrowsingUtils.sys.mjs, line 50: TypeError: can't access property "QueryInterface", aWindow.docShell is null
