@@ -174,7 +174,8 @@ def firefox_options(firefox_options, base_url, variables):
             "extensions.update.url", variables["extensions_update_url"]
         )
         firefox_options.add_argument("-remote-allow-system-access")
-        firefox_options.add_argument("-headless")
+        if os.environ.get("MOZ_HEADLESS"):
+            firefox_options.add_argument("-headless")
         firefox_options.log.level = "trace"
     return firefox_options
 
