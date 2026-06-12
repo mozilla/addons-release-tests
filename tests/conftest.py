@@ -146,6 +146,16 @@ def firefox_options(firefox_options, base_url, variables):
             variables["extensions_update_background_url"]
         )
     else:
+        # dev/stage tests require Firefox Nightly (signed addons use dev-root
+        # certs that release Firefox treats as corrupt). Without explicit
+        # binary_location, selenium picks the first Firefox on PATH which on
+        # CI's cimg/python:3.14-browsers image is the pre-installed release.
+        if os.path.exists("/Applications/Firefox Nightly.app/Contents/MacOS/firefox"):
+            firefox_options.binary_location = "/Applications/Firefox Nightly.app/Contents/MacOS/firefox"
+        elif os.path.exists(r"C:\Program Files\Firefox Nightly\firefox.exe"):
+            firefox_options.binary_location = r"C:\Program Files\Firefox Nightly\firefox.exe"
+        elif os.path.exists("/usr/bin/firefox-nightly"):
+            firefox_options.binary_location = "/usr/bin/firefox-nightly"
         firefox_options.set_preference("extensions.install.requireBuiltInCerts", False)
         firefox_options.set_preference("xpinstall.signatures.required", True)
         firefox_options.set_preference("xpinstall.signatures.dev-root", True)
