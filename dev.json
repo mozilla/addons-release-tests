@@ -206,5 +206,15 @@
   "no_manifest_found_message": "manifest.json was not found",
   "notification_box_success": "Changes successfully saved.",
   "addon_status_incomplete": "Incomplete",
-  "addon_version_disabled_by_mozilla": "Disabled by Mozilla"
+  "addon_version_disabled_by_mozilla": "Disabled by Mozilla",
+
+  "install_extension_slug": "cas-current-addon-1",
+  "install_extension_name": "cas-current-addon-1",
+  "install_theme_slug": "test_theme-auto",
+  "install_theme_name": "test_theme[AUTO]",
+  "install_dictionary_slug": "release_dictionary",
+  "install_dictionary_name": "release dictionary",
+  "install_langpack_slug": "language-עברית-hebrew-_cas-cur",
+  "install_langpack_name": "Language: עברית (Hebrew)",
+  "install_langpack_about_addons_name": "Language: עברית (Hebrew)"
 }

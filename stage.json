@@ -230,5 +230,15 @@
   "block_metadata": "Versions blocked: all versions.",
 
   "addon_version_update_webext": "https://addons.allizom.org/en-US/firefox/addon/listed_addon_1_1_sdnaiuda/versions/",
-  "addon_version_updated_message": "Your add-ons have been updated."
+  "addon_version_updated_message": "Your add-ons have been updated.",
+
+  "install_extension_slug": "cas-current-addon-1",
+  "install_extension_name": "cas-current-addon-1",
+  "install_theme_slug": "test_theme-auto",
+  "install_theme_name": "test_theme[AUTO]",
+  "install_dictionary_slug": "release_dictionary",
+  "install_dictionary_name": "release dictionary",
+  "install_langpack_slug": "language-עברית-hebrew-_cas-cur",
+  "install_langpack_name": "Language: עברית (Hebrew)",
+  "install_langpack_about_addons_name": "Language: עברית (Hebrew)"
 }
