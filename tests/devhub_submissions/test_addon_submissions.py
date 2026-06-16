@@ -525,14 +525,21 @@ def test_cancel_and_disable_version_during_upload(selenium, base_url, wait):
 def test_delete_all_extensions(selenium, base_url):
     """This test will delete all the extensions submitted above to make sure
     we can start over with this user in the following runs and also for
-    verifying that the addon deletion process functions correctly"""
+    verifying that the addon deletion process functions correctly. Handles
+    both complete addons (with full edit flow) and incomplete addons whose
+    listing only exposes Resume + Delete actions."""
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     manage_addons = page.click_my_addons_header_link()
     # run the delete steps until all the addons are cleared from the list
     while len(manage_addons.addon_list) > 0:
         addon = manage_addons.addon_list[0]
-        edit = addon.click_addon_name()
-        manage = edit.click_manage_versions_link()
-        delete = manage.delete_addon()
-        delete.input_delete_confirmation_string()
-        delete.confirm_delete_addon()
+        if addon.is_incomplete:
+            # incomplete addons only have Resume + Delete actions, no edit link;
+            # Delete opens an inline modal on the dashboard rather than navigating
+            addon.delete_incomplete_addon()
+        else:
+            edit = addon.click_addon_name()
+            manage = edit.click_manage_versions_link()
+            delete = manage.delete_addon()
+            delete.input_delete_confirmation_string()
+            delete.confirm_delete_addon()
