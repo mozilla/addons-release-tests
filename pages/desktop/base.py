@@ -476,7 +476,7 @@ class Footer(Region):
     _footer_browsers_links_locator = (By.CSS_SELECTOR, ".Footer-browsers-links")
     _footer_products_links_locator = (By.CSS_SELECTOR, ".Footer-product-links")
     _footer_mozilla_link_locator = (By.CSS_SELECTOR, ".Footer-mozilla-link")
-    _footer_social_locator = (By.CSS_SELECTOR, ".Footer-links-social")
+    _footer_social_locator = (By.CSS_SELECTOR, ".Footer-follow-links")
     _footer_links_locator = (By.CSS_SELECTOR, ".Footer-links li a")
     _footer_legal_locator = (By.CSS_SELECTOR, ".Footer-legal-links ")
     _footer_copyright_links_locator = (By.CSS_SELECTOR, ".Footer-copyright a")

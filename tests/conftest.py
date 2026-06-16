@@ -6,13 +6,58 @@ import zipfile
 import pytest
 import requests
 
-from selenium.common.exceptions import StaleElementReferenceException
+from selenium.common.exceptions import (
+    ElementNotInteractableException,
+    StaleElementReferenceException,
+)
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 from pages.desktop.frontend.home import Home
 from pages.desktop.frontend.login import Login
+
+# Newer Firefox wraps popup notification buttons in a <moz-button> custom element
+# that Selenium cannot scroll into view inside the popup chrome. Patch foxpuppet's
+# button lookups so the install/allow/cancel actions use a JS click as a fallback.
+from foxpuppet.windows.browser.notifications import base as _foxpuppet_base
+
+
+def _js_click_fallback(element, driver):
+    try:
+        element.click()
+    except ElementNotInteractableException:
+        driver.execute_script("arguments[0].click();", element)
+
+
+_original_find_primary = _foxpuppet_base.BaseNotification.find_primary_button
+_original_find_secondary = _foxpuppet_base.BaseNotification.find_secondary_button
+
+
+class _ClickableButton:
+    def __init__(self, element, driver):
+        self._element = element
+        self._driver = driver
+
+    def click(self):
+        _js_click_fallback(self._element, self._driver)
+
+    def __getattr__(self, name):
+        return getattr(self._element, name)
+
+
+def _patched_find_primary_button(self):
+    element = _original_find_primary(self)
+    return _ClickableButton(element, self.selenium)
+
+
+def _patched_find_secondary_button(self):
+    element = _original_find_secondary(self)
+    return _ClickableButton(element, self.selenium)
+
+
+_foxpuppet_base.BaseNotification.find_primary_button = _patched_find_primary_button
+_foxpuppet_base.BaseNotification.find_secondary_button = _patched_find_secondary_button
 
 # Window resolutions
 DESKTOP = (1920, 1080)

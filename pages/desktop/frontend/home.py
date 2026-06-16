@@ -369,6 +369,12 @@ class Home(Base):
 
             return Extensions(self.driver, self.page.base_url).wait_for_page_to_load()
 
+        def click_see_all_extensions_link(self):
+            self.wait.until(
+                EC.element_to_be_clickable(self._see_all_extensions_locator)
+            )
+            self.find_element(*self._see_all_extensions_locator).click()
+
         @property
         def secondary_hero_modules(self):
             self.wait.until(EC.visibility_of_element_located(self._modules_locator))

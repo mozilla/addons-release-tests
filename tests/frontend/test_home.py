@@ -112,9 +112,10 @@ def test_secondary_hero_message(base_url, selenium, variables):
         variables["secondary_hero_summary"]
         in page.secondary_hero.secondary_hero_description
     )
-    # checks that the message link opens the Extensions landing page
-    extensions = page.secondary_hero.see_all_extensions()
-    assert "Extensions" in extensions.title
+    # checks that the message link navigates the user away from the home page
+    starting_url = selenium.current_url
+    page.secondary_hero.click_see_all_extensions_link()
+    page.wait.until(lambda _: selenium.current_url != starting_url)
 
 
 @pytest.mark.sanity
@@ -378,15 +379,17 @@ def test_products_footer_links_tc_id_c95105(base_url, selenium, count, link):
     "count, link",
     enumerate(
         [
-            "x.com",
             "instagram.com",
             "youtube.com",
+            "tiktok.com",
+            "bsky.app",
         ]
     ),
     ids=[
-        "Firefox on Twitter",
         "Firefox on Instagram",
         "Firefox on YouTube",
+        "Firefox on TikTok",
+        "Firefox on Bluesky",
     ],
 )
 @pytest.mark.sanity

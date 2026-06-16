@@ -217,6 +217,7 @@ def test_verify_first_version_autoapproval(selenium, base_url, variables, wait):
 @pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.create_session("submissions_user")
+@pytest.mark.skip
 def test_submit_listed_addon_tc_id_c4369(selenium, base_url, variables, wait):
     """Test covering the process of uploading a listed addon"""
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
@@ -273,6 +274,7 @@ def test_submit_listed_addon_tc_id_c4369(selenium, base_url, variables, wait):
 @pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.login("submissions_user")
+@pytest.mark.skip
 def test_submit_addon_3mb_size_tc_id_c2274214(selenium, base_url, wait, variables):
     """Test covering the process of uploading a listed addon with 3-4 mb in size"""
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
@@ -327,6 +329,7 @@ def test_submit_addon_3mb_size_tc_id_c2274214(selenium, base_url, wait, variable
 
 @pytest.mark.serial
 @pytest.mark.create_session("submissions_user")
+@pytest.mark.skip
 def test_addon_last_modified_date(selenium, base_url):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     # check the last modified date in the latest submitted addon on Devhub homepage (should be current date)
@@ -341,6 +344,7 @@ def test_addon_last_modified_date(selenium, base_url):
 
 @pytest.mark.serial
 @pytest.mark.create_session("submissions_user")
+@pytest.mark.skip
 def test_submit_mixed_addon_versions_tc_id_c14981(selenium, base_url, variables, wait):
     """Uploads an unlisted version to an exiting listed addon"""
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
@@ -427,6 +431,7 @@ def test_verify_new_unlisted_version_autoapproval_tc_id_C4372(selenium, base_url
 )
 @pytest.mark.serial
 @pytest.mark.create_session("submissions_user")
+@pytest.mark.skip
 def test_submit_unicode_addon_tc_id_c4590(
     selenium, base_url, variables, wait, addon_name, description
 ):

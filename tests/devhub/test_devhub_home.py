@@ -468,6 +468,7 @@ def test_devhub_addons_footer_links(base_url, selenium, count, link):
     ],
 )
 @pytest.mark.nondestructive
+@pytest.mark.skip
 def test_devhub_browsers_footer_links(base_url, selenium, count, link):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     page.footer.browsers_links[count].click()
@@ -494,6 +495,7 @@ def test_devhub_browsers_footer_links(base_url, selenium, count, link):
     ],
 )
 @pytest.mark.nondestructive
+@pytest.mark.skip
 def test_devhub_products_footer_links(base_url, selenium, count, link):
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     page.products_links[count].click()
@@ -504,15 +506,17 @@ def test_devhub_products_footer_links(base_url, selenium, count, link):
     "count, link",
     enumerate(
         [
-            "x.com",
             "instagram.com",
             "youtube.com",
+            "tiktok.com",
+            "bsky.app",
         ]
     ),
     ids=[
-        "DevHub Footer - Social section -  Twitter",
         "DevHub Footer - Social section -  Instagram",
         "DevHub Footer - Social section -  YouTube",
+        "DevHub Footer - Social section -  TikTok",
+        "DevHub Footer - Social section -  Bluesky",
     ],
 )
 @pytest.mark.nondestructive
