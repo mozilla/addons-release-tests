@@ -18,12 +18,16 @@ def test_install_uninstall_extension_tc_id_c393003(
     assert amo_addon_name == variables["install_extension_name"]
     assert addon.is_compatible
     addon.install()
-    firefox.browser.wait_for_notification(
+    confirmation = firefox.browser.wait_for_notification(
         firefox_notifications.AddOnInstallConfirmation
-    ).install()
-    firefox.browser.wait_for_notification(
+    )
+    with selenium.context(selenium.CONTEXT_CHROME):
+        selenium.execute_script("arguments[0].click()", confirmation.find_primary_button())
+    complete = firefox.browser.wait_for_notification(
         firefox_notifications.AddOnInstallComplete
-    ).close()
+    )
+    with selenium.context(selenium.CONTEXT_CHROME):
+        selenium.execute_script("arguments[0].click()", complete.find_primary_button())
     # check that the install button state changed to "Remove"
     assert "Remove" in addon.button_text
     # open the manage Extensions page in about:addons
@@ -55,12 +59,16 @@ def test_enable_disable_extension(
     selenium.get(f"{base_url}/addon/{variables['install_extension_slug']}/")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     addon.install()
-    firefox.browser.wait_for_notification(
+    confirmation = firefox.browser.wait_for_notification(
         firefox_notifications.AddOnInstallConfirmation
-    ).install()
-    firefox.browser.wait_for_notification(
+    )
+    with selenium.context(selenium.CONTEXT_CHROME):
+        selenium.execute_script("arguments[0].click()", confirmation.find_primary_button())
+    complete = firefox.browser.wait_for_notification(
         firefox_notifications.AddOnInstallComplete
-    ).close()
+    )
+    with selenium.context(selenium.CONTEXT_CHROME):
+        selenium.execute_script("arguments[0].click()", complete.find_primary_button())
     # open the manage Extensions page in about:addons and Disable the extension
     selenium.switch_to.new_window("tab")
     selenium.get("about:addons")
@@ -91,9 +99,11 @@ def test_install_uninstall_theme_tc_id_c95591(
     assert amo_theme_name == variables["install_theme_name"]
     assert addon.is_compatible
     addon.install()
-    firefox.browser.wait_for_notification(
+    confirmation = firefox.browser.wait_for_notification(
         firefox_notifications.AddOnInstallConfirmation
-    ).install()
+    )
+    with selenium.context(selenium.CONTEXT_CHROME):
+        selenium.execute_script("arguments[0].click()", confirmation.find_primary_button())
     # firefox.browser.wait_for_notification(
     #     firefox_notifications.AddOnInstallComplete
     # ).close()
@@ -125,12 +135,16 @@ def test_install_uninstall_dictionary_tc_id_c4508(
     assert amo_dict_name == variables["install_dictionary_name"]
     assert addon.is_compatible
     addon.install()
-    firefox.browser.wait_for_notification(
+    confirmation = firefox.browser.wait_for_notification(
         firefox_notifications.AddOnInstallConfirmation
-    ).install()
-    firefox.browser.wait_for_notification(
+    )
+    with selenium.context(selenium.CONTEXT_CHROME):
+        selenium.execute_script("arguments[0].click()", confirmation.find_primary_button())
+    complete = firefox.browser.wait_for_notification(
         firefox_notifications.AddOnInstallComplete
-    ).close()
+    )
+    with selenium.context(selenium.CONTEXT_CHROME):
+        selenium.execute_script("arguments[0].click()", complete.find_primary_button())
     # check that the install button state changed to "Remove"
     assert "Remove" in addon.button_text
     # open the manage Dictionaries page in about:addons
@@ -162,12 +176,16 @@ def test_install_uninstall_langpack_tc_id_c4508(
     assert amo_langpack_name == variables["install_langpack_name"]
     assert addon.is_compatible
     addon.install()
-    firefox.browser.wait_for_notification(
+    confirmation = firefox.browser.wait_for_notification(
         firefox_notifications.AddOnInstallConfirmation
-    ).install()
-    firefox.browser.wait_for_notification(
+    )
+    with selenium.context(selenium.CONTEXT_CHROME):
+        selenium.execute_script("arguments[0].click()", confirmation.find_primary_button())
+    complete = firefox.browser.wait_for_notification(
         firefox_notifications.AddOnInstallComplete
-    ).close()
+    )
+    with selenium.context(selenium.CONTEXT_CHROME):
+        selenium.execute_script("arguments[0].click()", complete.find_primary_button())
     # check that the install button state changed to "Remove"
     assert "Remove" in addon.button_text
     # open the manage Language page in about:addons
@@ -205,9 +223,11 @@ def test_about_addons_install_extension(
     # disco_addon_author = about_addons.addon_cards_items[2].disco_addon_author.text
     # install the recommended extension
     about_addons.addon_cards_items[2].install_button.click()
-    firefox.browser.wait_for_notification(
+    confirmation = firefox.browser.wait_for_notification(
         firefox_notifications.AddOnInstallConfirmation
-    ).install()
+    )
+    with selenium.context(selenium.CONTEXT_CHROME):
+        selenium.execute_script("arguments[0].click()", confirmation.find_primary_button())
     time.sleep(2)
     # some addons will open support pages in new tabs after installation;
     # we need to return to the first (about:addons) tab if that happens
@@ -246,9 +266,11 @@ def test_about_addons_install_theme(
     # )
     # install the recommended theme
     about_addons.addon_cards_items[0].install_button.click()
-    firefox.browser.wait_for_notification(
+    confirmation = firefox.browser.wait_for_notification(
         firefox_notifications.AddOnInstallConfirmation
-    ).install()
+    )
+    with selenium.context(selenium.CONTEXT_CHROME):
+        selenium.execute_script("arguments[0].click()", confirmation.find_primary_button())
     about_addons.click_themes_side_button()
     # check that installed theme should be first on the manage Themes page
     assert disco_theme_name in about_addons.installed_addon_name[0].text
@@ -271,18 +293,24 @@ def test_about_addons_extension_updates(
     # if the addon is installed from dev or stage we might need to confirm the site security
     # in order to be able to install the addon; the following exception accounts for that
     try:
-        firefox.browser.wait_for_notification(
+        confirmation = firefox.browser.wait_for_notification(
             firefox_notifications.AddOnInstallConfirmation
-        ).install()
+        )
+        with selenium.context(selenium.CONTEXT_CHROME):
+            selenium.execute_script("arguments[0].click()", confirmation.find_primary_button())
     except TimeoutException as error:
         # check that the timeout message is raised by the AddOnInstallConfirmation class
         assert error.msg == "AddOnInstallConfirmation was not shown."
-        firefox.browser.wait_for_notification(
+        blocked = firefox.browser.wait_for_notification(
             firefox_notifications.AddOnInstallBlocked
-        ).allow()
-        firefox.browser.wait_for_notification(
+        )
+        with selenium.context(selenium.CONTEXT_CHROME):
+            selenium.execute_script("arguments[0].click()", blocked.find_primary_button())
+        confirmation = firefox.browser.wait_for_notification(
             firefox_notifications.AddOnInstallConfirmation
-        ).install()
+        )
+        with selenium.context(selenium.CONTEXT_CHROME):
+            selenium.execute_script("arguments[0].click()", confirmation.find_primary_button())
     # go to addons manager and locate the installed addon
     selenium.get("about:addons")
     about_addons = AboutAddons(selenium)
