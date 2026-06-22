@@ -128,6 +128,12 @@ def firefox_options(firefox_options, base_url, variables):
         firefox_options.add_argument("-foreground")
         firefox_options.add_argument("-remote-allow-system-access")
         firefox_options.log.level = "trace"
+        # Clear the WebExtensions restricted-domain list so the waf_bypass_addon
+        # can attach its `webRequest` listener to Mozilla domains that are
+        # restricted by default. Without this, prod runs hit the FxA captcha
+        # on `accounts.firefox.com` because the addon's listener is silently
+        # skipped on restricted domains.
+        firefox_options.set_preference("extensions.webextensions.restrictedDomains", "")
         firefox_options.set_preference(
             "extensions.getAddons.discovery.api_url",
             variables["extensions_getAddons_discovery_api_url"],
