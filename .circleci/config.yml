@@ -652,21 +652,11 @@ workflows:
       - api_submission_tests
   # scheduled in CircleCI Project settings to start each Thursdays at 17:00 UTC
   scheduled_prod_sanity_run:
-    when:
-      and:
-        - equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
-        - equal: [ "scheduled_prod_sanity_run", << pipeline.schedule.name >> ]
     jobs:
       # this job needs to be Approved in the CircleCI app in order to trigger the next job runs
       # once all the push duty tasks have been completed by AMO ops
-      - hold:
-          type: approval
-      - sanity_parallel_tests: # will run after the hold job is approved
-          requires:
-            - hold
-      - sanity_serial_tests: # # will run after the hold job is approved
-          requires:
-            - hold
+      - sanity_parallel_tests:
+      - sanity_serial_tests:
   # scheduled in CircleCI Project settings to run once a day
   scheduled_dev_regression_tests:
     when:
