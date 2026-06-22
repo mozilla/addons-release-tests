@@ -655,8 +655,8 @@ workflows:
     jobs:
       # this job needs to be Approved in the CircleCI app in order to trigger the next job runs
       # once all the push duty tasks have been completed by AMO ops
-      - sanity_parallel_tests:
-      - sanity_serial_tests:
+      - sanity_parallel_tests
+      - sanity_serial_tests
   # scheduled in CircleCI Project settings to run once a day
   scheduled_dev_regression_tests:
     when:
