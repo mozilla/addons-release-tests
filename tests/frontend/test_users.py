@@ -311,7 +311,6 @@ def test_user_delete_profile_tc_id_c4393(base_url, selenium):
 
 @pytest.mark.serial
 @pytest.mark.login("reusable_user")
-@pytest.mark.skip(reason="Steps need to be updated for this test")
 def test_user_account_manage_section(base_url, selenium, variables):
     user = User(selenium, base_url).open().wait_for_page_to_load()
     email = Login(selenium, base_url)
@@ -370,9 +369,6 @@ def test_user_regular_notifications(base_url, selenium, variables):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-@pytest.mark.skip(
-    reason="Intermittent issue, see https://github.com/mozilla/addons-server/issues/20965"
-)
 def test_user_notifications_subscriptions(base_url, selenium, wait):
     edit_user = User(selenium, base_url).open().wait_for_page_to_load()
     edit_user.login("staff_user")
