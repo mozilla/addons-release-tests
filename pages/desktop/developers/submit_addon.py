@@ -569,7 +569,20 @@ class UploadSource(Page):
         self.find_element(*self._yes_submit_source_radio_button_locator).click()
 
     def select_no_to_omit_source(self):
+        self.wait.until(
+            EC.visibility_of_element_located(
+                self._no_submit_source_radio_button_locator
+            )
+        )
         self.find_element(*self._no_submit_source_radio_button_locator).click()
+
+    def wait_for_page_to_load(self):
+        self.wait.until(
+            EC.visibility_of_element_located(
+                self._submit_source_code_page_header_locator
+            )
+        )
+        return self
 
     def choose_source(self, file):
         button = self.find_element(*self._choose_source_file_button_locator)

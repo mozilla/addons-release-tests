@@ -559,6 +559,7 @@ def test_cancel_and_disable_version_during_upload(selenium, base_url, wait):
     delete.confirm_delete_addon()
 
 
+@pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.create_session("submissions_user")
 def test_delete_all_extensions(selenium, base_url):
