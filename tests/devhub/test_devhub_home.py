@@ -67,7 +67,7 @@ def test_click_blog(selenium, base_url):
 
 @pytest.mark.sanity
 @pytest.mark.nondestructive
-@pytest.mark.login("developer")
+@pytest.mark.create_session("developer")
 def test_devhub_login(selenium, base_url, wait):
     """Verifies the login process for a developer.
     After logging in, it checks that the user avatar
@@ -145,7 +145,7 @@ def test_devhub_content_login_link(selenium, base_url, variables):
 
 
 @pytest.mark.nondestructive
-@pytest.mark.login("developer")
+@pytest.mark.create_session("developer")
 def test_devhub_click_my_addons_header_link(selenium, base_url, wait):
     """Verifies that clicking the "My Add-ons" header link
     redirects the user to the "Manage Add-ons" page in
@@ -314,6 +314,11 @@ def test_devhub_resources_footer_documentation_links_tc_id_C15072(selenium, base
     """Verifies that all "Documentation" links in the resources
     footer lead to the correct pages, confirming that
     the user is directed to the expected documentation sections."""
+    if "addons-dev" in base_url or "addons.allizom" in base_url:
+        pytest.skip(
+            "DevHub-Footer-sections Resources area was removed from the devhub home "
+            "page on both dev and stage"
+        )
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     page.devhub_login("regular_user")
     assert "Documentation" in page.resources.documentation_section_header
@@ -335,6 +340,11 @@ def test_devhub_resources_footer_tools_links_tc_id_C15072(selenium, base_url, va
     """Ensures that all "Tools" links in the resources
     footer lead to the correct pages, verifying that
     the user is taken to the correct tool-related sections."""
+    if "addons-dev" in base_url or "addons.allizom" in base_url:
+        pytest.skip(
+            "DevHub-Footer-sections Resources area was removed from the devhub home "
+            "page on both dev and stage"
+        )
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     assert "Tools" in page.resources.tools_section_header
     count = 0
@@ -355,6 +365,11 @@ def test_devhub_resources_footer_promote_links_tc_id_C15072(selenium, base_url, 
     """Verifies that the "Promote" links in the resources footer
     lead to the correct pages, confirming that users are directed
     to the appropriate promotion-related sections."""
+    if "addons-dev" in base_url or "addons.allizom" in base_url:
+        pytest.skip(
+            "DevHub-Footer-sections Resources area was removed from the devhub home "
+            "page on both dev and stage"
+        )
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     assert "Promote" in page.resources.promote_section_header
     count = 0
@@ -375,6 +390,11 @@ def test_devhub_resources_join_addon_review(selenium, base_url, variables):
     """Verifies that the "Join Add-on Review" link in the resources section
     leads to the "Contribute/Code" section, allowing users
     to participate in reviewing add-ons."""
+    if "addons-dev" in base_url or "addons.allizom" in base_url:
+        pytest.skip(
+            "DevHub-Footer-sections Resources area was removed from the devhub home "
+            "page on both dev and stage"
+        )
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     assert "Write Some Code" in page.resources.review_addons_section_header
     assert (
@@ -403,6 +423,11 @@ def test_devhub_resources_participate(selenium, base_url, variables):
     """Ensures that the "More Ways to Participate" link
     in the resources section redirects the user to the
     "Add-ons/Contribute" section."""
+    if "addons-dev" in base_url or "addons.allizom" in base_url:
+        pytest.skip(
+            "DevHub-Footer-sections Resources area was removed from the devhub home "
+            "page on both dev and stage"
+        )
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     page.devhub_login("regular_user")
     assert "More Ways to Participate" in page.resources.participate_section_header
@@ -572,6 +597,11 @@ def test_devhub_browsers_footer_links(base_url, selenium, count, link):
     """Verifies that the links under the "Browsers" section
     in the DevHub footer lead to the correct pages
     for Firefox Desktop, Mobile, and Enterprise."""
+    if "addons-dev" in base_url:
+        pytest.skip(
+            "Footer-browsers-links section is not present on the dev devhub footer "
+            "redesign (replaced by Download/Latest Builds/Firefox for Business)"
+        )
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     page.footer.browsers_links[count].click()
     time.sleep(5)
@@ -602,33 +632,40 @@ def test_devhub_products_footer_links(base_url, selenium, count, link):
     """Ensures that the links under the "Products" section
     in the DevHub footer lead to the correct pages for
     Firefox, VPN, Relay, Monitor, and Pocket."""
+    if "addons-dev" in base_url:
+        pytest.skip(
+            "Footer-products-links section is not present on the dev devhub footer "
+            "redesign"
+        )
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     page.products_links[count].click()
     page.wait_for_current_url(link)
 
 
-@pytest.mark.parametrize(
-    "count, link",
-    enumerate(
-        [
-            "x.com",
-            "instagram.com",
-            "youtube.com",
-        ]
-    ),
-    ids=[
-        "DevHub Footer - Social section -  Twitter",
-        "DevHub Footer - Social section -  Instagram",
-        "DevHub Footer - Social section -  YouTube",
-    ],
-)
 @pytest.mark.nondestructive
-def test_devhub_social_footer_links(base_url, selenium, count, link):
+def test_devhub_social_footer_links(base_url, selenium):
     """Verifies that the social media links in the DevHub footer
     direct users to the correct social media pages."""
+    # The dev footer redesign replaced the "Social" section (.Footer-links-social)
+    # with a "Follow" section (.Footer-follow-links) containing a different set of
+    # links. Stage still has the legacy Social section, but Twitter/X was dropped
+    # in favor of Bluesky. Each env tests its own current list.
+    if "addons-dev" in base_url:
+        expected_links = ["instagram.com", "youtube.com", "tiktok.com", "bsky.app"]
+        section_selector = ".Footer-follow-links"
+    else:
+        expected_links = ["bsky.app", "instagram.com", "youtube.com"]
+        section_selector = ".Footer-links-social"
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.footer.social_links[count].click()
-    page.wait_for_current_url(link)
+    section = page.footer.find_element(By.CSS_SELECTOR, section_selector)
+    links = section.find_elements(By.CSS_SELECTOR, "li a")
+    for count, expected in enumerate(expected_links):
+        links[count].click()
+        page.wait_for_current_url(expected)
+        selenium.back()
+        # re-fetch links after navigating back since the DOM was rebuilt
+        section = page.footer.find_element(By.CSS_SELECTOR, section_selector)
+        links = section.find_elements(By.CSS_SELECTOR, "li a")
 
 
 @pytest.mark.parametrize(

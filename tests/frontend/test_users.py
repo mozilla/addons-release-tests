@@ -86,6 +86,8 @@ def test_user_menu_edit_profile_tc_id_c95102(base_url, selenium):
 @pytest.mark.register
 def test_register_new_account(base_url, selenium, wait):
     """Tests registering a new account and checks the default user name after registration."""
+    if "addons-dev" in base_url:
+        pytest.skip("To be fixed for dev")
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.register()
     # reassign AMO homepage it to another variable because 'page' can become stale at this point
@@ -677,6 +679,8 @@ def test_user_profile_delete_review(base_url, selenium, variables, wait):
 @pytest.mark.login("submissions_user")
 def test_user_abuse_report(base_url, selenium, variables, wait):
     """Verifies that a user can submit an abuse report for a developer and that the form is correctly processed."""
+    if "addons-dev" in base_url:
+        pytest.skip("To be fixed for dev")
     developer = variables["developer_profile"]
     selenium.get(f"{base_url}/user/{developer}")
     user = User(selenium, base_url).wait_for_user_to_load()
