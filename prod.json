@@ -1,4 +1,5 @@
 {
+  "FXA_CI_HEADER": "FXA_CI_HEADER",
   "base_url": "https://addons.mozilla.org",
 
   "extensions_getAddons_discovery_api_url": "https://services.addons.mozilla.org/api/v4/discovery/?lang=%LOCALE%&edition=%DISTRIBUTION%",
