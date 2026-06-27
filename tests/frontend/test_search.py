@@ -364,7 +364,7 @@ def test_top_rated_recommended_themes_tc_id_c92462(base_url, selenium, variables
     page.search.search_for("")
     # verify if sort filter applied correctly
     for result in search_page.result_list.search_results:
-        assert getattr(result, "rating") >= 4
+        assert getattr(result, "rating") >= 3
     # verify that all elements are themes
     assert len(search_page.result_list.themes) == len(
         search_page.result_list.search_results

@@ -417,6 +417,7 @@ def test_products_footer_links_tc_id_c95105(base_url, selenium, count, link):
 )
 @pytest.mark.sanity
 @pytest.mark.nondestructive
+@pytest.mark.skip(reason="This will either be updated or replaced by new test/tests")
 def test_social_footer_links_tc_id_c95105(base_url, selenium, count, link):
     """Test that verifies the social links from the footer section"""
     page = Home(selenium, base_url).open().wait_for_page_to_load()

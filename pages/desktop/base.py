@@ -307,17 +307,24 @@ class Header(Region):
 
     def more_menu(self, item=None):
         menu = self.find_element(*self._more_menu_locator)
-        dropdown = self.find_element(*self._more_dropdown_locator)
-        link = menu.find_elements(*self._more_dropdown_links_locator)
-        # Create an action chain clicking on the elements of the dropdown more menu
-        action = ActionChains(self.driver)
-        action.move_to_element(menu)
-        action.pause(2)
-        action.move_to_element(dropdown)
-        action.move_to_element(link[item])
-        action.click(link[item])
-        action.pause(2)
-        action.perform()
+        # Hover over the 'More…' menu to reveal its dropdown. This is kept as a
+        # separate action so we can wait for the dropdown to actually open before
+        # interacting with its links, which keeps the step reliable on headless
+        # and parallel CI runs.
+        ActionChains(self.driver).move_to_element(menu).perform()
+        self.wait.until(
+            EC.visibility_of_element_located(self._more_dropdown_locator),
+            message="The 'More' menu dropdown did not open after hovering",
+        )
+        link = menu.find_elements(*self._more_dropdown_links_locator)[item]
+        self.wait.until(
+            EC.visibility_of(link),
+            message="The selected 'More' menu link was not displayed",
+        )
+        # Keep the dropdown open by hovering over the menu, then click the link.
+        ActionChains(self.driver).move_to_element(menu).move_to_element(
+            link
+        ).click(link).perform()
 
     @property
     def developer_hub_link(self):
