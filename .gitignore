@@ -2,6 +2,7 @@
 test-results.html
 frontend-parallel-test-results.html
 **/__pycache__/
+.DS_Store
 
 .env
 run-*.sh
