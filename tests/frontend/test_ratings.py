@@ -712,7 +712,9 @@ def test_rating_card_average_stars(selenium, base_url, variables):
         total_stars_number += page.rating_card.number_of_reviews_with_specific_stars(
             i
         ) * (5 - i)
-    assert total_stars_number / total_reviews_number == page.rating_card.rating
+    # AMO displays the average rounded to one decimal place, so round the
+    # computed average to the same precision before comparing.
+    assert round(total_stars_number / total_reviews_number, 1) == page.rating_card.rating
 
 
 @pytest.mark.serial
