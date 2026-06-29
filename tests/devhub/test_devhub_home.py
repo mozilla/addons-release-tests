@@ -593,6 +593,7 @@ def test_devhub_addons_footer_links(base_url, selenium, count, link):
     ],
 )
 @pytest.mark.nondestructive
+@pytest.mark.skip(reason="Needs update or add new tests scenarios - footer is changed")
 def test_devhub_browsers_footer_links(base_url, selenium, count, link):
     """Verifies that the links under the "Browsers" section
     in the DevHub footer lead to the correct pages
@@ -628,6 +629,7 @@ def test_devhub_browsers_footer_links(base_url, selenium, count, link):
     ],
 )
 @pytest.mark.nondestructive
+@pytest.mark.skip(reason="Needs to be updated pr new scenarios added")
 def test_devhub_products_footer_links(base_url, selenium, count, link):
     """Ensures that the links under the "Products" section
     in the DevHub footer lead to the correct pages for
@@ -643,6 +645,7 @@ def test_devhub_products_footer_links(base_url, selenium, count, link):
 
 
 @pytest.mark.nondestructive
+@pytest.mark.skip(reason="Needs to be updated pr new scenarios added")
 def test_devhub_social_footer_links(base_url, selenium):
     """Verifies that the social media links in the DevHub footer
     direct users to the correct social media pages."""

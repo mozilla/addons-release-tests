@@ -10,3 +10,4 @@ reusable_user.txt
 assets/
 baseline-*.html
 .python-version
+/Library/
