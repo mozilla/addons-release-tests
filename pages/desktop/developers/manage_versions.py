@@ -155,21 +155,27 @@ class ManageVersions(Page):
     def ensure_addon_visible(self):
         """Guarantee the add-on starts in the Visible state.
 
-        The #modal-disable confirmation only opens on a Visible -> Invisible
-        transition. If a prior interrupted/rerun/parallel run left the add-on
-        Invisible, the 'hidden' radio is already selected; clicking it fires no
-        change event, the modal never appears, and set_addon_invisible() times
-        out. Resetting to Visible here makes the test independent of the
+        The #modal-disable confirmation is rendered server-side only while the
+        add-on is Visible; when the add-on is Invisible that markup is absent
+        from the page entirely. So if a prior interrupted/rerun/parallel run
+        left the add-on Invisible, set_addon_invisible() can never open the
+        modal and times out. Re-list the add-on here and reload the page so the
+        visible-state markup (including #modal-disable) is freshly present
+        before the test proceeds. This makes the test independent of the
         starting state across all environments."""
-        if self.find_element(*self._invisible_listing_radio_locator).is_selected():
-            self.set_addon_visible()
-            self.wait.until(
-                lambda _: "Approved" in self.addon_listed_status,
-                message=(
-                    "Could not reset the add-on to Visible before the test; "
-                    f"status was {self.addon_listed_status}"
-                ),
-            )
+        if "Invisible" not in self.addon_listed_status:
+            return
+        self.set_addon_visible()
+        self.wait.until(
+            lambda _: "Approved" in self.addon_listed_status,
+            message=(
+                "Could not reset the add-on to Visible before the test; "
+                f"status was {self.addon_listed_status}"
+            ),
+        )
+        # reload so #modal-disable (server-rendered for the visible state) exists
+        self.driver.refresh()
+        self.wait_for_page_to_load()
 
     def set_addon_invisible(self):
         """Selects the Invisible option and checks that the radio button is selected"""
