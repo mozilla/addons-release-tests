@@ -152,6 +152,25 @@ class ManageVersions(Page):
         )
         return self.find_element(*self._invisible_explainer_text_locator).text
 
+    def ensure_addon_visible(self):
+        """Guarantee the add-on starts in the Visible state.
+
+        The #modal-disable confirmation only opens on a Visible -> Invisible
+        transition. If a prior interrupted/rerun/parallel run left the add-on
+        Invisible, the 'hidden' radio is already selected; clicking it fires no
+        change event, the modal never appears, and set_addon_invisible() times
+        out. Resetting to Visible here makes the test independent of the
+        starting state across all environments."""
+        if self.find_element(*self._invisible_listing_radio_locator).is_selected():
+            self.set_addon_visible()
+            self.wait.until(
+                lambda _: "Approved" in self.addon_listed_status,
+                message=(
+                    "Could not reset the add-on to Visible before the test; "
+                    f"status was {self.addon_listed_status}"
+                ),
+            )
+
     def set_addon_invisible(self):
         """Selects the Invisible option and checks that the radio button is selected"""
         el = self.find_element(*self._invisible_listing_radio_locator)
@@ -159,7 +178,11 @@ class ManageVersions(Page):
         self.wait.until(
             EC.element_to_be_clickable(
                 (By.CSS_SELECTOR, "#modal-disable p:nth-child(1)")
-            )
+            ),
+            message=(
+                "The hide-addon confirmation modal (#modal-disable) did not open "
+                "after selecting Invisible; the add-on was likely already Invisible"
+            ),
         )
 
     def click_hide_addon(self):
