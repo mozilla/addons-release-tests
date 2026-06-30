@@ -480,10 +480,11 @@ class Header(Region):
 class Footer(Region):
     _root_locator = (By.CSS_SELECTOR, ".Footer-wrapper")
     _footer_amo_links_locator = (By.CSS_SELECTOR, ".Footer-amo-links")
-    _footer_browsers_links_locator = (By.CSS_SELECTOR, ".Footer-browsers-links")
-    _footer_products_links_locator = (By.CSS_SELECTOR, ".Footer-product-links")
+    _footer_build_links_locator = (By.CSS_SELECTOR, ".Footer-build-links")
+    _footer_download_links_locator = (By.CSS_SELECTOR, ".Footer-download-links")
     _footer_mozilla_link_locator = (By.CSS_SELECTOR, ".Footer-mozilla-link")
-    _footer_social_locator = (By.CSS_SELECTOR, ".Footer-links-social")
+    _footer_follow_links_locator = (By.CSS_SELECTOR, ".Footer-follow-links")
+    _footer_community_links_locator = (By.CSS_SELECTOR, ".Footer-community-links")
     _footer_links_locator = (By.CSS_SELECTOR, ".Footer-links li a")
     _footer_legal_locator = (By.CSS_SELECTOR, ".Footer-legal-links ")
     _footer_copyright_links_locator = (By.CSS_SELECTOR, ".Footer-copyright a")
@@ -499,19 +500,19 @@ class Footer(Region):
         return element.find_elements(*self._footer_links_locator)
 
     @property
-    def browsers_links(self):
+    def build_links(self):
         self.wait.until(
-            EC.visibility_of_element_located(self._footer_browsers_links_locator)
+            EC.visibility_of_element_located(self._footer_build_links_locator)
         )
-        element = self.find_element(*self._footer_browsers_links_locator)
+        element = self.find_element(*self._footer_build_links_locator)
         return element.find_elements(*self._footer_links_locator)
 
     @property
-    def products_links(self):
+    def download_links(self):
         self.wait.until(
-            EC.visibility_of_element_located(self._footer_products_links_locator)
+            EC.visibility_of_element_located(self._footer_download_links_locator)
         )
-        element = self.find_element(*self._footer_products_links_locator)
+        element = self.find_element(*self._footer_download_links_locator)
         return element.find_elements(*self._footer_links_locator)
 
     @property
@@ -522,10 +523,16 @@ class Footer(Region):
         return self.find_element(*self._footer_mozilla_link_locator)
 
     @property
-    def social_links(self):
-        self.wait.until(EC.visibility_of_element_located(self._footer_social_locator))
-        element = self.find_element(*self._footer_social_locator)
-        return element.find_elements(By.CSS_SELECTOR, "li a")
+    def follow_links(self):
+        self.wait.until(EC.visibility_of_element_located(self._footer_follow_links_locator))
+        element = self.find_element(*self._footer_follow_links_locator)
+        return element.find_elements(*self._footer_links_locator)
+
+    @property
+    def community_links(self):
+        self.wait.until(EC.visibility_of_element_located(self._footer_community_links_locator))
+        element = self.find_element(*self._footer_community_links_locator)
+        return element.find_elements(*self._footer_links_locator)
 
     @property
     def legal_links(self):

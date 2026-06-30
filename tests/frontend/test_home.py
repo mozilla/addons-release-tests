@@ -114,7 +114,7 @@ def test_primary_hero_tc_id_c95105(base_url, selenium):
 
 
 @pytest.mark.nondestructive
-@pytest.mark.fail
+@pytest.mark.xfail
 def test_secondary_hero_message(base_url, selenium, variables):
     """Test covering the homepage secondary hero"""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
@@ -285,7 +285,6 @@ def test_theme_categories_shelf_tc_id_c95105(base_url, selenium, count, category
 # Tests covering the homepage footer
 @pytest.mark.sanity
 @pytest.mark.nondestructive
-@pytest.mark.prod_only
 def test_mozilla_footer_link_tc_id_c95105(base_url, selenium):
     """Verifies the mozilla link from the footer"""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
@@ -341,25 +340,23 @@ def test_addons_footer_links_tc_id_c95105(base_url, selenium, count, link):
     "count, link",
     enumerate(
         [
-            # ["en-US/?redirect_source=mozilla-org", "a[class='download-link c-button-download-thanks-link mzp-c-button mzp-t-product mzp-t-xl']"],
-            ["en-US/browsers/mobile/", "a[href='/ro/browsers/mobile/android/']"],
-            ["en-US/browsers/enterprise/", "#primary-download-button"],
+            ["channel/desktop/#nightly", ".fl-logo-fx"],
+            ["channel/desktop/#beta", ".fl-logo-fx"],
+            ["browsers/enterprise/", ".fl-logo-fx"],
         ]
     ),
     ids=[
-        # "Firefox Desktop",
-        "Firefox Mobile",
-        "Firefox Enterprise",
+        "Nightly",
+        "Beta",
+        "Enterprise",
     ],
 )
 @pytest.mark.nondestructive
 @pytest.mark.sanity
-@pytest.mark.skip
-def test_browsers_footer_links_tc_id_c95105(base_url, selenium, count, link):
-    """Verifies the browsers footer links"""
+def test_latest_builds_footer_links_tc_id_c95105(base_url, selenium, count, link):
+    """Verifies the links from the Latest Builds footer column, including Enterprise"""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
-    page.footer.browsers_links[count].click()
-    time.sleep(5)
+    page.footer.build_links[count].click()
     page.wait_for_current_url(link[0])
     page.wait.until(
         EC.visibility_of_element_located((By.CSS_SELECTOR, link[1])),
@@ -371,28 +368,32 @@ def test_browsers_footer_links_tc_id_c95105(base_url, selenium, count, link):
     "count, link",
     enumerate(
         [
-            # ["/?utm_content=footer-link&", "a[class='download-link c-button-download-thanks-link mzp-c-button mzp-t-product mzp-t-xl']"],
-            ["products/vpn/", ".c-sub-navigation-title"],
-            ["relay.firefox.com/", "img[alt='Firefox Relay Premium']"],
-            ["monitor.mozilla", "img[alt='Mozilla Monitor']"],
-            ["getpocket.com", ".logo"],
+            ["thanks/", ".fl-logo-fx"],
+            ["download/windows/", ".fl-logo-fx"],
+            ["download/mac/", ".fl-logo-fx"],
+            ["download/ios/", ".fl-logo-fx"],
+            ["download/android/", ".fl-logo-fx"],
+            ["download/linux/", ".fl-logo-fx"],
+            ["download/all/", ".fl-logo-fx"],
         ]
     ),
     ids=[
-        # "Browsers",
-        "VPN",
-        "Relay",
-        "Monitor",
-        "Pocket",
+        # "Download",
+        "Download Firefox",
+        "Windows",
+        "macOS",
+        "iOS",
+        "Android",
+        "Linux",
+        "All",
     ],
 )
 @pytest.mark.sanity
 @pytest.mark.nondestructive
-@pytest.mark.skip
-def test_products_footer_links_tc_id_c95105(base_url, selenium, count, link):
+def test_download_footer_links_tc_id_c95105(base_url, selenium, count, link):
+    """Verifies the links from the Download footer column"""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
-    page.footer.products_links[count].click()
-    time.sleep(2)
+    page.footer.download_links[count].click()
     page.wait_for_current_url(link[0])
     page.wait.until(
         EC.visibility_of_element_located((By.CSS_SELECTOR, link[1])),
@@ -404,25 +405,52 @@ def test_products_footer_links_tc_id_c95105(base_url, selenium, count, link):
     "count, link",
     enumerate(
         [
-            "x.com",
-            "instagram.com",
-            "youtube.com",
+            "instagram.com/firefox",
+            "youtube.com/user/firefoxchannel",
+            "tiktok.com/@firefox",
+            "bsky.app/profile/firefox.com",
+            "youtube.com/@firefox/podcasts",
         ]
     ),
     ids=[
-        "Firefox on Twitter",
-        "Firefox on Instagram",
-        "Firefox on YouTube",
+        "Instagram",
+        "YouTube",
+        "TikTok",
+        "BlueSky",
+        "Podcast",
     ],
 )
 @pytest.mark.sanity
 @pytest.mark.nondestructive
-@pytest.mark.skip(reason="This will either be updated or replaced by new test/tests")
-def test_social_footer_links_tc_id_c95105(base_url, selenium, count, link):
-    """Test that verifies the social links from the footer section"""
+def test_follow_footer_links_tc_id_c95105(base_url, selenium, count, link):
+    """Verifies the destination URLs of the Follow footer column links"""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
-    page.footer.social_links[count].click()
-    page.wait_for_current_url(link)
+    actual_href = page.footer.follow_links[count].get_attribute("href")
+    assert link in actual_href, f"Expected '{link}' in href, got '{actual_href}'"
+
+
+@pytest.mark.parametrize(
+    "count, link",
+    enumerate(
+        [
+            "connect.mozilla.org/",
+            "mozilla.org/contribute/",
+            "firefox.com/en-US/channel/desktop/developer/",
+        ]
+    ),
+    ids=[
+        "Community",
+        "Contribute",
+        "Developer",
+    ],
+)
+@pytest.mark.sanity
+@pytest.mark.nondestructive
+def test_community_footer_links_tc_id_c95105(base_url, selenium, count, link):
+    """Verifies the destination URLs of the Community footer column links"""
+    page = Home(selenium, base_url).open().wait_for_page_to_load()
+    actual_href = page.footer.community_links[count].get_attribute("href")
+    assert link in actual_href, f"Expected '{link}' in href, got '{actual_href}'"
 
 
 @pytest.mark.parametrize(
