@@ -3,6 +3,9 @@ test-results.html
 frontend-parallel-test-results.html
 **/__pycache__/
 .DS_Store
+.claude
+CLAUDE.md
+CLAUDE_IMPROVEMENTS.MD
 
 .env
 run-*.sh
@@ -10,3 +13,4 @@ reusable_user.txt
 assets/
 baseline-*.html
 .python-version
+/Library/
