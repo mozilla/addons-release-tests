@@ -7,7 +7,8 @@ from pages.desktop.developers.manage_versions import ManageVersions
 from pages.desktop.developers.submit_addon import (
     SubmitAddon,
     SubmissionConfirmationPage,
-    UploadSource
+    UploadSource,
+    ListedAddonSubmissionForm,
 )
 from scripts import reusables
 from api import api_helpers, payloads
@@ -269,12 +270,12 @@ def test_submit_listed_addon_tc_id_c4369(selenium, base_url, variables, wait):
     submit_addon.android_compat_checkbox.click()
     submit_addon.android_compat_pop_up.is_displayed()
     submit_addon.android_compat_yes_button.click()
-    # on submit source code page, select 'Yes' to upload source code
-    source = submit_addon.click_continue_upload_button()
-    source.select_yes_to_submit_source()
-    source.choose_source("listed-addon.zip")
-    # source.choose_source("listed-addon.zip")
-    details_form = source.continue_listed_submission()
+    # the upload now continues straight to the details form (the source-code
+    # step was moved to after the details form)
+    submit_addon.click_continue_upload_button()
+    details_form = ListedAddonSubmissionForm(
+        selenium, base_url
+    ).wait_for_page_to_load()
     # setting a unique add-on name
     details_form.addon_name_field.clear()
     addon_name = f"Listed-{reusables.current_date()}-{reusables.get_random_string(5)}"
@@ -285,18 +286,20 @@ def test_submit_listed_addon_tc_id_c4369(selenium, base_url, variables, wait):
     details_form.is_experimental.click()
     # flag add-on for payment requirements
     details_form.requires_payment.click()
-    # reusables.scroll_into_view(selenium, details_form.categories_section)
     # set Firefox and Android categories for the addon
     details_form.select_categories(0)
-    # details_form.select_android_categories(0)
     details_form.email_input_field("some-mail@mail.com")
     details_form.support_site_input_field("https://example.com")
     # set an addon license from the available list
     details_form.select_license_options[0].click()
     details_form.set_privacy_policy(variables["listed_addon_privacy_policy_en"])
     details_form.set_reviewer_notes(variables["listed_addon_reviewer_notes"])
-    # submit the add-on details
-    confirmation_page = details_form.submit_addon()
+    # submitting the details advances to the source-code step; select 'Yes' to
+    # upload source code, then finish
+    source = details_form.submit_details_continue_to_source()
+    source.select_yes_to_submit_source()
+    source.choose_source("listed-addon.zip")
+    confirmation_page = source.continue_to_confirmation()
     assert (
         variables["listed_submission_confirmation"]
         in confirmation_page.submission_confirmation_messages[0].text
@@ -325,11 +328,12 @@ def test_submit_addon_3mb_size_tc_id_c2274214(selenium, base_url, wait, variable
     submit_addon.android_compat_checkbox.click()
     submit_addon.android_compat_pop_up.is_displayed()
     submit_addon.android_compat_yes_button.click()
-    # on submit source code page, select 'Yes' to upload source code
-    source = submit_addon.click_continue_upload_button()
-    source.select_no_to_omit_source()
-    # source.choose_source("listed-addon.zip")
-    details_form = source.continue_listed_submission()
+    # the upload now continues straight to the details form (the source-code
+    # step was moved to after the details form)
+    submit_addon.click_continue_upload_button()
+    details_form = ListedAddonSubmissionForm(
+        selenium, base_url
+    ).wait_for_page_to_load()
     # setting a unique add-on name
     details_form.addon_name_field.clear()
     addon_name = f"Listed-{reusables.current_date()}-{reusables.get_random_string(5)}"
@@ -340,18 +344,19 @@ def test_submit_addon_3mb_size_tc_id_c2274214(selenium, base_url, wait, variable
     details_form.is_experimental.click()
     # flag add-on for payment requirements
     details_form.requires_payment.click()
-    # reusables.scroll_into_view(selenium, details_form.categories_section)
     # set Firefox and Android categories for the addon
     details_form.select_categories(0)
-    # details_form.select_android_categories(0)
     details_form.email_input_field("some-mail@mail.com")
     details_form.support_site_input_field("https://example.com")
     # set an addon license from the available list
     details_form.select_license_options[0].click()
     details_form.set_privacy_policy(variables["listed_addon_privacy_policy_en"])
     details_form.set_reviewer_notes(variables["listed_addon_reviewer_notes"])
-    # submit the add-on details
-    confirmation_page = details_form.submit_addon()
+    # submitting the details advances to the source-code step; select 'No' to
+    # omit source code, then finish
+    source = details_form.submit_details_continue_to_source()
+    source.select_no_to_omit_source()
+    confirmation_page = source.continue_to_confirmation()
     assert (
         variables["listed_submission_confirmation"]
         in confirmation_page.submission_confirmation_messages[0].text
@@ -482,15 +487,24 @@ def test_submit_unicode_addon_tc_id_c4590(
     # waits for the validation to complete and checks that is successful
     time.sleep(5)
     submit_addon.is_validation_successful()
-    # on submit source code page, select 'No' to upload source code
-    source = submit_addon.click_continue_upload_button()
-    source.select_no_to_omit_source()
-    details_form = source.continue_listed_submission()
+    # a manifest-only add-on does not trigger the source-code step, so the
+    # upload continues straight to the listing details form
+    submit_addon.click_continue_upload_button()
+    details_form = ListedAddonSubmissionForm(
+        selenium, base_url
+    ).wait_for_page_to_load()
+    # the slug auto-derived from the (fixed) unicode name collides with add-ons
+    # submitted by previous runs, so set a unique slug while keeping the unicode
+    # name and description under test
+    details_form.edit_addon_slug(f"unicode-addon-{reusables.get_random_string(10)}")
     details_form.select_categories(0)
     # set an addon license from the available list
     details_form.select_license_options[0].click()
-    # submit the add-on details
-    confirmation_page = details_form.submit_addon()
+    # submitting the details advances to the source-code step (now placed after
+    # the details form); select 'No' to omit source code and finish
+    source = details_form.submit_details_continue_to_source()
+    source.select_no_to_omit_source()
+    confirmation_page = source.continue_to_confirmation()
     assert (
         variables["listed_submission_confirmation"]
         in confirmation_page.submission_confirmation_messages[0].text
@@ -565,14 +579,21 @@ def test_cancel_and_disable_version_during_upload(selenium, base_url, wait):
 def test_delete_all_extensions(selenium, base_url):
     """This test will delete all the extensions submitted above to make sure
     we can start over with this user in the following runs and also for
-    verifying that the addon deletion process functions correctly"""
+    verifying that the addon deletion process functions correctly. Handles
+    both complete addons (with full edit flow) and incomplete addons whose
+    listing only exposes Resume + Delete actions."""
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     manage_addons = page.click_my_addons_header_link()
     # run the delete steps until all the addons are cleared from the list
     while len(manage_addons.addon_list) > 0:
         addon = manage_addons.addon_list[0]
-        edit = addon.click_addon_name()
-        manage = edit.click_manage_versions_link()
-        delete = manage.delete_addon()
-        delete.input_delete_confirmation_string()
-        delete.confirm_delete_addon()
+        if addon.is_incomplete:
+            # incomplete addons only have Resume + Delete actions, no edit link;
+            # Delete opens an inline modal on the dashboard rather than navigating
+            addon.delete_incomplete_addon()
+        else:
+            edit = addon.click_addon_name()
+            manage = edit.click_manage_versions_link()
+            delete = manage.delete_addon()
+            delete.input_delete_confirmation_string()
+            delete.confirm_delete_addon()

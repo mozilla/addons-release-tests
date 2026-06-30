@@ -601,6 +601,16 @@ class UploadSource(Page):
             self.driver, self.base_url
         ).wait_for_page_to_load()
 
+    def continue_to_confirmation(self):
+        """Continue from the source-code step to the submission confirmation
+        page. Used when the source-code step comes after the details form (the
+        details have already been filled in), so continuing finishes the
+        submission rather than advancing to the details form."""
+        self.find_element(*self._continue_button_locator).click()
+        return SubmissionConfirmationPage(
+            self.driver, self.base_url
+        ).wait_for_page_to_load()
+
     @property
     def source_upload_fail_message(self):
         self.wait.until(
@@ -737,6 +747,7 @@ class ListedAddonSubmissionForm(Page):
         edit_field = WebDriverWait(self.driver, 10).until(
             EC.visibility_of_element_located(self._edit_addon_slug_field_locator)
         )
+        edit_field.clear()
         edit_field.send_keys(value)
 
     def set_addon_summary(self, value):
@@ -866,6 +877,15 @@ class ListedAddonSubmissionForm(Page):
         return SubmissionConfirmationPage(
             self.driver, self.base_url
         ).wait_for_page_to_load()
+
+    def submit_details_continue_to_source(self):
+        """Submit the listing details and advance to the source-code step.
+
+        AMO moved the 'Do You Need to Submit Source Code?' step to after the
+        details form, so submitting the details lands on the source-code page
+        rather than the confirmation page."""
+        self.find_element(*self._submit_addon_button_locator).click()
+        return UploadSource(self.driver, self.base_url).wait_for_page_to_load()
 
     def cancel_submission(self):
         self.find_element(*self._cancel_addon_submission_button_locator).click()
