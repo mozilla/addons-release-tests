@@ -5,15 +5,15 @@ abuse_report_unauthenticated_response = {
     'reporter_name': "A name",
     'reporter_email': "reporter@test.com",
     'addon': {
-        'guid': '{463b483d-6150-43c9-9b52-a3d08d5ecd3a}',
-        'id': 1018565,
-        'slug': 'automation-abuse-report-add-on'
+        'guid': '{446900e4-71c2-419f-a6a7-df9c091e268b}',
+        'id': 621352,
+        'slug': 'bitwarden-password-manager'
     },
     'addon_install_method': 'link',
     'addon_install_origin': 'https://addons-server.readthedocs.io/en/latest/topics/api/abuse.html',
     'addon_install_source': 'amo',
-    'addon_install_source_url': 'https://addons.allizom.org/en-US/firefox/addon/automation-abuse-report-add-on/',
-    'addon_name': 'automation-abuse-report-add-on',
+    'addon_install_source_url': 'https://addons.allizom.org/en-US/firefox/addon/bitwarden-password-manager/',
+    'addon_name': 'bitwarden-password-manager',
     'addon_signature': 'signed',
     'addon_summary': 'Random summary',
     'addon_version': '1.1',
@@ -42,15 +42,15 @@ abuse_report_authenticated_response = {
     "reporter_name": "A name",
     "reporter_email": "reporter@test.com",
     "addon": {
-        "guid": "{463b483d-6150-43c9-9b52-a3d08d5ecd3a}",
-        "id": 1018565,
-        "slug": "automation-abuse-report-add-on"
+        "guid": "{446900e4-71c2-419f-a6a7-df9c091e268b}",
+        "id": 621352,
+        "slug": "bitwarden-password-manager"
     },
     "addon_install_method": "link",
     "addon_install_origin": "https://addons-server.readthedocs.io/en/latest/topics/api/abuse.html",
     "addon_install_source": "amo",
-    "addon_install_source_url": "https://addons.allizom.org/en-US/firefox/addon/automation-abuse-report-add-on/",
-    "addon_name": "automation-abuse-report-add-on",
+    "addon_install_source_url": "https://addons.allizom.org/en-US/firefox/addon/bitwarden-password-manager/",
+    "addon_name": "bitwarden-password-manager",
     "addon_signature": "signed",
     "addon_summary": "Random summary",
     "addon_version": "1.1",
@@ -79,9 +79,9 @@ abuse_report_minimal_details = {
     "reporter_name": None,
     "reporter_email": None,
     "addon": {
-        "guid": "{463b483d-6150-43c9-9b52-a3d08d5ecd3a}",
-        "id": 1018565,
-        "slug": "automation-abuse-report-add-on"
+        "guid": "{446900e4-71c2-419f-a6a7-df9c091e268b}",
+        "id": 621352,
+        "slug": "bitwarden-password-manager"
     },
     "addon_install_method": None,
     "addon_install_origin": None,

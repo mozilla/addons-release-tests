@@ -234,16 +234,16 @@ author_stats = {
 }
 
 abuse_report_full_body = {
-        "addon": "{463b483d-6150-43c9-9b52-a3d08d5ecd3a}",
+        "addon": "{446900e4-71c2-419f-a6a7-df9c091e268b}",
         "message": "test from the API,both",
         "reason": "settings",
         "install_date": "2023-10-10T15:00:14Z",
-        "addon_name": "automation-abuse-report-add-on",
+        "addon_name": "bitwarden-password-manager",
         "report_entry_point": "amo",
         "addon_install_method": "link",
         "addon_install_origin": "https://addons-server.readthedocs.io/en/latest/topics/api/abuse.html",
         "addon_install_source": "amo",
-        "addon_install_source_url": "https://addons.allizom.org/en-US/firefox/addon/automation-abuse-report-add-on/",
+        "addon_install_source_url": "https://addons.allizom.org/en-US/firefox/addon/bitwarden-password-manager/",
         "addon_signature": "signed",
         "addon_summary": "Random summary",
         "addon_version": "1.1",

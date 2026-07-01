@@ -25,9 +25,14 @@ def get_random_string(length):
 
 
 def current_date():
-    """Getting the current date in string format"""
+    """Getting the current date in string format.
+
+    AMO displays dates without a leading zero on the day (e.g. "Jul 1, 2026").
+    The '%-d'/'%#d' strftime flags for stripping the leading zero are
+    platform-specific (POSIX vs Windows), so build the day from the integer
+    value to stay portable across the environments the suite runs on."""
     today = datetime.datetime.today()
-    time = today.strftime('%b %#d, %Y')
+    time = f"{today.strftime('%b')} {today.day}, {today.year}"
     return time
 
 
