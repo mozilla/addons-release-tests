@@ -571,29 +571,22 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install Python 3.11
-          command: choco install python --version=3.11.9 --allow-downgrade
-      - run:
-          name: Upgrade pip
-          command: py -m pip install --upgrade pip --user
+          name: Install Firefox Nightly via Mozilla APT
+          command: |
+            wget -q https://packages.mozilla.org/apt/repo-signing-key.gpg -O- | sudo gpg --dearmor -o /etc/apt/keyrings/packages.mozilla.org.gpg
+            echo "deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.gpg] https://packages.mozilla.org/apt mozilla main" | sudo tee /etc/apt/sources.list.d/mozilla.list
+            sudo apt-get update -qq -o Dir::Etc::sourcelist=/etc/apt/sources.list.d/mozilla.list -o Dir::Etc::sourceparts="-"
+            sudo apt-get install -y -qq firefox-nightly
+            firefox-nightly --version
       - run:
           name: Install requirements
-          command: py -3.11 -m pip install --no-deps -r ./requirements.txt
-      - run:
-          name: Install geckodriver
-          command: choco install selenium-gecko-driver -y
-      - run:
-          name: Install Firefox
-          command: choco install firefox-nightly --pre --ignore-checksums -y
-      - run:
-          name: Install Setup Tools
-          command: py -3.11 -m pip install "setuptools<70.0.0"
+          command: pip install -r ./requirements.txt
       - run:
           name: WEBEXT - Stage Tests
           environment:
             MOZ_HEADLESS: 1
             PYTEST_ADDOPTS: -n 1 --reruns 2
-          command: py -3.11 -m pytest tests\webext\ --driver Firefox --variables stage.json --html=webext-release-stage-results.html --self-contained-html
+          command: python -m pytest tests/webext/ --driver Firefox --variables stage.json --html=webext-release-stage-results.html --self-contained-html
           no_output_timeout: 30m
       - store_artifacts:
           path: webext-release-stage-results.html

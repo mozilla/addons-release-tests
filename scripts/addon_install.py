@@ -50,6 +50,41 @@ def install_from_xpi_url(driver, xpi_url):
     )
 
 
+def accept_popup_notification(driver, notification, button="primary"):
+    """Click a FoxPuppet popup-notification door-hanger button via JS.
+
+    Firefox Nightly 153+ renders the popup-notification buttons as
+    ``<moz-button>`` custom elements. FoxPuppet's ``.install()`` /
+    ``.close()`` / ``.allow()`` methods call Marionette's native
+    ``WebElement.click()``, which first tries to scroll the element into
+    view and throws ``ElementNotInteractableException: Element <moz-button
+    ...> could not be scrolled into view`` on the moz-button shadow DOM
+    (reproduces on Linux CI and on macOS with Nightly 154+).
+
+    A JS ``.click()`` bypasses Marionette's scroll-into-view. The real
+    command handler lives on the inner shadow ``<button>``, so we click that
+    when present and fall back to the host element otherwise.
+
+    ``button`` selects which door-hanger button to press: ``"primary"``
+    (accept/install), ``"secondary"`` (cancel) or ``"close"``.
+    """
+    finder = {
+        "primary": notification.find_primary_button,
+        "secondary": notification.find_secondary_button,
+        "close": notification.find_close_button,
+    }[button]
+    with driver.context(driver.CONTEXT_CHROME):
+        host = finder()
+        driver.execute_script(
+            """
+            const host = arguments[0];
+            const inner = host.shadowRoot && host.shadowRoot.querySelector('button');
+            (inner || host).click();
+            """,
+            host,
+        )
+
+
 def install_older_version_via_chrome(driver, xpi_url):
     """Switch into chrome context and call :func:`install_from_xpi_url`.
 

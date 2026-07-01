@@ -7,6 +7,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from pages.desktop.about_addons import AboutAddons
 from pages.desktop.frontend.versions import Versions
 from scripts.addon_install import install_older_version_via_chrome
+from scripts.addon_install import accept_popup_notification
 
 
 # -------- helpers ---------------------------------------------------------
@@ -42,12 +43,18 @@ def _install_older_version_from_amo(
         f"{len(versions_page.versions_list)} version cards are listed"
     )
     install_older_version_via_chrome(selenium, xpi_url)
-    firefox.browser.wait_for_notification(
-        firefox_notifications.AddOnInstallConfirmation
-    ).install()
-    firefox.browser.wait_for_notification(
-        firefox_notifications.AddOnInstallComplete
-    ).close()
+    accept_popup_notification(
+        selenium,
+        firefox.browser.wait_for_notification(
+            firefox_notifications.AddOnInstallConfirmation
+        ),
+    )
+    accept_popup_notification(
+        selenium,
+        firefox.browser.wait_for_notification(
+            firefox_notifications.AddOnInstallComplete
+        ),
+    )
     if len(selenium.window_handles) > 1:
         selenium.switch_to.window(selenium.window_handles[0])
 
