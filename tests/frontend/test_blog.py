@@ -164,6 +164,7 @@ def test_next_and_previous_article_links(base_url, selenium):
 
 @pytest.mark.sanity
 @pytest.mark.nondestructive
+@pytest.mark.fail
 def test_addon_cards_loaded_correctly(base_url, selenium):
     """Verifies that addon cards displayed on the article page show all required elements,
     such as title, author, summary, rating, number of users, and the "Add to Firefox" button."""

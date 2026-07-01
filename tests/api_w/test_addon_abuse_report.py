@@ -56,7 +56,7 @@ def test_abuse_report_authenticated(base_url, selenium):
 def test_abuse_report_minimal_details(base_url, selenium, session_auth):
     """Tests the submission of an abuse report with minimal details and verifies the correct response."""
     payload = {
-        "addon": "{463b483d-6150-43c9-9b52-a3d08d5ecd3a}",
+        "addon": "{446900e4-71c2-419f-a6a7-df9c091e268b}",
         "message": "test from the API,both"
     }
     create_abuse_report = requests.post(

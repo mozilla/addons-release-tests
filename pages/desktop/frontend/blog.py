@@ -152,12 +152,15 @@ class ArticlePage(Base):
         _title_locator = (By.CSS_SELECTOR, ".AddonTitle > a")
         _author_locator = (By.CSS_SELECTOR, ".AddonTitle-author > a")
         _summary_locator = (By.CLASS_NAME, "StaticAddonCard-summary")
-        _rating_locator = (By.CLASS_NAME, "Rating")
-        _users_number_locator = (By.CLASS_NAME, "StaticAddonCard-metadata-adu")
+        _rating_locator = (By.CSS_SELECTOR, '[data-testid="badge-star-full"] .Badge-content')
+        _users_number_locator = (
+            By.CSS_SELECTOR,
+            '[data-testid="badge-user-fill"] .Badge-content',
+        )
         _add_to_firefox_button_locator = (By.CLASS_NAME, "GetFirefoxButton-button")
         _recommended_badge_link_locator = (
-            By.CLASS_NAME,
-            "PromotedBadge-link--recommended",
+            By.CSS_SELECTOR,
+            '[data-testid="badge-recommended"] a.Badge-link',
         )
 
         @property
@@ -177,20 +180,22 @@ class ArticlePage(Base):
 
         @property
         def rating(self):
-            self.wait.until(EC.visibility_of_element_located(self._rating_locator))
-            rating = self.find_element(*self._rating_locator).get_attribute("title")
-            if "There are no ratings yet" in rating:
+            # the star badge is only rendered when the add-on has at least one rating
+            if not self.find_elements(*self._rating_locator):
                 return 0
-            return float(rating.split()[1])
+            self.wait.until(EC.visibility_of_element_located(self._rating_locator))
+            # badge content looks like "4.9 (96 reviews)"
+            return float(self.find_element(*self._rating_locator).text.split()[0])
 
         @property
         def users_number(self):
             self.wait.until(
                 EC.visibility_of_element_located(self._users_number_locator)
             )
+            # badge content looks like "10,148 Users"
             return int(
                 self.find_element(*self._users_number_locator)
-                .text.split("Users: ")[1]
+                .text.split()[0]
                 .replace(",", "")
             )
 
