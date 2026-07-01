@@ -6,6 +6,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from pages.desktop.about_addons import AboutAddons
 from scripts.shadow_dom import shadow_query, shadow_visible
+from scripts.addon_install import accept_popup_notification
 
 
 # -------- helpers ---------------------------------------------------------
@@ -31,12 +32,18 @@ def _install_an_extension(selenium, base_url, firefox, firefox_notifications):
         c for c in page.addon_cards_items if c.is_extension_card()
     )
     extension_card.install_button.click()
-    firefox.browser.wait_for_notification(
-        firefox_notifications.AddOnInstallConfirmation
-    ).install()
-    firefox.browser.wait_for_notification(
-        firefox_notifications.AddOnInstallComplete
-    ).close()
+    accept_popup_notification(
+        selenium,
+        firefox.browser.wait_for_notification(
+            firefox_notifications.AddOnInstallConfirmation
+        ),
+    )
+    accept_popup_notification(
+        selenium,
+        firefox.browser.wait_for_notification(
+            firefox_notifications.AddOnInstallComplete
+        ),
+    )
     if len(selenium.window_handles) == 2:
         selenium.switch_to.window(selenium.window_handles[0])
     page.click_extensions_side_button()

@@ -6,6 +6,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
 from pages.desktop.about_addons import AboutAddons
+from scripts.addon_install import accept_popup_notification
 
 TOP_N_EXTENSIONS = 3
 
@@ -130,12 +131,18 @@ def test_suite_top_listed_extensions_install(
             page.click_recommendations_side_button()
             continue
 
-        firefox.browser.wait_for_notification(
-            firefox_notifications.AddOnInstallConfirmation
-        ).install()
-        firefox.browser.wait_for_notification(
-            firefox_notifications.AddOnInstallComplete
-        ).close()
+        accept_popup_notification(
+            selenium,
+            firefox.browser.wait_for_notification(
+                firefox_notifications.AddOnInstallConfirmation
+            ),
+        )
+        accept_popup_notification(
+            selenium,
+            firefox.browser.wait_for_notification(
+                firefox_notifications.AddOnInstallComplete
+            ),
+        )
         if len(selenium.window_handles) > 1:
             selenium.switch_to.window(selenium.window_handles[0])
         installs_done += 1

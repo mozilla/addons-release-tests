@@ -6,6 +6,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from pages.desktop.about_addons import AboutAddons
 from pages.desktop.toolbar.toolbar import Toolbar
+from scripts.addon_install import accept_popup_notification
 
 
 # -------- helpers ---------------------------------------------------------
@@ -18,12 +19,18 @@ def _install_first_extension(selenium, base_url, firefox, firefox_notifications)
     page.click_recommendations_side_button()
     ext = next(c for c in page.addon_cards_items if c.is_extension_card())
     ext.install_button.click()
-    firefox.browser.wait_for_notification(
-        firefox_notifications.AddOnInstallConfirmation
-    ).install()
-    firefox.browser.wait_for_notification(
-        firefox_notifications.AddOnInstallComplete
-    ).close()
+    accept_popup_notification(
+        selenium,
+        firefox.browser.wait_for_notification(
+            firefox_notifications.AddOnInstallConfirmation
+        ),
+    )
+    accept_popup_notification(
+        selenium,
+        firefox.browser.wait_for_notification(
+            firefox_notifications.AddOnInstallComplete
+        ),
+    )
     if len(selenium.window_handles) == 2:
         selenium.switch_to.window(selenium.window_handles[0])
     page.click_extensions_side_button()
@@ -44,9 +51,12 @@ def _install_first_theme(selenium, base_url, firefox, firefox_notifications):
     if theme is None:
         return None
     theme.install_button.click()
-    firefox.browser.wait_for_notification(
-        firefox_notifications.AddOnInstallConfirmation
-    ).install()
+    accept_popup_notification(
+        selenium,
+        firefox.browser.wait_for_notification(
+            firefox_notifications.AddOnInstallConfirmation
+        ),
+    )
     if len(selenium.window_handles) == 2:
         selenium.switch_to.window(selenium.window_handles[0])
     page.click_themes_side_button()
@@ -176,9 +186,12 @@ def test_suite_install_extension_from_private_window(
         c for c in page.addon_cards_items if c.is_extension_card()
     )
     extension_card.install_button.click()
-    firefox.browser.wait_for_notification(
-        firefox_notifications.AddOnInstallConfirmation
-    ).install()
+    accept_popup_notification(
+        selenium,
+        firefox.browser.wait_for_notification(
+            firefox_notifications.AddOnInstallConfirmation
+        ),
+    )
 
 @pytest.mark.webext
 def test_suite_about_debugging_load_temp_addon(

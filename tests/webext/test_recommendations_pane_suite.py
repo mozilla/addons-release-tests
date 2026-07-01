@@ -6,6 +6,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from pages.desktop.about_addons import AboutAddons
 from scripts.shadow_dom import shadow_visible
+from scripts.addon_install import accept_popup_notification
 
 
 # -------- chrome-level dialog helper --------------------------------------
@@ -55,12 +56,18 @@ def test_suite_install_extension_from_recommendations_TC_ID_C617016(
 
     # Step 2 — click "+ Add to Firefox": permission door-hanger appears
     ext_card.install_button.click()
-    firefox.browser.wait_for_notification(
-        firefox_notifications.AddOnInstallConfirmation
-    ).install()
-    firefox.browser.wait_for_notification(
-        firefox_notifications.AddOnInstallComplete
-    ).close()
+    accept_popup_notification(
+        selenium,
+        firefox.browser.wait_for_notification(
+            firefox_notifications.AddOnInstallConfirmation
+        ),
+    )
+    accept_popup_notification(
+        selenium,
+        firefox.browser.wait_for_notification(
+            firefox_notifications.AddOnInstallComplete
+        ),
+    )
     if len(selenium.window_handles) == 2:
         selenium.switch_to.window(selenium.window_handles[0])
 
@@ -130,9 +137,12 @@ def test_suite_install_theme_from_recommendations_TC_ID_C617017(
         pytest.skip("Discovery feed returned no theme cassettes this run")
 
     theme_card.install_button.click()
-    firefox.browser.wait_for_notification(
-        firefox_notifications.AddOnInstallConfirmation
-    ).install()
+    accept_popup_notification(
+        selenium,
+        firefox.browser.wait_for_notification(
+            firefox_notifications.AddOnInstallConfirmation
+        ),
+    )
     if len(selenium.window_handles) == 2:
         selenium.switch_to.window(selenium.window_handles[0])
 
