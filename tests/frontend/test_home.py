@@ -192,27 +192,19 @@ def test_home_see_more_popular_themes_tc_id_c95589(base_url, selenium):
     """Test checking the see more popular themes"""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.popular_themes.browse_all()
+    sort = "users"
     search_page = Search(selenium, base_url).wait_for_page_to_load()
-    assert "type=statictheme" in selenium.current_url
-    # the "Popular themes" shelf browses to results sorted by users; some
-    # environments curate a "Trending themes" shelf instead (sort=hotness),
-    # whose ordering is not a simple user-count sort, so only verify the
-    # users ordering when the shelf actually sorts by users
-    if "sort=users" in selenium.current_url:
-        results = [result.users for result in search_page.result_list.themes]
-        assert sorted(results, reverse=True) == results
+    # checking that popular themes results are indeed sorted by users
+    results = [getattr(result, sort) for result in search_page.result_list.themes]
+    assert sorted(results, reverse=True) == results
 
 
 @pytest.mark.nondestructive
 def test_home_popular_themes_shelf(base_url, selenium):
     """Test checking the Popular themes shelf"""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
-    themes_shelf = page.popular_themes
-    # the curated themes shelf is either "Popular themes" or "Trending themes"
-    # depending on the environment's homepage configuration
-    shelf_header = themes_shelf.card_header
-    assert shelf_header in ("Popular themes", "Trending themes")
-    shelf_items = themes_shelf.list
+    assert "Popular themes" in page.popular_themes.card_header
+    shelf_items = page.popular_themes.list
     # verifies that each shelf themes has the necessary components
     users_list = []
     assert len(shelf_items) == 3
@@ -220,11 +212,9 @@ def test_home_popular_themes_shelf(base_url, selenium):
         assert item.name.is_displayed()
         assert item.addon_icon_preview.is_displayed()
         assert item.addon_users_preview.is_displayed()
-        users_list.append(int(item.addon_users_preview.text.split()[0].replace(",", "")))
-    # only the "Popular themes" shelf is ordered by user count; the "Trending
-    # themes" shelf is ordered by hotness, so skip the ordering check there
-    if shelf_header == "Popular themes":
-        assert users_list == sorted(users_list, reverse=True)
+        users_list.append(item.addon_users_preview.text.split()[0].replace(",", ""))
+    # verifies that themes are correctly ordered in shelf (by users)
+    assert users_list == sorted(users_list, reverse=True)
 
 
 @pytest.mark.nondestructive

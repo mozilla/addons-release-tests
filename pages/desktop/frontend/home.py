@@ -17,13 +17,7 @@ class Home(Base):
     _hero_locator = (By.CLASS_NAME, "HeroRecommendation")
     _secondary_hero_locator = (By.CLASS_NAME, "SecondaryHero")
     _popular_extensions_locator = (By.CLASS_NAME, "Home-PopularExtensions")
-    # the curated themes shelf on the homepage is either "Popular themes"
-    # (sorted by users) or "Trending themes" (sorted by hotness) depending on
-    # the environment's homepage configuration, so match either shelf class
-    _popular_themes_locator = (
-        By.CSS_SELECTOR,
-        ".Home-Popular-themes, .Home-Trending-themes",
-    )
+    _popular_themes_locator = (By.CLASS_NAME, "Home-Popular-themes")
     _themes_category_locator = (By.CLASS_NAME, "Home-CuratedThemes")
     _toprated_themes_locator = (By.CLASS_NAME, "Home-TopRatedThemes")
     _featured_collections_locator = (By.CLASS_NAME, "Home-FeaturedCollection")

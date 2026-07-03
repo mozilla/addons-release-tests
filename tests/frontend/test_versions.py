@@ -101,10 +101,7 @@ def test_current_version(selenium, base_url, variables):
     api_date = response.json()["current_version"]["file"]["created"][:10]
     # process the date to have the same format as in frontend
     api_date = datetime.strptime(api_date, "%Y-%m-%d")
-    # build the date without a leading zero on the day in a cross-platform way;
-    # `%#d` (Windows) and `%-d` (Linux/macOS) are not portable, so format the
-    # day explicitly to match how the frontend renders it (e.g. "Jul 5, 2020")
-    api_processed_date = f"{api_date.strftime('%b')} {api_date.day}, {api_date.year}"
+    api_processed_date = datetime.strftime(api_date, "%b %#d, %Y")
     # verify info displayed in page
     page = Versions(selenium, base_url)
     selenium.get(f'{base_url}/addon/{variables["addon_version_install"]}/versions/')

@@ -684,16 +684,13 @@ def test_screenshot_ui_navigation(selenium, base_url, variables):
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
-    # the number of screenshots differs per environment/add-on, so derive the
-    # expected counter total from the thumbnails instead of hardcoding it
-    screenshots_count = len(addon.screenshots.screenshot_preview)
     addon.screenshots.screenshot_preview[0].click()
     time.sleep(1)
     # click on the right arrow to navigate to the next image
     # addon.screenshots.go_to_next_screenshot()
     action = ActionChains(selenium)
     action.send_keys(Keys.ARROW_RIGHT)
-    assert f"1 / {screenshots_count}" in addon.screenshots.screenshot_counter
+    assert "1 / 6" in addon.screenshots.screenshot_counter
     # click on the left arrow to navigate to the previous image
     action.send_keys(Keys.ARROW_LEFT)
     assert "1" in addon.screenshots.screenshot_counter
@@ -705,15 +702,12 @@ def test_screenshot_keyboard_navigation_tc_id_c4535(selenium, base_url, variable
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
-    # the number of screenshots differs per environment/add-on, so derive the
-    # expected counter total from the thumbnails instead of hardcoding it
-    screenshots_count = len(addon.screenshots.screenshot_preview)
     action = ActionChains(selenium)
     addon.screenshots.screenshot_preview[0].click()
     time.sleep(1)
     # send the right key to navigate to the next image
     action.send_keys(Keys.ARROW_RIGHT)
-    assert f"1 / {screenshots_count}" in addon.screenshots.screenshot_counter
+    assert "1 / 6" in addon.screenshots.screenshot_counter
     # send the left key to navigate to the previous image
     action.send_keys(Keys.ARROW_LEFT)
     assert "1" in addon.screenshots.screenshot_counter

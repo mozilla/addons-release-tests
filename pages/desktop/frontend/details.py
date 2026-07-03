@@ -301,11 +301,7 @@ class Detail(Base):
 
         @property
         def stats_users_count(self):
-            # scope the lookup to the user badge element itself; an absolute
-            # XPath (leading '//') would match the first ".Badge" in the whole
-            # document, which on some addons is the "Available on Firefox for
-            # Android" badge and yields "Available" instead of the user count
-            count = self.addon_user_stats.find_element(By.CSS_SELECTOR, ".Badge-content").text
+            count = self.addon_user_stats.find_element(By.XPATH, "//div[@class='Badge']//span[2]").text
             return int(count.split()[0].replace(",", ""))
 
         @property
@@ -322,7 +318,7 @@ class Detail(Base):
         @property
         def stats_reviews_count(self):
             count = self.addon_reviews_stats
-            text = count.find_element(By.CSS_SELECTOR, ".Badge-content").text
+            text = count.find_element(By.XPATH, "//div[@data-testid='badge-star-full']//a//span[2]").text
             match = re.search(r'\((\d+)\s+reviews\)', text)
             if match:
                 return int(match.group(1))

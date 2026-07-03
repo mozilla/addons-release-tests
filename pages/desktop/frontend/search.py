@@ -134,11 +134,8 @@ class Search(Page):
         class ResultListItems(Region):
             _rating_locator = (By.CSS_SELECTOR, ".Rating--small")
             _search_item_name_locator = (By.CSS_SELECTOR, ".SearchResult-link")
-            # scope these to the result card (CSS is relative to the region
-            # root); the previous absolute XPath ("//...") searched the whole
-            # document and returned the first result's badge for every card
-            _promoted_badge_locator = (By.CSS_SELECTOR, ".Badge--has-link")
-            _promoted_badge_label_locator = (By.CSS_SELECTOR, ".Badge--has-link .Badge-content")
+            _promoted_badge_locator = (By.XPATH, "//div[@class='Badge Badge--has-link']")
+            _promoted_badge_label_locator = (By.XPATH, "//div[@class='Badge Badge--has-link']//span[2]")
             _users_locator = (By.CLASS_NAME, "SearchResult-users")
             _users_number_locator = (By.CLASS_NAME, "SearchResult-users-text")
             _icon_locator = (By.CLASS_NAME, "SearchResult-icon")
@@ -214,12 +211,8 @@ class Search(Page):
 
             @property
             def promoted_badge(self):
-                # use a region-scoped lookup so we check this result's badge,
-                # not the first promoted badge on the page
-                self.wait.until(
-                    lambda _: self.find_element(
-                        *self._promoted_badge_locator
-                    ).is_displayed(),
+                WebDriverWait(self.driver, 10).until(
+                    EC.visibility_of_element_located(self._promoted_badge_locator),
                     message="Promoted badge was not found for these search results",
                 )
                 return self
