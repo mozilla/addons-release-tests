@@ -63,8 +63,6 @@ class DevHubHome(Base):
     )
     _get_involved_image_locator = (By.CLASS_NAME, "DevHub-content-image--get-involved")
     _footer_language_picker_locator = (By.ID, "language")
-    _footer_products_section_locator = (By.CSS_SELECTOR, ".Footer-products-links")
-    _footer_links_locator = (By.CSS_SELECTOR, ".Footer-links li a")
 
     # elements visible only to logged in users
     _sign_out_link_locator = (
@@ -324,12 +322,6 @@ class DevHubHome(Base):
     def footer_language_picker(self, value):
         select = Select(self.find_element(*self._footer_language_picker_locator))
         select.select_by_visible_text(value)
-
-    @property
-    def products_links(self):
-        self.wait_for_element_to_be_displayed(self._footer_products_section_locator)
-        element = self.find_element(*self._footer_products_section_locator)
-        return element.find_elements(*self._footer_links_locator)
 
     class MyAddonsList(Region):
         _my_addon_icon_locator = (By.CSS_SELECTOR, ".DevHub-MyAddons-item-icon")
