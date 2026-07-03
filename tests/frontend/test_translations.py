@@ -65,10 +65,11 @@ def test_shelf_titles_translations(base_url, selenium, variables, language):
         variables[language]["home_page"]["shelf_title_recommended_extensions"]
         in page.addon_shelf_titles
     )
-    assert (
-        variables[language]["home_page"]["shelf_title_popular_themes"]
-        in page.addon_shelf_titles
-    )
+    # Note: the middle themes shelf on the homepage is curated content that
+    # differs between environments (e.g. "Popular themes" on stage vs
+    # "Trending themes" on dev) and is not always localized per environment,
+    # so we don't assert on it here. The recommended themes shelf below is
+    # stable across environments and still validates themes-shelf translation.
     assert (
         variables[language]["home_page"]["shelf_title_recommended_themes"]
         in page.addon_shelf_titles
