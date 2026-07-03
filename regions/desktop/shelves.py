@@ -57,17 +57,24 @@ class Shelves(Region):
             _addon_icon_locator = (By.CLASS_NAME, 'SearchResult-icon')
             _addon_users_locator = (By.CSS_SELECTOR, 'span[class="SearchResult-users-text"]')
 
+            # Note: these wait on the region-scoped element being displayed
+            # rather than EC.visibility_of_element_located, which is driver
+            # scoped and waits for the first matching element anywhere on the
+            # page. With several shelf items sharing the same classes, that
+            # global wait can return while a later item's element is not yet
+            # visible, making is_displayed() flakily return False.
+            def _wait_displayed(self, locator):
+                self.wait.until(lambda _: self.find_element(*locator).is_displayed())
+                return self.find_element(*locator)
+
             @property
             def name(self):
-                self.wait.until(EC.visibility_of_element_located(self._addon_name_locator))
-                return self.find_element(*self._addon_name_locator).text
+                return self._wait_displayed(self._addon_name_locator).text
 
             @property
             def addon_icon_preview(self):
-                self.wait.until(EC.visibility_of_element_located(self._addon_icon_locator))
-                return self.find_element(*self._addon_icon_locator)
+                return self._wait_displayed(self._addon_icon_locator)
 
             @property
             def addon_users_preview(self):
-                self.wait.until(EC.visibility_of_element_located(self._addon_users_locator))
-                return self.find_element(*self._addon_users_locator)
+                return self._wait_displayed(self._addon_users_locator)

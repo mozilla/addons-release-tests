@@ -143,9 +143,34 @@ class ArticlePage(Base):
 
     @property
     def addon_cards(self):
+        # blog articles are shared content across environments, so some of the
+        # add-ons referenced by an article may not exist in a given environment
+        # (e.g. on -dev). Those render as "StaticAddonCard--is-unavailable" with
+        # no title/author/button, so we exclude them and only return the cards
+        # that actually resolved to an available add-on.
+        self.wait.until(
+            EC.presence_of_all_elements_located(self._static_addon_card_locator)
+        )
+
+        def _cards_hydrated(_):
+            # the "is-unavailable" state is applied during client-side
+            # hydration, so wait until every card has settled into either an
+            # unavailable state or a resolved one with a visible title before
+            # deciding which cards to keep
+            cards = self.find_elements(*self._static_addon_card_locator)
+            for el in cards:
+                if "StaticAddonCard--is-unavailable" in el.get_attribute("class"):
+                    continue
+                titles = el.find_elements(By.CSS_SELECTOR, ".AddonTitle > a")
+                if not titles or not titles[0].is_displayed():
+                    return False
+            return bool(cards)
+
+        self.wait.until(_cards_hydrated)
         return [
             self.AddonCard(self, el)
             for el in self.find_elements(*self._static_addon_card_locator)
+            if "StaticAddonCard--is-unavailable" not in el.get_attribute("class")
         ]
 
     class AddonCard(Region):
@@ -163,48 +188,50 @@ class ArticlePage(Base):
             '[data-testid="badge-recommended"] a.Badge-link',
         )
 
+        # Note: these waits use the region-scoped `find_element` rather than
+        # `EC.visibility_of_element_located`, which searches the whole document
+        # via the driver and would lock onto the first matching element on the
+        # page. On articles that contain unavailable (hidden) add-on cards, that
+        # first match belongs to a hidden card, so the driver-scoped wait would
+        # never see it become visible even for an available card region.
+        def _wait_displayed(self, locator):
+            self.wait.until(lambda _: self.find_element(*locator).is_displayed())
+            return self.find_element(*locator)
+
         @property
         def title(self):
-            self.wait.until(EC.visibility_of_element_located(self._title_locator))
-            return self.find_element(*self._title_locator)
+            return self._wait_displayed(self._title_locator)
 
         @property
         def author(self):
-            self.wait.until(EC.visibility_of_element_located(self._author_locator))
-            return self.find_element(*self._author_locator)
+            return self._wait_displayed(self._author_locator)
 
         @property
         def summary(self):
-            self.wait.until(EC.visibility_of_element_located(self._summary_locator))
-            return self.find_element(*self._summary_locator).text
+            return self._wait_displayed(self._summary_locator).text
 
         @property
         def rating(self):
             # the star badge is only rendered when the add-on has at least one rating
             if not self.find_elements(*self._rating_locator):
                 return 0
-            self.wait.until(EC.visibility_of_element_located(self._rating_locator))
             # badge content looks like "4.9 (96 reviews)"
-            return float(self.find_element(*self._rating_locator).text.split()[0])
+            return float(self._wait_displayed(self._rating_locator).text.split()[0])
 
         @property
         def users_number(self):
-            self.wait.until(
-                EC.visibility_of_element_located(self._users_number_locator)
-            )
-            # badge content looks like "10,148 Users"
-            return int(
-                self.find_element(*self._users_number_locator)
+            # badge content looks like "10,148 Users", or "No Users" when the
+            # add-on has no users yet
+            count = (
+                self._wait_displayed(self._users_number_locator)
                 .text.split()[0]
                 .replace(",", "")
             )
+            return int(count) if count.isdigit() else 0
 
         @property
         def add_to_firefox_button(self):
-            self.wait.until(
-                EC.visibility_of_element_located(self._add_to_firefox_button_locator)
-            )
-            return self.find_element(*self._add_to_firefox_button_locator)
+            return self._wait_displayed(self._add_to_firefox_button_locator)
 
         @property
         def is_recommended(self):

@@ -39,6 +39,16 @@
   "contribute_card_summary": "The developer of this extension asks that you help support its continued development by making a small contribution.",
   "install_warning_message": "This add-on is not actively monitored for security by Mozilla. Make sure you trust it before installing.",
 
+  "install_extension_slug": "cas-current-addon-1",
+  "install_extension_name": "cas-current-addon-1",
+  "install_theme_slug": "test_theme-auto",
+  "install_theme_name": "test_theme[AUTO]",
+  "install_dictionary_slug": "release_dictionary",
+  "install_dictionary_name": "release dictionary",
+  "install_langpack_slug": "language-עברית-hebrew-_cas-cur",
+  "install_langpack_name": "Language: עברית (Hebrew)",
+  "install_langpack_about_addons_name": "Language: עברית (Hebrew)",
+
   "static_page_blocked_addon": "https://addons-dev.allizom.org/en-US/firefox/blocked-addon/%7B904e7c93-3726-4f05-a357-cd2ceb32dedf%7D/",
   "blocked_addon_name": "Awaiting review",
   "static_page_login_expired_text": "Login authentication has expired. Reload the page to continue without authentication, or login again using the Log In link at the top of the page.",
