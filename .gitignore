@@ -14,3 +14,4 @@ assets/
 baseline-*.html
 .python-version
 /Library/
+/.npm/

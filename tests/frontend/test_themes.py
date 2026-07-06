@@ -81,8 +81,13 @@ def test_browse_more_recommended_themes(base_url, selenium):
     search_results = Search(selenium, base_url)
     select = Select(search_results.filter_by_badging)
     assert select.first_selected_option.text == "Recommended"
+    # add-ons made by Mozilla appear in the Recommended shelf/filter with a
+    # "By Firefox" badge instead of "Recommended", so accept either promoted label
+    valid_promoted_labels = ("Recommended", "By Firefox")
     for result in search_results.result_list.search_results:
-        assert "Recommended" in result.promoted_badge_label
+        assert any(
+            label in result.promoted_badge_label for label in valid_promoted_labels
+        )
 
 
 @pytest.mark.nondestructive
