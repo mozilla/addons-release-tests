@@ -374,10 +374,15 @@ def test_top_rated_recommended_themes_tc_id_c92462(base_url, selenium, variables
     assert len(search_page.result_list.themes) == len(
         search_page.result_list.search_results
     )
-    # verify badge type
+    # verify badge type; add-ons made by Mozilla are surfaced under the
+    # Recommended filter with a "By Firefox" badge instead of "Recommended",
+    # so accept either promoted label (mirrors test_filter_promoted)
+    valid_promoted_labels = ("Recommended", "By Firefox")
     results = search_page.result_list.search_results
     for result in results:
-        assert "Recommended" in result.promoted_badge_label
+        assert any(
+            label in result.promoted_badge_label for label in valid_promoted_labels
+        )
 
 
 @pytest.mark.nondestructive

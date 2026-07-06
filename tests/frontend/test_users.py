@@ -663,14 +663,19 @@ def test_user_profile_delete_review(base_url, selenium, variables, wait):
     user.edit.click_view_profile_link()
     # the review card doesn't have preload elements, so we need to wait for it to load individually
     user.view.user_reviews_section_loaded()
-    review_list_count = len(user.view.user_review_items)
+    # deleting a review on AMO removes the review text but keeps the star
+    # rating, so the total number of review cards does not change - instead the
+    # deleted review becomes a "rating only" card. We therefore track the number
+    # of cards that still contain text and expect that to drop by one.
+    reviews_with_text_count = len(user.view.user_reviews_with_text)
     delete = Detail(selenium, base_url)
     delete.ratings.delete_review.click()
-    user.view.user_review_items[0].click_confirm_delete_button()
-    # confirms that the review was deleted from the list
+    # confirm through the same page-level ratings region that opened the dialog
+    delete.ratings.delete_confirm_button.click()
+    # confirms that the review text was deleted (the card reverts to rating-only)
     wait.until(
-        lambda _: len(user.view.user_review_items) == review_list_count - 1,
-        message=f"Expected {review_list_count - 1} reviews but got {len(user.view.user_review_items)}",
+        lambda _: len(user.view.user_reviews_with_text) == reviews_with_text_count - 1,
+        message=f"Expected {reviews_with_text_count - 1} text reviews but got {len(user.view.user_reviews_with_text)}",
     )
 
 

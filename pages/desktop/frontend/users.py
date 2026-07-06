@@ -135,6 +135,14 @@ class User(Base):
             ".AddonsByAuthorsCard--theme .Paginate-page-number",
         )
         _user_review_list_locator = (By.CSS_SELECTOR, ".AddonReviewCard-viewOnly")
+        # deleting a review on AMO only removes the review text and keeps the
+        # star rating, so the card stays in the list but becomes a "rating only"
+        # card. Reviews that still contain text are therefore the cards that are
+        # NOT rating-only - use this to detect that a review's text was deleted.
+        _user_review_with_text_locator = (
+            By.CSS_SELECTOR,
+            ".AddonReviewCard-viewOnly:not(.AddonReviewCard-ratingOnly)",
+        )
         _user_abuse_report_button_locator = (
             By.CSS_SELECTOR,
             ".ReportUserAbuse-show-more",
@@ -393,6 +401,12 @@ class User(Base):
             items = self.find_elements(*self._user_review_list_locator)
             reviews = Reviews(self.driver, self.page.base_url).wait_for_page_to_load()
             return [reviews.UserReview(self, el) for el in items]
+
+        @property
+        def user_reviews_with_text(self):
+            """Only the review cards that still contain review text (i.e. not the
+            rating-only cards left behind after a review's text is deleted)."""
+            return self.find_elements(*self._user_review_with_text_locator)
 
         @property
         def abuse_report_form_provide_more_details(self):
