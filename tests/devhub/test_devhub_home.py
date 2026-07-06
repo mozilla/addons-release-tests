@@ -475,6 +475,7 @@ def test_devhub_resources_participate(selenium, base_url, variables):
     ],
 )
 @pytest.mark.nondestructive
+@pytest.mark.sanity
 def test_page_connect_footer_more_links(selenium, base_url, count, link):
     """Ensures that all "More" links in the footer under
     the "Connect" section lead to the correct pages,
@@ -486,6 +487,7 @@ def test_page_connect_footer_more_links(selenium, base_url, count, link):
 
 
 @pytest.mark.nondestructive
+@pytest.mark.sanity
 def test_connect_newsletter_section(selenium, base_url, variables):
     """Verifies the content and functionality of the newsletter signup
     section in the footer, ensuring that the privacy notice link works
@@ -532,6 +534,7 @@ def test_verify_newsletter_signup_confirmation(selenium, base_url, variables, wa
 
 
 @pytest.mark.nondestructive
+@pytest.mark.sanity
 def test_devhub_mozilla_footer_link(base_url, selenium):
     """Verifies that clicking on the "Mozilla" link in
     the DevHub footer redirects the user to the Mozilla homepage."""
@@ -568,6 +571,7 @@ def test_devhub_mozilla_footer_link(base_url, selenium):
     ],
 )
 @pytest.mark.nondestructive
+@pytest.mark.sanity
 def test_devhub_addons_footer_links(base_url, selenium, count, link):
     """Ensures that the links under the "Add-ons" section
     in the DevHub footer lead to the correct pages,
@@ -581,94 +585,116 @@ def test_devhub_addons_footer_links(base_url, selenium, count, link):
     "count, link",
     enumerate(
         [
-            "https://www.firefox.com/en-US/?redirect_source=mozilla-org&utm_source=addons.mozilla.org&utm_medium=referral&utm_content=footer-link",
-            "en-US/mobile/",
-            "en-US/browsers/enterprise/",
+            ["#nightly", ".fl-logo-fx"],
+            ["#beta", ".fl-logo-fx"],
+            ["browsers/enterprise/", ".fl-logo-fx"],
         ]
     ),
     ids=[
-        "DevHub Footer - Browsers section -  Desktop",
-        "DevHub Footer - Browsers section -  Mobile",
-        "DevHub Footer - Browsers section -  Enterprise",
+        "Nightly",
+        "Beta",
+        "Enterprise",
     ],
 )
 @pytest.mark.nondestructive
-@pytest.mark.skip(reason="Needs update or add new tests scenarios - footer is changed")
-def test_devhub_browsers_footer_links(base_url, selenium, count, link):
-    """Verifies that the links under the "Browsers" section
-    in the DevHub footer lead to the correct pages
-    for Firefox Desktop, Mobile, and Enterprise."""
-    if "addons-dev" in base_url:
-        pytest.skip(
-            "Footer-browsers-links section is not present on the dev devhub footer "
-            "redesign (replaced by Download/Latest Builds/Firefox for Business)"
-        )
+@pytest.mark.sanity
+def test_devhub_latest_builds_footer_links(base_url, selenium, count, link):
+    """Verifies the links from the Latest Builds footer column, including Enterprise."""
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.footer.browsers_links[count].click()
-    time.sleep(5)
-    page.wait_for_current_url(link)
+    page.footer.build_links[count].click()
+    page.wait_for_current_url(link[0])
+    page.wait.until(
+        EC.visibility_of_element_located((By.CSS_SELECTOR, link[1])),
+        message=f'The chosen element "{link[1]}" could not be loaded on the "{link[0]}" webpage',
+    )
 
 
 @pytest.mark.parametrize(
     "count, link",
     enumerate(
         [
-            "https://www.firefox.com/en-US/?utm_source=addons.mozilla.org&utm_medium=referral&utm_content=footer-link",
-            "products/vpn/",
-            "relay.firefox.com/",
-            "monitor.mozilla",
-            "getpocket.com",
+            ["thanks/", ".fl-logo-fx"],
+            ["download/windows/", ".fl-logo-fx"],
+            ["download/mac/", ".fl-logo-fx"],
+            ["download/ios/", ".fl-logo-fx"],
+            ["download/android/", ".fl-logo-fx"],
+            ["download/linux/", ".fl-logo-fx"],
+            ["download/all/", ".fl-logo-fx"],
         ]
     ),
     ids=[
-        "DevHub Footer - Products section -  Browsers",
-        "DevHub Footer - Products section -  VPN",
-        "DevHub Footer - Products section -  Relay",
-        "DevHub Footer - Products section -  Monitor",
-        "DevHub Footer - Products section -  Pocket",
+        "Download Firefox",
+        "Windows",
+        "macOS",
+        "iOS",
+        "Android",
+        "Linux",
+        "All",
     ],
 )
 @pytest.mark.nondestructive
-@pytest.mark.skip(reason="Needs to be updated pr new scenarios added")
-def test_devhub_products_footer_links(base_url, selenium, count, link):
-    """Ensures that the links under the "Products" section
-    in the DevHub footer lead to the correct pages for
-    Firefox, VPN, Relay, Monitor, and Pocket."""
-    if "addons-dev" in base_url:
-        pytest.skip(
-            "Footer-products-links section is not present on the dev devhub footer "
-            "redesign"
-        )
+@pytest.mark.sanity
+def test_devhub_download_footer_links(base_url, selenium, count, link):
+    """Verifies the links from the Download footer column."""
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.products_links[count].click()
-    page.wait_for_current_url(link)
+    page.footer.download_links[count].click()
+    page.wait_for_current_url(link[0])
+    page.wait.until(
+        EC.visibility_of_element_located((By.CSS_SELECTOR, link[1])),
+        message=f'The chosen element "{link[1]}" could not be loaded on the "{link[0]}" webpage',
+    )
 
 
+@pytest.mark.parametrize(
+    "count, link",
+    enumerate(
+        [
+            "instagram.com/firefox",
+            "youtube.com/user/firefoxchannel",
+            "tiktok.com/@firefox",
+            "bsky.app/profile/firefox.com",
+            "youtube.com/@firefox/podcasts",
+        ]
+    ),
+    ids=[
+        "Instagram",
+        "YouTube",
+        "TikTok",
+        "BlueSky",
+        "Podcast",
+    ],
+)
 @pytest.mark.nondestructive
-@pytest.mark.skip(reason="Needs to be updated pr new scenarios added")
-def test_devhub_social_footer_links(base_url, selenium):
-    """Verifies that the social media links in the DevHub footer
-    direct users to the correct social media pages."""
-    # The dev footer redesign replaced the "Social" section (.Footer-links-social)
-    # with a "Follow" section (.Footer-follow-links) containing a different set of
-    # links. Stage still has the legacy Social section, but Twitter/X was dropped
-    # in favor of Bluesky. Each env tests its own current list.
-    if "addons-dev" in base_url:
-        expected_links = ["instagram.com", "youtube.com", "tiktok.com", "bsky.app"]
-        section_selector = ".Footer-follow-links"
-    else:
-        expected_links = ["bsky.app", "instagram.com", "youtube.com"]
-        section_selector = ".Footer-links-social"
+@pytest.mark.sanity
+def test_devhub_follow_footer_links(base_url, selenium, count, link):
+    """Verifies the destination URLs of the Follow footer column links."""
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    section = page.footer.find_element(By.CSS_SELECTOR, section_selector)
-    links = section.find_elements(By.CSS_SELECTOR, "li a")
-    for count, expected in enumerate(expected_links):
-        links[count].click()
-        page.wait_for_current_url(expected)
-        selenium.back()
-        # re-fetch links after navigating back since the DOM was rebuilt
-        section = page.footer.find_element(By.CSS_SELECTOR, section_selector)
-        links = section.find_elements(By.CSS_SELECTOR, "li a")
+    actual_href = page.footer.follow_links[count].get_attribute("href")
+    assert link in actual_href, f"Expected '{link}' in href, got '{actual_href}'"
+
+
+@pytest.mark.parametrize(
+    "count, link",
+    enumerate(
+        [
+            "connect.mozilla.org/",
+            "mozilla.org/contribute/",
+            "firefox.com/en-US/channel/desktop/developer/",
+        ]
+    ),
+    ids=[
+        "Community",
+        "Contribute",
+        "Developer",
+    ],
+)
+@pytest.mark.nondestructive
+@pytest.mark.sanity
+def test_devhub_community_footer_links(base_url, selenium, count, link):
+    """Verifies the destination URLs of the Community footer column links."""
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    actual_href = page.footer.community_links[count].get_attribute("href")
+    assert link in actual_href, f"Expected '{link}' in href, got '{actual_href}'"
 
 
 @pytest.mark.parametrize(
@@ -687,6 +713,7 @@ def test_devhub_social_footer_links(base_url, selenium):
     ],
 )
 @pytest.mark.nondestructive
+@pytest.mark.sanity
 def test_devhub_legal_footer_links(base_url, selenium, count, link):
     """Ensures that the legal links in the DevHub footer
     direct users to the correct legal and policy pages."""
@@ -713,6 +740,7 @@ def test_devhub_legal_footer_links(base_url, selenium, count, link):
     ],
 )
 @pytest.mark.nondestructive
+@pytest.mark.sanity
 def test_change_devhub_language(base_url, selenium, language, locale, translation):
     """Verifies that changing the language in the DevHub footer
     correctly updates the locale and displays the translated page,
@@ -737,6 +765,7 @@ def test_change_devhub_language(base_url, selenium, language, locale, translatio
     ],
 )
 @pytest.mark.nondestructive
+@pytest.mark.sanity
 def test_devhub_footer_copyright_message(base_url, selenium, count, link, wait):
     """Ensures that the copyright message in the DevHub footer
     is displayed correctly and that the linked pages
