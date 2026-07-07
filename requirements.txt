@@ -18,7 +18,7 @@ future-fstrings==1.2.0
 fxapom==1.10.2
 hawkauthlib==2.0.0
 hjson==3.1.0
-idna==3.11
+idna==3.15
 importlib-metadata==9.0.0
 iniconfig==2.3.0
 isort==8.0.1
