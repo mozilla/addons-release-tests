@@ -205,13 +205,21 @@ def test_devhub_my_addons_section_tc_id_C15072(selenium, base_url, variables):
 
 
 @pytest.mark.nondestructive
-@pytest.mark.create_session("developer")
+# log in fresh rather than reusing the cached session: under the parallel
+# (-n 4) CI run the shared developer.txt is only refreshed part-way through the
+# suite by the login-marked tests, so a create_session test that runs before
+# that refresh reads a stale/expired session and lands on the logged-out DevHub
+# home, where the "My Add-ons" section (and its buttons) does not exist.
+@pytest.mark.login("developer")
 def test_devhub_my_addons_list_items(selenium, base_url, wait):
     """Verifies that the "My Add-ons"
     section displays up to 3 of the user's latest
     submitted add-ons, and ensures that each add-on
     has its icon, name, version, and rating (if available)."""
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    # the 'My Add-ons' cards load after the page shell, so wait for them before
+    # counting - otherwise a slow CI host reads an empty list
+    page.wait_for_my_addons_section_to_load()
     # check that logged-in users can see up to 3 latest addons they've submitted
     assert len(page.my_addons_list) in range(1, 4)
     for addon in page.my_addons_list:
@@ -244,12 +252,15 @@ def test_devhub_my_addons_list_approval_status(selenium, base_url):
 
 
 @pytest.mark.nondestructive
-@pytest.mark.create_session("developer")
+# log in fresh - see test_devhub_my_addons_list_items for why create_session is
+# unreliable here under the parallel CI run
+@pytest.mark.login("developer")
 def test_devhub_click_see_all_addons_link(selenium, base_url, wait):
     """Verifies that clicking the "See All Add-ons" link
     in the "My Add-ons" section correctly redirects
     the user to the Manage Add-ons page."""
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    page.wait_for_my_addons_section_to_load()
     my_addons_page = page.click_see_all_addons_link()
     wait.until(
         lambda _: my_addons_page.my_addons_page_title.is_displayed(),
@@ -258,12 +269,15 @@ def test_devhub_click_see_all_addons_link(selenium, base_url, wait):
 
 
 @pytest.mark.nondestructive
-@pytest.mark.create_session("developer")
+# log in fresh - see test_devhub_my_addons_list_items for why create_session is
+# unreliable here under the parallel CI run
+@pytest.mark.login("developer")
 def test_devhub_click_submit_new_addon_button_tc_id_c14882(selenium, base_url, wait):
     """Ensures that clicking the "Submit New Add-on" button
     redirects the user to the Add-on submission page
     and that the submission form header loads."""
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    page.wait_for_my_addons_section_to_load()
     distribution_page = page.click_submit_addon_button()
     wait.until(
         lambda _: distribution_page.submission_form_header.is_displayed(),

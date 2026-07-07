@@ -292,8 +292,25 @@ class DevHubHome(Base):
         self.wait_for_element_to_be_clickable(self._logged_in_hero_banner_link_locator)
         self.find_element(*self._logged_in_hero_banner_link_locator).click()
 
+    def wait_for_my_addons_section_to_load(self):
+        """Wait for the 'My Add-ons' section to finish rendering its add-on
+        cards. `wait_for_page_to_load` only waits for the navigation logo, but
+        the 'My Add-ons' list (and its buttons) is populated separately and can
+        still be missing when a test reads it right after the page opens. On a
+        fast machine it is ready almost immediately, but on a busy CI host
+        running four Firefox instances in parallel it lags behind - which is why
+        these tests pass locally but time out / see an empty list in CircleCI."""
+        self.wait.until(
+            lambda _: len(self.find_elements(*self._my_addons_section_list_locator))
+            > 0,
+            message="The 'My Add-ons' section did not render any add-on cards",
+        )
+        return self
+
     def click_see_all_addons_link(self):
-        self.wait_for_element_to_be_clickable(self._submit_addon_button_locator)
+        # wait on the link we actually click (this previously waited on the
+        # submit button, which could be ready before the 'See all' link)
+        self.wait_for_element_to_be_clickable(self._see_all_addons_link_locator)
         self.find_element(*self._see_all_addons_link_locator).click()
         return ManageAddons(self.driver, self.base_url)
 
@@ -303,6 +320,7 @@ class DevHubHome(Base):
         return SubmitAddon(self.driver, self.base_url)
 
     def click_submit_theme_button(self):
+        self.wait_for_element_to_be_clickable(self._submit_theme_button_locator)
         self.find_element(*self._submit_theme_button_locator).click()
         return SubmitAddon(self.driver, self.base_url)
 
