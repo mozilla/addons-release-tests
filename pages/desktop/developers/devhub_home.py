@@ -646,18 +646,6 @@ class ResourcesFooter(Region):
         By.CSS_SELECTOR,
         ".DevHub-Footer-sections:nth-of-type(2) .DevHub-Footer-section:nth-of-type(1) a",
     )
-    _write_code_section_header_locator = (
-        By.CSS_SELECTOR,
-        ".DevHub-Footer-sections:nth-of-type(2) .DevHub-Footer-section:nth-of-type(2) h4",
-    )
-    _write_code_info_text_locator = (
-        By.CSS_SELECTOR,
-        ".DevHub-Footer-sections:nth-of-type(2) .DevHub-Footer-section:nth-of-type(2) p",
-    )
-    _write_code_link_locator = (
-        By.CSS_SELECTOR,
-        ".DevHub-Footer-sections:nth-of-type(2) .DevHub-Footer-section:nth-of-type(2) a",
-    )
     _participate_section_header_locator = (
         By.CSS_SELECTOR,
         ".DevHub-Footer-sections:nth-of-type(2) .DevHub-Footer-section:nth-of-type(2) h4",
@@ -728,23 +716,6 @@ class ResourcesFooter(Region):
 
     def click_join_addon_review_link(self):
         self.find_element(*self._addon_review_link_locator).click()
-
-    @property
-    def write_code_section_header(self):
-        self.wait.until(
-            EC.visibility_of_element_located(self._write_code_section_header_locator)
-        )
-        return self.find_element(*self._write_code_section_header_locator).text
-
-    @property
-    def write_code_section_info_text(self):
-        self.wait.until(
-            EC.visibility_of_element_located(self._write_code_info_text_locator)
-        )
-        return self.find_element(*self._write_code_info_text_locator).text
-
-    def click_write_code_section_link(self):
-        self.find_element(*self._write_code_link_locator).click()
 
     @property
     def participate_section_header(self):

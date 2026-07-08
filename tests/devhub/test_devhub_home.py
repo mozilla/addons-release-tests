@@ -324,17 +324,13 @@ def test_devhub_click_first_theme_button(selenium, base_url, variables):
 
 
 @pytest.mark.nondestructive
+@pytest.mark.sanity
+@pytest.mark.login("regular_user")
 def test_devhub_resources_footer_documentation_links_tc_id_C15072(selenium, base_url, variables):
     """Verifies that all "Documentation" links in the resources
     footer lead to the correct pages, confirming that
     the user is directed to the expected documentation sections."""
-    if "addons-dev" in base_url or "addons.allizom" in base_url:
-        pytest.skip(
-            "DevHub-Footer-sections Resources area was removed from the devhub home "
-            "page on both dev and stage"
-        )
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.devhub_login("regular_user")
     assert "Documentation" in page.resources.documentation_section_header
     count = 0
     # looping through the actual number of Documentation links present in the resources footer
@@ -349,16 +345,12 @@ def test_devhub_resources_footer_documentation_links_tc_id_C15072(selenium, base
 
 
 @pytest.mark.nondestructive
-@pytest.mark.create_session("developer")
+@pytest.mark.sanity
+@pytest.mark.login("developer")
 def test_devhub_resources_footer_tools_links_tc_id_C15072(selenium, base_url, variables):
     """Ensures that all "Tools" links in the resources
     footer lead to the correct pages, verifying that
     the user is taken to the correct tool-related sections."""
-    if "addons-dev" in base_url or "addons.allizom" in base_url:
-        pytest.skip(
-            "DevHub-Footer-sections Resources area was removed from the devhub home "
-            "page on both dev and stage"
-        )
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     assert "Tools" in page.resources.tools_section_header
     count = 0
@@ -374,16 +366,12 @@ def test_devhub_resources_footer_tools_links_tc_id_C15072(selenium, base_url, va
 
 
 @pytest.mark.nondestructive
-@pytest.mark.create_session("developer")
+@pytest.mark.sanity
+@pytest.mark.login("developer")
 def test_devhub_resources_footer_promote_links_tc_id_C15072(selenium, base_url, variables):
     """Verifies that the "Promote" links in the resources footer
     lead to the correct pages, confirming that users are directed
     to the appropriate promotion-related sections."""
-    if "addons-dev" in base_url or "addons.allizom" in base_url:
-        pytest.skip(
-            "DevHub-Footer-sections Resources area was removed from the devhub home "
-            "page on both dev and stage"
-        )
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     assert "Promote" in page.resources.promote_section_header
     count = 0
@@ -399,16 +387,11 @@ def test_devhub_resources_footer_promote_links_tc_id_C15072(selenium, base_url, 
 
 
 @pytest.mark.nondestructive
-@pytest.mark.create_session("developer")
-def test_devhub_resources_join_addon_review(selenium, base_url, variables):
-    """Verifies that the "Join Add-on Review" link in the resources section
-    leads to the "Contribute/Code" section, allowing users
-    to participate in reviewing add-ons."""
-    if "addons-dev" in base_url or "addons.allizom" in base_url:
-        pytest.skip(
-            "DevHub-Footer-sections Resources area was removed from the devhub home "
-            "page on both dev and stage"
-        )
+@pytest.mark.sanity
+@pytest.mark.login("developer")
+def test_devhub_resources_write_some_code(selenium, base_url, variables):
+    """Verifies that the "Get started" link in the Resources footer's
+    "Write Some Code" card leads to wiki.mozilla.org/Add-ons/Contribute/Code."""
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     assert "Write Some Code" in page.resources.review_addons_section_header
     assert (
@@ -419,31 +402,14 @@ def test_devhub_resources_join_addon_review(selenium, base_url, variables):
     page.wait_for_current_url("/Add-ons/Contribute/Code")
 
 
-# @pytest.mark.nondestructive
-# @pytest.mark.create_session("developer")
-# def test_devhub_resources_write_some_code(selenium, base_url, variables):
-#     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-#     assert "More Ways to Participate" in page.resources.write_code_section_header
-#     assert (
-#         variables["devhub_resources_write_some_code_text"]
-#         in page.resources.write_code_section_info_text
-#     )
-#     page.resources.click_write_code_section_link()
-#     page.wait_for_current_url("/Add-ons/Contribute/Code")
-
-
 @pytest.mark.nondestructive
+@pytest.mark.sanity
+@pytest.mark.login("regular_user")
 def test_devhub_resources_participate(selenium, base_url, variables):
     """Ensures that the "More Ways to Participate" link
     in the resources section redirects the user to the
     "Add-ons/Contribute" section."""
-    if "addons-dev" in base_url or "addons.allizom" in base_url:
-        pytest.skip(
-            "DevHub-Footer-sections Resources area was removed from the devhub home "
-            "page on both dev and stage"
-        )
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
-    page.devhub_login("regular_user")
     assert "More Ways to Participate" in page.resources.participate_section_header
     assert (
         variables["devhub_resources_participate_text"]
