@@ -575,7 +575,7 @@ def test_cancel_and_disable_version_during_upload(selenium, base_url, wait):
 
 @pytest.mark.sanity
 @pytest.mark.serial
-@pytest.mark.create_session("submissions_user")
+@pytest.mark.login("submissions_user")
 def test_delete_all_extensions(selenium, base_url):
     """This test will delete all the extensions submitted above to make sure
     we can start over with this user in the following runs and also for
