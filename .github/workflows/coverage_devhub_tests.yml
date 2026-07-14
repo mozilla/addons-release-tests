@@ -1,0 +1,17 @@
+name: Coverage DevHub Tests
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  test:
+    uses: ./.github/workflows/_test.yml
+    with:
+      artifact_name: coverage-devhub-tests-results
+      pytest_parallel: 1
+      pytest_path: tests/coverage/test_coverage_devhub.py
+      pytest_report: coverage-devhub-tests-results.html
+      pytest_reruns: 2
+      pytest_variables: stage.json
+      python_version: 3.x
