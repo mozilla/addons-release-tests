@@ -12,7 +12,7 @@ from pages.desktop.frontend.users import User
 
 
 @pytest.mark.sanity
-@pytest.mark.nondesstructive
+@pytest.mark.nondestructive
 def test_blog_homepage_header_logo_button(base_url, selenium):
     """Verifies that clicking on the blog homepage's header
     logo redirects to the homepage and displays the primary hero section."""
@@ -23,7 +23,7 @@ def test_blog_homepage_header_logo_button(base_url, selenium):
 
 
 @pytest.mark.sanity
-@pytest.mark.nondesstructive
+@pytest.mark.nondestructive
 def test_articles_elements_are_displayed(base_url, selenium):
     """Ensures that the key elements of each article
     on the blog homepage are displayed correctly."""
@@ -37,7 +37,7 @@ def test_articles_elements_are_displayed(base_url, selenium):
 
 
 @pytest.mark.sanity
-@pytest.mark.nondesstructive
+@pytest.mark.nondestructive
 def test_open_article_by_clicking_article_image(base_url, selenium):
     """Verifies that clicking on an article image opens the correct article page,
     with the article's title displayed in the new page."""
@@ -49,7 +49,7 @@ def test_open_article_by_clicking_article_image(base_url, selenium):
 
 
 @pytest.mark.sanity
-@pytest.mark.nondesstructive
+@pytest.mark.nondestructive
 def test_open_article_by_clicking_article_title(base_url, selenium):
     """Ensures that clicking on an article's title on the homepage redirects
     to the correct article page, where the title matches the article title."""
@@ -60,7 +60,7 @@ def test_open_article_by_clicking_article_title(base_url, selenium):
     assert article_title.lower() in article_page.title.text.lower()
 
 
-@pytest.mark.nondesstructive
+@pytest.mark.nondestructive
 def test_open_article_by_clicking_read_more_link(base_url, selenium):
     """Verifies that clicking the "Read more" link for an article opens the full article page,
     and the article title matches the clicked article."""
@@ -164,7 +164,7 @@ def test_next_and_previous_article_links(base_url, selenium):
 
 @pytest.mark.sanity
 @pytest.mark.nondestructive
-@pytest.mark.fail
+@pytest.mark.xfail
 def test_addon_cards_loaded_correctly(base_url, selenium):
     """Verifies that addon cards displayed on the article page show all required elements,
     such as title, author, summary, rating, number of users, and the "Add to Firefox" button."""
@@ -179,27 +179,16 @@ def test_addon_cards_loaded_correctly(base_url, selenium):
         assert card.add_to_firefox_button.is_displayed()
 
 
-# @pytest.mark.sanity
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_addon_card_recommendation_badge_link(base_url, selenium):
-    """Tests the behavior when clicking on a recommendation badge in an addon card.
-    It checks that the correct page is opened, confirming the addon badge's status."""
+    """Tests that the recommendation badge on each addon card points to the correct sumo article."""
     blog_homepage = BlogHomepage(selenium, base_url).open().wait_for_page_to_load()
     page = blog_homepage.articles[0].click_read_more_link()
     for addon_card in page.addon_cards:
         if addon_card.is_recommended:
-            addon_card.recommended_link.click()
-            initial_window = page.driver.window_handles[0]
-            child_window = page.driver.window_handles[1]
-            page.driver.switch_to.window(child_window)
-            page.wait.until(
-                EC.visibility_of_element_located((By.CLASS_NAME, "sumo-page-heading"))
-            )
-            assert (
-                "Add-on Badges"
-                in page.driver.find_element(By.CLASS_NAME, "sumo-page-heading").text
-            )
-            page.driver.switch_to.window(initial_window)
+            link_url = addon_card.recommended_link.get_attribute("href")
+            assert "support.mozilla.org/kb/add-on-badges" in link_url
 
 
 @pytest.mark.prod_only

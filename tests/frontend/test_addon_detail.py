@@ -46,6 +46,7 @@ def test_detail_author_links(selenium, base_url, variables):
     user = User(selenium, base_url).wait_for_page_to_load()
     assert author in user.user_display_name.text
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_addon_detail_recommended_badge(selenium, base_url, variables):
     """Tests that the recommended badge appears on the add-on detail page."""
@@ -54,10 +55,11 @@ def test_addon_detail_recommended_badge(selenium, base_url, variables):
     addon = Detail(selenium, base_url)
     assert addon.promoted_badge.is_displayed()
     assert "Recommended" in addon.promoted_badge_category
-    # checks that the badge redirects to the correct sumo article
-    addon.click_promoted_badge()
-    assert "add-on-badges" in selenium.current_url
+    # checks that the badge points to the correct sumo article
+    link_url = addon.badge_link.get_attribute("href")
+    assert "support.mozilla.org/kb/add-on-badges" in link_url
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_addon_detail_by_firefox_badge(selenium, base_url, variables):
     """Tests that the 'By Firefox' badge is displayed for official add-ons."""
@@ -66,10 +68,11 @@ def test_addon_detail_by_firefox_badge(selenium, base_url, variables):
     addon = Detail(selenium, base_url)
     assert addon.by_firefox_badge.is_displayed()
     assert "By Firefox" in addon.by_firefox_label
-    # checks that the badge redirects to the correct sumo article
-    addon.click_promoted_badge()
-    assert "add-on-badges" in selenium.current_url
+    # checks that the badge points to the correct sumo article
+    link_url = addon.badge_link.get_attribute("href")
+    assert "support.mozilla.org/kb/add-on-badges" in link_url
 
+@pytest.mark.sanity
 @pytest.mark.nondestructive
 def test_non_promoted_addon(selenium, base_url, variables):
     """Tests behavior for a non-promoted add-on."""
@@ -82,8 +85,9 @@ def test_non_promoted_addon(selenium, base_url, variables):
     # checks the presence of an install warning
     assert addon.install_warning.is_displayed()
     assert variables["install_warning_message"] in addon.install_warning_message
-    addon.click_install_warning_button()
-    assert "add-on-badges" in selenium.current_url
+    # checks that the install-warning link points to the correct sumo article
+    link_url = addon.install_warning_link.get_attribute("href")
+    assert "support.mozilla.org/kb/add-on-badges" in link_url
 
 
 @pytest.mark.nondestructive

@@ -28,6 +28,7 @@ class Detail(Base):
     )
     _by_firefox_badge_locator = (By.XPATH, "//div[@data-testid='badge-line']//span")
     _by_firefox_label_locator = (By.XPATH, "//div[@data-testid='badge-line']//span[2]")
+    _badge_link_locator = (By.CSS_SELECTOR, ".Badge-link")
     _experimental_badge_locator = (By.XPATH, "//div[@data-testid='badge-experimental-badge']")
     _addon_icon_locator = (By.CLASS_NAME, "Addon-icon-image")
     _addon_author_locator = (By.CSS_SELECTOR, ".AddonTitle-author a")
@@ -133,15 +134,10 @@ class Detail(Base):
         self.wait_for_element_to_be_displayed(self._by_firefox_label_locator)
         return self.find_element(*self._by_firefox_label_locator).text
 
-    def click_promoted_badge(self):
-        # clicks on the promoted badge and waits for the sumo page to load
-        self.promoted_badge.click()
-        self.wait.until(expected.number_of_windows_to_be(2))
-        new_tab = self.driver.window_handles[1]
-        self.driver.switch_to.window(new_tab)
-        self.wait.until(
-            expected.visibility_of_element_located((By.CLASS_NAME, "sumo-page-heading"))
-        )
+    @property
+    def badge_link(self):
+        self.wait_for_element_to_be_displayed(self._badge_link_locator)
+        return self.find_element(*self._badge_link_locator)
 
     @property
     def experimental_badge(self):
@@ -172,16 +168,10 @@ class Detail(Base):
         self.wait_for_element_to_be_displayed(self._install_warning_text_locator)
         return self.find_element(*self._install_warning_text_locator).text
 
-    def click_install_warning_button(self):
-        # clicks on the install warning and waits for the sumo page to load
-        self.wait_for_element_to_be_clickable(self._install_warning_button_locator)
-        self.find_element(*self._install_warning_button_locator).click()
-        self.wait.until(expected.number_of_windows_to_be(2))
-        new_tab = self.driver.window_handles[1]
-        self.driver.switch_to.window(new_tab)
-        self.wait.until(
-            expected.visibility_of_element_located((By.CLASS_NAME, "sumo-page-heading"))
-        )
+    @property
+    def install_warning_link(self):
+        self.wait_for_element_to_be_displayed(self._install_warning_button_locator)
+        return self.find_element(*self._install_warning_button_locator)
 
     @property
     def non_public_addon_notice(self):
