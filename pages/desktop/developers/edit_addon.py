@@ -29,6 +29,11 @@ class EditAddon(Base):
     _edit_addon_media_button_locator = (By.CSS_SELECTOR, "#edit-addon-media a")
     _edit_addon_media_section_locator = (By.CSS_SELECTOR, "#edit-addon-media")
     _edit_addon_describe_section_locator = (By.CSS_SELECTOR, "#addon-edit-describe")
+    _edit_addon_describe_button_locator = (By.CSS_SELECTOR, "#addon-edit-describe a")
+    _markdown_support_link_locator = (
+        By.CSS_SELECTOR,
+        ".syntax-support a[href*='#make-use-of-markdown']",
+    )
     _add_screenshot_button_locator = (By.CSS_SELECTOR, "#screenshot-upload")
     _edit_previews_error_strong_locator = (By.CSS_SELECTOR, ".error > strong")
     _edit_previews_explicit_error_locator = (By.CSS_SELECTOR, ".error > ul >li")
@@ -82,6 +87,18 @@ class EditAddon(Base):
     @property
     def edit_addon_describe_section(self):
         return self.find_element(*self._edit_addon_describe_section_locator)
+
+    @property
+    def edit_addon_describe_button(self):
+        self.wait_for_element_to_be_clickable(self._edit_addon_describe_button_locator)
+        return self.find_element(*self._edit_addon_describe_button_locator)
+
+    @property
+    def markdown_support_link(self):
+        self.wait.until(
+            EC.visibility_of_element_located(self._markdown_support_link_locator)
+        )
+        return self.find_element(*self._markdown_support_link_locator)
 
     @property
     def screenshot_upload(self):

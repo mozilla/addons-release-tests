@@ -1,8 +1,36 @@
 import time
 import pytest
 
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+
 from pages.desktop.developers.devhub_home import DevHubHome
+from pages.desktop.developers.edit_addon import EditAddon
 from pages.desktop.developers.manage_versions import ManageVersions
+
+
+@pytest.mark.login("developer")
+def test_addon_edit_markdown_support_link(selenium, base_url, wait):
+    """Verify the Markdown-supported helper link in the Describe Add-on section
+    opens the correct Extension Workshop docs page."""
+    selenium.get(f"{base_url}/developers/addon/disable_version_auto/edit")
+    edit_addon = EditAddon(selenium, base_url).wait_for_page_to_load()
+    # expand the Describe Add-on section to reveal the syntax-support link
+    edit_addon.edit_addon_describe_button.click()
+    # wait for the AJAX expansion to complete (description textarea only
+    # appears in the expanded/edit state)
+    wait.until(EC.visibility_of_element_located((By.ID, "id_description_0")))
+    # click opens the docs page in a new tab
+    edit_addon.markdown_support_link.click()
+    wait.until(EC.number_of_windows_to_be(2))
+    selenium.switch_to.window(selenium.window_handles[1])
+    wait.until(EC.url_contains("create-an-appealing-listing"))
+    wait.until(EC.url_contains("make-use-of-markdown"))
+    wait.until(
+        EC.visibility_of_element_located(
+            (By.CSS_SELECTOR, "abbr[title^='The description, developer comments']")
+        )
+    )
 
 
 @pytest.mark.login("developer")
