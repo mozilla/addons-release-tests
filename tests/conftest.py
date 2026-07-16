@@ -292,7 +292,7 @@ def session_auth(request):
 
 
 @pytest.fixture
-def wait():
+def wait(selenium):
     """A preset wait to be used in test methods. Removes the necessity to declare a
     WebDriverWait whenever we need to wait for certain conditions to happen in a test"""
     return WebDriverWait(
