@@ -184,7 +184,7 @@ def test_higher_firefox_incompatibility(selenium, base_url, variables):
     )
     # clicks on the Download button and checks that the download Firefox page opens
     addon.get_firefox_button.click()
-    addon.wait_for_current_url("/firefox/download/thanks/")
+    addon.wait_for_current_url("firefox.com/en-US/thanks/")
 
 
 @pytest.mark.nondestructive
