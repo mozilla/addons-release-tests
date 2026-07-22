@@ -365,7 +365,10 @@ jobs:
           command: py -3.14 -m pip install -r ./requirements.txt
       - run:
           name: Install geckodriver
-          command: choco install selenium-gecko-driver -y
+          command: choco install selenium-gecko-driver --version=0.37.0 -y --force
+      - run:
+          name: Verify geckodriver version (diagnostic; remove before real PR)
+          command: geckodriver --version
       - run:
           name: Install Firefox
           command: choco install firefox-nightly --pre --ignore-checksums -y
@@ -667,16 +670,8 @@ workflows:
       - sanity_serial_tests: # # will run after the hold job is approved
           requires:
             - hold
-  # scheduled in CircleCI Project settings to run once a day
+  # TEST ONLY: fires on push (when: gate removed) + reduced to just
+  # user_dev_serial_tests for geckodriver pinning experiment. Never merge to master.
   scheduled_dev_regression_tests:
-    when:
-      and:
-        - equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
-        - equal: [ "scheduled_dev_regression_tests", << pipeline.schedule.name >> ]
     jobs:
-      - frontend_dev_parallel_tests
       - user_dev_serial_tests
-      - collections_dev_serial_tests
-      - ratings_dev_serial_tests
-      - devhub_dev_parallel_tests
-      - addon_submissions_dev_tests
