@@ -20,8 +20,13 @@ jobs:
           name: Install requirements
           command: py -3.14 -m pip install -r ./requirements.txt
       - run:
+          # Pinned to 0.37.0 for Firefox Nightly 155.x+ compatibility. Selenium's
+          # selenium_manager explicitly warns that 0.37.1 causes driver init failures
+          # on Firefox 155, which cascade into a "ValueError: I/O operation on
+          # closed file" error inside pytest-selenium's retry loop. Bump this pin
+          # when moving to a newer Nightly if a newer geckodriver is required.
           name: Install geckodriver
-          command: choco install selenium-gecko-driver -y
+          command: choco install selenium-gecko-driver --version=0.37.0 -y --force
       - run:
           name: Install Firefox
           command: choco install firefox-nightly --pre --ignore-checksums -y
@@ -219,7 +224,7 @@ jobs:
           command: py -3.14 -m pip install -r ./requirements.txt
       - run:
           name: Install geckodriver
-          command: choco install selenium-gecko-driver -y
+          command: choco install selenium-gecko-driver --version=0.37.0 -y --force
       - run:
           name: Install Firefox
           command: choco install firefox -y
@@ -255,7 +260,7 @@ jobs:
           command: py -3.14 -m pip install -r ./requirements.txt
       - run:
           name: Install geckodriver
-          command: choco install selenium-gecko-driver -y
+          command: choco install selenium-gecko-driver --version=0.37.0 -y --force
       - run:
           name: Install Firefox
           command: choco install firefox -y
@@ -291,7 +296,7 @@ jobs:
           command: py -3.14 -m pip install -r ./requirements.txt
       - run:
           name: Install geckodriver
-          command: choco install selenium-gecko-driver -y
+          command: choco install selenium-gecko-driver --version=0.37.0 -y --force
       - run:
           name: Install Firefox
           command: choco install firefox -y
@@ -327,7 +332,7 @@ jobs:
           command: py -3.14 -m pip install -r ./requirements.txt
       - run:
           name: Install geckodriver
-          command: choco install selenium-gecko-driver -y
+          command: choco install selenium-gecko-driver --version=0.37.0 -y --force
       - run:
           name: Install Firefox
           command: choco install firefox-nightly --pre --ignore-checksums -y
@@ -365,7 +370,7 @@ jobs:
           command: py -3.14 -m pip install -r ./requirements.txt
       - run:
           name: Install geckodriver
-          command: choco install selenium-gecko-driver -y
+          command: choco install selenium-gecko-driver --version=0.37.0 -y --force
       - run:
           name: Install Firefox
           command: choco install firefox-nightly --pre --ignore-checksums -y
@@ -401,7 +406,7 @@ jobs:
           command: py -3.14 -m pip install -r ./requirements.txt
       - run:
           name: Install geckodriver
-          command: choco install selenium-gecko-driver -y
+          command: choco install selenium-gecko-driver --version=0.37.0 -y --force
       - run:
           name: Install Firefox
           command: choco install firefox-nightly --pre --ignore-checksums -y
@@ -437,7 +442,7 @@ jobs:
           command: py -3.14 -m pip install -r ./requirements.txt
       - run:
           name: Install geckodriver
-          command: choco install selenium-gecko-driver -y
+          command: choco install selenium-gecko-driver --version=0.37.0 -y --force
       - run:
           name: Install Firefox
           command: choco install firefox-nightly --pre --ignore-checksums -y
@@ -473,7 +478,7 @@ jobs:
           command: py -3.14 -m pip install -r ./requirements.txt
       - run:
           name: Install geckodriver
-          command: choco install selenium-gecko-driver -y
+          command: choco install selenium-gecko-driver --version=0.37.0 -y --force
       - run:
           name: Install Firefox
           command: choco install firefox-nightly --pre --ignore-checksums -y
@@ -509,7 +514,7 @@ jobs:
           command: py -3.14 -m pip install -r ./requirements.txt
       - run:
           name: Install geckodriver
-          command: choco install selenium-gecko-driver -y
+          command: choco install selenium-gecko-driver --version=0.37.0 -y --force
       - run:
           name: Install Firefox
           command: choco install firefox-nightly --pre --ignore-checksums -y
@@ -545,7 +550,7 @@ jobs:
           command: py -3.14 -m pip install -r ./requirements.txt
       - run:
           name: Install geckodriver
-          command: choco install selenium-gecko-driver -y
+          command: choco install selenium-gecko-driver --version=0.37.0 -y --force
       - run:
           name: Install Firefox
           command: choco install firefox-nightly --pre --ignore-checksums -y
@@ -581,7 +586,7 @@ jobs:
           command: py -3.14 -m pip install -r ./requirements.txt
       - run:
           name: Install geckodriver
-          command: choco install selenium-gecko-driver -y
+          command: choco install selenium-gecko-driver --version=0.37.0 -y --force
       - run:
           name: Install Firefox
           command: choco install firefox-nightly --pre --ignore-checksums -y
