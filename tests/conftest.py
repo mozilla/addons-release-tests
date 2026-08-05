@@ -8,11 +8,14 @@ import os
 import json
 import zipfile
 
+from io import IOBase
+
 import pytest
 import requests
 
 from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.common.by import By
+from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -22,6 +25,46 @@ from pages.desktop.developers.devhub_home import DevHubHome
 
 # Window resolutions
 DESKTOP = (1920, 1080)
+
+
+class RetryableService(Service):
+    """A geckodriver Service that can be started more than once.
+
+    pytest-selenium retries `driver_class(**driver_kwargs)` up to
+    `max_driver_init_attempts` times, reusing the *same* Service instance.
+    Selenium's `Service.stop()` closes `log_output`, so the second attempt
+    passes an already closed file to `subprocess.Popen` and blows up with
+    `ValueError: I/O operation on closed file` - which then masks the real
+    reason the first attempt failed. Reopen the log before each start."""
+
+    def start(self):
+        log_output = self.log_output
+        if isinstance(log_output, IOBase) and log_output.closed:
+            self.log_output = open(log_output.name, "a+", encoding="utf-8")
+        super().start()
+
+
+@pytest.fixture
+def firefox_service(driver_path, driver_args, driver_log):
+    """Overrides pytest-selenium's fixture to add `--allow-system-access` and to
+    use a retry-safe Service.
+
+    `--allow-system-access` is what enables `selenium.context(CONTEXT_CHROME)`,
+    which the install/webext tests rely on to drive browser chrome. It used to
+    be set as a Firefox argument (`-remote-allow-system-access`) through
+    capabilities, but geckodriver 0.37 rejects that with
+    `InvalidArgumentException: Argument --remote-allow-system-access can't be
+    set via capabilities` and exposes it as a geckodriver flag instead.
+
+    Note the copy of `driver_args`: pytest-selenium's `driver_kwargs` builds the
+    Chrome/Edge/IE services too, and a Chromium `Service` appends its own
+    `--log-path=...` to whatever list it is handed. Sharing one list would leak
+    that flag into geckodriver's command line, which then exits with status 64."""
+    service_args = list(driver_args or []) + ["--allow-system-access"]
+    return RetryableService(
+        executable_path=driver_path, service_args=service_args, log_output=driver_log
+    )
+
 
 @pytest.fixture(scope="session")
 def waf_bypass_addon(tmp_path_factory, variables):
@@ -126,7 +169,6 @@ def firefox_options(firefox_options, base_url, variables):
     # separate the browser set-up based on the AMO environments
     if base_url == "https://addons.mozilla.org":
         firefox_options.add_argument("-foreground")
-        firefox_options.add_argument("-remote-allow-system-access")
         firefox_options.log.level = "trace"
         # Clear the WebExtensions restricted-domain list so the waf_bypass_addon
         # can attach its `webRequest` listener to Mozilla domains that are
@@ -186,7 +228,6 @@ def firefox_options(firefox_options, base_url, variables):
         firefox_options.set_preference(
             "extensions.update.url", variables["extensions_update_url"]
         )
-        firefox_options.add_argument("-remote-allow-system-access")
         if os.environ.get("MOZ_HEADLESS"):
             firefox_options.add_argument("-headless")
         firefox_options.log.level = "trace"
