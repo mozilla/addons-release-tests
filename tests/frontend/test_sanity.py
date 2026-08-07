@@ -73,9 +73,11 @@ def test_install_dictionary(
     random.choice(dictionaries_list).click()
     dictionary_detail = Detail(selenium, base_url).wait_for_page_to_load()
     dictionary_detail.install()
-    firefox.browser.wait_for_notification(
+    confirmation = firefox.browser.wait_for_notification(
         firefox_notifications.AddOnInstallConfirmation
-    ).install()
+    )
+    with selenium.context(selenium.CONTEXT_CHROME):
+        selenium.execute_script("arguments[0].click()", confirmation.find_primary_button())
     assert "Remove" in dictionary_detail.button_text
     # uninstall the dictionary and check that install button changes state
     dictionary_detail.install()
@@ -96,9 +98,11 @@ def test_install_extension(
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     addon.install()
-    firefox.browser.wait_for_notification(
+    confirmation = firefox.browser.wait_for_notification(
         firefox_notifications.AddOnInstallConfirmation
-    ).install()
+    )
+    with selenium.context(selenium.CONTEXT_CHROME):
+        selenium.execute_script("arguments[0].click()", confirmation.find_primary_button())
     assert "Remove" in addon.button_text
     # uninstall the extension and check that install button changes state
     addon.install()
@@ -116,9 +120,11 @@ def test_install_theme(selenium, base_url, variables, firefox, firefox_notificat
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     addon.install()
-    firefox.browser.wait_for_notification(
+    confirmation = firefox.browser.wait_for_notification(
         firefox_notifications.AddOnInstallConfirmation
-    ).install()
+    )
+    with selenium.context(selenium.CONTEXT_CHROME):
+        selenium.execute_script("arguments[0].click()", confirmation.find_primary_button())
     assert "Remove" in addon.button_text
     # uninstall the theme and check that install button changes state
     addon.install()
