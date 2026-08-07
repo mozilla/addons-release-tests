@@ -362,7 +362,6 @@ def test_addons_footer_links_tc_id_c95105(base_url, selenium, count, link):
     ],
 )
 @pytest.mark.nondestructive
-@pytest.mark.sanity
 def test_latest_builds_footer_links_tc_id_c95105(base_url, selenium, count, link):
     """Verifies the links from the Latest Builds footer column, including Enterprise"""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
