@@ -346,6 +346,7 @@ def test_addons_footer_links_tc_id_c95105(base_url, selenium, count, link):
     )
 
 
+@pytest.mark.sanity
 @pytest.mark.parametrize(
     "count, link",
     enumerate(
