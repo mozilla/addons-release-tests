@@ -240,7 +240,6 @@ def test_about_addons_addon_stats_match_amo(selenium, base_url, wait):
 
 
 @pytest.mark.prod_only
-@pytest.mark.skip(reason="Firefox Release lacks moz-page-nav-button DOM; AboutAddons sidebar #category-* selectors fail. Skip until Release ships the new sidebar; investigate then.")
 def test_about_addons_install_extension(
     selenium, base_url, wait, firefox, firefox_notifications
 ):
@@ -281,7 +280,6 @@ def test_about_addons_install_extension(
 
 
 @pytest.mark.prod_only
-@pytest.mark.skip(reason="Firefox Release lacks moz-page-nav-button DOM; AboutAddons sidebar #category-* selectors fail. Skip until Release ships the new sidebar; investigate then.")
 def test_about_addons_install_theme(
     selenium, base_url, wait, firefox, firefox_notifications
 ):

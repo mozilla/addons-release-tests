@@ -18,14 +18,15 @@ class AboutAddons(Page):
     _search_box_locator = (By.CSS_SELECTOR, ".main-search search-textbox")
     _find_more_addons_search_box_locator = (By.CSS_SELECTOR, "moz-input-search[placeholder='Search addons.mozilla.org']")
     _find_more_addons_text_locator = (By.CSS_SELECTOR, ".search-label")
-    # Side-tab buttons — recent Firefox versions render them as
-    # `moz-page-nav-button` instead of legacy `button[name=...]`. Selecting
-    # the `id` works for both shapes.
-    _extension_tab_button_locator = (By.CSS_SELECTOR, "#category-extension")
+    # Side-tab buttons — legacy Firefox uses `<button is="category-button" name="X">`
+    # WITHOUT an id. Release 153+ migrated to `<moz-page-nav-button id="category-X">`.
+    # Combined selectors below match both shapes. Only extension + theme are updated
+    # here; the other 4 still assume the new-DOM id-only form (see follow-up).
+    _extension_tab_button_locator = (By.CSS_SELECTOR, "#category-extension, button[name='extension']")
     _recommendations_tab_button_locator = (By.CSS_SELECTOR, "#category-discover")
     _recommendations_tab_addon_list_locator = (By.CSS_SELECTOR, "card addon")
     _recommendations_tab_find_more_addons_locator = (By.CSS_SELECTOR, "button.primary")
-    _theme_tab_button_locator = (By.CSS_SELECTOR, "#category-theme")
+    _theme_tab_button_locator = (By.CSS_SELECTOR, "#category-theme, button[name='theme']")
     _plugins_tab_button_locator = (By.CSS_SELECTOR, "#category-plugin")
     _dictionary_tab_button_locator = (By.CSS_SELECTOR, "#category-dictionary")
     _langpack_tab_button_locator = (By.CSS_SELECTOR, "#category-locale")
