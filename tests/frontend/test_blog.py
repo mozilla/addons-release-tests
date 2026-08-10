@@ -193,7 +193,6 @@ def test_addon_card_recommendation_badge_link(base_url, selenium):
 
 @pytest.mark.prod_only
 @pytest.mark.nondestructive
-@pytest.mark.skip(reason="Fails on prod sanity; skip to unblock release testing while we investigate.")
 def test_blog_install_addon(
     base_url, selenium, firefox, firefox_notifications, wait
 ):
@@ -206,9 +205,11 @@ def test_blog_install_addon(
     addon_name = article.addon_cards[0].title.text
     addon_summary = article.addon_cards[0].summary
     article.addon_cards[0].add_to_firefox_button.click()
-    firefox.browser.wait_for_notification(
+    confirmation = firefox.browser.wait_for_notification(
         firefox_notifications.AddOnInstallConfirmation
-    ).install()
+    )
+    with selenium.context(selenium.CONTEXT_CHROME):
+        selenium.execute_script("arguments[0].click()", confirmation.find_primary_button())
     # verify about:addons to make sure the add-on was installed;
     selenium.get("about:addons")
     selenium.find_element(By.CSS_SELECTOR, 'button[name = "extension"]').click()
