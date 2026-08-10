@@ -212,7 +212,7 @@ def test_blog_install_addon(
         selenium.execute_script("arguments[0].click()", confirmation.find_primary_button())
     # verify about:addons to make sure the add-on was installed;
     selenium.get("about:addons")
-    selenium.find_element(By.CSS_SELECTOR, 'button[name = "extension"]').click()
+    selenium.find_element(By.CSS_SELECTOR, '#category-extension, button[name="extension"]').click()
     try:
         wait.until(
             lambda _: addon_name
