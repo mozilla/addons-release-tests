@@ -257,9 +257,13 @@ def test_about_addons_install_extension(
     disco_addon_author = about_addons.addon_cards_items[2].disco_addon_author.text
     # install the recommended extension
     about_addons.addon_cards_items[2].install_button.click()
-    firefox.browser.wait_for_notification(
+    confirmation = firefox.browser.wait_for_notification(
         firefox_notifications.AddOnInstallConfirmation
-    ).install()
+    )
+    with selenium.context(selenium.CONTEXT_CHROME):
+        selenium.execute_script(
+            "arguments[0].click()", confirmation.find_primary_button()
+        )
     time.sleep(2)
     # some addons will open support pages in new tabs after installation;
     # we need to return to the first (about:addons) tab if that happens
@@ -298,9 +302,13 @@ def test_about_addons_install_theme(
     )
     # install the recommended theme
     about_addons.addon_cards_items[0].install_button.click()
-    firefox.browser.wait_for_notification(
+    confirmation = firefox.browser.wait_for_notification(
         firefox_notifications.AddOnInstallConfirmation
-    ).install()
+    )
+    with selenium.context(selenium.CONTEXT_CHROME):
+        selenium.execute_script(
+            "arguments[0].click()", confirmation.find_primary_button()
+        )
     about_addons.click_themes_side_button()
     # check that installed theme should be first on the manage Themes page
     assert "true" in about_addons.enabled_theme_active_status
