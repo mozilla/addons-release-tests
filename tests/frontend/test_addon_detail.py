@@ -323,10 +323,21 @@ def test_contribute_button_tc_id_c4402(selenium, base_url, variables):
     )
     assert addon.contribute.contribute_button_heart_icon.is_displayed()
     assert "Contribute now" in addon.contribute.contribute_button_text
+    # verifies that utm params are passed from AMO to the external contribute site;
+    # this is checked on the link AMO builds rather than on the address the browser
+    # ends up at, because the contribute sites (PayPal, Open Collective) redirect to
+    # their own landing pages and may drop the query string, which AMO does not control
+    assert (
+        variables["contribute_utm_param"] in addon.contribute.contribute_button_link
+    ), f"Actual contribute link was {addon.contribute.contribute_button_link}"
+    # the button opens the contribute site in a new tab
     addon.contribute.click_contribute_button()
-    # verifies that utm params are passed from AMO to the external contribute site
     wait = WebDriverWait(selenium, 10)
-    wait.until(expected.url_contains(variables["contribute_utm_param"]))
+    wait.until(
+        lambda driver: driver.current_url != "about:blank",
+        message="The contribute site was not opened in the new tab",
+    )
+    assert base_url not in selenium.current_url
 
 
 @pytest.mark.nondestructive

@@ -408,6 +408,16 @@ class Detail(Base):
             )
             return self.find_element(*self._contribute_button_icon_locator)
 
+        @property
+        def contribute_button_link(self):
+            """The outgoing URL that AMO builds for the contribute button."""
+            self.wait.until(
+                EC.visibility_of_element_located(self._contribute_button_locator)
+            )
+            return self.find_element(*self._contribute_button_locator).get_attribute(
+                "href"
+            )
+
         def click_contribute_button(self):
             self.find_element(*self._contribute_button_locator).click()
             self.wait.until(expected.number_of_windows_to_be(2))
