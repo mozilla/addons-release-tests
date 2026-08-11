@@ -615,7 +615,6 @@ workflows:
       - ratings_serial_tests
       - devhub_parallel_tests
       - addon_submissions_tests
-      - webext_release_stage_run
       - sanity_serial_tests
       - sanity_parallel_tests
 
