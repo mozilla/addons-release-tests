@@ -1,4 +1,6 @@
 import time
+from datetime import datetime, timedelta, timezone
+
 import pytest
 import requests
 
@@ -477,6 +479,36 @@ def test_non_developer_user_profile_is_not_public(base_url, selenium, variables)
     assert page.minimal.report_abuse_button.is_displayed()
 
 
+# AMO deliberately hides the users count on add-ons created less than
+# 'recentAddonCutOffDays' ago - see isRecentAddon in addons-frontend. The value
+# is the same on every environment, but the dev and stage accounts constantly
+# get new add-ons from the automation suites, so the card is only expected to
+# have a users count once the add-on is past that cut-off.
+RECENT_ADDON_CUT_OFF_DAYS = 30
+
+
+def assert_users_count_displayed(base_url, search_result):
+    """Asserts the users count of a search result, allowing it to be missing
+    only while AMO still considers the add-on recently created."""
+    if search_result.is_users_count_displayed:
+        assert search_result.search_result_users.is_displayed()
+        return
+    slug = search_result.addon_slug
+    response = requests.get(f"{base_url}/api/v5/addons/addon/{slug}/", timeout=30)
+    assert response.status_code == 200, (
+        f"'{slug}' had no users count displayed and its creation date could "
+        f"not be checked; the API responded with {response.status_code}"
+    )
+    created = datetime.strptime(
+        response.json()["created"], "%Y-%m-%dT%H:%M:%SZ"
+    ).replace(tzinfo=timezone.utc)
+    age = datetime.now(timezone.utc) - created
+    assert age < timedelta(days=RECENT_ADDON_CUT_OFF_DAYS), (
+        f"'{slug}' was created {age.days} days ago, so it should have had a "
+        f"users count displayed"
+    )
+
+
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_user_addon_cards_for_users_with_multiple_roles(base_url, selenium, variables):
@@ -487,7 +519,7 @@ def test_user_addon_cards_for_users_with_multiple_roles(base_url, selenium, vari
     be hidden when the profile is viewed by another user"""
     user_profile = variables["developer_and_artist_role"]
     selenium.get(f"{base_url}/user/{user_profile}")
-    user = User(selenium, base_url)
+    user = User(selenium, base_url).wait_for_user_to_load()
     user_profile_name = user.user_display_name.text
     # check that extensions results have the following properties displayed:
     assert f"Extensions by {user_profile_name}" in user.view.user_extensions_card_header
@@ -496,14 +528,14 @@ def test_user_addon_cards_for_users_with_multiple_roles(base_url, selenium, vari
         assert extension.search_result_icon.is_displayed()
         assert extension.search_result_rating_stars.is_displayed()
         assert user_profile_name in extension.search_result_author.text
-        assert extension.search_result_users.is_displayed()
+        assert_users_count_displayed(base_url, extension)
         assert extension.search_result_summary.is_displayed()
     # check that themes results have the following properties displayed:
     assert f"Themes by {user_profile_name}" in user.view.user_themes_card_header
     for theme in user.view.user_themes_results:
         assert theme.search_name.is_displayed()
         assert theme.search_result_icon.is_displayed()
-        assert theme.search_result_users.is_displayed()
+        assert_users_count_displayed(base_url, theme)
     # verify that the user profile ratings card is not displayed when viewed by another user
     with pytest.raises(
         Exception,

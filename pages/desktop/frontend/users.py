@@ -313,10 +313,35 @@ class User(Base):
             )
             return self.find_element(*self._user_extensions_card_header_locator).text
 
+        def wait_for_results_to_render(self, card_locator, results_locator):
+            """Waits for an addons card to hold its final results.
+
+            The profile cards are rendered first as placeholders and are only
+            then replaced by the real results. Collecting the elements while the
+            placeholders are still up hands back references that go stale as
+            soon as React swaps them, so wait for the loading text to clear
+            before the results are read.
+            """
+            self.wait.until(
+                EC.visibility_of_element_located(results_locator),
+                message=f"No results were displayed in {card_locator[1]}",
+            )
+            # the card is re-rendered while this is polled, so a reference
+            # picked up here can go stale before it is queried
+            WebDriverWait(
+                self.driver, 30, ignored_exceptions=StaleElementReferenceException
+            ).until(
+                lambda _: not self.find_element(*card_locator).find_elements(
+                    By.CLASS_NAME, "LoadingText"
+                ),
+                message=f"The results in {card_locator[1]} were still loading",
+            )
+
         @property
         def user_extensions_results(self):
-            self.wait.until(
-                EC.visibility_of_element_located(self._user_extensions_results_locator)
+            self.wait_for_results_to_render(
+                self._user_extensions_card_locator,
+                self._user_extensions_results_locator,
             )
             items = self.find_elements(*self._user_extensions_results_locator)
             return [
@@ -343,8 +368,8 @@ class User(Base):
 
         @property
         def user_themes_results(self):
-            self.wait.until(
-                EC.visibility_of_element_located(self._user_themes_results_locator)
+            self.wait_for_results_to_render(
+                self._user_themes_card_locator, self._user_themes_results_locator
             )
             items = self.find_elements(*self._user_themes_results_locator)
             return [

@@ -208,6 +208,19 @@ class Search(Page):
                 return self.find_element(*self._users_locator)
 
             @property
+            def is_users_count_displayed(self):
+                """AMO omits the users count for recently created add-ons, so
+                this reports whether the card has one at all instead of
+                waiting for an element that is never going to be rendered."""
+                return self.is_element_displayed(*self._users_locator)
+
+            @property
+            def addon_slug(self):
+                """The slug of the add-on this result links to."""
+                link = self.find_element(*self._search_item_name_locator)
+                return link.get_attribute("href").rstrip("/").split("/")[-1]
+
+            @property
             def search_result_summary(self):
                 self.wait.until(EC.visibility_of_element_located(self._summary_locator))
                 return self.find_element(*self._summary_locator)
