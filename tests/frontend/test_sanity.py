@@ -33,7 +33,6 @@ def test_language_tools_landing_page(selenium, base_url, variables):
 
 @pytest.mark.nondestructive
 @pytest.mark.prod_only
-@pytest.mark.skip
 def test_install_language_pack(
     selenium, base_url, firefox, firefox_notifications
 ):
@@ -48,9 +47,11 @@ def test_install_language_pack(
     random.choice(lang_packs_list).click()
     lang_pack_detail = Detail(selenium, base_url).wait_for_page_to_load()
     lang_pack_detail.install()
-    firefox.browser.wait_for_notification(
+    confirmation = firefox.browser.wait_for_notification(
         firefox_notifications.AddOnInstallConfirmation
-    ).install()
+    )
+    with selenium.context(selenium.CONTEXT_CHROME):
+        selenium.execute_script("arguments[0].click()", confirmation.find_primary_button())
     assert "Remove" in lang_pack_detail.button_text
     # uninstall the language pack and check that install button changes state
     lang_pack_detail.install()
