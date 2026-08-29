@@ -1,0 +1,129 @@
+name: E2E Test
+
+description: Run an E2E test suite
+
+env:
+  test_results_path: coverage-devhub-tests-results.html
+
+on:
+  workflow_dispatch:
+    inputs:
+      artifact_name:
+        description: 'Name for the uploaded artifact'
+        required: false
+        default: 'test-results'
+      pytest_marker:
+        description: 'Pytest marker expression (-m)'
+        required: false
+        default: ''
+      pytest_parallel:
+        description: 'The number of parallel tests to run'
+        required: false
+        default: '1'
+      pytest_path:
+        description: 'The path to the test to run'
+        required: true
+        default: ''
+      pytest_report:
+        description: 'Name for the HTML report file'
+        required: false
+        default: 'test-results.html'
+      pytest_reruns:
+        description: 'The number of times to rerun the tests'
+        required: false
+        default: '2'
+      pytest_variables:
+        description: 'The path to the variables file'
+        type: choice
+        required: true
+        options:
+          - dev.json
+          - stage.json
+          - prod.json
+      python_version:
+        description: 'The Python version to use'
+        required: false
+        default: '3.x'
+  workflow_call:
+    inputs:
+      artifact_name:
+        required: true
+        type: string
+      pytest_marker:
+        required: false
+        type: string
+        default: ''
+      pytest_parallel:
+        required: true
+        type: string
+      pytest_path:
+        required: true
+        type: string
+      pytest_report:
+        required: true
+        type: string
+      pytest_reruns:
+        required: true
+        type: string
+      pytest_variables:
+        required: true
+        type: string
+      python_version:
+        required: true
+        type: string
+
+jobs:
+  test:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ github.event.inputs.python_version }}
+
+    - name: Upgrade pip
+      run: py -m pip install --upgrade pip --user
+
+    - name: Install requirements
+      run: py -m pip install --no-deps -r ./requirements.txt
+
+    - name: Install geckodriver
+      shell: bash
+      run: choco install selenium-gecko-driver -y
+
+    - name: Install Firefox
+      shell: bash
+      run: choco install firefox-nightly --pre --ignore-checksums -y
+
+    - name: Install Setup Tools
+      run: pip install setuptools
+
+    - name: Run tests
+      timeout-minutes: 30
+      shell: bash
+      env:
+        MOZ_HEADLESS: 1
+      run: |
+        variables=""
+        for var in ${inputs.pytest_variables//,/ }; do
+          variables="$variables --variables $var"
+        done
+
+        py -m pytest ${{ inputs.pytest_path }} \
+          -n ${{ inputs.pytest_parallel }} \
+          -m ${{ inputs.pytest_marker }} \
+          --reruns ${{ inputs.pytest_reruns }} \
+          --driver Firefox \
+          $variables \
+          --html=${{ inputs.pytest_report }} \
+          --self-contained-html
+
+    - name: Upload test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: ${{ inputs.artifact_name }}
+        path: ${{ inputs.pytest_report }}
+

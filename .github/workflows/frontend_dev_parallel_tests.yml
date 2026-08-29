@@ -1,0 +1,18 @@
+name: Frontend Dev Parallel Tests
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  test:
+    uses: ./.github/workflows/_test.yml
+    with:
+      artifact_name: frontend-dev-parallel-test-results
+      pytest_marker: "not serial and not prod_only"
+      pytest_parallel: 4
+      pytest_path: tests/frontend
+      pytest_report: frontend-dev-parallel-test-results.html
+      pytest_reruns: 2
+      pytest_variables: dev.json,translations.json
+      python_version: 3.x
