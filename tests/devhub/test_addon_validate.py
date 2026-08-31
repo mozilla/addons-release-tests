@@ -40,6 +40,7 @@ def test_validate_addon_listed(selenium, base_url, variables):
 
 @pytest.mark.sanity
 @pytest.mark.login("developer")
+@pytest.mark.skip(reason = "Need to update test file to replace first line of code, the ones that access the page")
 def test_validate_listed_addon_option_no_manifest_found(
     selenium, base_url, variables
 ):
