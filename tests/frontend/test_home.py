@@ -114,9 +114,16 @@ def test_primary_hero_tc_id_c95105(base_url, selenium):
 
 
 @pytest.mark.nondestructive
-@pytest.mark.xfail
 def test_secondary_hero_message(base_url, selenium, variables):
     """Test covering the homepage secondary hero"""
+    if "dev.allizom" in base_url:
+        pytest.skip(
+            "The secondary hero shelf on -dev is the scratch pad used to try "
+            "out the admin shelf editor, so its headline, description and call "
+            "to action hold arbitrary content instead of the AMO copy checked "
+            "here - the shelf currently reads 'CHARACTERS 20WORDS 2SENTENCES' "
+            "and its button points at /search/ rather than the Extensions page"
+        )
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     assert (
         variables["secondary_hero_title"] in page.secondary_hero.secondary_hero_headline

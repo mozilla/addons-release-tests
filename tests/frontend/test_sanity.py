@@ -367,7 +367,11 @@ def test_detail_page_taar_recommendations(selenium, base_url):
 
 @pytest.mark.sanity
 @pytest.mark.xfail(
-    reason="Known issue with taar recomendations", strict=False
+    reason="The discovery API no longer personalises its response: it returns "
+    "the same add-ons with and without a 'telemetry-client-id', and every "
+    "extension comes back with 'is_recommendation': false on dev, stage and "
+    "prod. Re-checked 2026-08-31; still failing on all three",
+    strict=False,
 )
 def test_discovery_taar_recommendations(base_url, variables):
     """The scope of this test is to verify if the addons manager recommendations page returns
