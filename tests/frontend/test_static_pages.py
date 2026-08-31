@@ -113,7 +113,6 @@ def test_review_guidelines_page_links(base_url, selenium):
 
 
 @pytest.mark.nondestructive
-@pytest.mark.skip
 def test_blocked_addon_page_links(base_url, selenium, variables):
     """Checks the links from blocked addon page"""
     selenium.get(variables["static_page_blocked_addon"])
@@ -124,8 +123,10 @@ def test_blocked_addon_page_links(base_url, selenium, variables):
         link_domain = link.get_attribute("href").split("/")[2].split(".")[0]
         # click the link
         link.click()
-        # verify if the opened page link contains the correct domain
-        assert link_domain in selenium.current_url
+        # wait for the linked page to open and verify that it is on the
+        # expected domain; the external pages these link to can be slow, so
+        # reading the URL straight after the click can still see the old one
+        page.wait_for_current_url(link_domain)
         # go back to test the next link
         page.driver.back()
 

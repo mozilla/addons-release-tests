@@ -120,18 +120,19 @@ def test_click_aside_closes_suggestion_list(base_url, selenium, variables):
         selenium.find_element(By.CSS_SELECTOR, "AutoSearchInput-suggestions-list")
 
 
-@pytest.mark.skip(reason="this test requires more optimization")
 @pytest.mark.nondestructive
-def test_long_terms_dont_break_suggestions(base_url, selenium):
-    """Checks that the long term don't break the suggestion list"""
+def test_long_terms_dont_break_suggestions(base_url, selenium, variables):
+    """Checks that a long search term doesn't break the suggestion list"""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
-    term = "videodo"
-    suggestions = page.search.search_for(term, execute=False)
-    # Sleep to let autocomplete update.
-    term_max_len = 33
-    suggestion_names = [item.name for item in suggestions]
-    for suggestion_name in suggestion_names:
-        assert len(suggestion_name) <= term_max_len
+    suggestions = page.search.search_for(variables["search_term"], execute=False)
+    # take the longest add-on name that the short term suggests and search for
+    # that full name; add-on names differ between environments, so a long term
+    # is derived from live data instead of being hardcoded here
+    long_term = max((item.name for item in suggestions), key=len)
+    page.search.search_field.clear()
+    suggestions = page.search.search_for(long_term, execute=False)
+    # the add-on that the term was taken from is still suggested for it
+    assert long_term in [item.name for item in suggestions]
 
 
 @pytest.mark.nondestructive
@@ -247,20 +248,18 @@ def test_search_loads_and_navigates_to_correct_page(base_url, selenium):
 
 @pytest.mark.sanity
 @pytest.mark.nondestructive
-@pytest.mark.skip
 def test_blank_search_loads_results_tc_id_c97496(base_url, selenium):
     """Test that verifies the scenario in which we search with nothing"""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     search_page = page.search.search_for("", execute=True)
     results = search_page.result_list.search_results
+    # searching for nothing returns a full first page of results
     assert len(results) == 25
-    for result in results:
-        assert result.promoted_badge
-    sort = "users"
-    results = [
-        getattr(result, sort) for result in search_page.result_list.search_results
-    ]
-    assert sorted(results, reverse=True) == results
+    # the results of a blank search are sorted by number of users, descending.
+    # The badges are not checked here: promotions apply per application, so an
+    # add-on promoted only for Android is listed without a badge on Firefox
+    users = [result.users for result in results]
+    assert sorted(users, reverse=True) == users
 
 
 @pytest.mark.nondestructive

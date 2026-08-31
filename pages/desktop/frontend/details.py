@@ -313,15 +313,22 @@ class Detail(Base):
         def stats_reviews_count(self):
             count = self.addon_reviews_stats
             text = count.find_element(By.CSS_SELECTOR, ".Badge-content").text
-            match = re.search(r'\((\d+)\s+reviews\)', text)
+            # the badge reads e.g. "4.5 (4,113 reviews)"; AMO groups thousands
+            # with a comma and drops the plural for a single review, so both
+            # need to be accepted here - matching only '\d+' silently returned
+            # 0 for every add-on with more than 999 reviews
+            match = re.search(r'\(([\d,]+)\s+reviews?\)', text)
             if match:
-                return int(match.group(1))
+                return int(match.group(1).replace(",", ""))
             else:
                 return 0
-            # return int(count.find_element(By.XPATH, "//a").text.replace(",", ""))
 
         def stats_reviews_link(self):
-            self.addon_reviews_stats.find_element(By.XPATH, "//a[@class='Addon-all-reviews-link']").click()
+            # the 'Read all N reviews' link sits in the footer of the ratings
+            # card, alongside the reviews badge rather than inside it. Scope the
+            # lookup to this region instead of using a leading '//' XPath,
+            # which searches the whole document
+            self.find_element(By.CSS_SELECTOR, "a.Addon-all-reviews-link").click()
             return Reviews(self.driver, self.page.base_url).wait_for_page_to_load()
 
         @property
@@ -674,6 +681,15 @@ class Detail(Base):
             ".pswp__button--close",
         )
         _screenshot_counter_location = (By.CSS_SELECTOR, ".pswp__counter")
+        # the viewer keeps the previous/current/next images in the DOM, so the
+        # image on screen is the one inside the item that is not aria-hidden.
+        # While the full size image loads, the viewer shows the thumbnail as a
+        # placeholder in the same slot, so exclude it
+        _current_full_size_image_locator = (
+            By.CSS_SELECTOR,
+            '.pswp__item[aria-hidden="false"] '
+            '.pswp__img:not(.pswp__img--placeholder)',
+        )
 
         @property
         def screenshot_section_header(self):
@@ -703,6 +719,34 @@ class Detail(Base):
                 lambda _: self.is_element_displayed(*self._screenshot_viewer_locator)
             )
             return self
+
+        def open_screenshot_preview(self, count):
+            """Opens the full size viewer for the screenshot at position 'count'.
+
+            The thumbnails sit below the fold on the detail page, so scroll the
+            one we want into view before clicking it."""
+            preview = self.screenshot_preview[count]
+            self.driver.execute_script(
+                "arguments[0].scrollIntoView({block: 'center'});", preview
+            )
+            preview.click()
+            self.wait.until(
+                EC.visibility_of_element_located(self._screenshot_viewer_locator),
+                message=f"The screenshot viewer did not open for preview {count}",
+            )
+            return self
+
+        @property
+        def full_size_image_source(self):
+            """The source of the full size image currently on screen."""
+            self.wait.until(
+                EC.visibility_of_element_located(
+                    self._current_full_size_image_locator
+                )
+            )
+            return self.find_element(
+                *self._current_full_size_image_locator
+            ).get_attribute("src")
 
         def go_to_next_screenshot(self):
             self.wait.until(EC.element_to_be_clickable(self._next_preview_locator))
