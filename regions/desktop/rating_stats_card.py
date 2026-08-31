@@ -16,7 +16,6 @@ class RatingStats(Region):
         By.CSS_SELECTOR,
         '.AddonSummaryCard .Rating-half-star',
     )
-    _rating_by_star_locator = (By.CSS_SELECTOR, '.RatingsByStar-graph > a')
     _rating_bars_locator = (By.CSS_SELECTOR, '.RatingsByStar-barFrame')
 
     @property
@@ -71,15 +70,29 @@ class RatingStats(Region):
         return self.find_elements(*self._rating_bars_locator)
 
     def click_see_all_reviews_with_specific_stars(self, count):
-        self.wait.until(EC.element_to_be_clickable(self._rating_by_star_locator))
-        self.find_elements(*self._rating_by_star_locator)[count].click()
+        """Opens the reviews page filtered by one star score.
+
+        'count' is the position of the bar in the card, so 0 is the five-star
+        bar and 4 is the one-star bar. Every bar is rendered as three separate
+        links (the star label, the bar and the counter), so the link is picked
+        by the score in its href - indexing the links by 'count' landed on the
+        wrong bar for every value except 0."""
+        score = 5 - count
+        locator = (
+            By.CSS_SELECTOR,
+            f'.RatingsByStar-graph > a[href*="score={score}"]',
+        )
+        self.wait.until(EC.element_to_be_clickable(locator))
+        self.find_element(*locator).click()
         from pages.desktop.frontend.reviews import Reviews
 
         return Reviews(self.driver, self.page)
 
     def number_of_reviews_with_specific_stars(self, count):
         self.wait.until(EC.visibility_of_element_located(self._number_of_reviews_locator))
-        return int(self.find_elements(*self._number_of_reviews_locator)[count].text)
+        # AMO groups thousands with a comma, i.e. '1,234'
+        counter = self.find_elements(*self._number_of_reviews_locator)[count].text
+        return int(counter.replace(',', ''))
 
     @property
     def number_of_filled_stars(self):

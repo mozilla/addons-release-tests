@@ -684,17 +684,26 @@ def test_rating_card_rating_bars(selenium, base_url, variables):
 
 
 @pytest.mark.nondestructive
-@pytest.mark.skip(reason="update assert")
 def test_rating_card_bar_review_counter(selenium, base_url, variables):
     """this test verifies that the counter for each bar is correct"""
-    selenium.get(variables["addon_version_page_url"])
-    page = Versions(selenium, base_url)
+    # the add-on used by the other rating tests has its ratings created and
+    # deleted by those tests, which leaves its rating totals out of step with
+    # the reviews they link to; this one only ever has ratings read from it
+    selenium.get(f'{base_url}/addon/{variables["addon_with_stats"]}/versions/')
+    page = Versions(selenium, base_url).wait_for_page_to_load()
     for i in range(5):
         counter_from_card = page.rating_card.number_of_reviews_with_specific_stars(i)
+        if counter_from_card == 0:
+            # a bar with no reviews links to a page that reports no count
+            continue
         review_page = page.rating_card.click_see_all_reviews_with_specific_stars(i)
-        page.wait_for_page_to_load()
-        assert len(review_page.review_items) == counter_from_card
+        review_page.wait_for_page_to_load()
+        # compare against the total the reviews page reports for this score;
+        # the list of reviews itself is paginated, so counting the items in it
+        # only matches while an add-on has less than a full page of reviews
+        assert review_page.reviews_title_count == counter_from_card
         page.driver.back()
+        page.wait_for_page_to_load()
 
 
 @pytest.mark.nondestructive
