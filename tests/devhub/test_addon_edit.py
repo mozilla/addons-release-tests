@@ -34,7 +34,6 @@ def test_addon_edit_markdown_support_link(selenium, base_url, wait):
 
 
 @pytest.mark.login("developer")
-@pytest.mark.skip(reason="to be fixed when coming back for skipped tests")
 def test_set_addon_invisible_tc_id_c4371(selenium, base_url, variables, wait):
     """Set an addon Invisible and then reset the status to Visible"""
     selenium.get(f"{base_url}/developers/addon/invisible_addon_auto/versions")

@@ -1,6 +1,5 @@
 """test_devhub_home.py focuses on the homepage from devhub"""
 import pytest
-import time
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
@@ -93,7 +92,6 @@ def test_devhub_page_overview(selenium, base_url, variables):
     # checks that the link redirects to the extension workshop
     page.extension_workshop_is_loaded()
 
-@pytest.mark.skip
 @pytest.mark.nondestructive
 def test_devhub_page_get_involved(selenium, base_url, variables, wait):
     """Tests the "Get Involved" section on the DevHub homepage,
@@ -105,8 +103,13 @@ def test_devhub_page_get_involved(selenium, base_url, variables, wait):
     assert variables["devhub_get_involved_summary"] in page.devhub_get_involved_summary
     assert page.devhub_get_involved_image.is_displayed()
     page.devhub_get_involved_link.click()
-    time.sleep(5)
-    assert page.devhub_addon_contribute_title.text in "Add-ons/Contribute"
+    # the link leaves AMO for the MozillaWiki, so wait on the destination URL
+    # and then on its page title instead of sleeping for a fixed interval
+    wait.until(
+        EC.url_contains("wiki.mozilla.org/Add-ons/Contribute"),
+        message=f"Actual URL after clicking the link was {selenium.current_url}",
+    )
+    assert "Add-ons/Contribute" in page.devhub_addon_contribute_title.text
 
 @pytest.mark.sanity
 @pytest.mark.nondestructive
@@ -484,20 +487,41 @@ def test_connect_newsletter_section(selenium, base_url, variables):
 
 
 @pytest.mark.nondestructive
-@pytest.mark.skip(
-    reason= "Skipped until this issue is fixed: https://github.com/mozilla/addons-server/issues/21335"
-)
-def test_verify_newsletter_signup_confirmation(selenium, base_url, variables, wait):
-    """Ensures that after signing up for the newsletter,
-    the user receives a confirmation message,
-    and that a confirmation email is sent
-    to the provided email address."""
+def test_verify_newsletter_signup_confirmation(selenium, base_url, variables):
+    """Ensures that signing up for the newsletter subscribes the address and
+    that a confirmation email is sent to it.
+    The in-page confirmation panel is covered separately by
+    test_verify_newsletter_signup_confirmation_message, because it is currently
+    broken by a product bug - see the xfail reason there."""
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     email = f"{reusables.get_random_string(10)}@restmail.net"
-    # fill in the newsletter subscription form
-    page.connect.newsletter_email_input_field(email)
-    page.connect.click_privacy_checkbox()
-    page.connect.newsletter_sign_up.click()
+    page.connect.submit_newsletter_signup(email)
+    # the subscription is confirmed by the email basket sends, which is the only
+    # signal the page gives us that the signup was accepted
+    confirmation_email = page.connect.check_newsletter_signup_email(email)
+    assert "Action Required: Confirm Your Subscription" in confirmation_email
+
+
+@pytest.mark.nondestructive
+@pytest.mark.xfail(
+    reason="The Thanks panel is never shown. addons-server "
+    "static/js/lib/basket-client.js reads `if (response === null)` on line 79, "
+    "above the `let response = r.target.response` that declares it on line 83, so "
+    "every successful subscribe throws a ReferenceError (lexical declaration "
+    "accessed before initialization) before newsletterThanks() runs. Same bundle "
+    "on stage, dev and prod, so it fails everywhere. The subscription itself "
+    "succeeds - basket returns success and the confirmation email is sent, which "
+    "is what test_verify_newsletter_signup_confirmation asserts - only the UI "
+    "feedback is broken."
+)
+def test_verify_newsletter_signup_confirmation_message(
+    selenium, base_url, variables, wait
+):
+    """Ensures that after signing up for the newsletter the signup form is
+    replaced by the in-page confirmation message."""
+    page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
+    email = f"{reusables.get_random_string(10)}@restmail.net"
+    page.connect.submit_newsletter_signup(email)
     # checks that the form transitions to confirmation messages after clicking Sign up
     wait.until(EC.invisibility_of_element(page.connect.newsletter_sign_up))
     assert (
@@ -508,9 +532,6 @@ def test_verify_newsletter_signup_confirmation(selenium, base_url, variables, wa
         variables["devhub_signup_confirmation_message"]
         in page.connect.newsletter_signup_confirmation_message
     )
-    # verify that a confirmation email was received after subscribing
-    confirmation_email = page.connect.check_newsletter_signup_email(email)
-    assert "Action Required: Confirm Your Subscription" in confirmation_email
 
 
 @pytest.mark.nondestructive
