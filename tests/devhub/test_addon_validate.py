@@ -6,7 +6,7 @@ from pages.desktop.developers.devhub_home import DevHubHome
 
 
 @pytest.mark.sanity
-@pytest.mark.skip()
+@pytest.mark.login("developer")
 def test_validate_addon_listed(selenium, base_url, variables):
     """Verifies the process of validating a listed addon using the "On This Site"
     checkbox in the DevHub Addon Validate page.
@@ -128,7 +128,7 @@ def test_validate_addon_unlisted(selenium, base_url, variables):
 
 
 @pytest.mark.sanity
-@pytest.mark.skip()
+@pytest.mark.create_session("developer")
 def test_validate_unlisted_addon_option_no_manifest_found(
     selenium, base_url, variables
 ):
