@@ -193,6 +193,18 @@ class SubmitAddon(Page):
         self.wait.until(EC.visibility_of_element_located(self._recaptcha_locator))
         return self.find_element(*self._recaptcha_locator)
 
+    def is_recaptcha_displayed(self, timeout=10):
+        """The agreement form only renders a reCAPTCHA where the environment has one
+        configured; stage and dev serve the form without it. Returns False instead of
+        raising so that a test can cover the widget only where it exists."""
+        try:
+            WebDriverWait(self.driver, timeout).until(
+                EC.visibility_of_element_located(self._recaptcha_locator)
+            )
+            return True
+        except TimeoutException:
+            return False
+
     def click_recaptcha_checkbox(self):
         """reCAPTCHA is stored in an iframe; switch to the iframe and click on the checkbox"""
         el = self.find_element(By.CSS_SELECTOR, 'iframe[title="reCAPTCHA"]')

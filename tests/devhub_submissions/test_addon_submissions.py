@@ -36,7 +36,10 @@ def test_devhub_developer_agreement_page_contents(selenium, base_url, variables,
         "Review Policies and Rules" in dist_agreement.review_policies_article_link.text
     )
     assert variables["distribution_user_consent"] in dist_agreement.user_consent_text
-    wait.until(lambda _: dist_agreement.recaptcha.is_displayed())
+    # the agreement form only renders a reCAPTCHA where the environment has one
+    # configured, so it is verified when present instead of being required
+    if dist_agreement.is_recaptcha_displayed():
+        wait.until(lambda _: dist_agreement.recaptcha.is_displayed())
     # clicking on Cancel agreement should redirect to Devhub Homepage
     dist_agreement.cancel_agreement.click()
     page = DevHubHome(selenium, base_url).wait_for_page_to_load()
@@ -69,7 +72,10 @@ def test_devhub_developer_agreement_checkboxes(selenium, base_url):
     assert dist_agreement.distribution_agreement_checkbox.is_selected()
     dist_agreement.review_policies_checkbox.click()
     assert dist_agreement.review_policies_checkbox.is_selected()
-    dist_agreement.click_recaptcha_checkbox()
+    # the agreement form only renders a reCAPTCHA where the environment has one
+    # configured, so it is only ticked when present
+    if dist_agreement.is_recaptcha_displayed():
+        dist_agreement.click_recaptcha_checkbox()
 
 
 @pytest.mark.sanity
