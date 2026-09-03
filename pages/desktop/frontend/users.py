@@ -528,6 +528,10 @@ class User(Base):
             By.CSS_SELECTOR,
             ".UserProfileEdit-manage-account-link",
         )
+        _fxa_settings_profile_locator = (
+            By.CSS_SELECTOR,
+            "[data-testid='settings-profile']",
+        )
         _edit_display_name_locator = (By.CSS_SELECTOR, ".UserProfileEdit-displayName")
         _edit_homepage_locator = (By.CSS_SELECTOR, ".UserProfileEdit-homepage")
         _edit_location_locator = (By.CSS_SELECTOR, ".UserProfileEdit-location")
@@ -627,21 +631,24 @@ class User(Base):
                 EC.element_to_be_clickable(self._user_email_help_link_locator)
             )
             self.find_element(*self._user_email_help_link_locator).click()
-            # waits for the fxa support page to be opened
+            # sumo serves a bot challenge page to Selenium-driven browsers, so the
+            # link target is verified through the url instead of the article content
             self.wait.until(
-                EC.visibility_of_element_located(
-                    (By.CSS_SELECTOR, ".sumo-page-heading")
-                )
+                EC.url_contains("support.mozilla.org/kb/change-primary-email-address"),
+                message=f"The url was {self.driver.current_url}",
             )
 
         def link_to_fxa_account(self):
             self.wait.until(EC.element_to_be_clickable(self._fxa_account_link_locator))
             self.find_element(*self._fxa_account_link_locator).click()
-            # waits for the fxa account page to be opened - check logo visibility
-            self.wait.until(EC.visibility_of_element_located(self._login_btn_locator))
-            self.find_element(*self._login_btn_locator).click()
+            # the user is already signed in to fxa, so the link lands directly on the
+            # account settings page; the sign in screen is no longer displayed here
             self.wait.until(
-                EC.visibility_of_element_located((By.CSS_SELECTOR, ".flex h1 span"))
+                EC.url_contains("/settings"),
+                message=f"The url was {self.driver.current_url}",
+            )
+            self.wait.until(
+                EC.visibility_of_element_located(self._fxa_settings_profile_locator)
             )
 
         def display_name(self, value):
@@ -786,13 +793,19 @@ class User(Base):
             self.wait.until(
                 EC.visibility_of_element_located(self._notification_text_locator)
             )
-            items = self.find_elements(*self._notification_text_locator)
-            # the notifications endpoint takes a bit longer to respond, so a wait is helpful here
-            self.wait.until(
-                lambda _: len(items) > 0,
-                message=f"Expected notifications list to be loaded but the list contains {len(items)} items",
+            # the notifications endpoint takes a bit longer to respond, so the labels
+            # can be in the DOM before their text is rendered; waiting for all of them
+            # to have text avoids handing over labels that still read as empty
+            WebDriverWait(
+                self.driver, 30, ignored_exceptions=StaleElementReferenceException
+            ).until(
+                lambda _: all(
+                    item.text
+                    for item in self.find_elements(*self._notification_text_locator)
+                ),
+                message="Expected the notifications list to be fully rendered",
             )
-            return items
+            return self.find_elements(*self._notification_text_locator)
 
         @property
         def notifications_help_text(self):

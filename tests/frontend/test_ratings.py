@@ -289,22 +289,40 @@ def test_all_reviews_page_items(selenium, base_url, variables):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-def test_filter_reviews_by_score(selenium, base_url, variables):
+def test_filter_reviews_by_score(selenium, base_url, variables, wait):
     """Test filtering reviews by score on the all reviews page."""
     extension = variables["all_scores_addon"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     reviews = addon.ratings.click_all_reviews_link()
-    select = Select(reviews.filter_by_score)
+    # the summary card states how many reviews each score holds; those counts are
+    # what the matching score filter is expected to return
+    reviews_per_score = reviews.reviews_count_per_score
     count = 1
     # selecting rating score filters from 1 to 5, verifying that the reviews card
     # header counts reflect the number of reviews available for that rating score
     # and that the ratings stars for each review reflect the selected score
     while count < 6:
-        select.select_by_value(str(count))
+        # the whole card is re-rendered on every score change, so the select has to
+        # be looked up again on each pass to avoid holding a stale element
+        Select(reviews.filter_by_score).select_by_value(str(count))
         # waiting for the reviews page to be refreshed
         reviews.wait_for_page_to_load()
-        assert reviews.reviews_title_count == len(reviews.reviews_list)
+        expected_reviews = reviews_per_score[count]
+        if expected_reviews == 0:
+            # no review holds this score, so the card says so instead of listing any
+            wait.until(
+                lambda _: reviews.no_reviews_message_is_displayed,
+                message=f"The summary card lists no reviews for score {count} but the "
+                f'filtered page did not show the "no reviews" message',
+            )
+        wait.until(
+            lambda _: reviews.reviews_title_count == expected_reviews
+            and len(reviews.reviews_list) == expected_reviews,
+            message=f"The summary card lists {expected_reviews} reviews for score {count} "
+            f'but the filtered page showed "{reviews.reviews_title_count}" in the card '
+            f"header and {len(reviews.reviews_list)} in the list",
+        )
         for stars in reviews.review_items:
             assert len(stars.selected_star) == count
         count += 1
@@ -312,23 +330,42 @@ def test_filter_reviews_by_score(selenium, base_url, variables):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-def test_filter_reviews_from_rating_bars(selenium, base_url, variables):
+def test_filter_reviews_from_rating_bars(selenium, base_url, variables, wait):
     """Test filtering reviews by clicking on rating bars."""
     extension = variables["all_scores_addon"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     reviews = addon.ratings.click_all_reviews_link()
+    # the summary card states how many reviews each score holds; those counts are
+    # what the matching rating bar is expected to return
+    reviews_per_score = reviews.reviews_count_per_score
     count = 0
     # sort reviews based on score by clicking on the ratings bars present
     # in the AddonSummaryCard; verify that the correct score is displayed
     # in the reviews card header and in the rating stars associated to each review
     while count < 5:
+        # the bars are listed from score 5 down to score 1
+        score = int(reviews.bar_rating_score[count].text)
         reviews.score_bars[count].click()
         # waiting for the reviews page to be refreshed
         reviews.wait_for_page_to_load()
-        assert reviews.reviews_title_count == len(reviews.reviews_list)
+        expected_reviews = reviews_per_score[score]
+        if expected_reviews == 0:
+            # no review holds this score, so the card says so instead of listing any
+            wait.until(
+                lambda _: reviews.no_reviews_message_is_displayed,
+                message=f"The summary card lists no reviews for score {score} but the "
+                f'filtered page did not show the "no reviews" message',
+            )
+        wait.until(
+            lambda _: reviews.reviews_title_count == expected_reviews
+            and len(reviews.reviews_list) == expected_reviews,
+            message=f"The summary card lists {expected_reviews} reviews for score {score} "
+            f'but the filtered page showed "{reviews.reviews_title_count}" in the card '
+            f"header and {len(reviews.reviews_list)} in the list",
+        )
         for stars in reviews.review_items:
-            assert len(stars.selected_star) == int(reviews.bar_rating_score[count].text)
+            assert len(stars.selected_star) == score
         count += 1
 
 

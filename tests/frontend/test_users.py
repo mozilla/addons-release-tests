@@ -1,4 +1,3 @@
-import time
 from datetime import datetime, timedelta, timezone
 
 import pytest
@@ -88,8 +87,6 @@ def test_user_menu_edit_profile_tc_id_c95102(base_url, selenium):
 @pytest.mark.register
 def test_register_new_account(base_url, selenium, wait):
     """Tests registering a new account and checks the default user name after registration."""
-    if "addons-dev" in base_url:
-        pytest.skip("To be fixed for dev")
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.register()
     # reassign AMO homepage it to another variable because 'page' can become stale at this point
@@ -336,7 +333,6 @@ def test_user_delete_profile_tc_id_c4393(base_url, selenium):
 
 @pytest.mark.serial
 @pytest.mark.login("reusable_user")
-@pytest.mark.skip
 def test_user_account_manage_section(base_url, selenium, variables):
     """Confirms that the correct email is
     displayed in the account management section."""
@@ -383,25 +379,27 @@ def test_user_regular_has_no_role(base_url, selenium):
 
 
 @pytest.mark.serial
-@pytest.mark.skip
-def test_user_regular_notifications(base_url, selenium, variables):
+@pytest.mark.nondestructive
+def test_user_regular_notifications(base_url, selenium, variables, wait):
     """Ensures that regular users can opt in/out of only the basic notifications."""
     user = User(selenium, base_url).open().wait_for_page_to_load()
     user.login("reusable_user")
-    # regular users can only opt in/out for 2 notifications
-    assert len(user.edit.notification_text) == 2
+    # regular users can only opt in/out for 2 notifications; the notifications
+    # endpoint responds slower than the rest of the page, so we wait for the
+    # list to be fully rendered before counting the items
+    wait.until(
+        lambda _: len(user.edit.notification_text) == 2,
+        message=f'Actual number of notifications displayed was "{len(user.edit.notification_text)}"',
+    )
+    notifications = [item.text for item in user.edit.notification_text]
     count = 0
-    while count < len(user.edit.notification_text):
-        assert (
-            variables["notifications"][count] in user.edit.notification_text[count].text
-        )
+    while count < len(notifications):
+        assert variables["notifications"][count] in notifications[count]
         count += 1
+
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-@pytest.mark.skip(
-    reason="Intermittent issue, see https://github.com/mozilla/addons-server/issues/20965"
-)
 def test_user_notifications_subscriptions(base_url, selenium, wait):
     """Tests subscribing and unsubscribing from notifications for a user."""
     edit_user = User(selenium, base_url).open().wait_for_page_to_load()
@@ -411,19 +409,26 @@ def test_user_notifications_subscriptions(base_url, selenium, wait):
         assert checkbox.is_selected()
     # unsubscribe from one of the non-mandatory notifications
     edit_user.edit.notifications_checkbox[0].click()
-    time.sleep(2)
+    wait.until(
+        lambda _: not edit_user.edit.notifications_checkbox[0].is_selected(),
+        message="The notification checkbox was still selected after being clicked",
+    )
     edit_user.edit.submit_changes()
-    time.sleep(3)
-    User(selenium, base_url).open().wait_for_page_to_load()
-    # verify that the notification checkbox is no longer selected
-    with pytest.raises(AssertionError):
-        assert edit_user.edit.notifications_checkbox[0].is_selected()
+    # reload the Edit profile page and verify that the notification is no longer selected
+    edit_user = User(selenium, base_url).open().wait_for_page_to_load()
+    wait.until(
+        lambda _: not edit_user.edit.notifications_checkbox[0].is_selected(),
+        message="The notification was still selected after unsubscribing from it",
+    )
     # subscribe to the notification again
     edit_user.edit.notifications_checkbox[0].click()
     edit_user.edit.submit_changes()
-    time.sleep(2)
-    User(selenium, base_url).open().wait_for_page_to_load()
-    assert edit_user.edit.notifications_checkbox[0].is_selected()
+    # reload the Edit profile page and verify that the notification is selected again
+    edit_user = User(selenium, base_url).open().wait_for_page_to_load()
+    wait.until(
+        lambda _: edit_user.edit.notifications_checkbox[0].is_selected(),
+        message="The notification was not selected after subscribing to it again",
+    )
 
 
 @pytest.mark.serial
@@ -716,8 +721,6 @@ def test_user_profile_delete_review(base_url, selenium, variables, wait):
 @pytest.mark.login("submissions_user")
 def test_user_abuse_report(base_url, selenium, variables, wait):
     """Verifies that a user can submit an abuse report for a developer and that the form is correctly processed."""
-    if "addons-dev" in base_url:
-        pytest.skip("To be fixed for dev")
     developer = variables["developer_profile"]
     selenium.get(f"{base_url}/user/{developer}")
     user = User(selenium, base_url).wait_for_user_to_load()

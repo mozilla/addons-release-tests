@@ -20,6 +20,8 @@ class Reviews(Base):
     )
     _rating_score_bars_locator = (By.CSS_SELECTOR, ".RatingsByStar-barContainer")
     _bar_rating_score_locator = (By.CSS_SELECTOR, ".RatingsByStar-star")
+    _bar_rating_count_locator = (By.CSS_SELECTOR, ".RatingsByStar-count")
+    _no_reviews_message_locator = (By.CSS_SELECTOR, ".AddonReviewList-noReviews")
 
     def wait_for_page_to_load(self):
         """Waits for various page components to be loaded"""
@@ -35,7 +37,12 @@ class Reviews(Base):
 
     @property
     def reviews_title_count(self):
+        """The card header holds no text when the current score filter matches no
+        reviews - the card shows 'There are no reviews' instead - so an empty header
+        means zero reviews rather than a missing count."""
         count = self.reviews_page_title
+        if not count:
+            return 0
         review_count = count.split()[0].replace(" reviews", "")
         return int(review_count.replace(",", ""))
 
@@ -70,6 +77,25 @@ class Reviews(Base):
     @property
     def bar_rating_score(self):
         return self.find_elements(*self._bar_rating_score_locator)
+
+    @property
+    def bar_rating_count(self):
+        return self.find_elements(*self._bar_rating_count_locator)
+
+    @property
+    def no_reviews_message_is_displayed(self):
+        """Shown in place of the reviews list when the current score filter
+        matches no reviews."""
+        return self.is_element_displayed(*self._no_reviews_message_locator)
+
+    @property
+    def reviews_count_per_score(self):
+        """The summary card holds one bar per score, from 5 down to 1, each stating how
+        many reviews hold that score. Returned keyed by score so that a test can tell
+        how many reviews a score filter is expected to return."""
+        scores = [int(star.text) for star in self.bar_rating_score]
+        counts = [int(bar.text.replace(",", "")) for bar in self.bar_rating_count]
+        return dict(zip(scores, counts))
 
     @property
     def featured_review_section(self):

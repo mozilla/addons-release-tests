@@ -174,7 +174,14 @@ class DevHubHome(Base):
 
     def devhub_login(self, user):
         fxa = self.click_header_login_button()
-        # wait for the FxA login page to load
+        # the devhub newsletter form has its own input[name='email'], so we have to
+        # wait for the fxa page itself before looking for the email field; otherwise
+        # the newsletter input matches straight away and the credentials are typed
+        # into the devhub page while the redirect to fxa is still in flight
+        self.wait.until(
+            EC.url_contains("accounts."),
+            message=f"The FxA login page was not opened, the url was {self.driver.current_url}",
+        )
         self.wait.until(
             EC.visibility_of_element_located((By.NAME, "email")),
             message=f"FxA email input field was not displayed in {self.driver.current_url}",
