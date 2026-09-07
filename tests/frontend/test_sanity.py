@@ -134,7 +134,21 @@ def test_install_theme(selenium, base_url, variables, firefox, firefox_notificat
 
 @pytest.mark.prod_only
 @pytest.mark.skip(
-    reason="Still investigating why this test has started failing recently"
+    reason="The about:addons search -> AMO commit path is not automatable on "
+    "current Firefox: it requires a trusted (isTrusted=true) event that only "
+    "real hardware input can produce. Selenium/Marionette synthetic input, "
+    "JavaScript click() calls, and dispatched CustomEvents are all rejected "
+    "by the browser's user-activation policy for chrome-page popup/tab "
+    "opening. moz-input-search ignores send_keys(Keys.ENTER); native and JS "
+    "clicks on the sibling moz-button (both the host and the inner "
+    "<button id='main-button'> inside its shadow root) are no-ops; dispatched "
+    "MozInputSearch:search and CustomEvent('search') events are not consumed. "
+    "Same wall documented in the webext tests "
+    "test_suite_addons_search_opens_amo_results_TC617019 and "
+    "test_suite_addons_search_full_name in "
+    "tests/webext/test_about_addons_navigation_and_functionality.py. "
+    "Direct AMO search coverage is provided by multiple sanity tests in "
+    "tests/frontend/test_search.py."
 )
 def test_about_addons_search(selenium, base_url):
     """Verifies the functionality of the search feature on the "about:addons" page.
