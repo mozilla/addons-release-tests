@@ -838,8 +838,13 @@ def test_addon_recommendations(selenium, base_url, variables):
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     recommendations = addon.recommendations.addons_recommendations_results_list
-    # verifies that the recommendations card shows up to 4 recommendations if available
-    assert len(recommendations) <= 4
+    # On prod, AMO admin-curates a fixed list of exactly 4 popular extensions
+    # on every detail page — assert the invariant. Dev/stage have smaller
+    # admin-curated lists (may be 2-4 items) so we only assert the upper bound.
+    if base_url == "https://addons.mozilla.org":
+        assert len(recommendations) == 4
+    else:
+        assert len(recommendations) <= 4
 
 
 @pytest.mark.sanity
