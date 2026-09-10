@@ -275,11 +275,17 @@ class Detail(Base):
         _stats_users_locator = (By.XPATH, "//div[@data-testid='badge-user-fill']")
         _stats_reviews_locator = (By.XPATH, "//div[@data-testid='badge-star-full']")
         _stats_ratings_locator = (By.XPATH, "//div[@class='Addon-read-reviews-footer']")
-        _rating_score_title_locator = (
-            By.CSS_SELECTOR,
-            ".AddonMeta-rating-content .Rating--small"
+        # AMO restructured the addon detail page: the old separate
+        # `AddonMeta-rating-title` ("4.1 Stars") and
+        # `AddonMeta-rating-content .Rating--small` (title="4.1") elements are
+        # gone. The star rating is now a single Badge whose content reads
+        # "4.1 (19,845 reviews)". Parse the leading number when comparing.
+        # Absolute XPath (leading '//') because the badge lives OUTSIDE the
+        # Stats region's `Addon-main-content` root — same pattern the other
+        # locators in this region use (see _stats_users_locator etc.).
+        _rating_badge_locator = (
+            By.XPATH, "//div[@data-testid='badge-star-full']//span[contains(@class, 'Badge-content')]"
         )
-        _rating_title_locator = (By.CSS_SELECTOR, ".AddonMeta-rating-title")
         _grouped_ratings_locator = (By.CSS_SELECTOR, ".RatingsByStar-star")
         _rating_bar_locator = (By.CSS_SELECTOR, ".RatingsByStar-barContainer")
         _rating_bar_count_locator = (By.CSS_SELECTOR, ".RatingsByStar-count")
@@ -343,20 +349,15 @@ class Detail(Base):
             return self.find_element(*self._stats_ratings_locator)
 
         @property
-        def rating_score_tile(self):
+        def rating_score(self):
+            """Numeric rating (e.g. '4.1') parsed from the star badge, which now
+            reads e.g. '4.1 (19,845 reviews)' as a single combined string."""
             self.wait.until(
-                EC.visibility_of_element_located(self._rating_score_title_locator)
+                EC.visibility_of_element_located(self._rating_badge_locator)
             )
-            return self.find_element(*self._rating_score_title_locator).get_attribute(
-                "title"
-            )
-
-        @property
-        def rating_title(self):
-            self.wait.until(
-                EC.visibility_of_element_located(self._rating_title_locator)
-            )
-            return self.find_element(*self._rating_title_locator)
+            text = self.find_element(*self._rating_badge_locator).text
+            match = re.match(r'([\d.]+)', text)
+            return match.group(1) if match else ""
 
         @property
         def no_star_ratings(self):
