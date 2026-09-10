@@ -227,7 +227,6 @@ def test_about_addons_addon_cards_author_link(selenium, base_url, wait):
 
 
 @pytest.mark.prod_only
-@pytest.mark.skip
 def test_about_addons_addon_stats_match_amo(selenium, base_url, wait):
     """Ensures that the statistics (rating, user count) displayed
     for an add-on on the "about:addons" page match those on its AMO detail page.
@@ -243,14 +242,15 @@ def test_about_addons_addon_stats_match_amo(selenium, base_url, wait):
     disco_rating_number = str(
         round(float(about_addons.addon_cards_items[1].rating_score), 1)
     )
-    disco_rating_score = disco_rating_number + " Stars"
     disco_users = about_addons.addon_cards_items[1].user_count
     # clicking on the author link should open the addon detail page on AMO
     amo_detail_page = about_addons.addon_cards_items[1].click_disco_addon_author()
+    amo_detail_page.wait_for_page_to_load()
     wait.until(lambda _: disco_addon_name == amo_detail_page.name)
-    # check that the rating and the users from about:addons are matching with AMO
-    assert disco_rating_score == amo_detail_page.stats.rating_title.text
-    assert disco_rating_number in amo_detail_page.stats.rating_score_tile
+    # check that the rating and the users from about:addons match AMO. AMO's
+    # detail page now shows the rating as a single badge ('4.1 (19,845 reviews)'),
+    # no separate 'X.Y Stars' label — compare the parsed numeric rating.
+    assert disco_rating_number == amo_detail_page.stats.rating_score
     assert disco_users == amo_detail_page.stats.stats_users_count
 
 
