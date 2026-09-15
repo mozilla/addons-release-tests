@@ -49,7 +49,10 @@ class ManageVersions(Page):
         By.CSS_SELECTOR,
         "#version-list .file-status div:nth-child(1)",
     )
-    _disable_delete_version_button_locator = (By.CSS_SELECTOR, ".version-delete a")
+    # Scope to `#version-list` so we only match delete links inside the
+    # "Listed versions" table (the newest, still-visible versions) — otherwise
+    # `.version-delete a` also matches "Other versions" further down the page.
+    _disable_delete_version_button_locator = (By.CSS_SELECTOR, "#version-list .version-delete a")
     _delete_version_help_text_locator = (By.CSS_SELECTOR, ".current-version-warning")
     _delete_version_warning_locator = (By.CSS_SELECTOR, ".highlight.warning")
     _delete_version_button_locator = (By.CSS_SELECTOR, ".modal-actions .delete-button")
@@ -235,7 +238,12 @@ class ManageVersions(Page):
         return self.find_elements(*self._version_approval_status_locator)
 
     def click_delete_disable_version(self):
-        self.find_element(*self._disable_delete_version_button_locator).click()
+        el = self.find_element(*self._disable_delete_version_button_locator)
+        # Scroll into view then use a JS click. Native Selenium clicks on the
+        # version-delete `<a href="#">` link sometimes don't trigger the modal
+        # handler; a JS click on the element directly invokes the handler.
+        self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", el)
+        self.driver.execute_script("arguments[0].click();", el)
         self.wait.until(
             EC.element_to_be_clickable(
                 (By.CSS_SELECTOR, ".modal-actions .delete-button")
