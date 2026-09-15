@@ -220,5 +220,7 @@
   "no_manifest_found_message": "manifest.json was not found",
   "notification_box_success": "Changes successfully saved.",
   "addon_status_incomplete": "Incomplete",
-  "addon_version_disabled_by_mozilla": "Disabled by Mozilla"
+  "addon_version_disabled_by_mozilla": "Disabled by Mozilla",
+  "version_submitted": "Version Submitted",
+  "invisible_status_text": "Invisible"
 }

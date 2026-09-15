@@ -240,5 +240,7 @@
   "install_dictionary_name": "release dictionary",
   "install_langpack_slug": "language-עברית-hebrew-_cas-cur",
   "install_langpack_name": "Language: עברית (Hebrew)",
-  "install_langpack_about_addons_name": "Language: עברית (Hebrew)"
+  "install_langpack_about_addons_name": "Language: עברית (Hebrew)",
+  "version_submitted": "Version Submitted",
+  "invisible_status_text": "Invisible"
 }
