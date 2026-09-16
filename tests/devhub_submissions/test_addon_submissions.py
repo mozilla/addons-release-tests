@@ -118,15 +118,15 @@ def test_submit_listed_wizard_theme_tc_id_c97500(selenium, base_url, variables, 
 
 @pytest.mark.sanity
 def test_submit_a_new_version_for_addon(selenium, base_url, variables, wait):
-    """Uploads a new version to an existing listed addon, then disables the
-    new version and hides the addon. Runs on dev/stage where the fixture addon
-    `listed_addon_1_1` exists; the addon does not exist on prod so we skip
-    there. Version is timestamp-based (e.g. '1.20260915143022') so the test
+    """Uploads a new version to an existing listed fixture addon. Runs on
+    dev/stage where the fixture addon (per-env, see `listed_addon_slug` in
+    dev.json / stage.json) exists; no such fixture exists on prod so we skip
+    there. Version is timestamp-based (e.g. '1.2026.915.1430') so the test
     can run repeatedly without hitting AMO's 'version already exists'
     rejection — this avoids needing to query the API (which returns 401 for
     non-public addons) and guarantees uniqueness per run."""
     if base_url == "https://addons.mozilla.org":
-        pytest.skip("listed_addon_1_1 does not exist on prod")
+        pytest.skip("No fixture addon exists on prod for this flow")
 
     # Generate a unique version number using the current timestamp. AMO's
     # rules: 1-4 dot-separated numeric components, each up to 9 digits, no
@@ -140,17 +140,18 @@ def test_submit_a_new_version_for_addon(selenium, base_url, variables, wait):
         f".{now.tm_hour * 100 + now.tm_min}"
     )
 
+    addon_slug = variables["listed_addon_slug"]
     manifest = {
         "manifest_version": payloads.minimal_manifest['manifest_version'],
         "version": next_version,
-        "name": "listed_addon_1_1",
+        "name": addon_slug,
         "description": "addon used for test",
     }
     api_helpers.make_addon(manifest)
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     page.devhub_login("submissions_user")
     manage_versions = ManageVersions(selenium, base_url)
-    manage_versions.open_manage_versions_page_for_addon(selenium, base_url, "listed_addon_1_1")
+    manage_versions.open_manage_versions_page_for_addon(selenium, base_url, addon_slug)
     manage_versions.click_visible_radio_button()
     manage_versions.click_upload_new_version_button()
     submit_addon_page = SubmitAddon(selenium, base_url).wait_for_page_to_load()
@@ -623,23 +624,35 @@ def test_cancel_and_disable_version_during_upload(selenium, base_url, wait):
 @pytest.mark.sanity
 @pytest.mark.serial
 @pytest.mark.login("submissions_user")
-def test_delete_all_extensions(selenium, base_url):
+def test_delete_all_extensions(selenium, base_url, variables):
     """This test will delete all the extensions submitted above to make sure
     we can start over with this user in the following runs and also for
     verifying that the addon deletion process functions correctly. Handles
     both complete addons (with full edit flow) and incomplete addons whose
-    listing only exposes Resume + Delete actions."""
+    listing only exposes Resume + Delete actions.
+
+    Skips the addon that must not be deleted for new version submission
+    (`listed_addon_name` in variables) — test_submit_a_new_version_for_addon
+    depends on it being present across runs."""
+    addon_name = variables.get("listed_addon_name", "")
     page = DevHubHome(selenium, base_url).open().wait_for_page_to_load()
     manage_addons = page.click_my_addons_header_link()
-    # run the delete steps until all the addons are cleared from the list
-    while len(manage_addons.addon_list) > 0:
-        addon = manage_addons.addon_list[0]
-        if addon.is_incomplete:
+    while True:
+        # Find the first addon that is not the one reserved for new-version
+        # submission. If only that addon (or nothing) remains, we're done.
+        target = None
+        for addon in manage_addons.addon_list:
+            if addon.name != addon_name:
+                target = addon
+                break
+        if target is None:
+            break
+        if target.is_incomplete:
             # incomplete addons only have Resume + Delete actions, no edit link;
             # Delete opens an inline modal on the dashboard rather than navigating
-            addon.delete_incomplete_addon()
+            target.delete_incomplete_addon()
         else:
-            edit = addon.click_addon_name()
+            edit = target.click_addon_name()
             manage = edit.click_manage_versions_link()
             delete = manage.delete_addon()
             delete.input_delete_confirmation_string()
