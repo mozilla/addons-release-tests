@@ -222,5 +222,7 @@
   "addon_status_incomplete": "Incomplete",
   "addon_version_disabled_by_mozilla": "Disabled by Mozilla",
   "version_submitted": "Version Submitted",
-  "invisible_status_text": "Invisible"
+  "invisible_status_text": "Invisible",
+  "listed_addon_slug": "listed_addon_dev",
+  "listed_addon_name": "listed_addon_DEV"
 }
