@@ -615,6 +615,7 @@ workflows:
       - ratings_serial_tests
       - devhub_parallel_tests
       - addon_submissions_tests
+      - addon_submissions_dev_tests
       - sanity_serial_tests
       - sanity_parallel_tests
 
