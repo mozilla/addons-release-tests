@@ -63,6 +63,7 @@
   "initial_text_input": "original text",
   "edited_text_input": "edited text",
   "all_scores_addon": "all_scores_addon",
+  "flag_review_addon": "all_scores_addon",
   "dev_reply_review": "woonken-redpar-worison",
   "confirm_delete_message": "Are you sure you want to delete",
   "review_flag_spam": "Spam",

@@ -1157,6 +1157,35 @@ class Detail(Base):
                 expected.invisibility_of_element_located(self._review_text_locator)
             )
 
+        def clear_existing_rating(self):
+            """Remove whatever rating the logged-in user already holds here.
+
+            AMO labels the rating controls "rating" when the user's rating carries
+            no text and "review" when it does, so a test asserting on that wording
+            has to know which of the two the user is starting from. The rating
+            tests run as a chain, each leaving the user in the state the next one
+            expects, which breaks as soon as a run does not start from the top of
+            it - a subset run, a rerun of one failed test, or a run aborted part
+            way through all leave a text review behind."""
+            # the delete link only settles once the ratings card has finished loading
+            self.wait.until(
+                expected.invisibility_of_element_located(
+                    self._loaded_rating_stars_locator
+                )
+            )
+            if not self.is_element_displayed(*self._delete_rating_link_locator):
+                return
+            self.find_element(*self._delete_rating_link_locator).click()
+            self.click_delete_confirm_button()
+
+        def post_score_only_rating(self, star_index):
+            """Leave the user holding a rating that carries no text, whatever they
+            held before. Clicking a star on top of an existing *text* review only
+            changes its score and keeps the text, so the old one has to go first."""
+            self.clear_existing_rating()
+            self.rating_stars[star_index].click()
+            self.wait_for_rating_form()
+
         @property
         def write_a_review(self):
             self.wait.until(

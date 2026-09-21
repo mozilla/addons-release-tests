@@ -14,6 +14,23 @@ from pages.desktop.frontend.versions import Versions
 from pages.desktop.frontend.users import User
 
 
+def first_flaggable_review(reviews, extension):
+    """Return the first review on the all-reviews page that can be flagged.
+
+    AMO only renders the 'Flag' menu on reviews that carry text, so the flag
+    tests need an environment where the addon under test has at least one such
+    review. The old form of this walked `review_items` by index with a
+    `count <= len(...)` bound, which turned "this environment has no review with
+    text" into an `IndexError` pointing at the test instead of at the data."""
+    flaggable = reviews.flaggable_reviews
+    assert flaggable, (
+        f'No review on the "{extension}" reviews page exposes a Flag menu, so this '
+        f"test cannot run. The environment needs at least one review with text, "
+        f"posted by a user other than the one doing the flagging."
+    )
+    return flaggable[0]
+
+
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_throttled_request_create_rating_spam(selenium, base_url, variables):
@@ -176,6 +193,10 @@ def test_rating_without_text_tc_id_c95947(selenium, base_url, variables):
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     addon.login('rating_user')
+    # this test asserts on the "rating" wording AMO uses for a rating without
+    # text, so the user has to start without a text review on the addon rather
+    # than relying on test_delete_review_tc_id_c4421 having removed one
+    addon.ratings.clear_existing_rating()
     # total number of reviews in stats card before leaving a new rating
     prior_rating_count = addon.stats.stats_reviews_count
     # number of ratings with a score of 5 stars before leaving a new rating
@@ -232,7 +253,10 @@ def test_delete_rating(selenium, base_url, variables):
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
-    # addon.login('rating_user')
+    # the rating being deleted has to be one without text for the "rating"
+    # wording to apply, so post one rather than relying on the rating left
+    # behind by test_rating_without_text_tc_id_c95947
+    addon.ratings.post_score_only_rating(4)
     addon.ratings.delete_rating_link.click()
     assert "rating" in addon.ratings.ratings_card_summary
     assert "rating" in addon.ratings.delete_confirm_button.text
@@ -242,35 +266,6 @@ def test_delete_rating(selenium, base_url, variables):
     WebDriverWait(selenium, 10).until(
         EC.invisibility_of_element_located(addon.ratings.selected_star_highlight)
     )
-
-@pytest.mark.serial
-@pytest.mark.nondestructive
-@pytest.mark.login("rating_user")
-def test_flag_review_action_tc_id_c1494904(selenium, base_url, variables):
-    extension = variables["all_scores_addon"]
-    selenium.get(f"{base_url}/addon/{extension}")
-    addon = Detail(selenium, base_url).wait_for_page_to_load()
-    # addon.login('rating_user')
-    reviews = addon.ratings.click_all_reviews_link()
-    flag = reviews.review_items
-    # the 'Flag' menu is displayed only for reviews with text
-    # iterating through the list of reviews until a review with text is found
-    count = 0
-    while count <= len(reviews.reviews_list):
-        if len(flag[count].review_body) > 0:
-            flag[count].click_flag_review()
-            # choosing the option to flag the review for spam
-            assert (
-                variables["review_flag_spam"] in flag[count].flag_review_option[0].text
-            )
-            flag[count].select_flag_option(0)
-            assert (
-                variables["review_flagged_for_spam"]
-                in flag[count].flag_review_success_text[0].text
-            )
-            break
-        else:
-            count += 1
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
@@ -374,30 +369,18 @@ def test_filter_reviews_from_rating_bars(selenium, base_url, variables, wait):
 @pytest.mark.create_session("rating_user")
 def test_flag_review_action_tc_id_c1494904(selenium, base_url, variables):
     """Test flagging a user review for moderation."""
-    extension = variables["all_scores_addon"]
+    extension = variables["flag_review_addon"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
-    # addon.login('rating_user')
     reviews = addon.ratings.click_all_reviews_link()
-    flag = reviews.review_items
-    # the 'Flag' menu is displayed only for reviews with text
-    # iterating through the list of reviews until a review with text is found
-    count = 0
-    while count <= len(reviews.reviews_list):
-        if len(flag[count].review_body) > 0:
-            flag[count].click_flag_review()
-            # choosing the option to flag the review for spam
-            assert (
-                variables["review_flag_spam"] in flag[count].flag_review_option[0].text
-            )
-            flag[count].select_flag_option(0)
-            assert (
-                variables["review_flagged_for_spam"]
-                in flag[count].flag_review_success_text[0].text
-            )
-            break
-        else:
-            count += 1
+    review = first_flaggable_review(reviews, extension)
+    review.click_flag_review()
+    # choosing the option to flag the review for spam
+    assert variables["review_flag_spam"] in review.flag_review_option[0].text
+    review.select_flag_option(0)
+    assert (
+        variables["review_flagged_for_spam"] in review.flag_review_success_text[0].text
+    )
 
 
 @pytest.mark.serial
@@ -440,30 +423,16 @@ def test_flag_missing_for_empty_review_tc_id_c1494904(selenium, base_url, variab
 @pytest.mark.login("rating_user")
 def test_flag_review_menu_options_tc_id_c1494904(selenium, base_url, variables):
     """Test the options available in the flag review menu."""
-    extension = variables["all_scores_addon"]
+    extension = variables["flag_review_addon"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
-    # addon.login('rating_user')
     reviews = addon.ratings.click_all_reviews_link()
-    flag = reviews.review_items
-    count = 0
-    while count <= len(reviews.reviews_list):
-        if len(flag[count].review_body) > 0:
-            flag[count].click_flag_review()
-            # verifies that the following 3 report options are available in the flag menu
-            assert (
-                variables["review_flag_spam"] in flag[count].flag_spam_option.text
-            )
-            assert (
-                variables["review_flag_bug"]
-                in flag[count].flag_bug_option.text
-            )
-            assert (
-                variables["review_flag_language"] in flag[count].flag_language_option.text
-            )
-            break
-        else:
-            count += 1
+    review = first_flaggable_review(reviews, extension)
+    review.click_flag_review()
+    # verifies that the following 3 report options are available in the flag menu
+    assert variables["review_flag_spam"] in review.flag_spam_option.text
+    assert variables["review_flag_bug"] in review.flag_bug_option.text
+    assert variables["review_flag_language"] in review.flag_language_option.text
 
 
 @pytest.mark.serial
@@ -801,16 +770,15 @@ def test_banned_words_in_user_reviews(
     addon.ratings.click_delete_confirm_button()
 
 
-@pytest.mark.serial
-@pytest.mark.skip
-def test_restricted_user_rating_submission(selenium, base_url, variables):
-    """Verify that a restricted user email is not allowed to post addon ratings"""
-    extension = variables["theme_detail_page"]
-    selenium.get(f"{base_url}/addon/{extension}")
-    addon = Detail(selenium, base_url).wait_for_page_to_load()
-    addon.login("restricted_user")
-    # try to submit a user review using denied words in the review body
-    addon.ratings.rating_stars[4].click()
-    addon.ratings.submit_review_error_message(
-        "The email address used for your account is not allowed for submissions."
-    )
+# @pytest.mark.serial
+# def test_restricted_user_rating_submission(selenium, base_url, variables):
+#     """Verify that a restricted user email is not allowed to post addon ratings"""
+#     extension = variables["theme_detail_page"]
+#     selenium.get(f"{base_url}/addon/{extension}")
+#     addon = Detail(selenium, base_url).wait_for_page_to_load()
+#     addon.login("restricted_user")
+#     # try to submit a user review using denied words in the review body
+#     addon.ratings.rating_stars[4].click()
+#     addon.ratings.submit_review_error_message(
+#         "The email address used for your account is not allowed for submissions."
+#     )
