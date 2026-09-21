@@ -128,16 +128,17 @@ def test_submit_a_new_version_for_addon(selenium, base_url, variables, wait):
     if base_url == "https://addons.mozilla.org":
         pytest.skip("No fixture addon exists on prod for this flow")
 
-    # Generate a unique version number using the current timestamp. AMO's
+    # Generate a unique version number using the current UTC timestamp. AMO's
     # rules: 1-4 dot-separated numeric components, each up to 9 digits, no
-    # leading zeros. We use: 1.YEAR.<month*100+day>.<hour*100+minute>
-    # — 4 components, each a small integer that never has a leading zero.
-    # Minute-granularity is enough — reruns within the same minute are rare.
-    now = time.localtime()
+    # leading zeros. We use: 1.YEAR.<month*100+day>.<hour*10000+min*100+sec>
+    # — UTC keeps timestamps consistently ordered across machines/timezones,
+    # and second-granularity in a 6-digit trailing component makes every new
+    # version numerically higher than any legacy 4-digit version.
+    now = time.gmtime()
     next_version = (
         f"1.{now.tm_year}"
         f".{now.tm_mon * 100 + now.tm_mday}"
-        f".{now.tm_hour * 100 + now.tm_min}"
+        f".{now.tm_hour * 10000 + now.tm_min * 100 + now.tm_sec}"
     )
 
     addon_slug = variables["listed_addon_slug"]
