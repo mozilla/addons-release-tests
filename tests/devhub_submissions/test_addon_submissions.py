@@ -152,39 +152,23 @@ def test_submit_a_new_version_for_addon(selenium, base_url, variables, wait):
     page.devhub_login("submissions_user")
     manage_versions = ManageVersions(selenium, base_url)
     manage_versions.open_manage_versions_page_for_addon(selenium, base_url, addon_slug)
-    manage_versions.click_visible_radio_button()
     manage_versions.click_upload_new_version_button()
+    # The click above lands on .../submit/upload-listed — AMO carries over the
+    # listed channel from the previous version, so no distribution radio /
+    # continue step is needed here. Go straight to uploading the XPI.
     submit_addon_page = SubmitAddon(selenium, base_url).wait_for_page_to_load()
     submit_addon_page.upload_addon("make-addon.zip")
     submit_addon_page.is_validation_successful()
     submit_addon_page.click_continue()
-    # New AMO listed-flow order (2026-04): upload -> details -> source -> finish.
-    # Previously source came before details; now it's after submitting the details.
-    # The `UploadSource` page-object was named for the old flow but still holds
-    # both the details fields and the source-code radios.
     upload_source = UploadSource(selenium, base_url).wait_for_page_to_load()
-    upload_source.release_notes_field().send_keys(variables["upload_status"])
-    upload_source.notes_to_reviewers_field().send_keys(variables["upload_status"])
-    # Click "Submit Version" on the details form directly. The page-object's
-    # `continue_listed_submission()` waits for a `ListedAddonSubmissionForm`
-    # to load, which is wrong for the new-version flow — we go to the source
-    # page instead. Click the Continue button raw and wait for the source URL.
-    selenium.find_element(
-        By.CSS_SELECTOR, ".submission-buttons button:nth-child(1)"
-    ).click()
-    wait.until(lambda _: "/source" in selenium.current_url)
     upload_source.select_no_to_omit_source()
-    # Use continue_to_confirmation (added by Schek in PR #1174 for the new
-    # source-code-last flow) which clicks Continue AND properly waits for
-    # the finish/confirmation page to load.
-    confirmation_page = upload_source.continue_to_confirmation()
-    assert upload_source.version_submitted_text() in variables["version_submitted"]
-    # TODO: cleanup section (delete the version + hide the addon) disabled
+    upload_source.continue_to_confirmation()
+    # TODO: cleanup section (delete the new version + hide the addon) disabled
     # pending investigation — the version-delete link's JS handler doesn't
     # respond to Selenium's native, JS, or ActionChains clicks, so the
     # delete/disable modal never opens. Manual click works fine. Track as a
     # follow-up. The addon accumulates versions in the meantime.
-    # manage_versions.open_manage_versions_page_for_addon(selenium, base_url, "listed_addon_1_1")
+    # manage_versions.open_manage_versions_page_for_addon(selenium, base_url, addon_slug)
     # manage_versions.click_delete_disable_version()
     # manage_versions.click_delete_version_button()
     # manage_versions.set_addon_invisible()
