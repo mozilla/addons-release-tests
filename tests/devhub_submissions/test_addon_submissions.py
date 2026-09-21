@@ -161,6 +161,18 @@ def test_submit_a_new_version_for_addon(selenium, base_url, variables, wait):
     submit_addon_page.is_validation_successful()
     submit_addon_page.click_continue()
     upload_source = UploadSource(selenium, base_url).wait_for_page_to_load()
+    # AMO's listed-flow for existing-addon new-version submissions may or may
+    # not include a details step (release_notes / reviewer notes) depending on
+    # environment and addon state (stage currently has it, dev currently
+    # doesn't). If /details is in the URL, fill the two fields and advance to
+    # the source-code page; otherwise we're already there.
+    if "/details" in selenium.current_url:
+        upload_source.release_notes_field().send_keys(variables["upload_status"])
+        upload_source.notes_to_reviewers_field().send_keys(variables["upload_status"])
+        selenium.find_element(
+            By.CSS_SELECTOR, ".submission-buttons button:nth-child(1)"
+        ).click()
+        wait.until(lambda _: "/source" in selenium.current_url)
     upload_source.select_no_to_omit_source()
     upload_source.continue_to_confirmation()
     # TODO: cleanup section (delete the new version + hide the addon) disabled
