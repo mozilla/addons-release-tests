@@ -124,6 +124,13 @@ class Reviews(Base):
         items = self.find_elements(*self._reviews_list_locator)
         return [self.UserReview(self, el) for el in items]
 
+    @property
+    def flaggable_reviews(self):
+        """AMO only renders the 'Flag' menu on reviews that carry text and that
+        somebody else wrote, so a test that needs something to flag has to pick
+        from these rather than walking the full list by index."""
+        return [review for review in self.review_items if review.can_be_flagged]
+
     class UserReview(Region):
         _rating_stars_locator = (By.CSS_SELECTOR, ".Rating--small")
         _rating_user_locator = (By.CSS_SELECTOR, ".AddonReviewCard-authorByLine")
@@ -137,7 +144,7 @@ class Reviews(Base):
             By.CSS_SELECTOR,
             ".ConfirmationDialog-confirm-button",
         )
-        _flag_review_button_locator = (By.XPATH, "//button[@class='TooltipMenu-opener AddonReviewCard-control FlagReviewMenu-menu']")
+        _flag_review_button_locator = (By.CSS_SELECTOR, ".FlagReviewMenu-menu")
         _flag_review_menu_options = (By.CSS_SELECTOR, ".TooltipMenu-inner button")
         _flag_review_success_text = (By.CSS_SELECTOR, ".TooltipMenu-inner li")
         _flag_review_login_button = (
@@ -179,6 +186,22 @@ class Reviews(Base):
         def review_body(self):
             return self.find_element(*self._review_body_locator).text
 
+        @property
+        def has_review_text(self):
+            """A review posted without text still renders the body element, it is
+            just empty, so the element being present is not enough to tell."""
+            body = self.find_elements(*self._review_body_locator)
+            return bool(body and body[0].text.strip())
+
+        @property
+        def can_be_flagged(self):
+            """The Flag menu is rendered only on reviews that carry text and that
+            the logged-in user did not write themselves - asking the page whether
+            the button is there covers both without guessing the author."""
+            return self.has_review_text and bool(
+                self.find_elements(*self._flag_review_button_locator)
+            )
+
         def click_confirm_delete_button(self):
             self.find_element(*self._delete_confirm_locator).click()
 
@@ -218,9 +241,8 @@ class Reviews(Base):
                 "arguments[0].click();", self.flag_review_option[count]
             )
             self.wait.until(
-                expected.text_to_be_present_in_element(
-                    self._flag_review_button_locator, "Flagged"
-                ),
+                lambda _: "Flagged"
+                in self.find_element(*self._flag_review_button_locator).text,
                 message="Flag review button state did not change",
             )
 
