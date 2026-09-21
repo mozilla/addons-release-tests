@@ -134,7 +134,21 @@ def test_install_theme(selenium, base_url, variables, firefox, firefox_notificat
 
 @pytest.mark.prod_only
 @pytest.mark.skip(
-    reason="Still investigating why this test has started failing recently"
+    reason="The about:addons search -> AMO commit path is not automatable on "
+    "current Firefox: it requires a trusted (isTrusted=true) event that only "
+    "real hardware input can produce. Selenium/Marionette synthetic input, "
+    "JavaScript click() calls, and dispatched CustomEvents are all rejected "
+    "by the browser's user-activation policy for chrome-page popup/tab "
+    "opening. moz-input-search ignores send_keys(Keys.ENTER); native and JS "
+    "clicks on the sibling moz-button (both the host and the inner "
+    "<button id='main-button'> inside its shadow root) are no-ops; dispatched "
+    "MozInputSearch:search and CustomEvent('search') events are not consumed. "
+    "Same wall documented in the webext tests "
+    "test_suite_addons_search_opens_amo_results_TC617019 and "
+    "test_suite_addons_search_full_name in "
+    "tests/webext/test_about_addons_navigation_and_functionality.py. "
+    "Direct AMO search coverage is provided by multiple sanity tests in "
+    "tests/frontend/test_search.py."
 )
 def test_about_addons_search(selenium, base_url):
     """Verifies the functionality of the search feature on the "about:addons" page.
@@ -213,7 +227,6 @@ def test_about_addons_addon_cards_author_link(selenium, base_url, wait):
 
 
 @pytest.mark.prod_only
-@pytest.mark.skip
 def test_about_addons_addon_stats_match_amo(selenium, base_url, wait):
     """Ensures that the statistics (rating, user count) displayed
     for an add-on on the "about:addons" page match those on its AMO detail page.
@@ -229,14 +242,15 @@ def test_about_addons_addon_stats_match_amo(selenium, base_url, wait):
     disco_rating_number = str(
         round(float(about_addons.addon_cards_items[1].rating_score), 1)
     )
-    disco_rating_score = disco_rating_number + " Stars"
     disco_users = about_addons.addon_cards_items[1].user_count
     # clicking on the author link should open the addon detail page on AMO
     amo_detail_page = about_addons.addon_cards_items[1].click_disco_addon_author()
+    amo_detail_page.wait_for_page_to_load()
     wait.until(lambda _: disco_addon_name == amo_detail_page.name)
-    # check that the rating and the users from about:addons are matching with AMO
-    assert disco_rating_score == amo_detail_page.stats.rating_title.text
-    assert disco_rating_number in amo_detail_page.stats.rating_score_tile
+    # check that the rating and the users from about:addons match AMO. AMO's
+    # detail page now shows the rating as a single badge ('4.1 (19,845 reviews)'),
+    # no separate 'X.Y Stars' label — compare the parsed numeric rating.
+    assert disco_rating_number == amo_detail_page.stats.rating_score
     assert disco_users == amo_detail_page.stats.stats_users_count
 
 

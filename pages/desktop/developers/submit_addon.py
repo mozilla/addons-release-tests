@@ -559,9 +559,13 @@ class UploadSource(Page):
     )
     _yes_cancel_and_disable_version = (By.CSS_SELECTOR, "button.delete-button:nth-child(1)")
     _do_not_cancel_version_link_locator = (By.CSS_SELECTOR, "#modal-confirm-submission-cancel > form > div > a")
-    _release_notes_field_locator = (By.ID, "trans-release_notes")
+    # The `#trans-release_notes` div is the translatable wrapper; the actual
+    # <textarea> lives inside it and is what accepts keyboard input.
+    _release_notes_field_locator = (By.ID, "id_release_notes_0")
     _notes_to_reviewer_locator = (By.ID, "id_approval_notes")
-    _version_submitted_text_locator = (By.CLASS_NAME, ".addon-submission-process h3")
+    # By.CLASS_NAME doesn't take a "." prefix and doesn't support descendant
+    # selectors — must use By.CSS_SELECTOR for ".class descendant" patterns.
+    _version_submitted_text_locator = (By.CSS_SELECTOR, ".addon-submission-process h3")
 
     @property
     def submit_source_page_header(self):
@@ -573,16 +577,22 @@ class UploadSource(Page):
         return self.find_element(*self._submit_source_code_page_header_locator).text
 
     def select_yes_to_submit_source(self):
+        # See note on select_no_to_omit_source about the radio being a zero-size
+        # <input> behind a styled label.
         self.wait.until(
-            EC.visibility_of_element_located(
+            EC.presence_of_element_located(
                 self._yes_submit_source_radio_button_locator
             )
         )
         self.find_element(*self._yes_submit_source_radio_button_locator).click()
 
     def select_no_to_omit_source(self):
+        # Modern AMO renders the radio <input> as a zero-size hidden element
+        # behind a styled label, which fails `visibility_of_element_located`
+        # even though the input is fully clickable. Use `presence_of_element_located`
+        # to wait for DOM attachment, then click.
         self.wait.until(
-            EC.visibility_of_element_located(
+            EC.presence_of_element_located(
                 self._no_submit_source_radio_button_locator
             )
         )
