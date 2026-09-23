@@ -45,14 +45,27 @@ class ManageVersions(Page):
         By.CSS_SELECTOR,
         "#current-version-status .file-status > div:nth-child(1)",
     )
+    # DevHub renders version rows in *two* tables and an add-on can have rows in
+    # either or both:
+    #   `#current-version-status` — "Listed versions", the version currently on
+    #       AMO. An add-on with a single approved version has only this one.
+    #   `#version-list`           — "Other versions". A cancelled/disabled or
+    #       superseded version lands here; for a single-version add-on this
+    #       table renders with a header row and no rows at all.
+    # Match both, and rely on CSS selector lists resolving in document order so
+    # `find_element` returns the current version's row when there is one.
+    # Scoping to `#version-list` alone finds nothing for a single-version
+    # add-on; a bare `.version-delete a` is also wrong because the `<th>`
+    # headers carry the same class.
     _version_approval_status_locator = (
         By.CSS_SELECTOR,
+        "#current-version-status .file-status div:nth-child(1), "
         "#version-list .file-status div:nth-child(1)",
     )
-    # Scope to `#version-list` so we only match delete links inside the
-    # "Listed versions" table (the newest, still-visible versions) — otherwise
-    # `.version-delete a` also matches "Other versions" further down the page.
-    _disable_delete_version_button_locator = (By.CSS_SELECTOR, "#version-list .version-delete a")
+    _disable_delete_version_button_locator = (
+        By.CSS_SELECTOR,
+        "#current-version-status .version-delete a, #version-list .version-delete a",
+    )
     _delete_version_help_text_locator = (By.CSS_SELECTOR, ".current-version-warning")
     _delete_version_warning_locator = (By.CSS_SELECTOR, ".highlight.warning")
     _delete_version_button_locator = (By.CSS_SELECTOR, ".modal-actions .delete-button")
