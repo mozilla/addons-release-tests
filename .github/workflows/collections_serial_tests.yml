@@ -1,0 +1,17 @@
+name: Collections Serial Tests
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  test:
+    uses: ./.github/workflows/_test.yml
+    with:
+      artifact_name: collections-test-results
+      pytest_parallel: 1
+      pytest_path: tests/frontend/test_collections.py
+      pytest_report: collections-test-results.html
+      pytest_reruns: 2
+      pytest_variables: stage.json
+      python_version: 3.x

@@ -1,0 +1,31 @@
+name: Commit Workflow
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  frontend_parallel:
+    uses: ./.github/workflows/frontend_parallel_tests.yml
+
+  # user_serial:
+  #   uses: ./.github/workflows/user_serial_tests.yml
+
+  # collections_serial:
+  #   uses: ./.github/workflows/collections_serial_tests.yml
+
+  # ratings_serial:
+  #   uses: ./.github/workflows/ratings_serial_tests.yml
+
+  # devhub_parallel:
+  #   uses: ./.github/workflows/devhub_parallel_tests.yml
+
+  # addon_submissions:
+  #   uses: ./.github/workflows/addon_submissions_tests.yml
+
+  # api_submission:
+  #   uses: ./.github/workflows/api_submission_tests.yml
