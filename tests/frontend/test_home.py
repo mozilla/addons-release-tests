@@ -88,6 +88,16 @@ def test_extension_workshop_link_tc_id_c95105(base_url, selenium):
 def test_more_dropdown_navigates_correctly_tc_id_c95103(base_url, selenium, count, title):
     """Test that verifies the More dropdown"""
     page = Home(selenium, base_url).open().wait_for_page_to_load()
+    # addons-frontend PR #14469 (merged 2026-09-22) stopped linking to /android/
+    # anywhere, which drops the "Other browsers" section and its "Add-ons for
+    # Firefox Android" entry from this menu. Environments still on the previous
+    # deploy keep both, so skip rather than index past the end of the menu.
+    available_links = len(page.header.more_menu_dropdown_links)
+    if count >= available_links:
+        pytest.skip(
+            f'The "More" menu holds {available_links} link(s) on this environment, so '
+            f'there is no "{title}" entry to click (addons-frontend PR #14469).'
+        )
     # clicks on a link in the More menu and verifies that the correct page opens
     page.header.more_menu(item=count)
     page.wait_for_title_update(title)
