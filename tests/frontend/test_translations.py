@@ -39,17 +39,23 @@ def test_header_translations(base_url, selenium, variables, language):
         in variables[language]["header"]["more_dropdown_for_firefox_section"]
     )
     assert (
-        page.header.more_menu_dropdown_sections[1].text
-        in variables[language]["header"]["more_dropdown_other_browsers_section"]
-    )
-    assert (
         page.header.more_menu_dropdown_links[0].text
         in variables[language]["header"]["more_dropdown_dictionaries_link"]
     )
-    assert (
-        page.header.more_menu_dropdown_links[1].text
-        in variables[language]["header"]["more_dropdown_addons_for_android_link"]
-    )
+    # addons-frontend PR #14469 (merged 2026-09-22) stopped linking to /android/
+    # anywhere, which drops the "Other browsers" section and its "Add-ons for
+    # Firefox Android" link from this menu. Environments still on the previous
+    # deploy keep both, so assert their translations only where they render.
+    if len(page.header.more_menu_dropdown_sections) > 1:
+        assert (
+            page.header.more_menu_dropdown_sections[1].text
+            in variables[language]["header"]["more_dropdown_other_browsers_section"]
+        )
+    if len(page.header.more_menu_dropdown_links) > 1:
+        assert (
+            page.header.more_menu_dropdown_links[1].text
+            in variables[language]["header"]["more_dropdown_addons_for_android_link"]
+        )
 
 
 @pytest.mark.parametrize(
