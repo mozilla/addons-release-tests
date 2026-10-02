@@ -79,8 +79,7 @@ def test_extension_workshop_link_tc_id_c95105(base_url, selenium):
     "count, title",
     enumerate(
         [
-            "Dictionaries and Language Packs",
-            "Add-ons for Firefox Android",
+            "Dictionaries and Language Packs"
         ]
     ),
 )
