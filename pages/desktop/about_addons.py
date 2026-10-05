@@ -36,7 +36,10 @@ class AboutAddons(Page):
     _enabled_theme_image_locator = (By.CLASS_NAME, "card-heading-image")
     _installed_addon_name_locator = (By.CSS_SELECTOR, ".addon-name a")
     _installed_addon_author_locator = (By.CSS_SELECTOR, ".addon-detail-row-author a")
-    _find_more_addons_button_locator = (By.CLASS_NAME, "primary")
+    _find_more_addons_button_locator = (
+        By.CSS_SELECTOR,
+        "button[data-l10n-id='find-more-addons']",
+    )
     _installed_extension_version_locator = (
         By.CSS_SELECTOR,
         ".addon-detail-row-version",
@@ -447,6 +450,17 @@ class AboutAddons(Page):
         return [self.AddonCards(self, el) for el in items]
 
     def click_find_more_addons(self):
+        # The "Find more add-ons" button lives at the bottom of the discopane,
+        # below the recommendations shelf. On smaller viewports (CI headless)
+        # it renders off-screen, so element_to_be_clickable can time out before
+        # Firefox scrolls it in. Explicitly scroll it into view first.
+        self.wait.until(
+            EC.presence_of_element_located(self._find_more_addons_button_locator)
+        )
+        el = self.find_element(*self._find_more_addons_button_locator)
+        self.driver.execute_script(
+            "arguments[0].scrollIntoView({block: 'center'});", el
+        )
         self.wait.until(
             EC.element_to_be_clickable(self._find_more_addons_button_locator)
         )
