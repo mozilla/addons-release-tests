@@ -622,7 +622,6 @@ workflows:
         equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
     jobs:
       - frontend_parallel_tests
-      - frontend_dev_parallel_tests
       - user_serial_tests
       - collections_serial_tests
       - ratings_serial_tests
