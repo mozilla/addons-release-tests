@@ -451,9 +451,11 @@ class AboutAddons(Page):
 
     def click_find_more_addons(self):
         # The "Find more add-ons" button lives at the bottom of the discopane,
-        # below the recommendations shelf. On smaller viewports (CI headless)
-        # it renders off-screen, so element_to_be_clickable can time out before
-        # Firefox scrolls it in. Explicitly scroll it into view first.
+        # below the recommendations shelf. On CI (headless, Windows) the
+        # `element_to_be_clickable` predicate times out even after the button
+        # is in-DOM and scrolled into view — the chrome-page hit-testing in
+        # the predicate behaves differently from a regular web page. Wait for
+        # presence, scroll into view, then click directly.
         self.wait.until(
             EC.presence_of_element_located(self._find_more_addons_button_locator)
         )
@@ -461,10 +463,7 @@ class AboutAddons(Page):
         self.driver.execute_script(
             "arguments[0].scrollIntoView({block: 'center'});", el
         )
-        self.wait.until(
-            EC.element_to_be_clickable(self._find_more_addons_button_locator)
-        )
-        self.find_element(*self._find_more_addons_button_locator).click()
+        el.click()
         # this button opens AMO homepage in a new tab
         self.wait.until(
             EC.number_of_windows_to_be(2),
