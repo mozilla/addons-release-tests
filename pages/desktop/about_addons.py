@@ -460,10 +460,14 @@ class AboutAddons(Page):
             EC.presence_of_element_located(self._find_more_addons_button_locator)
         )
         el = self.find_element(*self._find_more_addons_button_locator)
+        # Marionette's own scroll-and-click fails on about:addons in headless
+        # ("could not be scrolled into view"). Bypass by scrolling via JS and
+        # firing the click via JS too — this skips Marionette's interaction
+        # prep entirely while still invoking the button's handler.
         self.driver.execute_script(
-            "arguments[0].scrollIntoView({block: 'center'});", el
+            "arguments[0].scrollIntoView({block: 'center'}); arguments[0].click();",
+            el,
         )
-        el.click()
         # this button opens AMO homepage in a new tab
         self.wait.until(
             EC.number_of_windows_to_be(2),
