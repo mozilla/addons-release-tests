@@ -9,6 +9,7 @@ from pages.desktop.developers.edit_addon import EditAddon
 from pages.desktop.developers.manage_versions import ManageVersions
 
 
+@pytest.mark.sanity
 @pytest.mark.login("developer")
 def test_addon_edit_markdown_support_link(selenium, base_url, wait):
     """Verify the Markdown-supported helper link in the Describe Add-on section
