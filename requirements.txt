@@ -62,7 +62,7 @@ tenacity==9.1.4
 toml==0.10.2
 typing-extensions==4.15.0
 urllib3==2.7.0
-virtualenv==21.2.1
+virtualenv==21.7.13
 wcwidth==0.6.0
 WebOb==1.8.10
 wrapt==2.1.2
