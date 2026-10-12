@@ -206,6 +206,60 @@ jobs:
       - store_artifacts:
           path: submissions-test-results.html
 
+  # API tests covering the addons edit endpoints — tests/api/test_api_addons_edit.py
+  api_edit_tests:
+    docker:
+      - image: cimg/python:3.14-browsers
+    steps:
+      - checkout
+      - run:
+          name: Install Firefox Nightly via Mozilla APT
+          command: |
+            wget -q https://packages.mozilla.org/apt/repo-signing-key.gpg -O- | sudo gpg --dearmor -o /etc/apt/keyrings/packages.mozilla.org.gpg
+            echo "deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.gpg] https://packages.mozilla.org/apt mozilla main" | sudo tee /etc/apt/sources.list.d/mozilla.list
+            sudo apt-get update -qq -o Dir::Etc::sourcelist=/etc/apt/sources.list.d/mozilla.list -o Dir::Etc::sourceparts="-"
+            sudo apt-get install -y -qq firefox-nightly
+            firefox-nightly --version
+      - run:
+          name: Install requirements
+          command: pip install -r ./requirements.txt
+      - run:
+          name: Run API addons edit tests
+          environment:
+            DISPLAY: :99
+            PYTEST_ADDOPTS: -n 1 --reruns 2
+          command: python -m pytest tests/api/test_api_addons_edit.py --driver Firefox --variables stage.json --html=api-edit-tests-results.html --self-contained-html
+          no_output_timeout: 30m
+      - store_artifacts:
+          path: api-edit-tests-results.html
+
+  # API tests covering the authors endpoints — tests/api/test_api_authors_edit.py
+  api_authors_tests:
+    docker:
+      - image: cimg/python:3.14-browsers
+    steps:
+      - checkout
+      - run:
+          name: Install Firefox Nightly via Mozilla APT
+          command: |
+            wget -q https://packages.mozilla.org/apt/repo-signing-key.gpg -O- | sudo gpg --dearmor -o /etc/apt/keyrings/packages.mozilla.org.gpg
+            echo "deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.gpg] https://packages.mozilla.org/apt mozilla main" | sudo tee /etc/apt/sources.list.d/mozilla.list
+            sudo apt-get update -qq -o Dir::Etc::sourcelist=/etc/apt/sources.list.d/mozilla.list -o Dir::Etc::sourceparts="-"
+            sudo apt-get install -y -qq firefox-nightly
+            firefox-nightly --version
+      - run:
+          name: Install requirements
+          command: pip install -r ./requirements.txt
+      - run:
+          name: Run API authors tests
+          environment:
+            DISPLAY: :99
+            PYTEST_ADDOPTS: -n 1 --reruns 2
+          command: python -m pytest tests/api/test_api_authors_edit.py --driver Firefox --variables stage.json --html=api-authors-tests-results.html --self-contained-html
+          no_output_timeout: 30m
+      - store_artifacts:
+          path: api-authors-tests-results.html
+
   # parallel tests run on production after the AMO push
   sanity_parallel_tests:
     executor:
@@ -629,6 +683,18 @@ workflows:
       - addon_submissions_tests
       - sanity_serial_tests
       - sanity_parallel_tests
+
+  # API tests workflow — fires on every commit (debug mode on the testing
+  # branch). Before merging to master, convert this to a scheduled workflow
+  # by replacing `when: not scheduled_pipeline` with the scheduled trigger
+  # pattern (see e.g. scheduled_dev_regression_tests below).
+  api_tests_workflow:
+    when:
+      not:
+        equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
+    jobs:
+      - api_edit_tests
+      - api_authors_tests
 
   scheduled_webext_release_stage_run:
     when:

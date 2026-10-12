@@ -75,7 +75,7 @@ def test_edit_listed_addon_details(base_url, session_auth):
     and verifies that the changes are correctly applied and reflected in the API response."""
     payload = payloads.edit_addon_details
     edit_addon = requests.patch(
-        url=f"{base_url}{_addon_create}my_sluggish_slug_api/",
+        url=f"{base_url}{_addon_create}{payloads._LISTED_API_SLUG}/",
         headers={
             "Authorization": f"Session {session_auth}",
             "Content-Type": "application/json",
