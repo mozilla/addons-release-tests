@@ -6,6 +6,12 @@ minimal_manifest = {
     'version': '1.0',
 }
 
+# Session-scope randomized slugs — each pytest session generates fresh values
+# so the API test chain in tests/api/test_api_addons_edit.py doesn't collide
+# with addons left behind by prior runs.
+_LISTED_API_SLUG = f"sluggish_slug_api_{reusables.get_random_string(5)}"
+_EDITED_API_SLUG = f"new_sluggish_slug_{reusables.get_random_string(5)}"
+
 
 def listed_addon_minimal(uuid):
     """This holds only the strictly necessary properties required for successful submissions"""
@@ -23,7 +29,7 @@ def listed_addon_minimal(uuid):
 def listed_addon_details(uuid):
     body = {
         'categories': ['bookmarks', 'privacy-security'],
-        'slug': 'my_sluggish_slug_api',
+        'slug': _LISTED_API_SLUG,
         'default_locale': 'en-US',
         'name': {
             'de': 'DE Name set at creation time',
@@ -88,7 +94,7 @@ def listed_addon_details(uuid):
 
 edit_addon_details = {
     'categories': ['appearance', 'download-management'],
-    'slug': 'new_sluggish_slug',
+    'slug': _EDITED_API_SLUG,
     'name': {
         'de': 'DE Name edited',
         'en-US': 'EN-US Name edited',
