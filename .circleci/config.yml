@@ -684,14 +684,13 @@ workflows:
       - sanity_serial_tests
       - sanity_parallel_tests
 
-  # API tests workflow — fires on every commit (debug mode on the testing
-  # branch). Before merging to master, convert this to a scheduled workflow
-  # by replacing `when: not scheduled_pipeline` with the scheduled trigger
-  # pattern (see e.g. scheduled_dev_regression_tests below).
-  api_tests_workflow:
+  # API tests workflow — scheduled via CircleCI Project Settings → Triggers.
+  # The trigger name must match the string in `pipeline.schedule.name` below.
+  api_tests_scheduled:
     when:
-      not:
-        equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
+      and:
+        - equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
+        - equal: [ "api_tests_scheduled", << pipeline.schedule.name >> ]
     jobs:
       - api_edit_tests
       - api_authors_tests
