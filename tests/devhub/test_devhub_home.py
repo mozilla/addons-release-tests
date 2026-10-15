@@ -588,7 +588,7 @@ def test_devhub_addons_footer_links(base_url, selenium, count, link):
         [
             ["#nightly", ".fl-logo-fx"],
             ["#beta", ".fl-logo-fx"],
-            ["browsers/enterprise/", ".fl-logo-fx"],
+            ["firefox.com/en-US/enterprise/", ".fl-logo-fx"],
         ]
     ),
     ids=[
