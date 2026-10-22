@@ -711,19 +711,18 @@ workflows:
       - sanity_serial_tests
       - sanity_parallel_tests
 
-  # API tests workflow — fires on every commit (debug mode on the testing
-  # branch). Before merging to master, convert this back to a scheduled
-  # workflow (restore the and-scheduled_pipeline + schedule.name block) and
-  # rename the CircleCI Project Settings → Triggers entry to
-  # `api_serial_tests_scheduled`.
+  # API tests workflow — serial API test suites that hit a shared api_user
+  # account on stage. Jobs are chained sequentially via `requires:` because
+  # running them in parallel pushed too many simultaneous requests from
+  # api_user against stage, triggering ERROR_AUTHENTICATION_EXPIRED mid-run.
   #
-  # Jobs are chained sequentially via `requires:` because running them in
-  # parallel pushed too many simultaneous requests from api_user against
-  # stage, triggering ERROR_AUTHENTICATION_EXPIRED mid-run.
+  # Scheduled in CircleCI Project Settings → Triggers under the name
+  # `api_serial_tests_scheduled`.
   api_serial_tests_scheduled:
     when:
-      not:
-        equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
+      and:
+        - equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
+        - equal: [ "api_serial_tests_scheduled", << pipeline.schedule.name >> ]
     jobs:
       - api_edit_tests
       - api_authors_tests:
