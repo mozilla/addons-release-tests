@@ -716,14 +716,22 @@ workflows:
   # workflow (restore the and-scheduled_pipeline + schedule.name block) and
   # rename the CircleCI Project Settings → Triggers entry to
   # `api_serial_tests_scheduled`.
+  #
+  # Jobs are chained sequentially via `requires:` because running them in
+  # parallel pushed too many simultaneous requests from api_user against
+  # stage, triggering ERROR_AUTHENTICATION_EXPIRED mid-run.
   api_serial_tests_scheduled:
     when:
       not:
         equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
     jobs:
       - api_edit_tests
-      - api_authors_tests
-      - api_versions_tests
+      - api_authors_tests:
+          requires:
+            - api_edit_tests
+      - api_versions_tests:
+          requires:
+            - api_authors_tests
 
   scheduled_webext_release_stage_run:
     when:
