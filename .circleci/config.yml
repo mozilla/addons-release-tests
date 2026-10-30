@@ -699,8 +699,13 @@ jobs:
 workflows:
   commit_workflow:
     when:
-      not:
-        equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
+      and:
+        - not:
+            equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
+        - not:
+            matches:
+              pattern: "^dependabot/.*"
+              value: << pipeline.git.branch >>
     jobs:
       - frontend_parallel_tests
       - user_serial_tests
