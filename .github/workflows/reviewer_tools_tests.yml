@@ -1,0 +1,17 @@
+name: Reviewer Tools Tests
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  test:
+    uses: ./.github/workflows/_test.yml
+    with:
+      artifact_name: reviewer-tools-stage-test-results.html
+      pytest_parallel: 1
+      pytest_path: tests/reviewer_tools/test_reviewer_tools_release.py
+      pytest_report: reviewer-tools-stage-test-results.html
+      pytest_reruns: 2
+      pytest_variables: stage.json
+      python_version: 3.x

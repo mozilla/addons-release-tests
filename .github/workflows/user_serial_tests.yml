@@ -1,0 +1,18 @@
+name: User Serial Tests
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  test:
+    uses: ./.github/workflows/_test.yml
+    with:
+      artifact_name: user-test-results
+      pytest_marker: "serial"
+      pytest_parallel: 1
+      pytest_path: tests/frontend/test_users.py
+      pytest_report: user-test-results.html
+      pytest_reruns: 2
+      pytest_variables: stage.json
+      python_version: 3.x
