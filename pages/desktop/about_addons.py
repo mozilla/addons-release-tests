@@ -357,7 +357,7 @@ class AboutAddons(Page):
         self.find_element(*self._theme_tab_button_locator).click()
         self.wait.until(
             EC.text_to_be_present_in_element(
-                (By.CLASS_NAME, "list-section-heading"), "Enabled"
+                (By.CLASS_NAME, "header-name"), "Manage Your Themes"
             )
         )
 
