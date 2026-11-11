@@ -359,7 +359,7 @@ def test_addons_footer_links_tc_id_c95105(base_url, selenium, count, link):
         [
             ["channel/desktop/#nightly", ".fl-logo-fx"],
             ["channel/desktop/#beta", ".fl-logo-fx"],
-            ["browsers/enterprise/", ".fl-logo-fx"],
+            ["firefox.com/en-US/enterprise/", ".fl-logo-fx"],
         ]
     ),
     ids=[
