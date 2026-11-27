@@ -692,10 +692,10 @@ workflows:
       and:
         - not:
             equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
-#        - not:
-#            matches:
-#              pattern: "^dependabot/.*"
-#              value: << pipeline.git.branch >>
+        - not:
+            matches:
+              pattern: "^dependabot/.*"
+              value: << pipeline.git.branch >>
     jobs:
       - frontend_parallel_tests
       - user_serial_tests
