@@ -193,6 +193,18 @@ class SubmitAddon(Page):
         self.wait.until(EC.visibility_of_element_located(self._recaptcha_locator))
         return self.find_element(*self._recaptcha_locator)
 
+    def is_recaptcha_displayed(self, timeout=10):
+        """The agreement form only renders a reCAPTCHA where the environment has one
+        configured; stage and dev serve the form without it. Returns False instead of
+        raising so that a test can cover the widget only where it exists."""
+        try:
+            WebDriverWait(self.driver, timeout).until(
+                EC.visibility_of_element_located(self._recaptcha_locator)
+            )
+            return True
+        except TimeoutException:
+            return False
+
     def click_recaptcha_checkbox(self):
         """reCAPTCHA is stored in an iframe; switch to the iframe and click on the checkbox"""
         el = self.find_element(By.CSS_SELECTOR, 'iframe[title="reCAPTCHA"]')
@@ -547,9 +559,13 @@ class UploadSource(Page):
     )
     _yes_cancel_and_disable_version = (By.CSS_SELECTOR, "button.delete-button:nth-child(1)")
     _do_not_cancel_version_link_locator = (By.CSS_SELECTOR, "#modal-confirm-submission-cancel > form > div > a")
-    _release_notes_field_locator = (By.ID, "trans-release_notes")
+    # The `#trans-release_notes` div is the translatable wrapper; the actual
+    # <textarea> lives inside it and is what accepts keyboard input.
+    _release_notes_field_locator = (By.ID, "id_release_notes_0")
     _notes_to_reviewer_locator = (By.ID, "id_approval_notes")
-    _version_submitted_text_locator = (By.CLASS_NAME, ".addon-submission-process h3")
+    # By.CLASS_NAME doesn't take a "." prefix and doesn't support descendant
+    # selectors — must use By.CSS_SELECTOR for ".class descendant" patterns.
+    _version_submitted_text_locator = (By.CSS_SELECTOR, ".addon-submission-process h3")
 
     @property
     def submit_source_page_header(self):
@@ -561,16 +577,22 @@ class UploadSource(Page):
         return self.find_element(*self._submit_source_code_page_header_locator).text
 
     def select_yes_to_submit_source(self):
+        # See note on select_no_to_omit_source about the radio being a zero-size
+        # <input> behind a styled label.
         self.wait.until(
-            EC.visibility_of_element_located(
+            EC.presence_of_element_located(
                 self._yes_submit_source_radio_button_locator
             )
         )
         self.find_element(*self._yes_submit_source_radio_button_locator).click()
 
     def select_no_to_omit_source(self):
+        # Modern AMO renders the radio <input> as a zero-size hidden element
+        # behind a styled label, which fails `visibility_of_element_located`
+        # even though the input is fully clickable. Use `presence_of_element_located`
+        # to wait for DOM attachment, then click.
         self.wait.until(
-            EC.visibility_of_element_located(
+            EC.presence_of_element_located(
                 self._no_submit_source_radio_button_locator
             )
         )

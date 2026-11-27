@@ -25,6 +25,52 @@ _upload = "/api/v5/addons/upload/"
 
 
 @pytest.mark.serial
+@pytest.mark.login("api_user")
+def test_setup_upload_and_create_addon(base_url, selenium):
+    """Setup: upload a listed XPI and create the addon that the version tests
+    will edit. Uses the login marker so api_user.txt is written with a fresh
+    sessionid for the create_session tests that follow."""
+    session_cookie = selenium.get_cookie("sessionid")
+    with open("sample-addons/listed-addon-api.zip", "rb") as file:
+        upload = requests.post(
+            url=f"{base_url}{_upload}",
+            headers={"Authorization": f'Session {session_cookie["value"]}'},
+            files={"upload": file},
+            data={"channel": "listed"},
+        )
+    upload.raise_for_status()
+    assert "listed" in upload.json()["channel"]
+    uuid = upload.json()["uuid"]
+    time.sleep(10)
+    create_addon = requests.post(
+        url=f"{base_url}{_addon_create}",
+        headers={
+            "Authorization": f'Session {session_cookie["value"]}',
+            "Content-Type": "application/json",
+        },
+        data=json.dumps(payloads.listed_addon_details(uuid)),
+    )
+    create_addon.raise_for_status()
+
+
+@pytest.mark.serial
+@pytest.mark.create_session("api_user")
+def test_setup_rename_addon(base_url, session_auth):
+    """Setup: rename the just-created addon so it sits at _EDITED_API_SLUG.
+    All subsequent version tests resolve the slug via
+    `payloads.edit_addon_details["slug"]` which equals _EDITED_API_SLUG."""
+    edit_addon = requests.patch(
+        url=f"{base_url}{_addon_create}{payloads._LISTED_API_SLUG}/",
+        headers={
+            "Authorization": f"Session {session_auth}",
+            "Content-Type": "application/json",
+        },
+        data=json.dumps(payloads.edit_addon_details),
+    )
+    edit_addon.raise_for_status()
+
+
+@pytest.mark.serial
 @pytest.mark.create_session("api_user")
 def test_edit_version_details(base_url, session_auth):
     """Edit the version specific fields, i.e. 'release_notes', 'license, 'compatibility'"""
@@ -350,21 +396,22 @@ def test_upload_new_version_with_sources(base_url, session_auth):
 def test_edit_version_change_sources(base_url, session_auth):
     """Upload different source file for an existing version and make sure that changes were applied"""
     addon = payloads.edit_addon_details["slug"]
-    request = requests.get(
-        url=f"{base_url}{_addon_create}{addon}",
+    # Use the latest version regardless of approval status. `current_version`
+    # on the addon only reflects the last APPROVED listed version, so a newer
+    # version carrying source may not yet be `current_version` (source edits
+    # don't require approval; the version carrying source may still be in
+    # review when this test runs).
+    versions_list = requests.get(
+        url=f"{base_url}{_addon_create}{addon}/versions/?filter=all_with_unlisted",
         headers={"Authorization": f"Session {session_auth}"},
-    )
-    print("Request addon create: " + f"{request.json()}")
-    # get the version id of the version we want to edit
-    version = request.json()["current_version"]["id"]
-    get_old_source = requests.get(
-        url=f"{base_url}{_addon_create}{addon}/versions/{version}/",
-        headers={"Authorization": f"Session {session_auth}"},
-    )
-    print("get old source request: " + f"{get_old_source.json()}")
+    ).json()
+    latest_version = versions_list["results"][0]
+    version = latest_version["id"]
     # download the previous source code attached to the version
     previous_source = requests.get(
-        get_old_source.json()["source"], cookies={"sessionid": session_auth}, timeout=10
+        latest_version["source"],
+        cookies={"sessionid": session_auth},
+        timeout=10,
     )
     with open("sample-addons/unlisted-addon.zip", "rb") as source:
         change_source = requests.patch(
@@ -372,16 +419,12 @@ def test_edit_version_change_sources(base_url, session_auth):
             headers={"Authorization": f"Session {session_auth}"},
             files={"source": source},
         )
-
-    print("previous source: " + f"{previous_source.json()}")
-    print("change source: " + f"{change_source.json()}")
-
-    # download the new source code attached to the  version
+    # download the new source code attached to the version
     new_source = requests.get(
-        change_source.json()["source"], cookies={"sessionid": session_auth}, timeout=10
+        change_source.json()["source"],
+        cookies={"sessionid": session_auth},
+        timeout=10,
     )
-    print("new source: " + f"{new_source.json()}")
-
     # compare that the previous source and the new source do not match
     api_helpers.compare_source_files(previous_source, new_source, "PATCH")
 

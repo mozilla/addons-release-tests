@@ -164,13 +164,18 @@ def test_next_and_previous_article_links(base_url, selenium):
 
 @pytest.mark.sanity
 @pytest.mark.nondestructive
-@pytest.mark.xfail
 def test_addon_cards_loaded_correctly(base_url, selenium):
     """Verifies that addon cards displayed on the article page show all required elements,
     such as title, author, summary, rating, number of users, and the "Add to Firefox" button."""
     blog_homepage = BlogHomepage(selenium, base_url).open().wait_for_page_to_load()
     page = blog_homepage.articles[0].click_read_more_link()
-    for card in page.addon_cards:
+    addon_cards = page.addon_cards
+    # articles are shared between environments and the add-ons they reference do
+    # not all exist on each one, so the unavailable cards are filtered out. On
+    # -dev that can leave very few of them; check that at least one card
+    # resolved, otherwise the loop below would assert nothing at all
+    assert addon_cards, "The article did not display any available add-on cards"
+    for card in addon_cards:
         assert card.title.is_displayed()
         assert card.author.is_displayed()
         assert len(card.summary) > 0
@@ -205,12 +210,14 @@ def test_blog_install_addon(
     addon_name = article.addon_cards[0].title.text
     addon_summary = article.addon_cards[0].summary
     article.addon_cards[0].add_to_firefox_button.click()
-    firefox.browser.wait_for_notification(
+    confirmation = firefox.browser.wait_for_notification(
         firefox_notifications.AddOnInstallConfirmation
-    ).install()
+    )
+    with selenium.context(selenium.CONTEXT_CHROME):
+        selenium.execute_script("arguments[0].click()", confirmation.find_primary_button())
     # verify about:addons to make sure the add-on was installed;
     selenium.get("about:addons")
-    selenium.find_element(By.CSS_SELECTOR, 'button[name = "extension"]').click()
+    selenium.find_element(By.CSS_SELECTOR, '#category-extension, button[name="extension"]').click()
     try:
         wait.until(
             lambda _: addon_name

@@ -66,16 +66,18 @@ class Login(Base):
 
     _email_locator = (By.NAME, "email")
     _continue_locator = (By.CSS_SELECTOR, ".button-row button")
-    _password_login = (By.CSS_SELECTOR, ".pb-1")
+    # every FxA screen renders its single input with the same '.pb-1' class, so
+    # the fields are matched by name to make sure we wait for the screen we
+    # actually need instead of matching the input of the previous one
+    _password_login = (By.CSS_SELECTOR, "input[name='password']")
     _password_locator = (By.XPATH, "//input[@data-testid='new-password-input-field']")
     _login_btn_locator = (By.CSS_SELECTOR, "button.cta-primary.cta-xl")
     _repeat_password_locator = (By.CSS_SELECTOR, "div.relative:nth-child(3) > div:nth-child(1) > label:nth-child(1) > span:nth-child(1) > input:nth-child(2)")
     _age_locator = (By.XPATH, "//input[@data-testid='age-input-field']")
     _code_input_locator = (By.CSS_SELECTOR, ".pb-1")
     _login_card_header_locator = (By.CSS_SELECTOR, ".card-header")
-    _2fa_input_locator = (By.CSS_SELECTOR, ".pb-1")
+    _2fa_input_locator = (By.CSS_SELECTOR, "input[name='code']")
     _confirm_2fa_button_locator = (By.CSS_SELECTOR, ".cta-primary")
-    _error_2fa_code_locator = (By.CSS_SELECTOR, ".text-xs")
 
     @property
     def click_login_button(self):
@@ -204,20 +206,31 @@ class Login(Base):
         if key != "":
             self.wait.until(EC.url_contains("signin_totp_code"))
             self.wait.until(EC.visibility_of_element_located(self._2fa_input_locator))
-            time.sleep(30)
             totp = pyotp.TOTP(key)
-            self.find_element(*self._2fa_input_locator).send_keys(totp.now())
-            self.find_element(*self._confirm_2fa_button_locator).click()
-            time.sleep(5)
-            for max_retries in range(0, 2):
-                if self.is_element_displayed(*self._error_2fa_code_locator):
-                    time.sleep(500)
-                    totp = pyotp.TOTP(key)
-                    self.find_element(*self._2fa_input_locator).clear()
-                    self.find_element(*self._2fa_input_locator).send_keys(totp.now())
-                    self.find_element(*self._confirm_2fa_button_locator).click()
-                else:
+            for max_retries in range(0, 3):
+                # fxa refuses a totp code that was already used and the tests log in
+                # repeatedly, so we wait for the next 30 second window before
+                # generating each code
+                time.sleep(30)
+                code_input = self.find_element(*self._2fa_input_locator)
+                code_input.clear()
+                code_input.send_keys(totp.now())
+                self.find_element(*self._confirm_2fa_button_locator).click()
+                # leaving the totp screen is the only reliable signal that the code was
+                # accepted; the error message shares its class with a lot of other
+                # fxa text, so it cannot be used to detect a rejected code
+                try:
+                    self.wait.until(
+                        lambda _: "signin_totp_code" not in self.driver.current_url
+                    )
                     break
+                except TimeoutException:
+                    print("The 2fa code was not accepted, retrying with a new code.")
+            else:
+                raise AssertionError(
+                    f"The 2fa code was not accepted after 3 attempts. "
+                    f"The url was {self.driver.current_url}"
+                )
 
         # wait for transition between FxA page and AMO
         # self.wait.until(

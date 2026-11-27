@@ -1,4 +1,5 @@
-import time
+from datetime import datetime, timedelta, timezone
+
 import pytest
 import requests
 
@@ -86,8 +87,6 @@ def test_user_menu_edit_profile_tc_id_c95102(base_url, selenium):
 @pytest.mark.register
 def test_register_new_account(base_url, selenium, wait):
     """Tests registering a new account and checks the default user name after registration."""
-    if "addons-dev" in base_url:
-        pytest.skip("To be fixed for dev")
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.register()
     # reassign AMO homepage it to another variable because 'page' can become stale at this point
@@ -334,7 +333,6 @@ def test_user_delete_profile_tc_id_c4393(base_url, selenium):
 
 @pytest.mark.serial
 @pytest.mark.login("reusable_user")
-@pytest.mark.skip
 def test_user_account_manage_section(base_url, selenium, variables):
     """Confirms that the correct email is
     displayed in the account management section."""
@@ -381,25 +379,27 @@ def test_user_regular_has_no_role(base_url, selenium):
 
 
 @pytest.mark.serial
-@pytest.mark.skip
-def test_user_regular_notifications(base_url, selenium, variables):
+@pytest.mark.nondestructive
+def test_user_regular_notifications(base_url, selenium, variables, wait):
     """Ensures that regular users can opt in/out of only the basic notifications."""
     user = User(selenium, base_url).open().wait_for_page_to_load()
     user.login("reusable_user")
-    # regular users can only opt in/out for 2 notifications
-    assert len(user.edit.notification_text) == 2
+    # regular users can only opt in/out for 2 notifications; the notifications
+    # endpoint responds slower than the rest of the page, so we wait for the
+    # list to be fully rendered before counting the items
+    wait.until(
+        lambda _: len(user.edit.notification_text) == 2,
+        message=f'Actual number of notifications displayed was "{len(user.edit.notification_text)}"',
+    )
+    notifications = [item.text for item in user.edit.notification_text]
     count = 0
-    while count < len(user.edit.notification_text):
-        assert (
-            variables["notifications"][count] in user.edit.notification_text[count].text
-        )
+    while count < len(notifications):
+        assert variables["notifications"][count] in notifications[count]
         count += 1
+
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-@pytest.mark.skip(
-    reason="Intermittent issue, see https://github.com/mozilla/addons-server/issues/20965"
-)
 def test_user_notifications_subscriptions(base_url, selenium, wait):
     """Tests subscribing and unsubscribing from notifications for a user."""
     edit_user = User(selenium, base_url).open().wait_for_page_to_load()
@@ -409,19 +409,26 @@ def test_user_notifications_subscriptions(base_url, selenium, wait):
         assert checkbox.is_selected()
     # unsubscribe from one of the non-mandatory notifications
     edit_user.edit.notifications_checkbox[0].click()
-    time.sleep(2)
+    wait.until(
+        lambda _: not edit_user.edit.notifications_checkbox[0].is_selected(),
+        message="The notification checkbox was still selected after being clicked",
+    )
     edit_user.edit.submit_changes()
-    time.sleep(3)
-    User(selenium, base_url).open().wait_for_page_to_load()
-    # verify that the notification checkbox is no longer selected
-    with pytest.raises(AssertionError):
-        assert edit_user.edit.notifications_checkbox[0].is_selected()
+    # reload the Edit profile page and verify that the notification is no longer selected
+    edit_user = User(selenium, base_url).open().wait_for_page_to_load()
+    wait.until(
+        lambda _: not edit_user.edit.notifications_checkbox[0].is_selected(),
+        message="The notification was still selected after unsubscribing from it",
+    )
     # subscribe to the notification again
     edit_user.edit.notifications_checkbox[0].click()
     edit_user.edit.submit_changes()
-    time.sleep(2)
-    User(selenium, base_url).open().wait_for_page_to_load()
-    assert edit_user.edit.notifications_checkbox[0].is_selected()
+    # reload the Edit profile page and verify that the notification is selected again
+    edit_user = User(selenium, base_url).open().wait_for_page_to_load()
+    wait.until(
+        lambda _: edit_user.edit.notifications_checkbox[0].is_selected(),
+        message="The notification was not selected after subscribing to it again",
+    )
 
 
 @pytest.mark.serial
@@ -477,6 +484,36 @@ def test_non_developer_user_profile_is_not_public(base_url, selenium, variables)
     assert page.minimal.report_abuse_button.is_displayed()
 
 
+# AMO deliberately hides the users count on add-ons created less than
+# 'recentAddonCutOffDays' ago - see isRecentAddon in addons-frontend. The value
+# is the same on every environment, but the dev and stage accounts constantly
+# get new add-ons from the automation suites, so the card is only expected to
+# have a users count once the add-on is past that cut-off.
+RECENT_ADDON_CUT_OFF_DAYS = 30
+
+
+def assert_users_count_displayed(base_url, search_result):
+    """Asserts the users count of a search result, allowing it to be missing
+    only while AMO still considers the add-on recently created."""
+    if search_result.is_users_count_displayed:
+        assert search_result.search_result_users.is_displayed()
+        return
+    slug = search_result.addon_slug
+    response = requests.get(f"{base_url}/api/v5/addons/addon/{slug}/", timeout=30)
+    assert response.status_code == 200, (
+        f"'{slug}' had no users count displayed and its creation date could "
+        f"not be checked; the API responded with {response.status_code}"
+    )
+    created = datetime.strptime(
+        response.json()["created"], "%Y-%m-%dT%H:%M:%SZ"
+    ).replace(tzinfo=timezone.utc)
+    age = datetime.now(timezone.utc) - created
+    assert age < timedelta(days=RECENT_ADDON_CUT_OFF_DAYS), (
+        f"'{slug}' was created {age.days} days ago, so it should have had a "
+        f"users count displayed"
+    )
+
+
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_user_addon_cards_for_users_with_multiple_roles(base_url, selenium, variables):
@@ -487,7 +524,7 @@ def test_user_addon_cards_for_users_with_multiple_roles(base_url, selenium, vari
     be hidden when the profile is viewed by another user"""
     user_profile = variables["developer_and_artist_role"]
     selenium.get(f"{base_url}/user/{user_profile}")
-    user = User(selenium, base_url)
+    user = User(selenium, base_url).wait_for_user_to_load()
     user_profile_name = user.user_display_name.text
     # check that extensions results have the following properties displayed:
     assert f"Extensions by {user_profile_name}" in user.view.user_extensions_card_header
@@ -496,14 +533,14 @@ def test_user_addon_cards_for_users_with_multiple_roles(base_url, selenium, vari
         assert extension.search_result_icon.is_displayed()
         assert extension.search_result_rating_stars.is_displayed()
         assert user_profile_name in extension.search_result_author.text
-        assert extension.search_result_users.is_displayed()
+        assert_users_count_displayed(base_url, extension)
         assert extension.search_result_summary.is_displayed()
     # check that themes results have the following properties displayed:
     assert f"Themes by {user_profile_name}" in user.view.user_themes_card_header
     for theme in user.view.user_themes_results:
         assert theme.search_name.is_displayed()
         assert theme.search_result_icon.is_displayed()
-        assert theme.search_result_users.is_displayed()
+        assert_users_count_displayed(base_url, theme)
     # verify that the user profile ratings card is not displayed when viewed by another user
     with pytest.raises(
         Exception,
@@ -684,8 +721,6 @@ def test_user_profile_delete_review(base_url, selenium, variables, wait):
 @pytest.mark.login("submissions_user")
 def test_user_abuse_report(base_url, selenium, variables, wait):
     """Verifies that a user can submit an abuse report for a developer and that the form is correctly processed."""
-    if "addons-dev" in base_url:
-        pytest.skip("To be fixed for dev")
     developer = variables["developer_profile"]
     selenium.get(f"{base_url}/user/{developer}")
     user = User(selenium, base_url).wait_for_user_to_load()

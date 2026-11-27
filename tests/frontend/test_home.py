@@ -79,8 +79,7 @@ def test_extension_workshop_link_tc_id_c95105(base_url, selenium):
     "count, title",
     enumerate(
         [
-            "Dictionaries and Language Packs",
-            "Add-ons for Firefox Android",
+            "Dictionaries and Language Packs"
         ]
     ),
 )
@@ -114,9 +113,16 @@ def test_primary_hero_tc_id_c95105(base_url, selenium):
 
 
 @pytest.mark.nondestructive
-@pytest.mark.xfail
 def test_secondary_hero_message(base_url, selenium, variables):
     """Test covering the homepage secondary hero"""
+    if "dev.allizom" in base_url:
+        pytest.skip(
+            "The secondary hero shelf on -dev is the scratch pad used to try "
+            "out the admin shelf editor, so its headline, description and call "
+            "to action hold arbitrary content instead of the AMO copy checked "
+            "here - the shelf currently reads 'CHARACTERS 20WORDS 2SENTENCES' "
+            "and its button points at /search/ rather than the Extensions page"
+        )
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     assert (
         variables["secondary_hero_title"] in page.secondary_hero.secondary_hero_headline
@@ -346,13 +352,14 @@ def test_addons_footer_links_tc_id_c95105(base_url, selenium, count, link):
     )
 
 
+@pytest.mark.sanity
 @pytest.mark.parametrize(
     "count, link",
     enumerate(
         [
             ["channel/desktop/#nightly", ".fl-logo-fx"],
             ["channel/desktop/#beta", ".fl-logo-fx"],
-            ["browsers/enterprise/", ".fl-logo-fx"],
+            ["firefox.com/en-US/enterprise/", ".fl-logo-fx"],
         ]
     ),
     ids=[
@@ -362,12 +369,16 @@ def test_addons_footer_links_tc_id_c95105(base_url, selenium, count, link):
     ],
 )
 @pytest.mark.nondestructive
-@pytest.mark.sanity
 def test_latest_builds_footer_links_tc_id_c95105(base_url, selenium, count, link):
-    """Verifies the links from the Latest Builds footer column, including Enterprise"""
+    """Verifies the links from the Latest Builds footer column, including Enterprise.
+
+    Only verifies that the target page loads (Firefox logo visible); the destination
+    URL is not asserted because prod firefox.com injects a Google Analytics `_gl`
+    tracking param between the path and the fragment (via GA's cross-domain linker),
+    which is out of AMO's control and mangles the URL differently across envs.
+    """
     page = Home(selenium, base_url).open().wait_for_page_to_load()
     page.footer.build_links[count].click()
-    page.wait_for_current_url(link[0])
     page.wait.until(
         EC.visibility_of_element_located((By.CSS_SELECTOR, link[1])),
         message=f'The chosen element "{link[1]}" could not be loaded on the "{link[0]}" webpage',

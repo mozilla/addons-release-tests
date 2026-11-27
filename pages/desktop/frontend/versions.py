@@ -144,6 +144,20 @@ class Versions(Base):
             )
             return self.find_element(*self._add_to_firefox_button_locator)
 
+        @property
+        def add_to_firefox_button_text(self):
+            """The install button label, read once the button has settled.
+
+            The button shows a loading state while an install or uninstall is
+            in progress, so reading the label straight after clicking it can
+            still return the previous value."""
+            self.wait.until(
+                EC.invisibility_of_element_located(
+                    (By.CLASS_NAME, "AMInstallButton-loading-button")
+                )
+            )
+            return self.find_element(*self._add_to_firefox_button_locator).text
+
         def click_download_link(self):
             self.wait.until(EC.element_to_be_clickable(self._download_link_locator))
             self.find_element(*self._download_link_locator).click()

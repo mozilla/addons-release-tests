@@ -34,6 +34,7 @@
   "addon_version_updated_message": "Your add-ons have been updated.",
 
   "all_scores_addon": "ublock-origin",
+  "flag_review_addon": "ublock-origin",
   "initial_text_input": "original text",
 
   "public_collection": "/4757633/privacy-matters/",
@@ -92,6 +93,8 @@
   "unsupported_format_message": "The filetype you uploaded isn't recognized.",
   "upload_status": "100% complete",
   "version_submitted": "Version Submitted",
-  "invisible_status_text": "Invisible"
+  "invisible_status_text": "Invisible",
+  "listed_addon_slug": "",
+  "listed_addon_name": ""
 }
 

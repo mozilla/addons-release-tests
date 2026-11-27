@@ -174,7 +174,14 @@ class DevHubHome(Base):
 
     def devhub_login(self, user):
         fxa = self.click_header_login_button()
-        # wait for the FxA login page to load
+        # the devhub newsletter form has its own input[name='email'], so we have to
+        # wait for the fxa page itself before looking for the email field; otherwise
+        # the newsletter input matches straight away and the credentials are typed
+        # into the devhub page while the redirect to fxa is still in flight
+        self.wait.until(
+            EC.url_contains("accounts."),
+            message=f"The FxA login page was not opened, the url was {self.driver.current_url}",
+        )
         self.wait.until(
             EC.visibility_of_element_located((By.NAME, "email")),
             message=f"FxA email input field was not displayed in {self.driver.current_url}",
@@ -557,6 +564,14 @@ class ConnectFooter(Region):
         )
         self.find_element(*self._newsletter_privacy_checkbox_locator).click()
 
+    def submit_newsletter_signup(self, email):
+        """Fill in the newsletter subscription form and submit it. The form is
+        posted to basket over XHR, so the page does not navigate; the caller
+        decides what to verify (the confirmation email, or the 'Thanks' panel)."""
+        self.newsletter_email_input_field(email)
+        self.click_privacy_checkbox()
+        self.newsletter_sign_up.click()
+
     def click_newsletter_privacy_notice_link(self):
         self.find_element(*self._newsletter_privacy_notice_link_locator).click()
         self.wait.until(
@@ -588,24 +603,25 @@ class ConnectFooter(Region):
             *self._newsletter_sign_up_confirmation_message_locator
         ).text
 
-    def check_newsletter_signup_email(self, email):
-        retry = 0
-        while retry < 10:
+    def check_newsletter_signup_email(self, email, timeout=120):
+        """Poll restmail for the newsletter confirmation email and return the
+        subjects received. Measured delivery time is ~12-13s, which the previous
+        10 x 2s budget only just covered - hence the deadline-based poll."""
+        deadline = time.time() + timeout
+        while True:
             # verify that a response is available and get the email subject
             request = requests.get(f"https://restmail.net/mail/{email}", timeout=10)
             response = request.json()
             if response:
-                confirmation = [key["subject"] for key in response]
-                return confirmation
-            elif not response:
-                print("Confirmation email not received yet")
-                # fail if we retired 10 times and there was no email received
-                if retry == 9:
-                    pytest.fail("Newsletter confirmation email was not sent")
-                # pause between subsequent requests to give more time to the email to be sent
-                time.sleep(2)
-                retry += 1
-        return self
+                return [key["subject"] for key in response]
+            if time.time() >= deadline:
+                pytest.fail(
+                    f"Newsletter confirmation email for {email} was not received "
+                    f"within {timeout}s"
+                )
+            print("Confirmation email not received yet")
+            # pause between subsequent requests to give more time to the email to be sent
+            time.sleep(3)
 
 
 class ResourcesFooter(Region):

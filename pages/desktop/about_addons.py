@@ -18,14 +18,15 @@ class AboutAddons(Page):
     _search_box_locator = (By.CSS_SELECTOR, ".main-search search-textbox")
     _find_more_addons_search_box_locator = (By.CSS_SELECTOR, "moz-input-search[placeholder='Search addons.mozilla.org']")
     _find_more_addons_text_locator = (By.CSS_SELECTOR, ".search-label")
-    # Side-tab buttons — recent Firefox versions render them as
-    # `moz-page-nav-button` instead of legacy `button[name=...]`. Selecting
-    # the `id` works for both shapes.
-    _extension_tab_button_locator = (By.CSS_SELECTOR, "#category-extension")
+    # Side-tab buttons — legacy Firefox uses `<button is="category-button" name="X">`
+    # WITHOUT an id. Release 153+ migrated to `<moz-page-nav-button id="category-X">`.
+    # Combined selectors below match both shapes. Only extension + theme are updated
+    # here; the other 4 still assume the new-DOM id-only form (see follow-up).
+    _extension_tab_button_locator = (By.CSS_SELECTOR, "#category-extension, button[name='extension']")
     _recommendations_tab_button_locator = (By.CSS_SELECTOR, "#category-discover")
     _recommendations_tab_addon_list_locator = (By.CSS_SELECTOR, "card addon")
     _recommendations_tab_find_more_addons_locator = (By.CSS_SELECTOR, "button.primary")
-    _theme_tab_button_locator = (By.CSS_SELECTOR, "#category-theme")
+    _theme_tab_button_locator = (By.CSS_SELECTOR, "#category-theme, button[name='theme']")
     _plugins_tab_button_locator = (By.CSS_SELECTOR, "#category-plugin")
     _dictionary_tab_button_locator = (By.CSS_SELECTOR, "#category-dictionary")
     _langpack_tab_button_locator = (By.CSS_SELECTOR, "#category-locale")
@@ -35,7 +36,10 @@ class AboutAddons(Page):
     _enabled_theme_image_locator = (By.CLASS_NAME, "card-heading-image")
     _installed_addon_name_locator = (By.CSS_SELECTOR, ".addon-name a")
     _installed_addon_author_locator = (By.CSS_SELECTOR, ".addon-detail-row-author a")
-    _find_more_addons_button_locator = (By.CLASS_NAME, "primary")
+    _find_more_addons_button_locator = (
+        By.CSS_SELECTOR,
+        "button[data-l10n-id='find-more-addons']",
+    )
     _installed_extension_version_locator = (
         By.CSS_SELECTOR,
         ".addon-detail-row-version",
@@ -353,7 +357,7 @@ class AboutAddons(Page):
         self.find_element(*self._theme_tab_button_locator).click()
         self.wait.until(
             EC.text_to_be_present_in_element(
-                (By.CLASS_NAME, "list-section-heading"), "Enabled"
+                (By.CLASS_NAME, "header-name"), "Manage Your Themes"
             )
         )
 
@@ -446,10 +450,24 @@ class AboutAddons(Page):
         return [self.AddonCards(self, el) for el in items]
 
     def click_find_more_addons(self):
+        # The "Find more add-ons" button lives at the bottom of the discopane,
+        # below the recommendations shelf. On CI (headless, Windows) the
+        # `element_to_be_clickable` predicate times out even after the button
+        # is in-DOM and scrolled into view — the chrome-page hit-testing in
+        # the predicate behaves differently from a regular web page. Wait for
+        # presence, scroll into view, then click directly.
         self.wait.until(
-            EC.element_to_be_clickable(self._find_more_addons_button_locator)
+            EC.presence_of_element_located(self._find_more_addons_button_locator)
         )
-        self.find_element(*self._find_more_addons_button_locator).click()
+        el = self.find_element(*self._find_more_addons_button_locator)
+        # Marionette's own scroll-and-click fails on about:addons in headless
+        # ("could not be scrolled into view"). Bypass by scrolling via JS and
+        # firing the click via JS too — this skips Marionette's interaction
+        # prep entirely while still invoking the button's handler.
+        self.driver.execute_script(
+            "arguments[0].scrollIntoView({block: 'center'}); arguments[0].click();",
+            el,
+        )
         # this button opens AMO homepage in a new tab
         self.wait.until(
             EC.number_of_windows_to_be(2),

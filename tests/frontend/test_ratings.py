@@ -14,6 +14,23 @@ from pages.desktop.frontend.versions import Versions
 from pages.desktop.frontend.users import User
 
 
+def first_flaggable_review(reviews, extension):
+    """Return the first review on the all-reviews page that can be flagged.
+
+    AMO only renders the 'Flag' menu on reviews that carry text, so the flag
+    tests need an environment where the addon under test has at least one such
+    review. The old form of this walked `review_items` by index with a
+    `count <= len(...)` bound, which turned "this environment has no review with
+    text" into an `IndexError` pointing at the test instead of at the data."""
+    flaggable = reviews.flaggable_reviews
+    assert flaggable, (
+        f'No review on the "{extension}" reviews page exposes a Flag menu, so this '
+        f"test cannot run. The environment needs at least one review with text, "
+        f"posted by a user other than the one doing the flagging."
+    )
+    return flaggable[0]
+
+
 @pytest.mark.serial
 @pytest.mark.nondestructive
 def test_throttled_request_create_rating_spam(selenium, base_url, variables):
@@ -176,6 +193,10 @@ def test_rating_without_text_tc_id_c95947(selenium, base_url, variables):
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     addon.login('rating_user')
+    # this test asserts on the "rating" wording AMO uses for a rating without
+    # text, so the user has to start without a text review on the addon rather
+    # than relying on test_delete_review_tc_id_c4421 having removed one
+    addon.ratings.clear_existing_rating()
     # total number of reviews in stats card before leaving a new rating
     prior_rating_count = addon.stats.stats_reviews_count
     # number of ratings with a score of 5 stars before leaving a new rating
@@ -232,7 +253,10 @@ def test_delete_rating(selenium, base_url, variables):
     extension = variables["detail_extension_slug"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
-    # addon.login('rating_user')
+    # the rating being deleted has to be one without text for the "rating"
+    # wording to apply, so post one rather than relying on the rating left
+    # behind by test_rating_without_text_tc_id_c95947
+    addon.ratings.post_score_only_rating(4)
     addon.ratings.delete_rating_link.click()
     assert "rating" in addon.ratings.ratings_card_summary
     assert "rating" in addon.ratings.delete_confirm_button.text
@@ -242,35 +266,6 @@ def test_delete_rating(selenium, base_url, variables):
     WebDriverWait(selenium, 10).until(
         EC.invisibility_of_element_located(addon.ratings.selected_star_highlight)
     )
-
-@pytest.mark.serial
-@pytest.mark.nondestructive
-@pytest.mark.login("rating_user")
-def test_flag_review_action_tc_id_c1494904(selenium, base_url, variables):
-    extension = variables["all_scores_addon"]
-    selenium.get(f"{base_url}/addon/{extension}")
-    addon = Detail(selenium, base_url).wait_for_page_to_load()
-    # addon.login('rating_user')
-    reviews = addon.ratings.click_all_reviews_link()
-    flag = reviews.review_items
-    # the 'Flag' menu is displayed only for reviews with text
-    # iterating through the list of reviews until a review with text is found
-    count = 0
-    while count <= len(reviews.reviews_list):
-        if len(flag[count].review_body) > 0:
-            flag[count].click_flag_review()
-            # choosing the option to flag the review for spam
-            assert (
-                variables["review_flag_spam"] in flag[count].flag_review_option[0].text
-            )
-            flag[count].select_flag_option(0)
-            assert (
-                variables["review_flagged_for_spam"]
-                in flag[count].flag_review_success_text[0].text
-            )
-            break
-        else:
-            count += 1
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
@@ -289,22 +284,40 @@ def test_all_reviews_page_items(selenium, base_url, variables):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-def test_filter_reviews_by_score(selenium, base_url, variables):
+def test_filter_reviews_by_score(selenium, base_url, variables, wait):
     """Test filtering reviews by score on the all reviews page."""
     extension = variables["all_scores_addon"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     reviews = addon.ratings.click_all_reviews_link()
-    select = Select(reviews.filter_by_score)
+    # the summary card states how many reviews each score holds; those counts are
+    # what the matching score filter is expected to return
+    reviews_per_score = reviews.reviews_count_per_score
     count = 1
     # selecting rating score filters from 1 to 5, verifying that the reviews card
     # header counts reflect the number of reviews available for that rating score
     # and that the ratings stars for each review reflect the selected score
     while count < 6:
-        select.select_by_value(str(count))
+        # the whole card is re-rendered on every score change, so the select has to
+        # be looked up again on each pass to avoid holding a stale element
+        Select(reviews.filter_by_score).select_by_value(str(count))
         # waiting for the reviews page to be refreshed
         reviews.wait_for_page_to_load()
-        assert reviews.reviews_title_count == len(reviews.reviews_list)
+        expected_reviews = reviews_per_score[count]
+        if expected_reviews == 0:
+            # no review holds this score, so the card says so instead of listing any
+            wait.until(
+                lambda _: reviews.no_reviews_message_is_displayed,
+                message=f"The summary card lists no reviews for score {count} but the "
+                f'filtered page did not show the "no reviews" message',
+            )
+        wait.until(
+            lambda _: reviews.reviews_title_count == expected_reviews
+            and len(reviews.reviews_list) == expected_reviews,
+            message=f"The summary card lists {expected_reviews} reviews for score {count} "
+            f'but the filtered page showed "{reviews.reviews_title_count}" in the card '
+            f"header and {len(reviews.reviews_list)} in the list",
+        )
         for stars in reviews.review_items:
             assert len(stars.selected_star) == count
         count += 1
@@ -312,23 +325,42 @@ def test_filter_reviews_by_score(selenium, base_url, variables):
 
 @pytest.mark.serial
 @pytest.mark.nondestructive
-def test_filter_reviews_from_rating_bars(selenium, base_url, variables):
+def test_filter_reviews_from_rating_bars(selenium, base_url, variables, wait):
     """Test filtering reviews by clicking on rating bars."""
     extension = variables["all_scores_addon"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
     reviews = addon.ratings.click_all_reviews_link()
+    # the summary card states how many reviews each score holds; those counts are
+    # what the matching rating bar is expected to return
+    reviews_per_score = reviews.reviews_count_per_score
     count = 0
     # sort reviews based on score by clicking on the ratings bars present
     # in the AddonSummaryCard; verify that the correct score is displayed
     # in the reviews card header and in the rating stars associated to each review
     while count < 5:
+        # the bars are listed from score 5 down to score 1
+        score = int(reviews.bar_rating_score[count].text)
         reviews.score_bars[count].click()
         # waiting for the reviews page to be refreshed
         reviews.wait_for_page_to_load()
-        assert reviews.reviews_title_count == len(reviews.reviews_list)
+        expected_reviews = reviews_per_score[score]
+        if expected_reviews == 0:
+            # no review holds this score, so the card says so instead of listing any
+            wait.until(
+                lambda _: reviews.no_reviews_message_is_displayed,
+                message=f"The summary card lists no reviews for score {score} but the "
+                f'filtered page did not show the "no reviews" message',
+            )
+        wait.until(
+            lambda _: reviews.reviews_title_count == expected_reviews
+            and len(reviews.reviews_list) == expected_reviews,
+            message=f"The summary card lists {expected_reviews} reviews for score {score} "
+            f'but the filtered page showed "{reviews.reviews_title_count}" in the card '
+            f"header and {len(reviews.reviews_list)} in the list",
+        )
         for stars in reviews.review_items:
-            assert len(stars.selected_star) == int(reviews.bar_rating_score[count].text)
+            assert len(stars.selected_star) == score
         count += 1
 
 
@@ -337,30 +369,18 @@ def test_filter_reviews_from_rating_bars(selenium, base_url, variables):
 @pytest.mark.create_session("rating_user")
 def test_flag_review_action_tc_id_c1494904(selenium, base_url, variables):
     """Test flagging a user review for moderation."""
-    extension = variables["all_scores_addon"]
+    extension = variables["flag_review_addon"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
-    # addon.login('rating_user')
     reviews = addon.ratings.click_all_reviews_link()
-    flag = reviews.review_items
-    # the 'Flag' menu is displayed only for reviews with text
-    # iterating through the list of reviews until a review with text is found
-    count = 0
-    while count <= len(reviews.reviews_list):
-        if len(flag[count].review_body) > 0:
-            flag[count].click_flag_review()
-            # choosing the option to flag the review for spam
-            assert (
-                variables["review_flag_spam"] in flag[count].flag_review_option[0].text
-            )
-            flag[count].select_flag_option(0)
-            assert (
-                variables["review_flagged_for_spam"]
-                in flag[count].flag_review_success_text[0].text
-            )
-            break
-        else:
-            count += 1
+    review = first_flaggable_review(reviews, extension)
+    review.click_flag_review()
+    # choosing the option to flag the review for spam
+    assert variables["review_flag_spam"] in review.flag_review_option[0].text
+    review.select_flag_option(0)
+    assert (
+        variables["review_flagged_for_spam"] in review.flag_review_success_text[0].text
+    )
 
 
 @pytest.mark.serial
@@ -403,30 +423,16 @@ def test_flag_missing_for_empty_review_tc_id_c1494904(selenium, base_url, variab
 @pytest.mark.login("rating_user")
 def test_flag_review_menu_options_tc_id_c1494904(selenium, base_url, variables):
     """Test the options available in the flag review menu."""
-    extension = variables["all_scores_addon"]
+    extension = variables["flag_review_addon"]
     selenium.get(f"{base_url}/addon/{extension}")
     addon = Detail(selenium, base_url).wait_for_page_to_load()
-    # addon.login('rating_user')
     reviews = addon.ratings.click_all_reviews_link()
-    flag = reviews.review_items
-    count = 0
-    while count <= len(reviews.reviews_list):
-        if len(flag[count].review_body) > 0:
-            flag[count].click_flag_review()
-            # verifies that the following 3 report options are available in the flag menu
-            assert (
-                variables["review_flag_spam"] in flag[count].flag_spam_option.text
-            )
-            assert (
-                variables["review_flag_bug"]
-                in flag[count].flag_bug_option.text
-            )
-            assert (
-                variables["review_flag_language"] in flag[count].flag_language_option.text
-            )
-            break
-        else:
-            count += 1
+    review = first_flaggable_review(reviews, extension)
+    review.click_flag_review()
+    # verifies that the following 3 report options are available in the flag menu
+    assert variables["review_flag_spam"] in review.flag_spam_option.text
+    assert variables["review_flag_bug"] in review.flag_bug_option.text
+    assert variables["review_flag_language"] in review.flag_language_option.text
 
 
 @pytest.mark.serial
@@ -684,17 +690,26 @@ def test_rating_card_rating_bars(selenium, base_url, variables):
 
 
 @pytest.mark.nondestructive
-@pytest.mark.skip(reason="update assert")
 def test_rating_card_bar_review_counter(selenium, base_url, variables):
     """this test verifies that the counter for each bar is correct"""
-    selenium.get(variables["addon_version_page_url"])
-    page = Versions(selenium, base_url)
+    # the add-on used by the other rating tests has its ratings created and
+    # deleted by those tests, which leaves its rating totals out of step with
+    # the reviews they link to; this one only ever has ratings read from it
+    selenium.get(f'{base_url}/addon/{variables["addon_with_stats"]}/versions/')
+    page = Versions(selenium, base_url).wait_for_page_to_load()
     for i in range(5):
         counter_from_card = page.rating_card.number_of_reviews_with_specific_stars(i)
+        if counter_from_card == 0:
+            # a bar with no reviews links to a page that reports no count
+            continue
         review_page = page.rating_card.click_see_all_reviews_with_specific_stars(i)
-        page.wait_for_page_to_load()
-        assert len(review_page.review_items) == counter_from_card
+        review_page.wait_for_page_to_load()
+        # compare against the total the reviews page reports for this score;
+        # the list of reviews itself is paginated, so counting the items in it
+        # only matches while an add-on has less than a full page of reviews
+        assert review_page.reviews_title_count == counter_from_card
         page.driver.back()
+        page.wait_for_page_to_load()
 
 
 @pytest.mark.nondestructive
@@ -755,16 +770,15 @@ def test_banned_words_in_user_reviews(
     addon.ratings.click_delete_confirm_button()
 
 
-@pytest.mark.serial
-@pytest.mark.skip
-def test_restricted_user_rating_submission(selenium, base_url, variables):
-    """Verify that a restricted user email is not allowed to post addon ratings"""
-    extension = variables["theme_detail_page"]
-    selenium.get(f"{base_url}/addon/{extension}")
-    addon = Detail(selenium, base_url).wait_for_page_to_load()
-    addon.login("restricted_user")
-    # try to submit a user review using denied words in the review body
-    addon.ratings.rating_stars[4].click()
-    addon.ratings.submit_review_error_message(
-        "The email address used for your account is not allowed for submissions."
-    )
+# @pytest.mark.serial
+# def test_restricted_user_rating_submission(selenium, base_url, variables):
+#     """Verify that a restricted user email is not allowed to post addon ratings"""
+#     extension = variables["theme_detail_page"]
+#     selenium.get(f"{base_url}/addon/{extension}")
+#     addon = Detail(selenium, base_url).wait_for_page_to_load()
+#     addon.login("restricted_user")
+#     # try to submit a user review using denied words in the review body
+#     addon.ratings.rating_stars[4].click()
+#     addon.ratings.submit_review_error_message(
+#         "The email address used for your account is not allowed for submissions."
+#     )

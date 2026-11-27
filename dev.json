@@ -20,6 +20,7 @@
 
   "detail_extension_slug": "awesome-screenshot-plus-",
   "detail_extension_name": "Awesome Screenshot Plus - Capture, Annotate & More",
+  "addon_size_extension": "awesome-screenshot-plus-",
   "by_firefox_addon": "addon_by_firefox",
   "experimental_addon": "experimental_addon",
   "invisible_addon_detail": "nti2ndy",
@@ -43,8 +44,8 @@
   "install_extension_name": "cas-current-addon-1",
   "install_theme_slug": "test_theme-auto",
   "install_theme_name": "test_theme[AUTO]",
-  "install_dictionary_slug": "release_dictionary",
-  "install_dictionary_name": "release dictionary",
+  "install_dictionary_slug": "test-на-правописа",
+  "install_dictionary_name": "Поправка на правописа",
   "install_langpack_slug": "language-עברית-hebrew-_cas-cur",
   "install_langpack_name": "Language: עברית (Hebrew)",
   "install_langpack_about_addons_name": "Language: עברית (Hebrew)",
@@ -62,6 +63,7 @@
   "initial_text_input": "original text",
   "edited_text_input": "edited text",
   "all_scores_addon": "all_scores_addon",
+  "flag_review_addon": "all_scores_addon",
   "dev_reply_review": "woonken-redpar-worison",
   "confirm_delete_message": "Are you sure you want to delete",
   "review_flag_spam": "Spam",
@@ -219,5 +221,9 @@
   "no_manifest_found_message": "manifest.json was not found",
   "notification_box_success": "Changes successfully saved.",
   "addon_status_incomplete": "Incomplete",
-  "addon_version_disabled_by_mozilla": "Disabled by Mozilla"
+  "addon_version_disabled_by_mozilla": "Disabled by Mozilla",
+  "version_submitted": "Version Submitted",
+  "invisible_status_text": "Invisible",
+  "listed_addon_slug": "listed_addon_dev",
+  "listed_addon_name": "listed_addon_DEV"
 }

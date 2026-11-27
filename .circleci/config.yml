@@ -31,12 +31,10 @@ jobs:
           name: Install Firefox
           command: choco install firefox-nightly --pre --ignore-checksums -y
       - run:
-          name: Install Setup Tools
-          command: py -3.14 -m pip install "setuptools<70.0.0"
-      - run:
           name: Run coverage devhub tests
           environment:
             MOZ_HEADLESS: 1
+            MOZ_REMOTE_ALLOW_SYSTEM_ACCESS: 1
             PYTEST_ADDOPTS: -n 1 --reruns 2
           command: py -3.14 -m pytest tests\coverage\test_coverage_devhub.py --driver Firefox --variables stage.json --html=coverage-devhub-tests-results.html --self-contained-html
           no_output_timeout: 30m
@@ -205,6 +203,113 @@ jobs:
       - store_artifacts:
           path: submissions-test-results.html
 
+  # API tests covering the addons edit endpoints — tests/api/test_api_addons_edit.py
+  api_edit_tests:
+    docker:
+      - image: cimg/python:3.14-browsers
+    steps:
+      - checkout
+      - run:
+          name: Install Firefox Nightly via Mozilla APT
+          command: |
+            wget -q https://packages.mozilla.org/apt/repo-signing-key.gpg -O- | sudo gpg --dearmor -o /etc/apt/keyrings/packages.mozilla.org.gpg
+            echo "deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.gpg] https://packages.mozilla.org/apt mozilla main" | sudo tee /etc/apt/sources.list.d/mozilla.list
+            sudo apt-get update -qq -o Dir::Etc::sourcelist=/etc/apt/sources.list.d/mozilla.list -o Dir::Etc::sourceparts="-"
+            sudo apt-get install -y -qq firefox-nightly
+            firefox-nightly --version
+      - run:
+          name: Install requirements
+          command: pip install -r ./requirements.txt
+      - run:
+          name: Run API addons edit tests
+          environment:
+            DISPLAY: :99
+            PYTEST_ADDOPTS: -n 1 --reruns 2
+          command: python -m pytest tests/api/test_api_addons_edit.py --driver Firefox --variables stage.json --html=api-edit-tests-results.html --self-contained-html
+          no_output_timeout: 30m
+      - store_artifacts:
+          path: api-edit-tests-results.html
+
+  # API tests covering the authors endpoints — tests/api/test_api_authors_edit.py
+  api_authors_tests:
+    docker:
+      - image: cimg/python:3.14-browsers
+    steps:
+      - checkout
+      - run:
+          name: Install Firefox Nightly via Mozilla APT
+          command: |
+            wget -q https://packages.mozilla.org/apt/repo-signing-key.gpg -O- | sudo gpg --dearmor -o /etc/apt/keyrings/packages.mozilla.org.gpg
+            echo "deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.gpg] https://packages.mozilla.org/apt mozilla main" | sudo tee /etc/apt/sources.list.d/mozilla.list
+            sudo apt-get update -qq -o Dir::Etc::sourcelist=/etc/apt/sources.list.d/mozilla.list -o Dir::Etc::sourceparts="-"
+            sudo apt-get install -y -qq firefox-nightly
+            firefox-nightly --version
+      - run:
+          name: Install requirements
+          command: pip install -r ./requirements.txt
+      - run:
+          name: Run API authors tests
+          environment:
+            DISPLAY: :99
+            PYTEST_ADDOPTS: -n 1 --reruns 2
+          command: python -m pytest tests/api/test_api_authors_edit.py --driver Firefox --variables stage.json --html=api-authors-tests-results.html --self-contained-html
+          no_output_timeout: 30m
+      - store_artifacts:
+          path: api-authors-tests-results.html
+
+  # API tests covering the versions endpoints — tests/api/test_api_versions_edit.py
+  api_versions_tests:
+    docker:
+      - image: cimg/python:3.14-browsers
+    steps:
+      - checkout
+      - run:
+          name: Install Firefox Nightly via Mozilla APT
+          command: |
+            wget -q https://packages.mozilla.org/apt/repo-signing-key.gpg -O- | sudo gpg --dearmor -o /etc/apt/keyrings/packages.mozilla.org.gpg
+            echo "deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.gpg] https://packages.mozilla.org/apt mozilla main" | sudo tee /etc/apt/sources.list.d/mozilla.list
+            sudo apt-get update -qq -o Dir::Etc::sourcelist=/etc/apt/sources.list.d/mozilla.list -o Dir::Etc::sourceparts="-"
+            sudo apt-get install -y -qq firefox-nightly
+            firefox-nightly --version
+      - run:
+          name: Install requirements
+          command: pip install -r ./requirements.txt
+      - run:
+          name: Run API versions tests
+          environment:
+            DISPLAY: :99
+            PYTEST_ADDOPTS: -n 1 --reruns 2
+          command: python -m pytest tests/api/test_api_versions_edit.py --driver Firefox --variables stage.json --html=api-versions-tests-results.html --self-contained-html
+          no_output_timeout: 30m
+      - store_artifacts:
+          path: api-versions-tests-results.html
+  # API tests covering the submission of enterprise addons endpoints — tests/api/test_api_enteprise_edit.py
+  api_enterprise_tests:
+    docker:
+      - image: cimg/python:3.14-browsers
+    steps:
+      - checkout
+      - run:
+          name: Install Firefox Nightly via Mozilla APT
+          command: |
+            wget -q https://packages.mozilla.org/apt/repo-signing-key.gpg -O- | sudo gpg --dearmor -o /etc/apt/keyrings/packages.mozilla.org.gpg
+            echo "deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.gpg] https://packages.mozilla.org/apt mozilla main" | sudo tee /etc/apt/sources.list.d/mozilla.list
+            sudo apt-get update -qq -o Dir::Etc::sourcelist=/etc/apt/sources.list.d/mozilla.list -o Dir::Etc::sourceparts="-"
+            sudo apt-get install -y -qq firefox-nightly
+            firefox-nightly --version
+      - run:
+          name: Install requirements
+          command: pip install -r ./requirements.txt
+      - run:
+          name: Run API enterprise tests
+          environment:
+            DISPLAY: :99
+            PYTEST_ADDOPTS: -n 1 --reruns 2
+          command: python -m pytest tests/api/test_api_enterprise_edit.py --driver Firefox --variables stage.json --html=api-enterprise-tests-results.html --self-contained-html
+          no_output_timeout: 30m
+      - store_artifacts:
+          path: api-enterprise-tests-results.html
+
   # parallel tests run on production after the AMO push
   sanity_parallel_tests:
     executor:
@@ -229,12 +334,10 @@ jobs:
           name: Install Firefox
           command: choco install firefox -y
       - run:
-          name: Install Setup Tools
-          command: py -3.14 -m pip install "setuptools<70.0.0"
-      - run:
           name: Sanity parallel tests
           environment:
             MOZ_HEADLESS: 1
+            MOZ_REMOTE_ALLOW_SYSTEM_ACCESS: 1
             PYTEST_ADDOPTS: -n 4 --reruns 2
           command: py -3.14 -m pytest -m "prod_only or sanity and not serial" --driver Firefox --variables prod.json --html=sanity-parallel-test-results.html --self-contained-html
           no_output_timeout: 30m
@@ -265,12 +368,10 @@ jobs:
           name: Install Firefox
           command: choco install firefox -y
       - run:
-          name: Install Setup Tools
-          command: py -3.14 -m pip install "setuptools<70.0.0"
-      - run:
           name: Sanity serial tests
           environment:
             MOZ_HEADLESS: 1
+            MOZ_REMOTE_ALLOW_SYSTEM_ACCESS: 1
             PYTEST_ADDOPTS: -n 1 --reruns 2
           command: py -3.14 -m pytest -m "sanity and serial" --driver Firefox --variables prod.json --html=sanity-serial-test-results.html --self-contained-html
           no_output_timeout: 30m
@@ -301,12 +402,10 @@ jobs:
           name: Install Firefox
           command: choco install firefox -y
       - run:
-          name: Install Setup Tools
-          command: py -3.14 -m pip install "setuptools<70.0.0"
-      - run:
           name: API submission tests
           environment:
             MOZ_HEADLESS: 1
+            MOZ_REMOTE_ALLOW_SYSTEM_ACCESS: 1
             PYTEST_ADDOPTS: -n 1 --reruns 2
           command: py -3.14 -m pytest tests\api_w --driver Firefox --variables stage.json --html=api_submission_tests.html --self-contained-html
           no_output_timeout: 30m
@@ -337,12 +436,10 @@ jobs:
           name: Install Firefox
           command: choco install firefox-nightly --pre --ignore-checksums -y
       - run:
-          name: Install Setup Tools
-          command: py -3.14 -m pip install "setuptools<70.0.0"
-      - run:
           name: Run frontend parallel tests
           environment:
             MOZ_HEADLESS: 1
+            MOZ_REMOTE_ALLOW_SYSTEM_ACCESS: 1
             PYTEST_ADDOPTS: -n 4 --reruns 2
           command: |
               # Run pytest through the same 3.14 interpreter
@@ -375,12 +472,10 @@ jobs:
           name: Install Firefox
           command: choco install firefox-nightly --pre --ignore-checksums -y
       - run:
-          name: Install Setup Tools
-          command: py -3.14 -m pip install "setuptools<70.0.0"
-      - run:
           name: Run user serial tests
           environment:
             MOZ_HEADLESS: 1
+            MOZ_REMOTE_ALLOW_SYSTEM_ACCESS: 1
             PYTEST_ADDOPTS: -n 1 --reruns 2
           command: py -3.14 -m pytest tests\frontend\test_users.py --driver Firefox --variables dev.json --html=user-dev-test-results.html --self-contained-html
           no_output_timeout: 30m
@@ -411,12 +506,10 @@ jobs:
           name: Install Firefox
           command: choco install firefox-nightly --pre --ignore-checksums -y
       - run:
-          name: Install Setup Tools
-          command: py -3.14 -m pip install "setuptools<70.0.0"
-      - run:
           name: Run collections serial tests
           environment:
             MOZ_HEADLESS: 1
+            MOZ_REMOTE_ALLOW_SYSTEM_ACCESS: 1
             PYTEST_ADDOPTS: -n 1 --reruns 2
           command: py -3.14 -m pytest tests\frontend\test_collections.py --driver Firefox --variables dev.json --html=collections-dev-test-results.html --self-contained-html
           no_output_timeout: 30m
@@ -447,12 +540,10 @@ jobs:
           name: Install Firefox
           command: choco install firefox-nightly --pre --ignore-checksums -y
       - run:
-          name: Install Setup Tools
-          command: py -3.14 -m pip install "setuptools<70.0.0"
-      - run:
           name: Run ratings serial tests
           environment:
             MOZ_HEADLESS: 1
+            MOZ_REMOTE_ALLOW_SYSTEM_ACCESS: 1
             PYTEST_ADDOPTS: -n 1 --reruns 2
           command: py -3.14 -m pytest tests\frontend\test_ratings.py --driver Firefox --variables dev.json --html=ratings-dev-test-results.html --self-contained-html
           no_output_timeout: 30m
@@ -483,12 +574,10 @@ jobs:
           name: Install Firefox
           command: choco install firefox-nightly --pre --ignore-checksums -y
       - run:
-          name: Install Setup Tools
-          command: py -3.14 -m pip install "setuptools<70.0.0"
-      - run:
           name: Run devhub parallel tests
           environment:
             MOZ_HEADLESS: 1
+            MOZ_REMOTE_ALLOW_SYSTEM_ACCESS: 1
             PYTEST_ADDOPTS: -n 4 --reruns 2
           command: py -3.14 -m pytest tests\devhub -m "not serial and not prod_only" --driver Firefox --variables dev.json --html=devhub-dev-parallel-test-results.html --self-contained-html
           no_output_timeout: 30m
@@ -519,12 +608,10 @@ jobs:
           name: Install Firefox
           command: choco install firefox-nightly --pre --ignore-checksums -y
       - run:
-          name: Install Setup Tools
-          command: py -3.14 -m pip install "setuptools<70.0.0"
-      - run:
           name: Run addon submissions tests
           environment:
             MOZ_HEADLESS: 1
+            MOZ_REMOTE_ALLOW_SYSTEM_ACCESS: 1
             PYTEST_ADDOPTS: -n 1 --reruns 2
           command: py -3.14 -m pytest tests\devhub_submissions\test_addon_submissions.py --driver Firefox --variables dev.json --html=submissions-dev-test-results.html --self-contained-html
           no_output_timeout: 30m
@@ -555,12 +642,10 @@ jobs:
           name: Install Firefox
           command: choco install firefox-nightly --pre --ignore-checksums -y
       - run:
-          name: Install Setup Tools
-          command: py -3.14 -m pip install "setuptools<70.0.0"
-      - run:
           name: Reviewer Tools Tests
           environment:
             MOZ_HEADLESS: 1
+            MOZ_REMOTE_ALLOW_SYSTEM_ACCESS: 1
             PYTEST_ADDOPTS: -n 1 --reruns 2
           command: py -3.14 -m pytest tests\reviewer_tools\test_reviewer_tools_release.py --driver Firefox --variables stage.json --html=submissions-dev-test-results.html --self-contained-html
           no_output_timeout: 30m
@@ -591,12 +676,10 @@ jobs:
           name: Install Firefox
           command: choco install firefox-nightly --pre --ignore-checksums -y
       - run:
-          name: Install Setup Tools
-          command: py -3.14 -m pip install "setuptools<70.0.0"
-      - run:
           name: WEBEXT - Stage Tests
           environment:
             MOZ_HEADLESS: 1
+            MOZ_REMOTE_ALLOW_SYSTEM_ACCESS: 1
             PYTEST_ADDOPTS: -n 1 --reruns 2
           command: py -3.14 -m pytest tests\webext\ --driver Firefox --variables stage.json --html=webext-release-stage-results.html --self-contained-html
           no_output_timeout: 30m
@@ -606,8 +689,13 @@ jobs:
 workflows:
   commit_workflow:
     when:
-      not:
-        equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
+      and:
+        - not:
+            equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
+        - not:
+            matches:
+              pattern: "^dependabot/.*"
+              value: << pipeline.git.branch >>
     jobs:
       - frontend_parallel_tests
       - user_serial_tests
@@ -615,6 +703,32 @@ workflows:
       - ratings_serial_tests
       - devhub_parallel_tests
       - addon_submissions_tests
+      - sanity_serial_tests
+      - sanity_parallel_tests
+
+  # API tests workflow — serial API test suites that hit a shared api_user
+  # account on stage. Jobs are chained sequentially via `requires:` because
+  # running them in parallel pushed too many simultaneous requests from
+  # api_user against stage, triggering ERROR_AUTHENTICATION_EXPIRED mid-run.
+  #
+  # Scheduled in CircleCI Project Settings → Triggers under the name
+  # `api_serial_tests_scheduled`.
+  api_serial_tests_scheduled:
+    when:
+      and:
+        - equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
+        - equal: [ "api_serial_tests_scheduled", << pipeline.schedule.name >> ]
+    jobs:
+      - api_edit_tests
+      - api_authors_tests:
+          requires:
+            - api_edit_tests
+      - api_versions_tests:
+          requires:
+            - api_authors_tests
+      - api_enterprise_tests:
+          requires:
+            - api_versions_tests
 
   scheduled_webext_release_stage_run:
     when:

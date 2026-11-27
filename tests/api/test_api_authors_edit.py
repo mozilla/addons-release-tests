@@ -1,4 +1,5 @@
 import json
+import time
 import requests
 import pytest
 
@@ -6,6 +7,8 @@ from api import payloads
 
 # endpoints used in the version edit tests
 _addon_create = "/api/v5/addons/addon/"
+_upload = "/api/v5/addons/upload/"
+
 
 # API endpoints covered are:
 # add new author: https://addons-server.readthedocs.io/en/latest/topics/api/authors.html#pending-author-create
@@ -16,6 +19,61 @@ _addon_create = "/api/v5/addons/addon/"
 # delete pending authors: https://addons-server.readthedocs.io/en/latest/topics/api/authors.html#pending-author-delete
 # edit existing authors: https://addons-server.readthedocs.io/en/latest/topics/api/authors.html#author-edit
 # delete existing authors: https://addons-server.readthedocs.io/en/latest/topics/api/authors.html#author-delete
+
+
+@pytest.mark.serial
+@pytest.mark.login("api_user")
+def test_setup_upload_and_create_addon(base_url, selenium):
+    """Setup: upload a listed XPI and create the addon that the authors tests
+    will attach authors to. Uses the login marker so api_user.txt is written
+    with a fresh sessionid for the create_session tests that follow."""
+    session_cookie = selenium.get_cookie("sessionid")
+    with open("sample-addons/listed-addon-api.zip", "rb") as file:
+        upload = requests.post(
+            url=f"{base_url}{_upload}",
+            headers={"Authorization": f'Session {session_cookie["value"]}'},
+            files={"upload": file},
+            data={"channel": "listed"},
+        )
+    upload.raise_for_status()
+    assert "listed" in upload.json()["channel"]
+    uuid = upload.json()["uuid"]
+    time.sleep(10)
+    create_addon = requests.post(
+        url=f"{base_url}{_addon_create}",
+        headers={
+            "Authorization": f'Session {session_cookie["value"]}',
+            "Content-Type": "application/json",
+        },
+        data=json.dumps(payloads.listed_addon_details(uuid)),
+    )
+    create_addon.raise_for_status()
+
+
+@pytest.mark.serial
+@pytest.mark.create_session("api_user")
+def test_setup_rename_addon(base_url, session_auth):
+    """Setup: rename the just-created addon so it sits at _EDITED_API_SLUG.
+    All subsequent authors tests resolve the slug via
+    `payloads.edit_addon_details["slug"]` which equals _EDITED_API_SLUG."""
+    edit_addon = requests.patch(
+        url=f"{base_url}{_addon_create}{payloads._LISTED_API_SLUG}/",
+        headers={
+            "Authorization": f"Session {session_auth}",
+            "Content-Type": "application/json",
+        },
+        data=json.dumps(payloads.edit_addon_details),
+    )
+    edit_addon.raise_for_status()
+
+
+@pytest.mark.serial
+@pytest.mark.login("staff_user")
+def test_setup_staff_user_session(base_url, selenium):
+    """Setup: trigger FxA login for staff_user so staff_user.txt is written
+    with a fresh sessionid before any create_session('staff_user') test runs.
+    No assertions — the marker's side-effect does the work."""
+    pass
 
 
 @pytest.mark.serial
@@ -300,11 +358,13 @@ def test_addon_invite_multiple_authors(base_url, session_auth, variables):
         url=f"{base_url}{_addon_create}{addon}/pending-authors/",
         headers={"Authorization": f"Session {session_auth}"},
     )
-    print("First author is: " + str(get_pending_authors.json()[0].get("user_id")))
-    print("Second author is: " + str(get_pending_authors.json()[1].get("user_id")))
     print("Get_Pending_Authors: " + str(get_pending_authors.json()))
-    assert second_author == get_pending_authors.json()[1].get("user_id")
-    assert first_author == get_pending_authors.json()[0].get("user_id")
+    # AMO doesn't guarantee a specific order in the pending-authors response
+    # (observed as ascending user_id, not invitation order), so just assert
+    # both invited user IDs are present in the result set.
+    user_ids = {a["user_id"] for a in get_pending_authors.json()}
+    assert first_author in user_ids
+    assert second_author in user_ids
 
 
 @pytest.mark.serial
